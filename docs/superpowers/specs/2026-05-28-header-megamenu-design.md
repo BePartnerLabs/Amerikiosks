@@ -97,9 +97,59 @@ Managed locally in `HeaderNav` with `useState<string | null>(openMenu)` keyed by
 
 ---
 
-## Design System Tokens
+## Design System Tokens & Grid
 
-Use `--bp-*` token vocabulary throughout. Custom properties only via stylesheet classes, never inline `style=""`. ARIA attributes drive visual state (e.g. `aria-expanded="true"` on trigger, `[hidden]` on panel).
+### Grid (copy directly from DS)
+
+Add `bp-content-grid` CSS to the project's global stylesheet:
+
+```css
+.bp-content-grid {
+  display: grid;
+  grid-template-columns:
+    [full-width-start] minmax(var(--_padding-inline), 1fr)
+    [breakout-start] minmax(0, var(--_breakout-size))
+    [content-start] min(100% - (var(--_padding-inline) * 2), var(--_content-max-width))
+    [content-end] minmax(0, var(--_breakout-size))
+    [breakout-end] minmax(var(--_padding-inline), 1fr)
+    [full-width-end];
+  --padding-inline: clamp(1.25rem, 1vw + 1rem, 2rem);
+  --content-max-width: 72rem;
+  --breakout-max-width: 90rem;
+  --_padding-inline: var(--padding-inline);
+  --_content-max-width: var(--content-max-width);
+  --_breakout-max-width: var(--breakout-max-width);
+  --_breakout-size: calc((var(--_breakout-max-width) - var(--_content-max-width)) / 2);
+}
+.bp-content-grid > * { grid-column: content; }
+.bp-content-grid > .breakout, .full-width > .breakout { grid-column: breakout; }
+.bp-content-grid > .full-width, .full-width > .full-width { grid-column: full-width; }
+```
+
+The header bar uses `.full-width` zone. The mega menu panel spans `full-width`.
+
+### Color tokens (override for Amerikiosks brand)
+
+The DS primary (`--bp-primary`) maps to Amerikiosks red. Relevant tokens:
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--bp-primary` | brand red (set in project globals) | CTA button, accent line, chevron, item arrows |
+| `--bp-color-bg` | `#f8f6f2` / `#16140f` | Page background |
+| `--bp-color-text` | `#181715` / `#f2eee6` | Body text |
+| `--bp-color-text-muted` | `#6b6760` / `#9e9a93` | Subtitle / description text |
+| `--bp-color-bg-elevated` | `#ffffff` / `#242118` | Right mega menu panel background |
+| `--bp-space-*` | 4px base scale | All spacing |
+| `--bp-radius-md` | `0.625rem` | Panel / item border radius |
+
+Header bar dark background is a custom navy token (e.g. `--ak-header-bg: #0b1120`) set in the project CSS, not from the DS base palette.
+
+### BPL DS rules
+
+- Only use the public CSS API (`--<component>-*` properties), never inline `style=""`
+- ARIA attributes drive visual state (`aria-expanded`, `[hidden]`)
+- JS writes ARIA; CSS reads it — no toggling style classes from JS
+- Components use BEM: `bp-btn`, `bp-btn--primary`, etc.
 
 ---
 
