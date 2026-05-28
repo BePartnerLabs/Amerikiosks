@@ -45,6 +45,10 @@
   --breakpoint-2xl: 86rem;
   --font-mono: var(--font-geist-mono);
   --font-sans: var(--font-geist-sans);
+  --color-ak-accent: var(--ak-accent);
+  --color-ak-accent-hover: var(--ak-accent-hover);
+  --color-ak-accent-fg: var(--ak-accent-fg);
+  --color-ak-header-bg: var(--ak-header-bg);
 }
 
 @layer utilities {
@@ -124,6 +128,40 @@
   --warning: oklch(89% 0.1 75deg);
   --error: oklch(75% 0.15 25deg);
 }
+
+/* Amerikiosks brand tokens */
+:root {
+  --ak-header-bg: #0b1120;
+  --ak-accent: oklch(50% 0.22 25deg);       /* Amerikiosks red */
+  --ak-accent-hover: oklch(45% 0.22 25deg);
+  --ak-accent-fg: oklch(98% 0 0deg);        /* white text on red */
+  --ak-mega-left-bg: #0b1120;               /* dark left panel */
+  --ak-mega-right-bg: #ffffff;              /* white right panel */
+}
+
+/* BPL DS content grid — copy directly from ds.bepartnerlabs.com/tokens/grid/ */
+.bp-content-grid {
+  display: grid;
+  grid-template-columns:
+    [full-width-start] minmax(var(--_padding-inline), 1fr)
+    [breakout-start] minmax(0, var(--_breakout-size))
+    [content-start] min(100% - (var(--_padding-inline) * 2), var(--_content-max-width))
+    [content-end] minmax(0, var(--_breakout-size))
+    [breakout-end] minmax(var(--_padding-inline), 1fr)
+    [full-width-end];
+  --padding-inline: clamp(1.25rem, 1vw + 1rem, 2rem);
+  --content-max-width: 72rem;
+  --breakout-max-width: 90rem;
+  --_padding-inline: var(--padding-inline);
+  --_content-max-width: var(--content-max-width);
+  --_breakout-max-width: var(--breakout-max-width);
+  --_breakout-size: calc((var(--_breakout-max-width) - var(--_content-max-width)) / 2);
+}
+.bp-content-grid > * { grid-column: content; }
+.bp-content-grid > .breakout,
+.full-width > .breakout { grid-column: breakout; }
+.bp-content-grid > .full-width,
+.full-width > .full-width { grid-column: full-width; }
 
 [data-theme='dark'] {
   --background: oklch(14.5% 0 0deg);
