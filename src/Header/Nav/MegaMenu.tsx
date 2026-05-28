@@ -17,20 +17,26 @@ interface MegaMenuProps {
   id: string
 }
 
-function resolveItemUrl(
-  link: NonNullable<MegaMenuData['items']>[number]['link'],
-): string {
-  if (link.type === 'custom' && link.url) return link.url
+function isPopulatedMedia(val: unknown): val is Media {
+  return typeof val === 'object' && val !== null && 'url' in val
+}
+
+function resolveItemLink(link: NonNullable<MegaMenuData['items']>[number]['link']): {
+  href: string
+  newTab: boolean
+} {
+  const newTab = Boolean(link.newTab)
+  if (link.type === 'custom' && link.url) return { href: link.url, newTab }
   if (link.type === 'reference' && link.reference) {
     const ref = link.reference
     if (ref.relationTo === 'pages' && typeof ref.value === 'object') {
-      return `/${ref.value.slug ?? ''}`
+      return { href: `/${ref.value.slug ?? ''}`, newTab }
     }
     if (ref.relationTo === 'posts' && typeof ref.value === 'object') {
-      return `/posts/${ref.value.slug ?? ''}`
+      return { href: `/posts/${ref.value.slug ?? ''}`, newTab }
     }
   }
-  return '#'
+  return { href: '#', newTab }
 }
 
 export const MegaMenu: React.FC<MegaMenuProps> = ({ data, id }) => {
@@ -87,16 +93,14 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({ data, id }) => {
 
           <div className="grid grid-cols-1 gap-4">
             {(items ?? []).map((item, i) => {
-              const icon =
-                item.icon && typeof item.icon === 'object'
-                  ? (item.icon as Media)
-                  : null
-              const href = resolveItemUrl(item.link)
+              const icon = isPopulatedMedia(item.icon) ? item.icon : null
+              const { href, newTab } = resolveItemLink(item.link)
 
               return (
                 <Link
-                  key={i}
+                  key={item.id ?? i}
                   href={href}
+                  {...(newTab ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                   className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors group"
                 >
                   {icon && icon.url && (
