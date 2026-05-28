@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 
 import type { Header as HeaderType } from '@/payload-types'
@@ -11,6 +11,24 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
   const navItems = data?.navItems || []
   const [openId, setOpenId] = useState<string | null>(null)
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const navRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    return () => {
+      if (closeTimer.current) clearTimeout(closeTimer.current)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!openId) return
+    const handleClickOutside = (e: MouseEvent) => {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+        setOpenId(null)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [openId])
 
   const open = useCallback((id: string) => {
     if (closeTimer.current) clearTimeout(closeTimer.current)
@@ -31,6 +49,7 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
 
   return (
     <nav
+      ref={navRef}
       className="flex gap-1 items-center"
       onKeyDown={closeOnEscape}
       aria-label="Main navigation"
