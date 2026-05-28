@@ -25,6 +25,7 @@ function resolveItemLink(link: NonNullable<MegaMenuData['items']>[number]['link'
   href: string
   newTab: boolean
 } {
+  if (!link) return { href: '#', newTab: false }
   const newTab = Boolean(link.newTab)
   if (link.type === 'custom' && link.url) return { href: link.url, newTab }
   if (link.type === 'reference' && link.reference) {

@@ -83,6 +83,7 @@ export const Header: GlobalConfig = {
                 },
                 link({
                   appearances: false,
+                  disableLabel: true,
                   overrides: { label: 'Item link' },
                 }),
               ],
