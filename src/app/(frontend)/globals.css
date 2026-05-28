@@ -160,6 +160,14 @@
 .bp-content-grid > .full-width,
 .full-width > .full-width { grid-column: full-width; }
 
+.ak-btn-cta {
+  background-color: var(--ak-accent);
+  color: var(--ak-accent-fg);
+}
+.ak-btn-cta:hover {
+  background-color: var(--ak-accent-hover);
+}
+
 [data-theme='dark'] {
   --background: oklch(14.5% 0 0deg);
   --foreground: oklch(98.5% 0 0deg);

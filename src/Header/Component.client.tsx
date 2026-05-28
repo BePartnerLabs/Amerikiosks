@@ -43,19 +43,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
 
         <Link
           href="/start-a-partnership"
-          className="flex-shrink-0 inline-flex items-center px-5 py-2.5 rounded-md text-sm font-semibold transition-colors"
-          style={{
-            backgroundColor: 'var(--ak-accent)',
-            color: 'var(--ak-accent-fg)',
-          }}
-          onMouseEnter={(e) => {
-            ;(e.currentTarget as HTMLAnchorElement).style.backgroundColor =
-              'var(--ak-accent-hover)'
-          }}
-          onMouseLeave={(e) => {
-            ;(e.currentTarget as HTMLAnchorElement).style.backgroundColor =
-              'var(--ak-accent)'
-          }}
+          className="ak-btn-cta flex-shrink-0 inline-flex items-center px-5 py-2.5 rounded-md text-sm font-semibold transition-colors"
         >
           Start a Partnership
         </Link>
