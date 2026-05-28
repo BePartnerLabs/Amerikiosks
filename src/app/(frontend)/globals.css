@@ -127,16 +127,13 @@
   --success: oklch(78% 0.08 200deg);
   --warning: oklch(89% 0.1 75deg);
   --error: oklch(75% 0.15 25deg);
-}
-
-/* Amerikiosks brand tokens */
-:root {
+  /* Amerikiosks brand tokens */
   --ak-header-bg: #0b1120;
-  --ak-accent: oklch(50% 0.22 25deg);       /* Amerikiosks red */
+  --ak-accent: oklch(50% 0.22 25deg);
   --ak-accent-hover: oklch(45% 0.22 25deg);
-  --ak-accent-fg: oklch(98% 0 0deg);        /* white text on red */
-  --ak-mega-left-bg: #0b1120;               /* dark left panel */
-  --ak-mega-right-bg: #ffffff;              /* white right panel */
+  --ak-accent-fg: oklch(98% 0 0deg);
+  --ak-mega-left-bg: #0b1120;
+  --ak-mega-right-bg: #ffffff;
 }
 
 /* BPL DS content grid — copy directly from ds.bepartnerlabs.com/tokens/grid/ */
