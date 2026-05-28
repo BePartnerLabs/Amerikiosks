@@ -1,11 +1,11 @@
 'use client'
+
 import { useHeaderTheme } from '@/providers/HeaderTheme'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
 import type { Header } from '@/payload-types'
-
 import { Logo } from '@/components/Logo/Logo'
 import { HeaderNav } from './Nav'
 
@@ -14,7 +14,6 @@ interface HeaderClientProps {
 }
 
 export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
-  /* Storing the value in a useState to avoid hydration errors */
   const [theme, setTheme] = useState<string | null>(null)
   const { headerTheme, setHeaderTheme } = useHeaderTheme()
   const pathname = usePathname()
@@ -30,12 +29,36 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
   }, [headerTheme])
 
   return (
-    <header className="container relative z-20   " {...(theme ? { 'data-theme': theme } : {})}>
-      <div className="py-8 flex justify-between">
-        <Link href="/">
-          <Logo loading="eager" priority="high" className="invert dark:invert-0" />
+    <header
+      className="sticky top-0 z-50 w-full"
+      style={{ backgroundColor: 'var(--ak-header-bg)' }}
+      {...(theme ? { 'data-theme': theme } : {})}
+    >
+      <div className="max-w-[90rem] mx-auto px-6 py-4 flex items-center justify-between">
+        <Link href="/" className="flex-shrink-0">
+          <Logo loading="eager" priority="high" className="invert-0" />
         </Link>
+
         <HeaderNav data={data} />
+
+        <Link
+          href="/start-a-partnership"
+          className="flex-shrink-0 inline-flex items-center px-5 py-2.5 rounded-md text-sm font-semibold transition-colors"
+          style={{
+            backgroundColor: 'var(--ak-accent)',
+            color: 'var(--ak-accent-fg)',
+          }}
+          onMouseEnter={(e) => {
+            ;(e.currentTarget as HTMLAnchorElement).style.backgroundColor =
+              'var(--ak-accent-hover)'
+          }}
+          onMouseLeave={(e) => {
+            ;(e.currentTarget as HTMLAnchorElement).style.backgroundColor =
+              'var(--ak-accent)'
+          }}
+        >
+          Start a Partnership
+        </Link>
       </div>
     </header>
   )
