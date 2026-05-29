@@ -1,0 +1,28 @@
+{
+  "nav": {
+    "menu": "Menu",
+    "close": "Close menu"
+  },
+  "footer": {
+    "rights": "All rights reserved"
+  },
+  "search": {
+    "placeholder": "Search...",
+    "noResults": "No results found for",
+    "heading": "Search Results"
+  },
+  "posts": {
+    "heading": "Posts",
+    "readMore": "Read more"
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {current} of {total}"
+  },
+  "notFound": {
+    "heading": "404 - Page Not Found",
+    "message": "The page you are looking for does not exist.",
+    "backHome": "Back to Home"
+  }
+}

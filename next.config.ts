@@ -1,4 +1,5 @@
 import { withPayload } from '@payloadcms/next/withPayload'
+import createNextIntlPlugin from 'next-intl/plugin'
 import type { NextConfig } from 'next'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -6,6 +7,8 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(__filename)
 import { redirects } from './redirects'
+
+const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
 
 const NEXT_PUBLIC_SERVER_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
   ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
@@ -46,4 +49,4 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default withPayload(nextConfig, { devBundleServerPackages: false })
+export default withPayload(withNextIntl(nextConfig), { devBundleServerPackages: false })

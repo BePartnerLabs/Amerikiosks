@@ -1,0 +1,28 @@
+{
+  "nav": {
+    "menu": "Menú",
+    "close": "Cerrar menú"
+  },
+  "footer": {
+    "rights": "Todos los derechos reservados"
+  },
+  "search": {
+    "placeholder": "Buscar...",
+    "noResults": "No se encontraron resultados para",
+    "heading": "Resultados de búsqueda"
+  },
+  "posts": {
+    "heading": "Publicaciones",
+    "readMore": "Leer más"
+  },
+  "pagination": {
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "page": "Página {current} de {total}"
+  },
+  "notFound": {
+    "heading": "404 - Página no encontrada",
+    "message": "La página que buscas no existe.",
+    "backHome": "Volver al inicio"
+  }
+}
