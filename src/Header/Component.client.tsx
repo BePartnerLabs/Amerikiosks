@@ -31,7 +31,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
   return (
     <header
       className="sticky top-0 z-50 w-full relative"
-      style={{ backgroundColor: 'var(--ak-header-bg)', '--ak-header-height': '66px' } as React.CSSProperties}
+      style={{ backgroundColor: 'var(--ak-header-bg)' }}
       {...(theme ? { 'data-theme': theme } : {})}
     >
       <div className="max-w-[90rem] mx-auto px-6 py-4 flex items-center justify-between">
