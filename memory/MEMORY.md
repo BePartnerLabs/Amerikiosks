@@ -1,0 +1,3 @@
+- [Design System](reference_design_system.md) — BePartnerLabs design system at http://ds.bepartnerlabs.com/ — check for tokens/components before writing custom styles
+- [Tailwind → BPL DS Migration](project_tailwind_migration.md) — Planned frontend-only migration from Tailwind to BPL DS tokens — do in a dedicated future session
+- [TS Path Aliases](reference_tsconfig_aliases.md) — All `@/` aliases (blocks, collections, components, i18n, messages, etc.) — always use these, never relative paths; avoid dynamic template-literal imports (Turbopack can't resolve them)

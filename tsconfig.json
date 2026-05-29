@@ -33,7 +33,21 @@
       ],
       "@/*": [
         "./src/*"
-      ]
+      ],
+      "@/blocks/*": ["./src/blocks/*"],
+      "@/collections/*": ["./src/collections/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/fields/*": ["./src/fields/*"],
+      "@/hooks/*": ["./src/hooks/*"],
+      "@/utilities/*": ["./src/utilities/*"],
+      "@/providers/*": ["./src/providers/*"],
+      "@/heros/*": ["./src/heros/*"],
+      "@/access/*": ["./src/access/*"],
+      "@/endpoints/*": ["./src/endpoints/*"],
+      "@/plugins/*": ["./src/plugins/*"],
+      "@/search/*": ["./src/search/*"],
+      "@/i18n/*": ["./src/i18n/*"],
+      "@/messages/*": ["./src/messages/*"]
     }
   },
   "include": [

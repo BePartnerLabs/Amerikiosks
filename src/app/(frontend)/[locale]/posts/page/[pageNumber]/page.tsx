@@ -6,6 +6,7 @@ import { Pagination } from '@/components/Pagination'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
+import { getTranslations } from 'next-intl/server'
 import PageClient from './page.client'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
@@ -21,6 +22,7 @@ type Args = {
 
 export default async function Page({ params: paramsPromise }: Args) {
   const { pageNumber, locale } = await paramsPromise
+  const t = await getTranslations('posts')
   const payload = await getPayload({ config: configPromise })
 
   const sanitizedPageNumber = Number(pageNumber)
@@ -42,7 +44,7 @@ export default async function Page({ params: paramsPromise }: Args) {
       <PageClient />
       <div className="container mb-16">
         <div className="prose dark:prose-invert max-w-none">
-          <h1>Posts</h1>
+          <h1>{t('heading')}</h1>
         </div>
       </div>
 

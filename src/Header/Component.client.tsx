@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react'
 
 import type { Header } from '@/payload-types'
 import { Logo } from '@/components/Logo/Logo'
+import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 import { HeaderNav } from './Nav'
 
 interface HeaderClientProps {
@@ -41,12 +42,15 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
 
         <HeaderNav data={data} />
 
-        <Link
-          href="/start-a-partnership"
-          className="ak-btn-cta flex-shrink-0 inline-flex items-center px-5 py-2.5 rounded-md text-sm font-semibold transition-colors"
-        >
-          Start a Partnership
-        </Link>
+        <div className="flex items-center gap-4 flex-shrink-0">
+          <LanguageSwitcher />
+          <Link
+            href="/start-a-partnership"
+          className="ak-btn-cta inline-flex items-center px-5 py-2.5 rounded-md text-sm font-semibold transition-colors"
+          >
+            Start a Partnership
+          </Link>
+        </div>
       </div>
     </header>
   )
