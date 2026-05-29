@@ -20,9 +20,12 @@ export const Categories: CollectionConfig = {
       name: 'title',
       type: 'text',
       required: true,
+      localized: true,
     },
     slugField({
+      useAsSlug: 'title',
       position: undefined,
+      localized: true,
     }),
   ],
 }

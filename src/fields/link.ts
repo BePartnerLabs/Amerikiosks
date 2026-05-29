@@ -86,6 +86,7 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
       },
       label: 'Custom URL',
       required: true,
+      localized: true,
     },
   ]
 
@@ -110,6 +111,7 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
           },
           label: 'Label',
           required: true,
+          localized: true,
         },
       ],
     })

@@ -35,28 +35,33 @@ export const Header: GlobalConfig = {
               type: 'text',
               label: 'Left panel label (e.g. SOLUTIONS)',
               required: true,
+              localized: true,
             },
             {
               name: 'panelHeadline',
               type: 'text',
               label: 'Left panel headline',
               required: true,
+              localized: true,
             },
             {
               name: 'panelDescription',
               type: 'textarea',
               label: 'Left panel description',
+              localized: true,
             },
             {
               name: 'rightTitle',
               type: 'text',
               label: 'Right panel title',
               required: true,
+              localized: true,
             },
             {
               name: 'rightSubtitle',
               type: 'textarea',
               label: 'Right panel subtitle',
+              localized: true,
             },
             {
               name: 'items',
@@ -75,11 +80,13 @@ export const Header: GlobalConfig = {
                   type: 'text',
                   label: 'Item title',
                   required: true,
+                  localized: true,
                 },
                 {
                   name: 'description',
                   type: 'textarea',
                   label: 'Item description',
+                  localized: true,
                 },
                 link({
                   appearances: false,
