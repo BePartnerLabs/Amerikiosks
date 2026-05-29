@@ -63,7 +63,6 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
           return (
             <div
               key={itemId}
-              className="relative"
               onMouseEnter={() => open(itemId)}
               onMouseLeave={scheduleClose}
             >

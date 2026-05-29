@@ -54,7 +54,7 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({ data, id }) => {
     <div
       id={id}
       role="region"
-      className="absolute top-full left-0 right-0 w-screen z-40 shadow-xl"
+      className="absolute top-full left-0 right-0 z-40 shadow-xl"
     >
       <div className="max-w-[90rem] mx-auto flex rounded-xl overflow-hidden">
         {/* Left dark panel */}
