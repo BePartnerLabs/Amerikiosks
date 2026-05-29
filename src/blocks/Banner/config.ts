@@ -31,6 +31,7 @@ export const Banner: Block = {
       }),
       label: false,
       required: true,
+      localized: true,
     },
   ],
   interfaceName: 'BannerBlock',
