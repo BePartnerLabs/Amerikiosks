@@ -8,17 +8,19 @@ import { getPayload } from 'payload'
 import React from 'react'
 import PageClient from './page.client'
 import { notFound } from 'next/navigation'
+import { routing } from '@/i18n/routing'
 
 export const revalidate = 600
 
 type Args = {
   params: Promise<{
     pageNumber: string
+    locale: string
   }>
 }
 
 export default async function Page({ params: paramsPromise }: Args) {
-  const { pageNumber } = await paramsPromise
+  const { pageNumber, locale } = await paramsPromise
   const payload = await getPayload({ config: configPromise })
 
   const sanitizedPageNumber = Number(pageNumber)
@@ -31,6 +33,8 @@ export default async function Page({ params: paramsPromise }: Args) {
     limit: 12,
     page: sanitizedPageNumber,
     overrideAccess: false,
+    locale: locale as 'en' | 'es',
+    fallbackLocale: 'en',
   })
 
   return (
@@ -77,12 +81,13 @@ export async function generateStaticParams() {
   })
 
   const totalPages = Math.ceil(totalDocs / 10)
+  const params: { locale: string; pageNumber: string }[] = []
 
-  const pages: { pageNumber: string }[] = []
-
-  for (let i = 1; i <= totalPages; i++) {
-    pages.push({ pageNumber: String(i) })
+  for (const locale of routing.locales) {
+    for (let i = 1; i <= totalPages; i++) {
+      params.push({ locale, pageNumber: String(i) })
+    }
   }
 
-  return pages
+  return params
 }
