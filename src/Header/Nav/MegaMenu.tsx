@@ -54,10 +54,10 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({ data, id }) => {
     <div
       id={id}
       role="region"
-      className="absolute top-full z-40 shadow-xl"
-      style={{ left: '50%', transform: 'translateX(-50%)', width: '100vw' }}
+      className="absolute top-full left-0 right-0 z-40 border-t border-white/10 pt-2 pb-6 px-6"
+      style={{ backgroundColor: 'var(--ak-header-bg)' }}
     >
-      <div className="max-w-[90rem] mx-auto flex rounded-xl overflow-hidden">
+      <div className="max-w-[90rem] mx-auto flex rounded-xl overflow-hidden shadow-2xl">
         {/* Left dark panel */}
         <div
           className="w-[30%] flex-shrink-0 p-8 flex flex-col gap-4"
