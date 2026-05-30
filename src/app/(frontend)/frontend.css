@@ -36,21 +36,24 @@ img { max-width: 100%; display: block; }
 .bp-btn {
   display: inline-flex;
   align-items: center;
-  padding: 0.625rem 1.25rem;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
+  padding: var(--btn-padding, var(--bp-space-2) var(--bp-space-4));
+  border-radius: var(--btn-radius, var(--bp-radius));
+  font-size: var(--btn-font-size, var(--bp-text-sm, 0.875rem));
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
-  border: none;
-  transition: background-color 0.15s ease;
+  border: var(--btn-border, none);
+  transition: background-color var(--bp-duration-fast) var(--bp-ease);
 }
 
 .bp-btn--primary {
-  background-color: var(--ak-accent);
-  color: var(--ak-accent-fg);
+  --btn-bg: var(--ak-accent);
+  --btn-bg-hover: var(--ak-accent-hover);
+  --btn-color: var(--ak-accent-fg);
+  background-color: var(--btn-bg);
+  color: var(--btn-color);
 }
 
 .bp-btn--primary:hover {
-  background-color: var(--ak-accent-hover);
+  background-color: var(--btn-bg-hover);
 }
