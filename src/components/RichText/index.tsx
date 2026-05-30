@@ -20,7 +20,6 @@ import type {
 } from '@/payload-types'
 import { BannerBlock } from '@/blocks/Banner/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
-import { cn } from '@/utilities/ui'
 
 type NodeTypes =
   | DefaultNodeTypes
@@ -39,18 +38,18 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
   ...defaultConverters,
   ...LinkJSXConverter({ internalDocToHref }),
   blocks: {
-    banner: ({ node }) => <BannerBlock className="col-start-2 mb-4" {...node.fields} />,
+    banner: ({ node }) => <BannerBlock className="" {...node.fields} />,
     mediaBlock: ({ node }) => (
       <MediaBlock
-        className="col-start-1 col-span-3"
-        imgClassName="m-0"
+        className=""
+        imgClassName=""
         {...node.fields}
-        captionClassName="mx-auto max-w-[48rem]"
+        captionClassName=""
         enableGutter={false}
         disableInnerContainer={true}
       />
     ),
-    code: ({ node }) => <CodeBlock className="col-start-2" {...node.fields} />,
+    code: ({ node }) => <CodeBlock className="" {...node.fields} />,
     cta: ({ node }) => <CallToActionBlock {...node.fields} />,
   },
 })
@@ -66,15 +65,7 @@ export default function RichText(props: Props) {
   return (
     <ConvertRichText
       converters={jsxConverters}
-      className={cn(
-        'payload-richtext',
-        {
-          container: enableGutter,
-          'max-w-none': !enableGutter,
-          'mx-auto prose md:prose-md dark:prose-invert': enableProse,
-        },
-        className,
-      )}
+      className=""
       {...rest}
     />
   )

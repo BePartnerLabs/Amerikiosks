@@ -24,7 +24,7 @@ export const Search: React.FC = () => {
           e.preventDefault()
         }}
       >
-        <Label htmlFor="search" className="sr-only">
+        <Label htmlFor="search" className="">
           {t('heading')}
         </Label>
         <Input
@@ -34,7 +34,7 @@ export const Search: React.FC = () => {
           }}
           placeholder={t('placeholder')}
         />
-        <button type="submit" className="sr-only">
+        <button type="submit" className="">
           submit
         </button>
       </form>

@@ -2,7 +2,6 @@
 
 import type { StaticImageData } from 'next/image'
 
-import { cn } from '@/utilities/ui'
 import NextImage from 'next/image'
 import React from 'react'
 
@@ -85,10 +84,10 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
         .join(', ')
 
   return (
-    <picture className={cn(pictureClassName)}>
+    <picture className="">
       <NextImage
         alt={alt || ''}
-        className={cn(imgClassName)}
+        className=""
         fill={fill}
         height={!fill ? height : undefined}
         placeholder="blur"
