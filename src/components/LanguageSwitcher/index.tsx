@@ -3,6 +3,7 @@
 import { useLocale } from 'next-intl'
 import { usePathname, useRouter } from '@/i18n/routing'
 import React from 'react'
+import './language-switcher.css'
 
 export const LanguageSwitcher: React.FC = () => {
   const locale = useLocale()
@@ -15,20 +16,20 @@ export const LanguageSwitcher: React.FC = () => {
   }
 
   return (
-    <div className="">
+    <div className="ak-lang-switcher">
       <button
         type="button"
         onClick={() => switchTo('en')}
-        className=""
+        className="ak-lang-switcher__btn"
         aria-current={locale === 'en' ? 'true' : undefined}
       >
         EN
       </button>
-      <span className="">|</span>
+      <span className="ak-lang-switcher__sep">|</span>
       <button
         type="button"
         onClick={() => switchTo('es')}
-        className=""
+        className="ak-lang-switcher__btn"
         aria-current={locale === 'es' ? 'true' : undefined}
       >
         ES

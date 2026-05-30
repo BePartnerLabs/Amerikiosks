@@ -1,4 +1,4 @@
-/* frontend.css — no Tailwind. TODO: add BPL DS tokens here */
+/* frontend.css — global reset + brand tokens. Component styles live in their own .css files. */
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -18,4 +18,39 @@ img { max-width: 100%; display: block; }
   direction: ltr;
   font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
   -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Amerikiosks brand tokens ─────────────────────────── */
+:root {
+  --ak-header-bg: #0b1120;
+  --ak-accent: #e63946;
+  --ak-accent-hover: #c1121f;
+  --ak-accent-fg: #ffffff;
+  --ak-mega-left-bg: #0b1120;
+  --ak-mega-right-bg: #ffffff;
+  --ak-nav-link-color: rgba(255,255,255,0.85);
+  --ak-nav-link-hover: #ffffff;
+}
+
+/* ─── BPL DS Button (bp-btn) ───────────────────────────── */
+.bp-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.15s ease;
+}
+
+.bp-btn--primary {
+  background-color: var(--ak-accent);
+  color: var(--ak-accent-fg);
+}
+
+.bp-btn--primary:hover {
+  background-color: var(--ak-accent-hover);
 }

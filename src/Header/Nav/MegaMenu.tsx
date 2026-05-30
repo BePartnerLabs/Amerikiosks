@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
 
 import type { Header } from '@/payload-types'
+import './megamenu.css'
 
 type MegaMenuData = NonNullable<
   NonNullable<Header['navItems']>[number]['megaMenu']
@@ -45,78 +46,45 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({ data, id }) => {
   } = data
 
   return (
-    <div
-      id={id}
-      role="region"
-      className=""
-      style={{ backgroundColor: 'var(--ak-header-bg)' }}
-    >
-      <div className="">
+    <div id={id} role="region" className="ak-mega">
+      <div className="ak-mega__inner">
         {/* Left dark panel */}
-        <div
-          className=""
-          style={{ backgroundColor: 'var(--ak-mega-left-bg)' }}
-        >
-          <span
-            className=""
-            style={{ backgroundColor: 'var(--ak-accent)' }}
-            aria-hidden="true"
-          />
-          <p
-            className=""
-            style={{ color: 'var(--ak-accent)' }}
-          >
-            {panelLabel}
-          </p>
-          <h2 className="">
-            {panelHeadline}
-          </h2>
+        <div className="ak-mega__left">
+          <span className="ak-mega__accent-bar" aria-hidden="true" />
+          <p className="ak-mega__eyebrow">{panelLabel}</p>
+          <h2 className="ak-mega__headline">{panelHeadline}</h2>
           {panelDescription && (
-            <p className="">
-              {panelDescription}
-            </p>
+            <p className="ak-mega__description">{panelDescription}</p>
           )}
         </div>
 
-        {/* Right white panel */}
-        <div className="">
-          {rightTitle && (
-            <h3 className="">{rightTitle}</h3>
-          )}
-          {rightSubtitle && (
-            <p className="">{rightSubtitle}</p>
-          )}
+        {/* Right panel */}
+        <div className="ak-mega__right">
+          {rightTitle && <h3 className="ak-mega__right-title">{rightTitle}</h3>}
+          {rightSubtitle && <p className="ak-mega__right-subtitle">{rightSubtitle}</p>}
 
-          <div className="">
+          <div className="ak-mega__items">
             {(items ?? []).map((item, i) => {
               const { href, newTab } = resolveItemLink(item.link)
-
               return (
                 <Link
                   key={item.id ?? i}
                   href={href}
                   {...(newTab ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                  className=""
+                  className="ak-mega__item"
                 >
                   {item.icon && (
-                    <span className="">
-                      <span className="material-symbols-outlined" style={{ fontSize: 22 }}>
-                        {item.icon}
-                      </span>
+                    <span className="ak-mega__item-icon">
+                      <span className="material-symbols-outlined">{item.icon}</span>
                     </span>
                   )}
-                  <div className="">
-                    <p className="">
+                  <div className="ak-mega__item-body">
+                    <p className="ak-mega__item-title">
                       {item.title}
-                      <ChevronRight
-                        className=""
-                        style={{ color: 'var(--ak-accent)' }}
-                      />
+                      <ChevronRight className="ak-mega__item-chevron" aria-hidden="true" />
                     </p>
                     {item.description && (
-                      <p className="">
-                        {item.description}
-                      </p>
+                      <p className="ak-mega__item-desc">{item.description}</p>
                     )}
                   </div>
                 </Link>

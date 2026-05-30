@@ -15,7 +15,6 @@ export const Logo = (props: Props) => {
 
   return (
     <>
-      {/* Desktop: full horizontal logo */}
       <Image
         alt="Amerikiosks"
         width={220}
@@ -23,18 +22,18 @@ export const Logo = (props: Props) => {
         loading={loading}
         fetchPriority={priority}
         decoding="async"
-        className=""
+        className="logo-desktop"
         src="/logos/logo-4.svg"
       />
-      {/* Mobile: compact rectangular logo */}
       <Image
-        alt="Amerikiosks"
+        alt=""
+        aria-hidden="true"
         width={140}
         height={34}
         loading={loading}
         fetchPriority={priority}
         decoding="async"
-        className=""
+        className="logo-mobile"
         src="/logos/logo-1.svg"
       />
     </>

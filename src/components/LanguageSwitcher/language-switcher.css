@@ -1,0 +1,26 @@
+/* ─── Language Switcher ─────────────────────────────────── */
+.ak-lang-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.ak-lang-switcher__btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(255,255,255,0.5);
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: color 0.15s ease;
+  padding: 0;
+}
+
+.ak-lang-switcher__btn:hover { color: rgba(255,255,255,0.8); }
+.ak-lang-switcher__btn[aria-current="true"] { color: #ffffff; }
+
+.ak-lang-switcher__sep {
+  color: rgba(255,255,255,0.3);
+}

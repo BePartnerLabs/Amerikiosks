@@ -1,0 +1,164 @@
+<h2>Mobile Header — Which approach?</h2>
+<p class="subtitle">All options use the same dark background with red XX mark + AMERIKIOSKS wordmark. Pick the one that feels right.</p>
+
+<div class="cards">
+
+  <!-- OPTION A: Hamburger full-screen overlay -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#0d1117; border-radius:8px; overflow:hidden; font-family:sans-serif;">
+        <!-- Top bar -->
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-bottom:1px solid rgba(255,255,255,0.08);">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="color:#e63946;font-weight:900;font-size:18px;">✕✕</span>
+            <span style="color:white;font-weight:700;font-size:11px;letter-spacing:2px;">AMERIKIOSKS</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:600;">EN | ES</span>
+            <div style="width:22px;display:flex;flex-direction:column;gap:4px;cursor:pointer;">
+              <div style="height:2px;background:white;border-radius:2px;"></div>
+              <div style="height:2px;background:white;border-radius:2px;"></div>
+              <div style="height:2px;background:white;border-radius:2px;width:60%;"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Full screen overlay (shown) -->
+        <div style="background:#0d1117;padding:24px 18px;">
+          <div style="display:flex;flex-direction:column;gap:0;">
+            <div style="padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;align-items:center;">
+              <span style="color:white;font-size:16px;font-weight:600;">Solutions</span>
+              <span style="color:rgba(255,255,255,0.3);font-size:12px;">›</span>
+            </div>
+            <div style="padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;align-items:center;">
+              <span style="color:white;font-size:16px;font-weight:600;">Where It Works</span>
+              <span style="color:rgba(255,255,255,0.3);font-size:12px;">›</span>
+            </div>
+            <div style="padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.07);">
+              <span style="color:white;font-size:16px;font-weight:600;">Case Studies</span>
+            </div>
+            <div style="padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.07);">
+              <span style="color:white;font-size:16px;font-weight:600;">Why Amerikiosks</span>
+            </div>
+          </div>
+          <div style="margin-top:28px;">
+            <div style="background:#e63946;color:white;text-align:center;padding:14px;border-radius:8px;font-weight:700;font-size:14px;">Start a Partnership</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Hamburger + Full-screen overlay</h3>
+      <p>Burger icon top-right. Tap opens full-screen dark menu. Language switcher in top bar. CTA at bottom of menu. Clean, immersive — common pattern users know well.</p>
+    </div>
+  </div>
+
+  <!-- OPTION B: Bottom sheet drawer -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#0d1117; border-radius:8px; overflow:hidden; font-family:sans-serif;">
+        <!-- Top bar -->
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-bottom:1px solid rgba(255,255,255,0.08);">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="color:#e63946;font-weight:900;font-size:18px;">✕✕</span>
+            <span style="color:white;font-weight:700;font-size:11px;letter-spacing:2px;">AMERIKIOSKS</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:600;">EN | ES</span>
+            <div style="width:22px;display:flex;flex-direction:column;gap:4px;">
+              <div style="height:2px;background:white;border-radius:2px;"></div>
+              <div style="height:2px;background:white;border-radius:2px;"></div>
+              <div style="height:2px;background:white;border-radius:2px;width:60%;"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Page content hint -->
+        <div style="padding:20px 18px;opacity:0.3;">
+          <div style="height:8px;background:rgba(255,255,255,0.2);border-radius:4px;margin-bottom:8px;width:70%;"></div>
+          <div style="height:8px;background:rgba(255,255,255,0.2);border-radius:4px;margin-bottom:8px;width:90%;"></div>
+          <div style="height:8px;background:rgba(255,255,255,0.2);border-radius:4px;width:50%;"></div>
+        </div>
+        <!-- Bottom sheet -->
+        <div style="background:#161b22;border-radius:16px 16px 0 0;padding:12px 18px 20px;border-top:1px solid rgba(255,255,255,0.12);">
+          <div style="width:36px;height:3px;background:rgba(255,255,255,0.2);border-radius:2px;margin:0 auto 16px;"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div style="padding:12px;background:rgba(255,255,255,0.05);border-radius:8px;">
+              <div style="font-size:10px;color:#e63946;font-weight:700;margin-bottom:4px;">SOLUTIONS</div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.7);">Choose your presence</div>
+            </div>
+            <div style="padding:12px;background:rgba(255,255,255,0.05);border-radius:8px;">
+              <div style="font-size:10px;color:#e63946;font-weight:700;margin-bottom:4px;">WHERE IT WORKS</div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.7);">Find your environment</div>
+            </div>
+            <div style="padding:12px;background:rgba(255,255,255,0.05);border-radius:8px;">
+              <div style="font-size:10px;color:rgba(255,255,255,0.5);font-weight:700;margin-bottom:4px;">CASE STUDIES</div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.7);">See results</div>
+            </div>
+            <div style="padding:12px;background:rgba(255,255,255,0.05);border-radius:8px;">
+              <div style="font-size:10px;color:rgba(255,255,255,0.5);font-weight:700;margin-bottom:4px;">WHY US</div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.7);">Our difference</div>
+            </div>
+          </div>
+          <div style="margin-top:12px;background:#e63946;color:white;text-align:center;padding:12px;border-radius:8px;font-weight:700;font-size:13px;">Start a Partnership</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Hamburger + Bottom sheet drawer</h3>
+      <p>Burger top-right. Tap slides up a bottom sheet with 2-col grid of nav items. More modern, thumb-friendly. Good for touch. Mega menu items become compact cards.</p>
+    </div>
+  </div>
+
+  <!-- OPTION C: Top bar with CTA always visible -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#0d1117; border-radius:8px; overflow:hidden; font-family:sans-serif;">
+        <!-- Top bar -->
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-bottom:1px solid rgba(255,255,255,0.08);">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="color:#e63946;font-weight:900;font-size:18px;">✕✕</span>
+            <span style="color:white;font-weight:700;font-size:11px;letter-spacing:2px;">AMERIKIOSKS</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:600;">EN | ES</span>
+            <div style="background:#e63946;color:white;padding:7px 12px;border-radius:6px;font-size:11px;font-weight:700;">Partner</div>
+            <div style="width:22px;display:flex;flex-direction:column;gap:4px;">
+              <div style="height:2px;background:white;border-radius:2px;"></div>
+              <div style="height:2px;background:white;border-radius:2px;"></div>
+              <div style="height:2px;background:white;border-radius:2px;width:60%;"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Slide-in drawer from right -->
+        <div style="display:flex;">
+          <div style="flex:1;padding:20px 18px;opacity:0.2;">
+            <div style="height:8px;background:white;border-radius:4px;margin-bottom:8px;width:70%;"></div>
+            <div style="height:8px;background:white;border-radius:4px;width:50%;"></div>
+          </div>
+          <div style="width:72%;background:#161b22;padding:20px 16px;border-left:1px solid rgba(255,255,255,0.1);">
+            <div style="display:flex;flex-direction:column;gap:0;">
+              <div style="padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;">
+                <span style="color:white;font-size:14px;font-weight:600;">Solutions</span>
+                <span style="color:#e63946;">›</span>
+              </div>
+              <div style="padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;">
+                <span style="color:white;font-size:14px;font-weight:600;">Where It Works</span>
+                <span style="color:#e63946;">›</span>
+              </div>
+              <div style="padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.07);">
+                <span style="color:white;font-size:14px;font-weight:600;">Case Studies</span>
+              </div>
+              <div style="padding:14px 0;">
+                <span style="color:white;font-size:14px;font-weight:600;">Why Amerikiosks</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — CTA always visible + side drawer</h3>
+      <p>CTA button stays visible in the top bar (shortened to "Partner"). Burger opens a side drawer from the right. Maximizes CTA exposure on mobile — good for conversion focus.</p>
+    </div>
+  </div>
+
+</div>

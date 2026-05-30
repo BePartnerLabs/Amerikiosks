@@ -9,6 +9,7 @@ import type { Header } from '@/payload-types'
 import { Logo } from '@/components/Logo/Logo'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 import { HeaderNav } from './Nav'
+import './header.css'
 
 interface HeaderClientProps {
   data: Header
@@ -31,24 +32,20 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
 
   return (
     <header
-      className=""
-      style={{ backgroundColor: 'var(--ak-header-bg)' }}
+      className="bp-header"
       {...(theme ? { 'data-theme': theme } : {})}
     >
-      <div className="">
-        <Link href="/" className="">
-          <Logo loading="eager" priority="high" className="" />
+      <div className="bp-header__inner">
+        <Link href="/" className="bp-header__logo">
+          <Logo loading="eager" priority="high" />
         </Link>
 
         <HeaderNav data={data} />
 
-        <div className="">
+        <div className="bp-header__actions">
           <LanguageSwitcher />
           {data.cta?.url && (
-            <Link
-              href={data.cta.url}
-              className=""
-            >
+            <Link href={data.cta.url} className="bp-btn bp-btn--primary">
               {data.cta.label}
             </Link>
           )}

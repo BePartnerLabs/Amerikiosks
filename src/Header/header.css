@@ -1,0 +1,109 @@
+/* ─── Skip to content ──────────────────────────────────── */
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 9999;
+  padding: 0.5rem 1rem;
+  background: var(--ak-accent);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-radius: 0 0 0.375rem 0.375rem;
+  text-decoration: none;
+  transition: top 0.15s ease;
+}
+.skip-to-content:focus { top: 0; }
+
+/* ─── Logo responsive visibility ───────────────────────── */
+.bp-header__inner { container-type: inline-size; container-name: header-inner; }
+
+.bp-header__logo .logo-desktop { display: none; }
+.bp-header__logo .logo-mobile  { display: block; }
+
+@container header-inner (min-width: 48rem) {
+  .bp-header__logo .logo-desktop { display: block; }
+  .bp-header__logo .logo-mobile  { display: none; }
+}
+
+/* ─── BPL DS Header (bp-header) ────────────────────────── */
+.bp-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  background-color: var(--ak-header-bg);
+}
+
+.bp-header__inner {
+  max-width: 90rem;
+  margin-inline: auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.bp-header__logo {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.bp-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+/* ─── Header Nav ────────────────────────────────────────── */
+.ak-header-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 1;
+  justify-content: center;
+}
+
+.ak-header-nav__item {
+  position: relative;
+}
+
+.ak-header-nav__btn,
+.ak-header-nav__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--ak-nav-link-color);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.ak-header-nav__btn:hover,
+.ak-header-nav__link:hover {
+  color: var(--ak-nav-link-hover);
+}
+
+.ak-header-nav__chevron {
+  width: 1rem;
+  height: 1rem;
+  transition: transform 0.2s ease;
+}
+
+.ak-header-nav__megamenu-wrap {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  padding-top: 0.5rem;
+}

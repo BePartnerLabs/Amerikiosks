@@ -55,11 +55,14 @@ export default async function LocaleLayout({ children, params }: Props) {
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
       <body>
+        <a href="#main-content" className="skip-to-content">Skip to content</a>
         <NextIntlClientProvider messages={messages}>
           <Providers>
             <AdminBar adminBarProps={{ preview: isEnabled }} />
             <Header />
-            {children}
+            <main id="main-content">
+              {children}
+            </main>
             <Footer />
           </Providers>
         </NextIntlClientProvider>

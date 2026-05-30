@@ -50,7 +50,7 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
   return (
     <nav
       ref={navRef}
-      className=""
+      className="ak-header-nav"
       onKeyDown={closeOnEscape}
       aria-label="Main navigation"
     >
@@ -63,6 +63,7 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
           return (
             <div
               key={itemId}
+              className="ak-header-nav__item"
               onMouseEnter={() => open(itemId)}
               onMouseLeave={scheduleClose}
             >
@@ -70,21 +71,20 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
                 type="button"
                 aria-expanded={isOpen}
                 aria-controls={panelId}
-                className=""
+                className="ak-header-nav__btn"
                 onClick={() => toggle(itemId)}
               >
                 {link.label}
                 <ChevronDown
-                  className=""
-                  style={{
-                    transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                  }}
+                  className="ak-header-nav__chevron"
+                  style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
                   aria-hidden="true"
                 />
               </button>
 
               {isOpen && (
                 <div
+                  className="ak-header-nav__megamenu-wrap"
                   onMouseEnter={() => open(itemId)}
                   onMouseLeave={scheduleClose}
                 >
@@ -100,7 +100,7 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
             key={itemId}
             {...link}
             appearance="link"
-            className=""
+            className="ak-header-nav__link"
           />
         )
       })}

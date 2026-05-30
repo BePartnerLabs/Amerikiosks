@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 477.48 1078.94">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        clip-path: url(#clippath-1);
+      }
+
+      .cls-3 {
+        fill: #011936;
+      }
+
+      .cls-4 {
+        fill: #76939e;
+      }
+
+      .cls-5 {
+        clip-path: url(#clippath);
+      }
+    </style>
+    <clipPath id="clippath">
+      <rect class="cls-1" x="-2.43" y="-148.21" width="480" height="1080"/>
+    </clipPath>
+    <clipPath id="clippath-1">
+      <rect class="cls-1" x="74.95" y="465.25" width="402.62" height="608.41"/>
+    </clipPath>
+  </defs>
+  <rect class="cls-4" x="-2.43" y="-6.34" width="480" height="1080"/>
+  <g class="cls-5">
+    <g>
+      <g>
+        <polygon class="cls-3" points="-99.75 613.49 77.08 613.49 77.08 304.02 -99.75 493.21 -99.75 613.49"/>
+        <polygon class="cls-3" points="-99.75 -5.45 -99.75 115.05 77.08 304.02 77.08 -5.45 -99.75 -5.45"/>
+      </g>
+      <polygon class="cls-3" points="516.88 493.21 328.39 304.02 516.88 114.83 516.88 -5.45 386.69 -5.45 77.08 304.02 386.69 613.49 516.88 613.49 516.88 493.21"/>
+    </g>
+  </g>
+  <g class="cls-2">
+    <g>
+      <g>
+        <polygon class="cls-3" points="74.18 1226.95 251.01 1226.95 251.01 918.64 74.18 1107.12 74.18 1226.95"/>
+        <polygon class="cls-3" points="74.18 610.33 74.18 730.37 251.01 918.64 251.01 610.33 74.18 610.33"/>
+      </g>
+      <polygon class="cls-3" points="690.8 1107.12 502.32 918.64 690.8 730.15 690.8 610.33 560.62 610.33 251.01 918.64 560.62 1226.95 690.8 1226.95 690.8 1107.12"/>
+    </g>
+  </g>
+</svg>
