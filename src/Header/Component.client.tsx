@@ -9,6 +9,7 @@ import type { Header } from '@/payload-types'
 import { Logo } from '@/components/Logo/Logo'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 import { HeaderNav } from './Nav'
+import { MobileMenu } from './MobileMenu'
 import './header.css'
 
 interface HeaderClientProps {
@@ -44,11 +45,14 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
 
         <div className="bp-header__actions">
           <LanguageSwitcher />
+          {/* Desktop CTA — hidden on mobile by container query */}
           {data.cta?.url && (
-            <Link href={data.cta.url} className="bp-btn bp-btn--primary">
+            <Link href={data.cta.url} className="bp-btn bp-btn--primary bp-header__cta--desktop">
               {data.cta.label}
             </Link>
           )}
+          {/* Mobile hamburger + sheet */}
+          <MobileMenu data={data} />
         </div>
       </div>
     </header>
