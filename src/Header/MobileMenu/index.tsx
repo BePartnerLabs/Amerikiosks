@@ -12,10 +12,36 @@ interface MobileMenuProps {
   data: Header
 }
 
+// ── Module-scope helpers (no component state needed) ───────────────────────
+
+const resolveHref = (item: NavItem): string => {
+  const { link } = item
+  if (link.type === 'custom' && link.url) return link.url
+  if (link.type === 'reference' && link.reference && typeof link.reference.value === 'object') {
+    const slug = (link.reference.value as { slug?: string }).slug ?? ''
+    return link.reference.relationTo === 'pages' ? `/${slug}` : `/${link.reference.relationTo}/${slug}`
+  }
+  return '#'
+}
+
+const resolveMegaItemHref = (item: MegaItem): string => {
+  const link = item.link
+  if (!link) return '#'
+  if (link.type === 'custom' && link.url) return link.url
+  if (link.type === 'reference' && link.reference && typeof link.reference.value === 'object') {
+    const slug = (link.reference.value as { slug?: string }).slug ?? ''
+    return link.reference.relationTo === 'pages' ? `/${slug}` : `/${link.reference.relationTo}/${slug}`
+  }
+  return '#'
+}
+
 export const MobileMenu: React.FC<MobileMenuProps> = ({ data }) => {
   const [open, setOpen] = useState(false)
   const [activePanel, setActivePanel] = useState<NavItem | null>(null)
   const navItems = data?.navItems || []
+
+  const hamburgerRef = React.useRef<HTMLButtonElement>(null)
+  const closeButtonRef = React.useRef<HTMLButtonElement>(null)
 
   const openMenu = useCallback(() => setOpen(true), [])
   const closeMenu = useCallback(() => {
@@ -30,31 +56,22 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ data }) => {
     return () => { document.body.style.overflow = '' }
   }, [open])
 
-  const resolveHref = (item: NavItem): string => {
-    const { link } = item
-    if (link.type === 'custom' && link.url) return link.url
-    if (link.type === 'reference' && link.reference && typeof link.reference.value === 'object') {
-      const slug = (link.reference.value as { slug?: string }).slug ?? ''
-      return link.reference.relationTo === 'pages' ? `/${slug}` : `/${link.reference.relationTo}/${slug}`
+  // Focus management
+  useEffect(() => {
+    if (open) {
+      // small delay to let transition start
+      const t = setTimeout(() => closeButtonRef.current?.focus(), 50)
+      return () => clearTimeout(t)
+    } else {
+      hamburgerRef.current?.focus()
     }
-    return '#'
-  }
-
-  const resolveMegaItemHref = (item: MegaItem): string => {
-    const link = item.link
-    if (!link) return '#'
-    if (link.type === 'custom' && link.url) return link.url
-    if (link.type === 'reference' && link.reference && typeof link.reference.value === 'object') {
-      const slug = (link.reference.value as { slug?: string }).slug ?? ''
-      return link.reference.relationTo === 'pages' ? `/${slug}` : `/${link.reference.relationTo}/${slug}`
-    }
-    return '#'
-  }
+  }, [open])
 
   return (
     <>
       {/* Hamburger button */}
       <button
+        ref={hamburgerRef}
         type="button"
         className="ak-mobile-hamburger"
         aria-label="Open navigation menu"
@@ -83,6 +100,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ data }) => {
         role="dialog"
         aria-modal="true"
         aria-label="Navigation menu"
+        aria-hidden={!open}
       >
         {/* Sheet handle */}
         <div className="ak-mobile-sheet__handle" aria-hidden="true" />
@@ -101,12 +119,13 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ data }) => {
           ) : (
             <div aria-hidden="true" />
           )}
-          {activePanel && (
+          {activePanel && activePanel.megaMenu?.panelLabel && (
             <span className="ak-mobile-sheet__panel-label">
-              {activePanel.megaMenu?.panelLabel}
+              {activePanel.megaMenu.panelLabel}
             </span>
           )}
           <button
+            ref={closeButtonRef}
             type="button"
             className="ak-mobile-sheet__close"
             onClick={closeMenu}
@@ -130,7 +149,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ data }) => {
                     type="button"
                     className="ak-mobile-nav-card ak-mobile-nav-card--mega"
                     onClick={() => setActivePanel(item)}
-                    aria-haspopup="true"
+                    aria-haspopup="dialog"
                   >
                     <span className="ak-mobile-nav-card__eyebrow">{item.megaMenu!.panelLabel}</span>
                     <span className="ak-mobile-nav-card__label">{item.link.label}</span>
@@ -164,9 +183,11 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ data }) => {
           <div className="ak-mobile-sheet__panel ak-mobile-sheet__panel--sub" aria-hidden={!activePanel}>
             {activePanel?.megaMenu && (
               <>
-                <p className="ak-mobile-sub__description">
-                  {activePanel.megaMenu.panelDescription}
-                </p>
+                {activePanel.megaMenu.panelDescription && (
+                  <p className="ak-mobile-sub__description">
+                    {activePanel.megaMenu.panelDescription}
+                  </p>
+                )}
                 <div className="ak-mobile-sub__items">
                   {(activePanel.megaMenu.items ?? []).map((item, i) => (
                     <Link

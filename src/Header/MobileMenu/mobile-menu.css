@@ -1,3 +1,10 @@
+:root {
+  --ak-header-fg: #ffffff;
+  --ak-overlay-bg: rgba(0,0,0,0.5);
+  --z-mobile-backdrop: 200;
+  --z-mobile-sheet: 201;
+}
+
 /* ─── Mobile hamburger ──────────────────────────────────── */
 .ak-mobile-hamburger {
   display: none;
@@ -14,7 +21,7 @@
   display: block;
   width: 22px;
   height: 2px;
-  background-color: #ffffff;
+  background-color: var(--ak-header-fg);
   border-radius: var(--bp-radius-full);
   transition: opacity var(--bp-duration-fast) var(--bp-ease);
 }
@@ -31,8 +38,8 @@
 .ak-mobile-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 200;
+  background: var(--ak-overlay-bg);
+  z-index: var(--z-mobile-backdrop);
 }
 
 /* ─── Bottom sheet ──────────────────────────────────────── */
@@ -41,7 +48,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 201;
+  z-index: var(--z-mobile-sheet);
   background-color: var(--ak-header-bg);
   border-radius: var(--bp-radius-xl) var(--bp-radius-xl) 0 0;
   border-top: 1px solid rgba(255,255,255,0.12);
@@ -108,7 +115,7 @@
   transition: color var(--bp-duration-fast) var(--bp-ease);
 }
 
-.ak-mobile-sheet__close:hover { color: #ffffff; }
+.ak-mobile-sheet__close:hover { color: var(--ak-header-fg); }
 
 /* ─── Panels ────────────────────────────────────────────── */
 .ak-mobile-sheet__panels {
@@ -155,7 +162,7 @@
 .ak-mobile-nav-card:active { background: rgba(255,255,255,0.1); }
 
 .ak-mobile-nav-card__eyebrow {
-  font-size: 0.625rem;
+  font-size: var(--bp-text-xs, 0.6875rem);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -228,7 +235,7 @@
 .ak-mobile-sub-item__body {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--bp-space-px, 2px);
   min-width: 0;
 }
 
