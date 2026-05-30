@@ -8,10 +8,10 @@ export default async function NotFound() {
   const t = await getTranslations('notFound')
 
   return (
-    <div className="container py-28">
-      <div className="prose max-w-none">
+    <div className="">
+      <div className="">
         <h1 style={{ marginBottom: 0 }}>{t('heading')}</h1>
-        <p className="mb-4">{t('message')}</p>
+        <p className="">{t('message')}</p>
       </div>
       <Button asChild variant="default">
         <Link href="/">{t('backHome')}</Link>

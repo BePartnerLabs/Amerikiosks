@@ -40,15 +40,15 @@ export default async function Page({ params: paramsPromise }: Args) {
   })
 
   return (
-    <div className="pt-24 pb-24">
+    <div className="">
       <PageClient />
-      <div className="container mb-16">
-        <div className="prose dark:prose-invert max-w-none">
+      <div className="">
+        <div className="">
           <h1>{t('heading')}</h1>
         </div>
       </div>
 
-      <div className="container mb-8">
+      <div className="">
         <PageRange
           collection="posts"
           currentPage={posts.page}
@@ -59,7 +59,7 @@ export default async function Page({ params: paramsPromise }: Args) {
 
       <CollectionArchive posts={posts.docs} />
 
-      <div className="container">
+      <div className="">
         {posts?.page && posts?.totalPages > 1 && (
           <Pagination page={posts.page} totalPages={posts.totalPages} />
         )}
