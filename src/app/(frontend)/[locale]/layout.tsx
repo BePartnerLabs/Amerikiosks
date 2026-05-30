@@ -17,7 +17,7 @@ import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { draftMode } from 'next/headers'
 import { routing } from '@/i18n/routing'
 
-import '../globals.css'
+import '../frontend.css'
 import { getServerSideURL } from '@/utilities/getURL'
 
 const poppins = Poppins({
