@@ -21,7 +21,7 @@
 .bp-header__logo .logo-desktop { display: none; }
 .bp-header__logo .logo-mobile  { display: block; }
 
-@container header-inner (min-width: 48rem) {
+@container header-inner (min-width: 60rem) {
   .bp-header__logo .logo-desktop { display: block; }
   .bp-header__logo .logo-mobile  { display: none; }
 }
@@ -109,6 +109,6 @@
 }
 
 /* Hide desktop CTA on mobile (MobileMenu sheet has its own CTA) */
-@container header-inner (max-width: 47.99rem) {
+@container header-inner (max-width: 59.99rem) {
   .bp-header__cta--desktop { display: none; }
 }

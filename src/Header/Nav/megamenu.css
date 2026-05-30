@@ -1,6 +1,6 @@
 /* ─── Mega Menu ─────────────────────────────────────────── */
 .ak-mega {
-  width: 52rem;
+  width: min(52rem, calc(100vw - 3rem));
   border-radius: var(--bp-radius-lg);
   overflow: hidden;
   box-shadow: var(--bp-shadow-xl);

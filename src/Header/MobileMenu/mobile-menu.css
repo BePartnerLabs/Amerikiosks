@@ -29,7 +29,7 @@
 .ak-mobile-hamburger__bar--short { width: 14px; }
 
 /* Show hamburger, hide desktop nav on mobile */
-@container header-inner (max-width: 47.99rem) {
+@container header-inner (max-width: 59.99rem) {
   .ak-mobile-hamburger { display: flex; }
   .ak-header-nav { display: none; }
 }
