@@ -71,9 +71,14 @@ export const Header: GlobalConfig = {
               fields: [
                 {
                   name: 'icon',
-                  type: 'upload',
-                  relationTo: 'media',
+                  type: 'text',
                   label: 'Icon',
+                  admin: {
+                    description: 'Material Symbols icon name e.g. storefront, handshake, campaign, rocket_launch',
+                    components: {
+                      Field: '@/components/MaterialIconPicker#MaterialIconPicker',
+                    },
+                  },
                 },
                 {
                   name: 'title',
@@ -106,7 +111,29 @@ export const Header: GlobalConfig = {
         },
       },
     },
-  ],
+    {
+      name: 'cta',
+      type: 'group',
+      label: 'CTA Button',
+      fields: [
+        {
+          name: 'label',
+          type: 'text',
+          label: 'Button label',
+          required: true,
+          localized: true,
+          defaultValue: 'Start a Partnership',
+        },
+        {
+          name: 'url',
+          type: 'text',
+          label: 'Button URL',
+          required: true,
+          defaultValue: '/start-a-partnership',
+        },
+      ],
+    },
+  ],  // end global fields
   hooks: {
     afterChange: [revalidateHeader],
   },

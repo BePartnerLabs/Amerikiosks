@@ -50,7 +50,7 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
   return (
     <nav
       ref={navRef}
-      className="flex gap-1 items-center"
+      className=""
       onKeyDown={closeOnEscape}
       aria-label="Main navigation"
     >
@@ -70,12 +70,12 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
                 type="button"
                 aria-expanded={isOpen}
                 aria-controls={panelId}
-                className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-white/90 hover:text-white transition-colors"
+                className=""
                 onClick={() => toggle(itemId)}
               >
                 {link.label}
                 <ChevronDown
-                  className="w-4 h-4 transition-transform duration-200"
+                  className=""
                   style={{
                     transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
                   }}
@@ -100,7 +100,7 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
             key={itemId}
             {...link}
             appearance="link"
-            className="px-3 py-2 text-sm font-medium text-white/90 hover:text-white transition-colors"
+            className=""
           />
         )
       })}

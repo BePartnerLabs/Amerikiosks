@@ -1,12 +1,10 @@
 'use client'
 
 import React from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
 
 import type { Header } from '@/payload-types'
-import type { Media } from '@/payload-types'
 
 type MegaMenuData = NonNullable<
   NonNullable<Header['navItems']>[number]['megaMenu']
@@ -15,10 +13,6 @@ type MegaMenuData = NonNullable<
 interface MegaMenuProps {
   data: MegaMenuData
   id: string
-}
-
-function isPopulatedMedia(val: unknown): val is Media {
-  return typeof val === 'object' && val !== null && 'url' in val
 }
 
 function resolveItemLink(link: NonNullable<MegaMenuData['items']>[number]['link']): {
@@ -54,48 +48,47 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({ data, id }) => {
     <div
       id={id}
       role="region"
-      className="absolute top-full left-0 right-0 z-40 border-t border-white/10 pt-2 pb-6 px-6"
+      className=""
       style={{ backgroundColor: 'var(--ak-header-bg)' }}
     >
-      <div className="max-w-[90rem] mx-auto flex rounded-xl overflow-hidden shadow-2xl">
+      <div className="">
         {/* Left dark panel */}
         <div
-          className="w-[30%] flex-shrink-0 p-8 flex flex-col gap-4"
+          className=""
           style={{ backgroundColor: 'var(--ak-mega-left-bg)' }}
         >
           <span
-            className="block h-0.5 w-8"
+            className=""
             style={{ backgroundColor: 'var(--ak-accent)' }}
             aria-hidden="true"
           />
           <p
-            className="text-xs font-semibold uppercase tracking-widest"
+            className=""
             style={{ color: 'var(--ak-accent)' }}
           >
             {panelLabel}
           </p>
-          <h2 className="text-2xl font-bold text-white leading-snug">
+          <h2 className="">
             {panelHeadline}
           </h2>
           {panelDescription && (
-            <p className="text-sm text-white/60 leading-relaxed">
+            <p className="">
               {panelDescription}
             </p>
           )}
         </div>
 
         {/* Right white panel */}
-        <div className="flex-1 bg-white p-8">
+        <div className="">
           {rightTitle && (
-            <h3 className="text-lg font-bold text-gray-900 mb-1">{rightTitle}</h3>
+            <h3 className="">{rightTitle}</h3>
           )}
           {rightSubtitle && (
-            <p className="text-sm text-gray-500 mb-6">{rightSubtitle}</p>
+            <p className="">{rightSubtitle}</p>
           )}
 
-          <div className="grid grid-cols-1 gap-4">
+          <div className="">
             {(items ?? []).map((item, i) => {
-              const icon = isPopulatedMedia(item.icon) ? item.icon : null
               const { href, newTab } = resolveItemLink(item.link)
 
               return (
@@ -103,29 +96,25 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({ data, id }) => {
                   key={item.id ?? i}
                   href={href}
                   {...(newTab ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                  className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors group"
+                  className=""
                 >
-                  {icon && icon.url && (
-                    <span className="flex-shrink-0 w-10 h-10 rounded-md bg-gray-100 flex items-center justify-center overflow-hidden">
-                      <Image
-                        src={icon.url}
-                        alt={icon.alt ?? ''}
-                        width={24}
-                        height={24}
-                        className="object-contain"
-                      />
+                  {item.icon && (
+                    <span className="">
+                      <span className="material-symbols-outlined" style={{ fontSize: 22 }}>
+                        {item.icon}
+                      </span>
                     </span>
                   )}
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-gray-900 flex items-center gap-1">
+                  <div className="">
+                    <p className="">
                       {item.title}
                       <ChevronRight
-                        className="w-4 h-4 flex-shrink-0"
+                        className=""
                         style={{ color: 'var(--ak-accent)' }}
                       />
                     </p>
                     {item.description && (
-                      <p className="text-sm text-gray-500 mt-0.5 leading-snug">
+                      <p className="">
                         {item.description}
                       </p>
                     )}

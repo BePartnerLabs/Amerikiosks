@@ -31,25 +31,27 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
 
   return (
     <header
-      className="sticky top-0 z-50 w-full relative"
+      className=""
       style={{ backgroundColor: 'var(--ak-header-bg)' }}
       {...(theme ? { 'data-theme': theme } : {})}
     >
-      <div className="max-w-[90rem] mx-auto px-6 py-4 flex items-center justify-between">
-        <Link href="/" className="flex-shrink-0">
-          <Logo loading="eager" priority="high" className="invert-0" />
+      <div className="">
+        <Link href="/" className="">
+          <Logo loading="eager" priority="high" className="" />
         </Link>
 
         <HeaderNav data={data} />
 
-        <div className="flex items-center gap-4 flex-shrink-0">
+        <div className="">
           <LanguageSwitcher />
-          <Link
-            href="/start-a-partnership"
-          className="ak-btn-cta inline-flex items-center px-5 py-2.5 rounded-md text-sm font-semibold transition-colors"
-          >
-            Start a Partnership
-          </Link>
+          {data.cta?.url && (
+            <Link
+              href={data.cta.url}
+              className=""
+            >
+              {data.cta.label}
+            </Link>
+          )}
         </div>
       </div>
     </header>
