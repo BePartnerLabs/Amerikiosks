@@ -27,6 +27,7 @@
 .ak-hero-interior__text h1,
 .ak-hero-interior__text h2 {
   margin: 0;
+  font-family: var(--font-poppins, sans-serif);
   font-size: clamp(1.75rem, 3vw + 1rem, 3rem);
   font-weight: 800;
   line-height: 1.1;

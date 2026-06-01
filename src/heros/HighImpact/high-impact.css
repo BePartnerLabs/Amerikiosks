@@ -48,6 +48,7 @@
 .ak-hero-home__content h1,
 .ak-hero-home__content h2 {
   margin: 0 0 var(--bp-space-6, 1.5rem);
+  font-family: var(--font-poppins, sans-serif);
   font-size: clamp(2rem, 4vw + 1rem, 3.5rem);
   font-weight: 800;
   line-height: 1.1;
