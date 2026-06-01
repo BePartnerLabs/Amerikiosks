@@ -18,9 +18,13 @@
 /* ─── Logo responsive visibility ───────────────────────── */
 .bp-header__inner { container-type: inline-size; container-name: header-inner; }
 
-.bp-header__logo .logo-desktop { display: none; }
+.bp-header__logo .logo-desktop { display: none; height: 20px; width: auto; }
 .bp-header__logo .logo-mobile  { display: block; }
 
+@media (min-width: 60rem) {
+  .bp-header__logo .logo-desktop { display: block; }
+  .bp-header__logo .logo-mobile  { display: none; }
+}
 @container header-inner (min-width: 60rem) {
   .bp-header__logo .logo-desktop { display: block; }
   .bp-header__logo .logo-mobile  { display: none; }
@@ -50,6 +54,8 @@
   display: flex;
   align-items: center;
   text-decoration: none;
+  /* light-dark() ready: swap to light-dark(#011936, #fff) when color-scheme is wired up */
+  color: var(--ak-logo-color, #fff);
 }
 
 .bp-header__actions {
@@ -89,7 +95,8 @@
 }
 
 .ak-header-nav__btn:hover,
-.ak-header-nav__link:hover {
+.ak-header-nav__link:hover,
+.ak-header-nav__btn[aria-expanded="true"] {
   color: var(--ak-nav-link-hover);
 }
 
@@ -108,7 +115,12 @@
   padding-top: var(--bp-space-2);
 }
 
-/* Hide desktop CTA on mobile (MobileMenu sheet has its own CTA) */
+/* Hide desktop nav + CTA on mobile */
+@media (max-width: 59.99rem) {
+  .ak-header-nav        { display: none; }
+  .bp-header__cta--desktop { display: none; }
+}
 @container header-inner (max-width: 59.99rem) {
+  .ak-header-nav        { display: none; }
   .bp-header__cta--desktop { display: none; }
 }

@@ -28,7 +28,13 @@
 
 .ak-mobile-hamburger__bar--short { width: 14px; }
 
-/* Show hamburger, hide desktop nav on mobile */
+/* Show hamburger, hide desktop nav on mobile — media query as primary (iOS Safari compat) */
+@media (max-width: 59.99rem) {
+  .ak-mobile-hamburger { display: flex; }
+  .ak-header-nav { display: none; }
+}
+
+/* Container query overrides for precision (supported browsers) */
 @container header-inner (max-width: 59.99rem) {
   .ak-mobile-hamburger { display: flex; }
   .ak-header-nav { display: none; }
@@ -122,17 +128,19 @@
   display: flex;
   flex: 1;
   overflow: hidden;
-  transition: transform var(--bp-duration-normal) var(--bp-ease);
-}
-
-.ak-mobile-sheet__panels--sub {
-  transform: translateX(-100%);
 }
 
 .ak-mobile-sheet__panel {
   min-width: 100%;
+  flex-shrink: 0;
   overflow-y: auto;
   padding: var(--bp-space-2) var(--bp-space-4) var(--bp-space-6);
+  transition: transform var(--bp-duration-normal) var(--bp-ease);
+}
+
+/* Slide both panels left when sub-panel is active */
+.ak-mobile-sheet__panels--sub .ak-mobile-sheet__panel {
+  transform: translateX(-100%);
 }
 
 /* ─── Main nav grid ─────────────────────────────────────── */

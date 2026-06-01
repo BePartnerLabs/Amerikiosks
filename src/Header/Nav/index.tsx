@@ -10,14 +10,7 @@ import { MegaMenu } from './MegaMenu'
 export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
   const navItems = data?.navItems || []
   const [openId, setOpenId] = useState<string | null>(null)
-  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const navRef = useRef<HTMLElement>(null)
-
-  useEffect(() => {
-    return () => {
-      if (closeTimer.current) clearTimeout(closeTimer.current)
-    }
-  }, [])
 
   useEffect(() => {
     if (!openId) return
@@ -29,15 +22,6 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [openId])
-
-  const open = useCallback((id: string) => {
-    if (closeTimer.current) clearTimeout(closeTimer.current)
-    setOpenId(id)
-  }, [])
-
-  const scheduleClose = useCallback(() => {
-    closeTimer.current = setTimeout(() => setOpenId(null), 150)
-  }, [])
 
   const toggle = useCallback((id: string) => {
     setOpenId((prev) => (prev === id ? null : id))
@@ -61,12 +45,7 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
 
         if (hasMegaMenu && megaMenu) {
           return (
-            <div
-              key={itemId}
-              className="ak-header-nav__item"
-              onMouseEnter={() => open(itemId)}
-              onMouseLeave={scheduleClose}
-            >
+            <div key={itemId} className="ak-header-nav__item">
               <button
                 type="button"
                 aria-expanded={isOpen}
@@ -83,11 +62,7 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
               </button>
 
               {isOpen && (
-                <div
-                  className="ak-header-nav__megamenu-wrap"
-                  onMouseEnter={() => open(itemId)}
-                  onMouseLeave={scheduleClose}
-                >
+                <div className="ak-header-nav__megamenu-wrap">
                   <MegaMenu data={megaMenu} id={panelId} />
                 </div>
               )}
