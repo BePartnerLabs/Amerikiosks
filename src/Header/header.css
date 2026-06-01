@@ -15,20 +15,8 @@
 }
 .skip-to-content:focus { top: 0; }
 
-/* ─── Logo responsive visibility ───────────────────────── */
+/* ─── Container query for mobile menu ───────────────────── */
 .bp-header .bp-content-grid { container-type: inline-size; container-name: header-inner; }
-
-.bp-header__logo .logo-desktop { display: none; height: 20px; width: auto; }
-.bp-header__logo .logo-mobile  { display: block; }
-
-@media (min-width: 60rem) {
-  .bp-header__logo .logo-desktop { display: block; }
-  .bp-header__logo .logo-mobile  { display: none; }
-}
-@container header-inner (min-width: 60rem) {
-  .bp-header__logo .logo-desktop { display: block; }
-  .bp-header__logo .logo-mobile  { display: none; }
-}
 
 /* ─── BPL DS Header (bp-header) ────────────────────────── */
 .bp-header {

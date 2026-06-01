@@ -66,6 +66,9 @@ export async function Footer() {
           </div>
         )}
       </div>
+      <div className="breakout ak-footer__bottom">
+        <p className="ak-footer__copyright">© {new Date().getFullYear()} Amerikiosks</p>
+      </div>
       </div>
     </footer>
   )
