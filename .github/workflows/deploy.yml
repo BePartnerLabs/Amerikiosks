@@ -24,21 +24,32 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: pnpm
 
       - name: Install dependencies
         run: pnpm install
 
+      - name: Install Vercel CLI
+        run: pnpm add -g vercel@latest
+
+      - name: Pull Vercel environment
+        run: vercel pull --yes --environment=${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }} --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build
+        run: vercel build ${{ github.ref == 'refs/heads/main' && '--prod' || '' }} --token=${{ secrets.VERCEL_TOKEN }}
+
       - name: Run migrations
         if: github.ref == 'refs/heads/main'
-        run: pnpm payload migrate
+        run: pnpm payload migrate --no-prompt
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
 
-      - name: Install Vercel CLI
-        run: pnpm add -g vercel
+      - name: Deploy (preview)
+        if: github.ref != 'refs/heads/main'
+        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
 
-      - name: Deploy
-        run: vercel deploy ${{ github.ref == 'refs/heads/main' && '--prod' || '' }} --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Deploy (production)
+        if: github.ref == 'refs/heads/main'
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
