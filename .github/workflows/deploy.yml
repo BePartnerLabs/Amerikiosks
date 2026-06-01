@@ -27,6 +27,16 @@ jobs:
           node-version: 20
           cache: pnpm
 
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run migrations
+        if: github.ref == 'refs/heads/main'
+        run: pnpm payload migrate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
+
       - name: Install Vercel CLI
         run: pnpm add -g vercel
 
