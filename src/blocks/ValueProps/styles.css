@@ -1,0 +1,70 @@
+.ak-value-props {
+  background-color: var(--ak-header-bg);
+  color: #fff;
+}
+
+.ak-value-props__inner {
+  padding-block: var(--bp-space-16, 4rem);
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: var(--bp-space-12, 3rem);
+  align-items: start;
+}
+
+/* ─── Left heading ───────────────────────────────────────────── */
+.ak-value-props__heading {
+  margin: 0;
+  font-family: var(--font-poppins, sans-serif);
+  font-size: clamp(1.5rem, 2vw + 0.75rem, 2.25rem);
+  font-weight: 700;
+  line-height: 1.15;
+  color: #fff;
+}
+
+/* ─── Cards grid ─────────────────────────────────────────────── */
+.ak-value-props__cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--bp-space-4, 1rem);
+}
+
+.ak-value-props__card {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: var(--bp-radius-md, 0.75rem);
+  padding: var(--bp-space-6, 1.5rem);
+  border-top: 2px solid var(--ak-accent, #ec254e);
+  display: flex;
+  flex-direction: column;
+  gap: var(--bp-space-3, 0.75rem);
+}
+
+.ak-value-props__card-title {
+  margin: 0;
+  font-size: var(--bp-text-sm, 0.875rem);
+  font-weight: 700;
+  color: #fff;
+}
+
+.ak-value-props__card-body {
+  margin: 0;
+  font-size: var(--bp-text-sm, 0.875rem);
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.6;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 72rem) {
+  .ak-value-props__cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 48rem) {
+  .ak-value-props__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .ak-value-props__cards {
+    grid-template-columns: 1fr;
+  }
+}

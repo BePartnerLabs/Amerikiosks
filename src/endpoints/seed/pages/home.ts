@@ -119,10 +119,79 @@ export const seedHome = async (payload: Payload, req: PayloadRequest): Promise<v
     },
   }
 
+  const valuePropsBlock = {
+    blockType: 'valueProps' as const,
+    heading: 'The right moment\ndoes more.',
+    items: [
+      {
+        title: 'Premium placement',
+        body: richText('Show up in high-traffic places where intent already exists.'),
+      },
+      {
+        title: 'Turnkey operations',
+        body: richText('Install, service, replenishment, and support under one partner.'),
+      },
+      {
+        title: 'Custom brand builds',
+        body: richText('Custom wraps, assortments, and screens tailored to the moment.'),
+      },
+      {
+        title: 'Smarter revenue',
+        body: richText('Turn underused space into a branded moment people remember.'),
+      },
+    ],
+  }
+
+  const valuePropsBlockEs = {
+    ...valuePropsBlock,
+    heading: 'El momento correcto\nhace más.',
+    items: [
+      {
+        title: 'Ubicación premium',
+        body: richText('Presente en lugares de alto tráfico donde la intención ya existe.'),
+      },
+      {
+        title: 'Operación llave en mano',
+        body: richText('Instalación, servicio, reposición y soporte bajo un solo partner.'),
+      },
+      {
+        title: 'Marca a medida',
+        body: richText('Wraps, surtidos y pantallas personalizadas para cada momento.'),
+      },
+      {
+        title: 'Ingresos más inteligentes',
+        body: richText('Convierte espacios subutilizados en momentos de marca memorables.'),
+      },
+    ],
+  }
+
   await upsertPage(
     payload,
     req,
-    { title: 'Home', slug: 'home', hero: heroData },
-    { title: 'Inicio', slug: 'home', hero: heroDataEs },
+    { title: 'Home', slug: 'home', hero: heroData, layout: [valuePropsBlock] },
+    { title: 'Inicio', slug: 'home', hero: heroDataEs, layout: [valuePropsBlockEs] },
   )
+}
+
+function richText(text: string) {
+  return {
+    root: {
+      type: 'root' as const,
+      children: [
+        {
+          type: 'paragraph',
+          children: [{ type: 'text', detail: 0, format: 0, mode: 'normal', style: '', text, version: 1 }],
+          direction: 'ltr' as const,
+          format: '' as const,
+          indent: 0,
+          textFormat: 0,
+          version: 1,
+        },
+      ],
+      direction: 'ltr' as const,
+      format: '' as const,
+      indent: 0,
+      version: 1,
+    },
+  }
 }
