@@ -68,23 +68,14 @@
 
 ## GA4 Analytics
 
-- **Implemented:** ✓
-- **Events:**
+Events fired via global `GAListener` — add `data-ga-*` attributes to the element, no JS needed.
 
-| Event name | Trigger | Parameters |
-|------------|---------|------------|
-| `hero_cta_click` | User clicks a CTA button | `{ section: 'hero_high_impact', label: 'button text' }` |
+**Events:**
 
-- **Snippet:**
-
-```js
-// Via global GAListener — add data attributes to the element:
-// data-ga-event="hero_cta_click" data-ga-section="hero_high_impact"
-gtag('event', 'hero_cta_click', {
-  section: 'hero_high_impact',
-  label: 'Get Started',
-})
-```
+| Event name | Trigger | `data-ga-section` | Required | Implemented |
+|------------|---------|-------------------|----------|-------------|
+| `hero_cta_click` | User clicks a CTA button | `hero_high_impact` | ✓ | ✓ |
+| `hero_video_play` | User interacts with video | `hero_high_impact` | ✗ | ✗ |
 
 ## Schema.org
 

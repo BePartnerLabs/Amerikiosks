@@ -82,23 +82,15 @@
 
 ## GA4 Analytics
 
-- **Implemented:** ✓
-- **Events:**
+Events fired via global `GAListener` — add `data-ga-*` attributes to the element, no JS needed.
 
-| Event name | Trigger | Parameters |
-|------------|---------|------------|
-| `navigation_click` | User clicks a nav link | `{ section: 'header', label: 'link label' }` |
+**Events:**
 
-- **Snippet:**
-
-```js
-// Via global GAListener — add data attributes to the element:
-// data-ga-event="navigation_click" data-ga-section="header"
-gtag('event', 'navigation_click', {
-  section: 'header',
-  label: 'Solutions',
-})
-```
+| Event name | Trigger | `data-ga-section` | Required | Implemented |
+|------------|---------|-------------------|----------|-------------|
+| `navigation_click` | User clicks a nav link | `header` | ✓ | ✓ |
+| `mobile_menu_open` | User opens the mobile menu | `header` | ✗ | ✗ |
+| `cta_click` | User clicks the header CTA button | `header` | ✗ | ✗ |
 
 ## Delivery Notes
 

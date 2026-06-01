@@ -61,31 +61,22 @@
 
 ## GA4 Analytics
 
-- **Implemented:** ✗
-- **Events:**
-
-| Event name | Trigger | Parameters |
-|------------|---------|------------|
-| `[event_name]` | [when it fires] | `{ param: value }` |
-
-- **Markup:** Add `data-ga-*` attributes to trackable elements — the global `GAListener` fires the event automatically:
+Events are fired automatically by the global `GAListener` when it detects a click on an element with `data-ga-event`. No JS needed in the component — just add the attributes.
 
 ```html
 <element
   data-ga-event="[event_name]"
   data-ga-section="[block_name]"
-  data-ga-label="[optional explicit label, or innerText is used as fallback]"
+  data-ga-label="[optional — innerText used as fallback]"
 >
 ```
 
-- **Fired event:**
+**Events:**
 
-```js
-gtag('event', '[event_name]', {
-  section: '[block_name]',
-  label: '[label or innerText]',
-})
-```
+| Event name | Trigger | `data-ga-section` | Required | Implemented |
+|------------|---------|-------------------|----------|-------------|
+| `[event_name]` | [when it fires] | `[block_name]` | ✓ | ✗ |
+| `[event_name_2]` | [optional extended tracking] | `[block_name]` | ✗ | ✗ |
 
 ## Schema.org
 

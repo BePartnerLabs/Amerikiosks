@@ -67,23 +67,14 @@
 
 ## GA4 Analytics
 
-- **Implemented:** ✓
-- **Events:**
+Events fired via global `GAListener` — add `data-ga-*` attributes to the element, no JS needed.
 
-| Event name | Trigger | Parameters |
-|------------|---------|------------|
-| `footer_link_click` | User clicks a nav column link | `{ section: 'footer', label: 'link text' }` |
+**Events:**
 
-- **Snippet:**
-
-```js
-// Via global GAListener — add data attributes to the element:
-// data-ga-event="footer_link_click" data-ga-section="footer"
-gtag('event', 'footer_link_click', {
-  section: 'footer',
-  label: 'About',
-})
-```
+| Event name | Trigger | `data-ga-section` | Required | Implemented |
+|------------|---------|-------------------|----------|-------------|
+| `footer_link_click` | User clicks a nav column link | `footer` | ✓ | ✓ |
+| `footer_contact_click` | User clicks the contact CTA or email | `footer` | ✗ | ✗ |
 
 ## Schema.org
 
