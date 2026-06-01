@@ -28,7 +28,7 @@ const baseFooter: Partial<Footer> = {
       id: 'col-1',
       label: 'Solutions',
       links: [
-        { id: 'l1', link: { type: 'custom', url: '/solutions', label: 'All Solutions', appearance: 'default' } },
+        { id: 'l1', link: { type: 'custom', url: '/solutions', label: 'All Solutions' } },
       ],
     },
   ],
