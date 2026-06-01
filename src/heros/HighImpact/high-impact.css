@@ -87,6 +87,13 @@
   padding: 0;
 }
 
+/* ─── Focus visible for CTA links ──────────────────────── */
+.ak-hero-home__actions a:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+  border-radius: var(--bp-radius-sm);
+}
+
 @media (max-width: 36rem) {
   .ak-hero-home__content {
     max-width: 100%;
