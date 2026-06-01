@@ -1,1 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined');
+
+// ─── Amerikiosks admin theme ──────────────────────────────────────────────────
+[data-theme="dark"],
+:root {
+  --theme-bg:              #011936;
+  --theme-input-bg:        #02213f;
+
+  --theme-elevation-0:     #011936;
+  --theme-elevation-50:    #02213f;
+  --theme-elevation-100:   #042d54;
+  --theme-elevation-150:   #063568;
+  --theme-elevation-200:   #0a4080;
+  --theme-elevation-300:   #0d4d99;
+  --theme-elevation-500:   #6b9fd4;
+  --theme-elevation-800:   #c5ddf0;
+  --theme-elevation-900:   #e2eef8;
+  --theme-elevation-1000:  #ffffff;
+
+  --theme-text:            #ffffff;
+
+  // Accent — brand red used for active states, focus rings, CTA buttons
+  --theme-success-500:     #22c55e;
+  --theme-warning-500:     #f59e0b;
+  --theme-error-500:       #ef4444;
+}

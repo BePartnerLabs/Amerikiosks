@@ -20,12 +20,16 @@ const dirname = path.dirname(filename)
 
 export default buildConfig({
   admin: {
+    meta: {
+      titleSuffix: '— Amerikiosks',
+      icons: [{ url: '/logos/logo-1.svg', type: 'image/svg+xml' }],
+    },
     components: {
-      // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
-      // Feel free to delete this at any time. Simply remove the line below.
+      graphics: {
+        Logo: '@/components/AdminLogo',
+        Icon: '@/components/AdminLogo',
+      },
       beforeLogin: ['@/components/BeforeLogin'],
-      // The `BeforeDashboard` component renders the 'welcome' block that you see after logging into your admin panel.
-      // Feel free to delete this at any time. Simply remove the line below.
       beforeDashboard: ['@/components/BeforeDashboard'],
       afterNavLinks: ['@/components/SeedPanel'],
     },
