@@ -1,14 +1,7 @@
-# Footer Documentation Guide
+# Footer
 
-**Type:** Global  
-**Admin path:** `Globals → Footer`  
-**Template:** `src/blocks/_template.md`  
-**Full guide:** `src/blocks/CLAUDE.md`
+**Type:** Global | **Admin:** `Globals → Footer` | **Schema.org:** `WPFooter`
 
-## Footer-Specific Notes
-
-- The Footer is a **Global** — one instance shared across all pages
-- Supports up to 4 nav columns, each with up to 8 links
-- Has a contact column (email + CTA link) separate from nav columns
-- Screenshots: capture the full footer from any page
-- Schema.org type: `WPFooter`
+- One instance shared across all pages
+- Up to 4 nav columns (max 8 links each) + separate contact column (email + CTA)
+- Screenshot: scroll to bottom of any page
