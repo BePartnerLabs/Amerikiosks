@@ -31,13 +31,13 @@
 /* Show hamburger, hide desktop nav on mobile — media query as primary (iOS Safari compat) */
 @media (max-width: 59.99rem) {
   .ak-mobile-hamburger { display: flex; }
-  .ak-header-nav { display: none; }
+  .bp-header__nav { display: none; }
 }
 
 /* Container query overrides for precision (supported browsers) */
 @container header-inner (max-width: 59.99rem) {
   .ak-mobile-hamburger { display: flex; }
-  .ak-header-nav { display: none; }
+  .bp-header__nav { display: none; }
 }
 
 /* ─── Backdrop ──────────────────────────────────────────── */

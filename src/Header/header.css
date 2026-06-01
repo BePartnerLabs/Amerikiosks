@@ -70,28 +70,44 @@
   flex-shrink: 0;
 }
 
-/* ─── Header Nav ────────────────────────────────────────── */
-.ak-header-nav {
-  display: flex;
-  align-items: center;
-  gap: var(--bp-space-1);
+/* ─── Level 2 token overrides for bp-nav inside bp-header ── */
+/* Only declared where DS defaults differ from our design     */
+.bp-header .bp-nav {
+  --nav-link-color: var(--ak-nav-link-color);   /* DS default: --bp-color-text */
+  --nav-link-hover: var(--ak-accent);           /* DS default: --bp-color-text */
+}
+
+/* ─── bp-nav component CSS ─────────────────────────────────── */
+.bp-header__nav {
   flex: 1;
+  display: flex;
   justify-content: center;
 }
 
-.ak-header-nav__item {
+.bp-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--bp-space-1);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bp-nav__item {
   position: relative;
 }
 
-.ak-header-nav__btn,
-.ak-header-nav__link {
+.bp-nav__megamenu-btn,
+.bp-nav__link {
+  --_color: var(--nav-link-color, var(--bp-color-text));
   display: inline-flex;
   align-items: center;
   gap: var(--bp-space-1);
   padding: var(--bp-space-2) var(--bp-space-3);
   font-size: var(--bp-text-sm, 0.875rem);
   font-weight: 500;
-  color: var(--ak-nav-link-color);
+  font-family: inherit;
+  color: var(--_color);
   background: none;
   border: none;
   cursor: pointer;
@@ -99,33 +115,24 @@
   transition: color var(--bp-duration-fast) var(--bp-ease);
 }
 
-.ak-header-nav__btn:hover,
-.ak-header-nav__link:hover,
-.ak-header-nav__btn[aria-expanded="true"] {
-  color: var(--ak-nav-link-hover);
+.bp-nav__megamenu-btn:hover,
+.bp-nav__link:hover,
+.bp-nav__megamenu-btn[aria-expanded="true"] {
+  --_color: var(--nav-link-hover, var(--bp-color-text));
 }
 
-.ak-header-nav__chevron {
+.bp-nav__chevron {
   width: 1rem;
   height: 1rem;
   transition: transform var(--bp-duration-normal) var(--bp-ease);
 }
 
-.ak-header-nav__megamenu-wrap {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 50;
-  padding-top: var(--bp-space-2);
-}
-
 /* Hide desktop nav + CTA on mobile */
 @media (max-width: 59.99rem) {
-  .ak-header-nav        { display: none; }
+  .bp-header__nav       { display: none; }
   .bp-header__cta--desktop { display: none; }
 }
 @container header-inner (max-width: 59.99rem) {
-  .ak-header-nav        { display: none; }
+  .bp-header__nav       { display: none; }
   .bp-header__cta--desktop { display: none; }
 }
