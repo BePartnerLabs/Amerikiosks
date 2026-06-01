@@ -45,7 +45,7 @@
 .ak-hero-home__content {
   position: relative;
   z-index: 2;
-  max-width: 52ch;
+  max-width: 72ch;
   padding-block: var(--bp-space-20, 5rem);
 }
 
