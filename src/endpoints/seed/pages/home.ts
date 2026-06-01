@@ -72,10 +72,57 @@ export const seedHome = async (payload: Payload, req: PayloadRequest): Promise<v
     },
   }
 
+  const heroDataEs = {
+    ...heroData,
+    richText: {
+      root: {
+        type: 'root' as const,
+        children: [
+          {
+            type: 'heading',
+            children: [
+              { type: 'text', detail: 0, format: 0, mode: 'normal', style: '', text: 'Retail automatizado que convierte ', version: 1 },
+              { type: 'text', detail: 0, format: 2, mode: 'normal', style: '', text: 'presencia en resultado', version: 1 },
+              { type: 'text', detail: 0, format: 0, mode: 'normal', style: '', text: '.', version: 1 },
+            ],
+            direction: 'ltr' as const,
+            format: '' as const,
+            indent: 0,
+            tag: 'h1',
+            version: 1,
+          },
+          {
+            type: 'paragraph',
+            children: [
+              {
+                type: 'text',
+                detail: 0,
+                format: 0,
+                mode: 'normal',
+                style: '',
+                text: 'Ayudamos a marcas y venues a crear experiencias de retail premium en los momentos de mayor tráfico, desde kiosks de marca hasta operaciones completas.',
+                version: 1,
+              },
+            ],
+            direction: 'ltr' as const,
+            format: '' as const,
+            indent: 0,
+            textFormat: 0,
+            version: 1,
+          },
+        ],
+        direction: 'ltr' as const,
+        format: '' as const,
+        indent: 0,
+        version: 1,
+      },
+    },
+  }
+
   await upsertPage(
     payload,
     req,
     { title: 'Home', slug: 'home', hero: heroData },
-    { title: 'Inicio', slug: 'inicio', hero: heroData },
+    { title: 'Inicio', slug: 'inicio', hero: heroDataEs },
   )
 }

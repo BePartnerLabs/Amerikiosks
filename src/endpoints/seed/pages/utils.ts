@@ -42,11 +42,18 @@ export const upsertPage = async (
           req: { ...req, locale: 'en' } as PayloadRequest,
         })
 
+  const { title: esTitle, slug: esSlug, ...esExtra } = es
   await payload.update({
     collection: 'pages',
     id: doc.id,
     locale: 'es',
-    data: es,
+    data: {
+      title: esTitle,
+      slug: esSlug,
+      layout: [],
+      _status: 'published' as const,
+      ...esExtra,
+    },
     req: { ...req, locale: 'es' } as PayloadRequest,
   })
 
