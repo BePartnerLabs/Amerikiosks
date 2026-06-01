@@ -199,7 +199,14 @@ export interface Page {
           id?: string | null;
         }[]
       | null;
+    /**
+     * For highImpact: used as video poster and img fallback. For mediumImpact: right-column image.
+     */
     media?: (number | null) | Media;
+    /**
+     * Optional. MP4 recommended. Plays muted + looped over the poster image.
+     */
+    backgroundVideo?: (number | null) | Media;
     /**
      * e.g. "Home / Who it's for / For brands"
      */
@@ -1090,6 +1097,7 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
             };
         media?: T;
+        backgroundVideo?: T;
         breadcrumb?: T;
         tags?:
           | T

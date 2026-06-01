@@ -62,11 +62,24 @@ export const hero: Field = {
     {
       name: 'media',
       type: 'upload',
+      label: 'Background image (poster / fallback)',
       admin: {
         condition: (_, { type } = {}) => ['highImpact', 'mediumImpact'].includes(type),
+        description: 'For highImpact: used as video poster and img fallback. For mediumImpact: right-column image.',
       },
       relationTo: 'media',
       required: true,
+    },
+    {
+      name: 'backgroundVideo',
+      type: 'upload',
+      label: 'Background video',
+      admin: {
+        condition: (_, { type } = {}) => type === 'highImpact',
+        description: 'Optional. MP4 recommended. Plays muted + looped over the poster image.',
+      },
+      relationTo: 'media',
+      required: false,
     },
     {
       name: 'breadcrumb',
