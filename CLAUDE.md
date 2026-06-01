@@ -2,6 +2,12 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Middleware
+
+El middleware de Next.js vive en `src/proxy.ts` (no `middleware.ts`) — Next.js lo detecta igual por la configuración en `next.config.ts`.
+
+Incluye protección por password para preview: si `PREVIEW_PASSWORD` está seteado en env, el sitio requiere autenticación. Acceso vía `?preview=<password>` en la URL o desde `/preview-login`.
+
 ## Stack
 
 - **Next.js 16** (App Router) + **Payload CMS 3.82.1** — unified instance (frontend and admin in one Next.js app)
