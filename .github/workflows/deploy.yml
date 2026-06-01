@@ -38,10 +38,6 @@ jobs:
 
       - name: Build
         run: vercel build ${{ github.ref == 'refs/heads/main' && '--prod' || '' }} --token=${{ secrets.VERCEL_TOKEN }}
-
-      - name: Run migrations
-        if: github.ref == 'refs/heads/main'
-        run: pnpm payload migrate --no-prompt
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
