@@ -1,5 +1,6 @@
 import type { Payload, PayloadRequest } from 'payload'
 
+import { seedContact } from './contact'
 import { seedHome } from './home'
 import { seedSolutions } from './solutions'
 import { seedWhereItWorks } from './where-it-works'
@@ -12,4 +13,5 @@ export const seedPages = async (payload: Payload, req: PayloadRequest): Promise<
   await seedWhereItWorks(payload, req)
   await seedCaseStudies(payload, req)
   await seedWhyAmerikiosks(payload, req)
+  await seedContact(payload, req)
 }
