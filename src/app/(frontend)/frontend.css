@@ -71,11 +71,11 @@ img { max-width: 100%; display: block; }
 
 /* ─── Amerikiosks brand tokens ─────────────────────────── */
 :root {
-  --ak-header-bg: #0b1120;
+  --ak-header-bg: #011936;
   --ak-accent: #e63946;
   --ak-accent-hover: #c1121f;
   --ak-accent-fg: #ffffff;
-  --ak-mega-left-bg: #0b1120;
+  --ak-mega-left-bg: #011936;
   --ak-mega-right-bg: #ffffff;
   --ak-nav-link-color: rgba(255,255,255,0.85);
   --ak-nav-link-hover: var(--ak-accent);
