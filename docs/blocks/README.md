@@ -7,4 +7,4 @@ Consolidated index of all documented blocks and globals.
 |-------|------|-------------|-------|
 | [Header](../../src/Header/README.md) | Global | 35% | |
 | [Footer](../../src/Footer/README.md) | Global | 30% | |
-| [Hero — HighImpact](../../src/heros/HighImpact/README.md) | Hero Variant | 0% | |
+| [Hero — HighImpact](../../src/heros/HighImpact/README.md) | Hero Variant | 35% | |
