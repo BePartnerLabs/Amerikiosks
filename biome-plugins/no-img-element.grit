@@ -1,0 +1,6 @@
+`<img $props />` as $el where {
+    register_diagnostic(
+        span = $el,
+        message = "Use <Image> from next/image instead of a raw <img> tag."
+    )
+}

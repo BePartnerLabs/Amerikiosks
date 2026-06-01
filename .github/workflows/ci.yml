@@ -1,19 +1,19 @@
-name: Deploy to Vercel
+name: CI
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 concurrency:
-  group: deploy-production
+  group: ci-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
 jobs:
-  deploy:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -30,5 +30,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Deploy to Vercel (production)
-        run: pnpm vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Lint
+        run: pnpm lint
+
+      - name: Type check
+        run: pnpm tsc --noEmit
+
+      - name: Unit tests
+        run: pnpm vitest run --config ./vitest.config.mts

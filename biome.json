@@ -1,0 +1,60 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.4.16/schema.json",
+	"plugins": [
+		"./biome-plugins/no-img-element.grit",
+		"./biome-plugins/no-html-anchor-for-internal-links.grit",
+		"./biome-plugins/no-sync-script-src.grit"
+	],
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
+	"files": {
+		"ignoreUnknown": true,
+		"includes": [
+			"**",
+			"!.next/**",
+			"!src/payload-types.ts",
+			"!src/payload-generated-schema.ts",
+			"!node_modules/**"
+		]
+	},
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "space",
+		"indentWidth": 2,
+		"lineWidth": 100
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"correctness": {
+				"noUnusedVariables": "warn",
+				"noUnusedImports": "warn",
+				"useExhaustiveDependencies": "warn"
+			},
+			"suspicious": {
+				"noExplicitAny": "warn",
+				"noArrayIndexKey": "warn"
+			}
+		}
+	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "single",
+			"semicolons": "asNeeded",
+			"trailingCommas": "all",
+			"attributePosition": "multiline"
+		}
+	},
+	"assist": {
+		"enabled": true,
+		"actions": {
+			"source": {
+				"organizeImports": "on"
+			}
+		}
+	}
+}
