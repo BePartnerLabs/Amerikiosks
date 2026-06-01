@@ -50,4 +50,8 @@ jobs:
 
       - name: Deploy to Vercel (preview)
         if: github.ref != 'refs/heads/main'
-        run: pnpm vercel deploy --token=${{ secrets.VERCEL_TOKEN }}
+        run: |
+          pnpm vercel deploy --token=${{ secrets.VERCEL_TOKEN }}
+          DYNAMIC_URL="http://localhost:3000/es?preview=JPlCl39D3J9G"
+          echo "app_url=$DYNAMIC_URL" >> $GITHUB_OUTPUT
+
