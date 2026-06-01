@@ -132,7 +132,9 @@
 
 .ak-mobile-sheet__panel {
   min-width: 100%;
+  max-width: 100%;
   flex-shrink: 0;
+  overflow-x: hidden;
   overflow-y: auto;
   padding: var(--bp-space-2) var(--bp-space-4) var(--bp-space-6);
   transition: transform var(--bp-duration-normal) var(--bp-ease);
@@ -258,6 +260,7 @@
   font-size: var(--bp-text-xs, 0.75rem);
   color: rgba(255,255,255,0.45);
   line-height: 1.35;
+  overflow-wrap: break-word;
 }
 
 /* ─── Focus visible ─────────────────────────────────────── */

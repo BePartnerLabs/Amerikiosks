@@ -127,12 +127,12 @@
   border-radius: var(--bp-radius-sm);
 }
 
-/* Hide desktop nav + CTA on mobile */
+/* Hide desktop nav + CTA on mobile — .bp-header__ prefix adds specificity over .bp-btn */
 @media (max-width: 59.99rem) {
-  .bp-header__nav       { display: none; }
-  .bp-header__cta--desktop { display: none; }
+  .bp-header__nav { display: none; }
+  .bp-header__actions .bp-header__cta--desktop { display: none; }
 }
 @container header-inner (max-width: 59.99rem) {
-  .bp-header__nav       { display: none; }
-  .bp-header__cta--desktop { display: none; }
+  .bp-header__nav { display: none; }
+  .bp-header__actions .bp-header__cta--desktop { display: none; }
 }
