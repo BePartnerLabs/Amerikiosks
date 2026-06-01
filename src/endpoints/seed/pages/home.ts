@@ -7,16 +7,25 @@ import { upsertPage } from './utils'
 export const seedHome = async (payload: Payload, req: PayloadRequest): Promise<void> => {
   payload.logger.info('— Seeding home page...')
 
-  const heroImage = await uploadMedia(
-    payload,
-    req,
-    path.resolve(__dirname, '../assets/hero-home.png'),
-    'Amerikiosks kiosk in an airport lounge',
-  )
+  const [heroImage, heroVideo] = await Promise.all([
+    uploadMedia(
+      payload,
+      req,
+      path.resolve(__dirname, '../assets/hero-home.png'),
+      'Amerikiosks kiosk in an airport lounge',
+    ),
+    uploadMedia(
+      payload,
+      req,
+      path.resolve(__dirname, '../assets/hero-home.mp4'),
+      'Amerikiosks hero background video',
+    ),
+  ])
 
   const heroData = {
     type: 'highImpact' as const,
     media: heroImage.id,
+    backgroundVideo: heroVideo.id,
     links: [],
     richText: {
       root: {
