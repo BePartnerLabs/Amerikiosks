@@ -123,6 +123,6 @@ export const seedHome = async (payload: Payload, req: PayloadRequest): Promise<v
     payload,
     req,
     { title: 'Home', slug: 'home', hero: heroData },
-    { title: 'Inicio', slug: 'inicio', hero: heroDataEs },
+    { title: 'Inicio', slug: 'home', hero: heroDataEs },
   )
 }
