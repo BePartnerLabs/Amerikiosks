@@ -22,6 +22,11 @@
   object-position: center;
 }
 
+.ak-hero-home__video--overlay {
+  position: absolute;
+  inset: 0;
+}
+
 /* Left-to-right dark gradient overlay */
 .ak-hero-home::after {
   content: '';

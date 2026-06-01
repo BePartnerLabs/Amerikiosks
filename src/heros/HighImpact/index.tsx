@@ -27,21 +27,19 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, backgroun
   return (
     <section className="ak-hero-home" data-theme="dark">
       <div className="ak-hero-home__media">
-        {videoUrl ? (
+        {media && typeof media === 'object' && (
+          <Media fill imgClassName="" priority resource={media} />
+        )}
+        {videoUrl && (
           <video
             autoPlay
             muted
             loop
             playsInline
-            poster={posterUrl}
-            className="ak-hero-home__video"
+            className="ak-hero-home__video ak-hero-home__video--overlay"
           >
             <source src={videoUrl} type="video/mp4" />
           </video>
-        ) : (
-          media && typeof media === 'object' && (
-            <Media fill imgClassName="" priority resource={media} />
-          )
         )}
       </div>
 
