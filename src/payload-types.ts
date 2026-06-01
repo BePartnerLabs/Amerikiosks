@@ -112,10 +112,12 @@ export interface Config {
   globals: {
     header: Header;
     footer: Footer;
+    settings: Setting;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
+    settings: SettingsSelect<false> | SettingsSelect<true>;
   };
   locale: 'en' | 'es';
   widgets: {
@@ -1818,6 +1820,19 @@ export interface Footer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "settings".
+ */
+export interface Setting {
+  id: number;
+  /**
+   * Your GA4 Measurement ID (e.g. G-XXXXXXXXXX). Leave empty to disable analytics.
+   */
+  googleAnalyticsId?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
@@ -1900,6 +1915,16 @@ export interface FooterSelect<T extends boolean = true> {
   contactEmail?: T;
   contactCta?: T;
   contactCtaUrl?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "settings_select".
+ */
+export interface SettingsSelect<T extends boolean = true> {
+  googleAnalyticsId?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

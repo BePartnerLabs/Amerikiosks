@@ -16,6 +16,8 @@ import { InitTheme } from '@/providers/Theme/InitTheme'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { draftMode } from 'next/headers'
 import { routing } from '@/i18n/routing'
+import { getCachedGlobal } from '@/utilities/getGlobals'
+import Script from 'next/script'
 
 import '../globals.css'
 import '../frontend.css'
@@ -43,6 +45,8 @@ export default async function LocaleLayout({ children, params }: Props) {
   }
 
   const messages = await getMessages()
+  const settings = await getCachedGlobal('settings', 1)()
+  const gaId = (settings as { googleAnalyticsId?: string } | null)?.googleAnalyticsId
 
   return (
     <html
@@ -54,6 +58,20 @@ export default async function LocaleLayout({ children, params }: Props) {
         <InitTheme />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+        {gaId && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga4-init" strategy="afterInteractive">{`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${gaId}');
+            `}</Script>
+          </>
+        )}
         {/* Material Symbols — preconnect + non-blocking load, display=optional prevents FOUT */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
