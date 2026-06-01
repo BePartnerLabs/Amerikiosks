@@ -1,3 +1,41 @@
+/* ─── Popover container (bp-nav__megamenu) ──────────────── */
+.bp-nav__megamenu {
+  /* Reset UA popover defaults */
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  inset: unset;
+
+  /* Position below header, centered horizontally */
+  position: fixed;
+  top: 4rem;
+  left: 50%;
+  translate: -50% 0;
+  z-index: calc(var(--header-z, 100) - 1);
+
+  /* Entrance / exit animation */
+  opacity: 0;
+  translate: -50% -6px;
+  transition:
+    opacity var(--bp-duration-fast) var(--bp-ease),
+    translate var(--bp-duration-fast) var(--bp-ease),
+    display var(--bp-duration-fast) allow-discrete,
+    overlay var(--bp-duration-fast) allow-discrete;
+}
+
+.bp-nav__megamenu:popover-open {
+  opacity: 1;
+  translate: -50% 0;
+}
+
+@starting-style {
+  .bp-nav__megamenu:popover-open {
+    opacity: 0;
+    translate: -50% -6px;
+  }
+}
+
 /* ─── Mega Menu ─────────────────────────────────────────── */
 .ak-mega {
   width: min(52rem, calc(100vw - 3rem));
