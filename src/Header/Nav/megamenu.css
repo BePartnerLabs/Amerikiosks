@@ -72,7 +72,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--ak-accent);
+  color: #76939E;
   margin: 0;
 }
 
@@ -127,6 +127,12 @@
 }
 
 .ak-mega__item:hover { background-color: var(--bp-color-bg-subtle); }
+
+.ak-mega__item:hover .ak-mega__item-icon,
+.ak-mega__item:active .ak-mega__item-icon {
+  color: var(--ak-accent);
+  background-color: rgba(236, 37, 78, 0.12);
+}
 
 .ak-mega__item-icon {
   flex-shrink: 0;
