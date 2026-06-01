@@ -43,6 +43,14 @@ export const upsertPage = async (
         })
 
   const { title: esTitle, slug: esSlug, ...esExtra } = es
+
+  // Carry over block IDs from the EN doc so Payload updates localized fields
+  // on the existing blocks rather than creating new ones (which would orphan EN content).
+  const esLayout = (esExtra.layout ?? []).map((block: any, i: number) => ({
+    ...block,
+    id: (doc.layout as any[])?.[i]?.id ?? block.id,
+  }))
+
   await payload.update({
     collection: 'pages',
     id: doc.id,
@@ -53,6 +61,7 @@ export const upsertPage = async (
       layout: [],
       _status: 'published' as const,
       ...esExtra,
+      ...(esLayout.length > 0 ? { layout: esLayout } : {}),
     },
     req: { ...req, locale: 'es' } as PayloadRequest,
   })
