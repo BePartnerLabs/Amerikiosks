@@ -26,7 +26,7 @@
 
 ## Quality Checklist
 
-**Completeness: 0/20 (0%)**
+**Completeness: 0/21 (0%)**
 
 ### Accessibility AAA
 - [ ] Contrast ratio minimum 7:1
@@ -50,11 +50,32 @@
 - [ ] Schema.org implemented (see section below)
 - [ ] Does not block indexing
 
+### Analytics (GA4)
+- [ ] GA4 events implemented (see section below)
+
 ### Delivery
 - [ ] Unit tests added
 - [ ] All fields documented in table above
 - [ ] Screenshots up to date
 - [ ] Delivery notes written in non-technical language
+
+## GA4 Analytics
+
+- **Implemented:** ✗
+- **Events:**
+
+| Event name | Trigger | Parameters |
+|------------|---------|------------|
+| `[event_name]` | [when it fires] | `{ param: value }` |
+
+- **Snippet:**
+
+```js
+// Example
+gtag('event', 'event_name', {
+  block: '[block_name]',
+})
+```
 
 ## Schema.org
 
