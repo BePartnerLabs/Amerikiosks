@@ -95,7 +95,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ data }) => {
         />
       )}
 
-      {/* Bottom sheet */}
+      {/* Bottom sheet — inert removes focus from closed sheet (fixes aria-hidden-focus) */}
       <div
         id="ak-mobile-sheet"
         className={`ak-mobile-sheet${open ? ' ak-mobile-sheet--open' : ''}`}
@@ -103,6 +103,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ data }) => {
         aria-modal="true"
         aria-label="Navigation menu"
         aria-hidden={!open}
+        inert={!open || undefined}
       >
         {/* Sheet handle */}
         <div className="ak-mobile-sheet__handle" aria-hidden="true" />
