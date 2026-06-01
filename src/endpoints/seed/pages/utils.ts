@@ -1,22 +1,29 @@
+import type { RequiredDataFromCollectionSlug } from 'payload'
 import type { Payload, PayloadRequest } from 'payload'
+
+type PageExtra = Partial<Omit<RequiredDataFromCollectionSlug<'pages'>, 'title' | 'slug'>>
 
 export const upsertPage = async (
   payload: Payload,
   req: PayloadRequest,
-  en: { title: string; slug: string },
-  es: { title: string; slug: string },
+  en: { title: string; slug: string } & PageExtra,
+  es: { title: string; slug: string } & PageExtra,
 ) => {
+  const { title: enTitle, slug: enSlug, ...enExtra } = en
+
   const existing = await payload.find({
     collection: 'pages',
-    where: { slug: { equals: en.slug } },
+    where: { slug: { equals: enSlug } },
     limit: 1,
   })
 
   const baseData = {
-    ...en,
+    title: enTitle,
+    slug: enSlug,
     hero: { type: 'none' as const, links: [] },
     layout: [],
     _status: 'published' as const,
+    ...enExtra,
   }
 
   const doc =
