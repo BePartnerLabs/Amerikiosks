@@ -8,8 +8,7 @@ on:
     branches:
       - main
 
-# Cancel in-progress runs for the same branch — no point finishing a
-# stale build when a newer commit is already queued.
+# Cancel in-progress runs for the same branch so stale builds don't block new ones.
 concurrency:
   group: deploy-${{ github.ref }}
   cancel-in-progress: true
@@ -36,29 +35,19 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # Cache Next.js incremental build output — saves 2-4 min on partial changes
-      - name: Cache Next.js build
-        uses: actions/cache@v4
-        with:
-          path: .next/cache
-          key: nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx', 'src/**/*.css') }}
-          restore-keys: |
-            nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
-            nextjs-${{ runner.os }}-
+      - name: Type check
+        run: pnpm tsc --noEmit
 
-      - name: Pull Vercel environment
-        run: pnpm vercel pull --yes --environment=${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }} --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Unit tests
+        run: pnpm vitest run --config ./vitest.config.mts
 
-      - name: Build
-        run: pnpm vercel build ${{ github.ref == 'refs/heads/main' && '--prod' || '' }} --token=${{ secrets.VERCEL_TOKEN }}
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
-
-      - name: Deploy (preview)
-        if: github.ref != 'refs/heads/main'
-        run: pnpm vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
-
-      - name: Deploy (production)
+      # All env vars (DATABASE_URL, PAYLOAD_SECRET, etc.) are already set in
+      # Vercel's dashboard — no need to build locally and upload prebuilt.
+      # Let Vercel build on its own infrastructure (faster cache, better CPUs).
+      - name: Deploy to Vercel (production)
         if: github.ref == 'refs/heads/main'
-        run: pnpm vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: pnpm vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy to Vercel (preview)
+        if: github.ref != 'refs/heads/main'
+        run: pnpm vercel deploy --token=${{ secrets.VERCEL_TOKEN }}
