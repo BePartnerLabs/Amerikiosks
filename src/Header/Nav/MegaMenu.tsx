@@ -46,7 +46,7 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({ data, id }) => {
   } = data
 
   return (
-    <div id={id} role="region" className="ak-mega">
+    <div role="region" className="ak-mega">
       <div className="ak-mega__inner">
         {/* Left dark panel */}
         <div className="ak-mega__left">
