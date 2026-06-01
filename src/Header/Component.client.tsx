@@ -37,7 +37,8 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
     const header = headerRef.current
     if (!sentinel || !header) return
     const observer = new IntersectionObserver(
-      ([entry]) => header.classList.toggle('is-scrolled', !entry.isIntersecting)
+      ([entry]) => header.classList.toggle('is-scrolled', !entry.isIntersecting),
+      { rootMargin: '-1px' }
     )
     observer.observe(sentinel)
     return () => observer.disconnect()
