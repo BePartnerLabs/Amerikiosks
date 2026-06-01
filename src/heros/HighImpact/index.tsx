@@ -36,6 +36,7 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, backgroun
             muted
             loop
             playsInline
+            aria-hidden="true"
             className="ak-hero-home__video ak-hero-home__video--overlay"
           >
             <source src={videoUrl} type="video/mp4" />
@@ -51,7 +52,7 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, backgroun
             {Array.isArray(links) && links.length > 0 && (
               <ul className="ak-hero-home__actions">
                 {links.map(({ link }, i) => (
-                  <li key={i}>
+                  <li key={i} data-ga-event="hero_cta_click" data-ga-section="hero_high_impact">
                     <CMSLink {...link} />
                   </li>
                 ))}

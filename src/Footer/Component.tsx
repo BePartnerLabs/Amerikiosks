@@ -19,7 +19,7 @@ export async function Footer() {
       <div className="breakout ak-footer__inner">
         {/* Brand column */}
         <div className="ak-footer__brand">
-          <Link href="/" className="ak-footer__logo">
+          <Link href="/" className="ak-footer__logo" aria-label="Go to homepage">
             <Logo />
           </Link>
           {brandDescription && (
@@ -33,7 +33,7 @@ export async function Footer() {
             <p className="ak-footer__col-heading">{col.label}</p>
             <ul className="ak-footer__col-links" role="list">
               {(col.links ?? []).map(({ link, id }, j) => (
-                <li key={id ?? j}>
+                <li key={id ?? j} data-ga-event="footer_link_click" data-ga-section="footer">
                   <CMSLink {...link} className="ak-footer__link" />
                 </li>
               ))}

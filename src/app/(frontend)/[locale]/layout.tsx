@@ -18,6 +18,7 @@ import { draftMode } from 'next/headers'
 import { routing } from '@/i18n/routing'
 import { getCachedGlobal } from '@/utilities/getGlobals'
 import Script from 'next/script'
+import { GAListener } from '@/components/Analytics/GAListener'
 
 import '../globals.css'
 import '../frontend.css'
@@ -84,6 +85,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         <a href="#main-content" className="skip-to-content">Skip to content</a>
         <NextIntlClientProvider messages={messages}>
           <Providers>
+            <GAListener />
             <AdminBar adminBarProps={{ preview: isEnabled }} />
             <Header />
             <main id="main-content">
