@@ -3,7 +3,7 @@
 import { useHeaderTheme } from '@/providers/HeaderTheme'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import type { Header } from '@/payload-types'
 import { Logo } from '@/components/Logo/Logo'
@@ -20,6 +20,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
   const [theme, setTheme] = useState<string | null>(null)
   const { headerTheme, setHeaderTheme } = useHeaderTheme()
   const pathname = usePathname()
+  const headerRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     setHeaderTheme(null)
@@ -31,30 +32,43 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [headerTheme])
 
+  useEffect(() => {
+    const sentinel = document.getElementById('header-sentinel')
+    const header = headerRef.current
+    if (!sentinel || !header) return
+    const observer = new IntersectionObserver(
+      ([entry]) => header.classList.toggle('is-scrolled', !entry.isIntersecting)
+    )
+    observer.observe(sentinel)
+    return () => observer.disconnect()
+  }, [])
+
   return (
-    <header
-      className="bp-header"
-      {...(theme ? { 'data-theme': theme } : {})}
-    >
-      <div className="bp-header__inner">
-        <Link href="/" className="bp-header__logo">
-          <Logo loading="eager" priority="high" />
-        </Link>
+    <>
+      <div id="header-sentinel" aria-hidden="true" style={{ height: '1px' }} />
+      <header
+        ref={headerRef}
+        className="bp-header"
+        {...(theme ? { 'data-theme': theme } : {})}
+      >
+        <div className="bp-header__inner">
+          <Link href="/" className="bp-header__logo">
+            <Logo loading="eager" priority="high" />
+          </Link>
 
-        <HeaderNav data={data} />
+          <HeaderNav data={data} />
 
-        <div className="bp-header__actions">
-          <LanguageSwitcher />
-          {/* Desktop CTA — hidden on mobile by container query */}
-          {data.cta?.url && (
-            <Link href={data.cta.url} className="bp-btn bp-btn--primary bp-header__cta--desktop">
-              {data.cta.label}
-            </Link>
-          )}
-          {/* Mobile hamburger + sheet */}
-          <MobileMenu data={data} />
+          <div className="bp-header__actions">
+            <LanguageSwitcher />
+            {data.cta?.url && (
+              <Link href={data.cta.url} className="bp-btn bp-btn--primary bp-header__cta--desktop">
+                {data.cta.label}
+              </Link>
+            )}
+            <MobileMenu data={data} />
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+    </>
   )
 }

@@ -39,6 +39,11 @@
   background-color: var(--header-bg, var(--ak-header-bg));
 }
 
+.bp-header.is-scrolled {
+  box-shadow: var(--bp-shadow-md);
+  transition: box-shadow var(--bp-duration-fast) var(--bp-ease);
+}
+
 .bp-header__inner {
   max-width: 90rem;
   margin-inline: auto;
