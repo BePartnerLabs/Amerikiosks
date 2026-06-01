@@ -7,6 +7,15 @@ import type { Header as HeaderType } from '@/payload-types'
 import { CMSLink } from '@/components/Link'
 import { MegaMenu } from './MegaMenu'
 
+const handleNavClick = (label: string) => {
+  if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+    ;(window as any).gtag('event', 'navigation_click', {
+      nav_item: label,
+      location: 'header',
+    })
+  }
+}
+
 export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
   const navItems = data?.navItems || []
   const [openId, setOpenId] = useState<string | null>(null)
@@ -28,6 +37,7 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
                   popoverTarget={panelId}
                   aria-expanded={isOpen}
                   aria-controls={panelId}
+                  onClick={() => handleNavClick(link.label ?? '')}
                 >
                   {link.label}
                   <ChevronDown
@@ -52,7 +62,7 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
           }
 
           return (
-            <li key={itemId}>
+            <li key={itemId} onClick={() => handleNavClick(link.label ?? '')}>
               <CMSLink
                 {...link}
                 appearance="link"

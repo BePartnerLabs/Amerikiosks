@@ -54,7 +54,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
       >
         <div className="bp-content-grid">
           <div className="breakout bp-header__inner">
-            <Link href="/" className="bp-header__logo">
+            <Link href="/" className="bp-header__logo" aria-label="Go to homepage">
               <Logo loading="eager" priority="high" />
             </Link>
 

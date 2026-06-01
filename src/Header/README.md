@@ -33,12 +33,12 @@
 
 ## Quality Checklist
 
-**Completeness: 7/20 (35%)**
+**Completeness: 11/21 (52%)**
 
 ### Accessibility AAA
 - [ ] Contrast ratio minimum 7:1
 - [ ] All interactive elements keyboard navigable
-- [ ] ARIA labels on elements without visible text
+- [x] ARIA labels on elements without visible text
 - [x] Correct HTML landmarks (`<header>`, `<nav>`)
 - [ ] Focus visible on all interactive elements
 
@@ -54,7 +54,7 @@
 
 ### SEO / AIO / GEO
 - [ ] Content directly answers questions (GEO-ready)
-- [ ] Schema.org implemented
+- [x] Schema.org implemented
 - [x] Does not block indexing
 
 ### Delivery
@@ -62,6 +62,9 @@
 - [x] All fields documented in table above
 - [ ] Screenshots up to date
 - [ ] Delivery notes written in non-technical language
+
+### Analytics (GA4)
+- [x] GA4 events implemented (see section below)
 
 ## Schema.org
 
@@ -75,6 +78,24 @@
   "@type": "SiteNavigationElement",
   "name": "Main Navigation"
 }
+```
+
+## GA4 Analytics
+
+- **Implemented:** ✓
+- **Events:**
+
+| Event name | Trigger | Parameters |
+|------------|---------|------------|
+| `navigation_click` | User clicks a nav link | `{ nav_item: 'link label', location: 'header' }` |
+
+- **Snippet:**
+
+```js
+gtag('event', 'navigation_click', {
+  nav_item: 'Solutions',
+  location: 'header',
+})
 ```
 
 ## Delivery Notes
