@@ -55,6 +55,12 @@
   color: #fff;
 }
 
+.ak-hero-home__content h1 em,
+.ak-hero-home__content h2 em {
+  color: var(--ak-accent, #ec254e);
+  font-style: normal;
+}
+
 .ak-hero-home__content p {
   margin: 0 0 var(--bp-space-6, 1.5rem);
   font-size: var(--bp-text-base, 1rem);

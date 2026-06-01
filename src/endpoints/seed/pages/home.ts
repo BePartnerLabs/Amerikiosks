@@ -35,7 +35,7 @@ export const seedHome = async (payload: Payload, req: PayloadRequest): Promise<v
             type: 'heading',
             children: [
               { type: 'text', detail: 0, format: 0, mode: 'normal', style: '', text: 'Automated retail that turns ', version: 1 },
-              { type: 'text', detail: 0, format: 0, mode: 'normal', style: 'color: #ec254e;', text: 'placement into presence', version: 1 },
+              { type: 'text', detail: 0, format: 2, mode: 'normal', style: '', text: 'placement into presence', version: 1 },
               { type: 'text', detail: 0, format: 0, mode: 'normal', style: '', text: '.', version: 1 },
             ],
             direction: 'ltr' as const,
