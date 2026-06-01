@@ -37,6 +37,10 @@
   );
 }
 
+.ak-hero-home > .bp-content-grid {
+  width: 100%;
+}
+
 /* Content */
 .ak-hero-home__content {
   position: relative;
