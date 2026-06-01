@@ -38,7 +38,7 @@ This guide applies to all **Layout Blocks** in `src/blocks/` and **Globals** in 
      - `alt` attribute present → Semantics item ✓
      - HTML landmarks in component → Accessibility item ✓
      - JSON-LD script tag → Schema.org item ✓
-     - `gtag(` or `dataLayer.push(` present → GA4 Analytics item ✓
+     - `data-ga-event` attribute present → GA4 Analytics item ✓
    - Leave manual items unchecked (`[ ]`) for developer review
 
 5. **Calculate completeness score**

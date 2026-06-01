@@ -68,12 +68,22 @@
 |------------|---------|------------|
 | `[event_name]` | [when it fires] | `{ param: value }` |
 
-- **Snippet:**
+- **Markup:** Add `data-ga-*` attributes to trackable elements — the global `GAListener` fires the event automatically:
+
+```html
+<element
+  data-ga-event="[event_name]"
+  data-ga-section="[block_name]"
+  data-ga-label="[optional explicit label, or innerText is used as fallback]"
+>
+```
+
+- **Fired event:**
 
 ```js
-// Example
-gtag('event', 'event_name', {
-  block: '[block_name]',
+gtag('event', '[event_name]', {
+  section: '[block_name]',
+  label: '[label or innerText]',
 })
 ```
 
