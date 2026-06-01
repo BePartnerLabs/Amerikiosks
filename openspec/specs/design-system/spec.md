@@ -65,12 +65,26 @@ Internas al DS. Resuelven Level 2 → Level 1 con fallback seguro.
 }
 ```
 
+### Override de estados (hover, active, focus)
+
+Los tokens Level 2 se pueden redeclarar en cualquier selector, incluyendo pseudo-clases. Las CSS custom properties se resuelven en el punto de uso, por lo que el Level 3 interno recoge el nuevo valor automáticamente:
+
+```css
+/* Override de hover sin tocar el componente */
+.bp-header .bp-btn--primary:hover {
+  --btn-bg: var(--ak-accent-hover);   /* Level 2 en pseudo-clase */
+}
+/* El componente DS internamente tiene: --_bg: var(--btn-bg, ...) */
+/* En hover, --_bg resuelve al nuevo valor automáticamente */
+```
+
 ### Resumen del flujo
 
 ```
 --ak-accent (brand)
-  └── --btn-bg: var(--ak-accent)        ← Level 2, solo si override
-        └── --_bg: var(--btn-bg, ...)   ← Level 3, interno DS
+  └── --btn-bg: var(--ak-accent)            ← Level 2, solo si override
+  └── :hover { --btn-bg: var(--ak-hover) }  ← Level 2 en estado
+        └── --_bg: var(--btn-bg, ...)        ← Level 3, interno DS
               └── background: var(--_bg)
 ```
 
