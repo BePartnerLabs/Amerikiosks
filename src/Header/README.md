@@ -69,7 +69,7 @@
 ## Schema.org
 
 - **Applicable type:** `SiteNavigationElement`
-- **Implemented:** ✗
+- **Implemented:** ✓
 - **Snippet:**
 
 ```json
@@ -87,14 +87,16 @@
 
 | Event name | Trigger | Parameters |
 |------------|---------|------------|
-| `navigation_click` | User clicks a nav link | `{ nav_item: 'link label', location: 'header' }` |
+| `navigation_click` | User clicks a nav link | `{ section: 'header', label: 'link label' }` |
 
 - **Snippet:**
 
 ```js
+// Via global GAListener — add data attributes to the element:
+// data-ga-event="navigation_click" data-ga-section="header"
 gtag('event', 'navigation_click', {
-  nav_item: 'Solutions',
-  location: 'header',
+  section: 'header',
+  label: 'Solutions',
 })
 ```
 

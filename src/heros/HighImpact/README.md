@@ -13,8 +13,8 @@
 | `type` | select | ✓ | ✗ | Hero variant: `highImpact`, `mediumImpact`, `lowImpact`, `none` |
 | `richText` | richText | ✗ | ✓ | Main headline and supporting text |
 | `links` | linkGroup (max 2) | ✗ | ✗ | CTA buttons |
-| `media` | upload (media) | ✓ | ✗ | Background image — used as video poster and img fallback |
-| `backgroundVideo` | upload (media) | ✗ | ✗ | Background video (MP4). Plays muted + looped |
+| `media` | upload (media) | ✓ | ✗ | Background image — renders with `priority`, also used as video poster |
+| `backgroundVideo` | upload (media) | ✗ | ✗ | Background video (MP4). Plays muted + looped over the image |
 
 ## Variants
 
@@ -33,12 +33,12 @@
 
 ## Quality Checklist
 
-**Completeness: 7/20 (35%)**
+**Completeness: 8/21 (38%)**
 
 ### Accessibility AAA
 - [ ] Contrast ratio minimum 7:1
 - [ ] All interactive elements keyboard navigable
-- [ ] ARIA labels on elements without visible text
+- [x] ARIA labels on elements without visible text
 - [x] Correct HTML landmarks (`<section>`)
 - [ ] Focus visible on all interactive elements
 
@@ -48,7 +48,7 @@
 - [ ] Images have descriptive `alt` text
 
 ### Performance
-- [x] Images use `next/image` with correct sizes (`<Media>` component)
+- [x] Images use `next/image` with correct sizes (`<Media priority>`)
 - [ ] No Cumulative Layout Shift (CLS)
 - [ ] Off-viewport content lazy loaded
 
@@ -57,11 +57,34 @@
 - [ ] Schema.org implemented
 - [x] Does not block indexing
 
+### Analytics (GA4)
+- [x] GA4 events implemented (see section below)
+
 ### Delivery
 - [ ] Unit tests added
 - [x] All fields documented in table above
 - [ ] Screenshots up to date
-- [ ] Delivery notes written in non-technical language
+- [x] Delivery notes written in non-technical language
+
+## GA4 Analytics
+
+- **Implemented:** ✓
+- **Events:**
+
+| Event name | Trigger | Parameters |
+|------------|---------|------------|
+| `hero_cta_click` | User clicks a CTA button | `{ section: 'hero_high_impact', label: 'button text' }` |
+
+- **Snippet:**
+
+```js
+// Via global GAListener — add data attributes to the element:
+// data-ga-event="hero_cta_click" data-ga-section="hero_high_impact"
+gtag('event', 'hero_cta_click', {
+  section: 'hero_high_impact',
+  label: 'Get Started',
+})
+```
 
 ## Schema.org
 

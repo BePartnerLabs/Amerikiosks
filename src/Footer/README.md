@@ -32,12 +32,12 @@
 
 ## Quality Checklist
 
-**Completeness: 6/20 (30%)**
+**Completeness: 8/21 (38%)**
 
 ### Accessibility AAA
 - [ ] Contrast ratio minimum 7:1
 - [ ] All interactive elements keyboard navigable
-- [ ] ARIA labels on elements without visible text
+- [x] ARIA labels on elements without visible text
 - [x] Correct HTML landmarks (`<footer>`)
 - [ ] Focus visible on all interactive elements
 
@@ -56,11 +56,34 @@
 - [ ] Schema.org implemented
 - [x] Does not block indexing
 
+### Analytics (GA4)
+- [x] GA4 events implemented (see section below)
+
 ### Delivery
 - [ ] Unit tests added
 - [x] All fields documented in table above
 - [ ] Screenshots up to date
-- [ ] Delivery notes written in non-technical language
+- [x] Delivery notes written in non-technical language
+
+## GA4 Analytics
+
+- **Implemented:** ✓
+- **Events:**
+
+| Event name | Trigger | Parameters |
+|------------|---------|------------|
+| `footer_link_click` | User clicks a nav column link | `{ section: 'footer', label: 'link text' }` |
+
+- **Snippet:**
+
+```js
+// Via global GAListener — add data attributes to the element:
+// data-ga-event="footer_link_click" data-ga-section="footer"
+gtag('event', 'footer_link_click', {
+  section: 'footer',
+  label: 'About',
+})
+```
 
 ## Schema.org
 
