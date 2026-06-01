@@ -12,7 +12,18 @@ export const ValuePropsBlock: React.FC<ValuePropsBlockType & { disableInnerConta
   if (!heading && (!items || items.length === 0)) return null
 
   return (
-    <section className="ak-value-props">
+    <section className="ak-value-props" aria-label={heading ?? 'Value propositions'} itemScope itemType="https://schema.org/ItemList">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'ItemList',
+            name: heading,
+            numberOfItems: items?.length ?? 0,
+          }),
+        }}
+      />
       <div className="bp-content-grid">
         <div className="breakout ak-value-props__inner">
           {heading && <h2 className="ak-value-props__heading">{heading}</h2>}
