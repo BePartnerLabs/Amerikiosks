@@ -200,6 +200,16 @@ export interface Page {
         }[]
       | null;
     media?: (number | null) | Media;
+    /**
+     * e.g. "Home / Who it's for / For brands"
+     */
+    breadcrumb?: string | null;
+    tags?:
+      | {
+          label: string;
+          id?: string | null;
+        }[]
+      | null;
   };
   layout?: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock)[] | null;
   meta?: {
@@ -1080,6 +1090,13 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
             };
         media?: T;
+        breadcrumb?: T;
+        tags?:
+          | T
+          | {
+              label?: T;
+              id?: T;
+            };
       };
   layout?:
     | T

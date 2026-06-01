@@ -68,6 +68,31 @@ export const hero: Field = {
       relationTo: 'media',
       required: true,
     },
+    {
+      name: 'breadcrumb',
+      type: 'text',
+      label: 'Breadcrumb',
+      localized: true,
+      admin: {
+        condition: (_, { type } = {}) => type === 'mediumImpact',
+        description: 'e.g. "Home / Who it\'s for / For brands"',
+      },
+    },
+    {
+      name: 'tags',
+      type: 'array',
+      label: 'Tags',
+      admin: {
+        condition: (_, { type } = {}) => type === 'mediumImpact',
+      },
+      fields: [
+        {
+          name: 'label',
+          type: 'text',
+          required: true,
+        },
+      ],
+    },
   ],
   label: false,
 }

@@ -5,42 +5,54 @@ import type { Page } from '@/payload-types'
 import { CMSLink } from '@/components/Link'
 import { Media } from '@/components/Media'
 import RichText from '@/components/RichText'
+import './medium-impact.css'
 
-export const MediumImpactHero: React.FC<Page['hero']> = ({ links, media, richText }) => {
+export const MediumImpactHero: React.FC<Page['hero']> = ({
+  links,
+  media,
+  richText,
+  breadcrumb,
+  tags,
+}) => {
   return (
-    <div className="">
-      <div className="">
-        {richText && <RichText className="" data={richText} enableGutter={false} />}
+    <section className="ak-hero-interior">
+      <div className="bp-content-grid">
+        <div className="breakout ak-hero-interior__inner">
+          {/* Text column */}
+          <div className="ak-hero-interior__text">
+            {breadcrumb && <p className="ak-hero-interior__breadcrumb">{breadcrumb}</p>}
 
-        {Array.isArray(links) && links.length > 0 && (
-          <ul className="">
-            {links.map(({ link }, i) => {
-              return (
-                <li key={i}>
-                  <CMSLink {...link} />
-                </li>
-              )
-            })}
-          </ul>
-        )}
-      </div>
-      <div className="">
-        {media && typeof media === 'object' && (
-          <div>
-            <Media
-              className=""
-              imgClassName=""
-              priority
-              resource={media}
-            />
-            {media?.caption && (
-              <div className="">
-                <RichText data={media.caption} enableGutter={false} />
-              </div>
+            {richText && <RichText data={richText} enableGutter={false} />}
+
+            {Array.isArray(links) && links.length > 0 && (
+              <ul className="ak-hero-interior__actions">
+                {links.map(({ link }, i) => (
+                  <li key={i}>
+                    <CMSLink {...link} />
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {Array.isArray(tags) && tags.length > 0 && (
+              <ul className="ak-hero-interior__tags">
+                {tags.map(({ label, id }, i) => (
+                  <li key={id ?? i}>
+                    <span className="ak-hero-interior__tag">{label}</span>
+                  </li>
+                ))}
+              </ul>
             )}
           </div>
-        )}
+
+          {/* Media column */}
+          {media && typeof media === 'object' && (
+            <div className="ak-hero-interior__media">
+              <Media priority resource={media} />
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </section>
   )
 }

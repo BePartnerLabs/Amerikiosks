@@ -1,0 +1,96 @@
+.ak-hero-interior {
+  background-color: var(--ak-header-bg);
+  color: #fff;
+}
+
+.ak-hero-interior__inner {
+  padding-block: var(--bp-space-16, 4rem);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--bp-space-12, 3rem);
+  align-items: center;
+}
+
+/* ─── Text column ─────────────────────────────────────────── */
+.ak-hero-interior__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bp-space-6, 1.5rem);
+}
+
+.ak-hero-interior__breadcrumb {
+  margin: 0;
+  font-size: var(--bp-text-sm, 0.875rem);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.ak-hero-interior__text h1,
+.ak-hero-interior__text h2 {
+  margin: 0;
+  font-size: clamp(1.75rem, 3vw + 1rem, 3rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: #fff;
+}
+
+.ak-hero-interior__text p {
+  margin: 0;
+  font-size: var(--bp-text-base, 1rem);
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.75);
+  max-width: 52ch;
+}
+
+.ak-hero-interior__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--bp-space-4, 1rem);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ak-hero-interior__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bp-space-2, 0.5rem);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ak-hero-interior__tag {
+  display: inline-block;
+  padding: var(--bp-space-1, 0.25rem) var(--bp-space-3, 0.75rem);
+  font-size: var(--bp-text-xs, 0.75rem);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: var(--bp-radius-full, 9999px);
+}
+
+/* ─── Media column ────────────────────────────────────────── */
+.ak-hero-interior__media {
+  border-radius: var(--bp-radius-lg, 1rem);
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  position: relative;
+}
+
+.ak-hero-interior__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ─── Responsive ──────────────────────────────────────────── */
+@media (max-width: 60rem) {
+  .ak-hero-interior__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .ak-hero-interior__media {
+    aspect-ratio: 16 / 9;
+  }
+}
