@@ -11,13 +11,13 @@ export const seedHome = async (payload: Payload, req: PayloadRequest): Promise<v
     uploadMedia(
       payload,
       req,
-      path.resolve(__dirname, '../assets/hero-home.png'),
+      path.join(process.cwd(), 'src/endpoints/seed/assets/hero-home.png'),
       'Amerikiosks kiosk in an airport lounge',
     ),
     uploadMedia(
       payload,
       req,
-      path.resolve(__dirname, '../assets/hero-home.mp4'),
+      path.join(process.cwd(), 'src/endpoints/seed/assets/hero-home.mp4'),
       'Amerikiosks hero background video',
     ),
   ])

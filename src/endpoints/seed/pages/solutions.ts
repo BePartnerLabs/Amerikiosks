@@ -10,7 +10,7 @@ export const seedSolutions = async (payload: Payload, req: PayloadRequest): Prom
   const heroImage = await uploadMedia(
     payload,
     req,
-    path.resolve(__dirname, '../assets/hero-for-brands.png'),
+    path.join(process.cwd(), 'src/endpoints/seed/assets/hero-for-brands.png'),
     'Branded kiosk in a shopping mall for brand activations',
   )
 
