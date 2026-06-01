@@ -165,11 +165,25 @@ export const seedHome = async (payload: Payload, req: PayloadRequest): Promise<v
     ],
   }
 
+  const meta = {
+    title: 'Amerikiosks — Automated Retail Solutions',
+    description:
+      'We help brands and venues create premium retail experiences that meet people in high-traffic moments, from branded kiosks to full-service operations.',
+    image: heroImage.id,
+  }
+
+  const metaEs = {
+    title: 'Amerikiosks — Retail Automatizado',
+    description:
+      'Ayudamos a marcas y venues a crear experiencias de retail premium en los momentos de mayor tráfico, desde kiosks de marca hasta operaciones completas.',
+    image: heroImage.id,
+  }
+
   await upsertPage(
     payload,
     req,
-    { title: 'Home', slug: 'home', hero: heroData, layout: [valuePropsBlock] },
-    { title: 'Inicio', slug: 'home', hero: heroDataEs, layout: [valuePropsBlockEs] },
+    { title: 'Home', slug: 'home', hero: heroData, layout: [valuePropsBlock], meta },
+    { title: 'Inicio', slug: 'home', hero: heroDataEs, layout: [valuePropsBlockEs], meta: metaEs },
   )
 }
 
