@@ -83,26 +83,31 @@ img { max-width: 100%; display: block; }
 
 /* ─── BPL DS Button (bp-btn) ───────────────────────────── */
 .bp-btn {
+  --_padding:   var(--btn-padding, var(--bp-space-2) var(--bp-space-4));
+  --_radius:    var(--btn-radius, var(--bp-radius));
+  --_font-size: var(--btn-font-size, var(--bp-text-sm, 0.875rem));
+  --_border:    var(--btn-border, none);
+
   display: inline-flex;
   align-items: center;
-  padding: var(--btn-padding, var(--bp-space-2) var(--bp-space-4));
-  border-radius: var(--btn-radius, var(--bp-radius));
-  font-size: var(--btn-font-size, var(--bp-text-sm, 0.875rem));
+  padding: var(--_padding);
+  border-radius: var(--_radius);
+  font-size: var(--_font-size);
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
-  border: var(--btn-border, none);
+  border: var(--_border);
   transition: background-color var(--bp-duration-fast) var(--bp-ease);
 }
 
 .bp-btn--primary {
-  --btn-bg: var(--ak-accent);
-  --btn-bg-hover: var(--ak-accent-hover);
-  --btn-color: var(--ak-accent-fg);
-  background-color: var(--btn-bg);
-  color: var(--btn-color);
+  --_bg:    var(--btn-bg, var(--ak-accent));
+  --_color: var(--btn-color, var(--ak-accent-fg));
+
+  background-color: var(--_bg);
+  color: var(--_color);
 }
 
 .bp-btn--primary:hover {
-  background-color: var(--btn-bg-hover);
+  --_bg: var(--btn-bg-hover, var(--ak-accent-hover));
 }
