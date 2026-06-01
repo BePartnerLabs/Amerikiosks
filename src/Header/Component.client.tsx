@@ -52,21 +52,23 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
         className="bp-header"
         {...(theme ? { 'data-theme': theme } : {})}
       >
-        <div className="bp-header__inner">
-          <Link href="/" className="bp-header__logo">
-            <Logo loading="eager" priority="high" />
-          </Link>
+        <div className="bp-content-grid">
+          <div className="breakout bp-header__inner">
+            <Link href="/" className="bp-header__logo">
+              <Logo loading="eager" priority="high" />
+            </Link>
 
-          <HeaderNav data={data} />
+            <HeaderNav data={data} />
 
-          <div className="bp-header__actions">
-            <LanguageSwitcher />
-            {data.cta?.url && (
-              <Link href={data.cta.url} className="bp-btn bp-btn--primary bp-header__cta--desktop">
-                {data.cta.label}
-              </Link>
-            )}
-            <MobileMenu data={data} />
+            <div className="bp-header__actions">
+              <LanguageSwitcher />
+              {data.cta?.url && (
+                <Link href={data.cta.url} className="bp-btn bp-btn--primary bp-header__cta--desktop">
+                  {data.cta.label}
+                </Link>
+              )}
+              <MobileMenu data={data} />
+            </div>
           </div>
         </div>
       </header>

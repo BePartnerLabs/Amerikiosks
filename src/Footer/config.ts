@@ -10,20 +10,53 @@ export const Footer: GlobalConfig = {
   },
   fields: [
     {
-      name: 'navItems',
+      name: 'brandDescription',
+      type: 'textarea',
+      label: 'Brand description',
+      admin: { description: 'Short tagline shown below the logo.' },
+    },
+    {
+      name: 'columns',
       type: 'array',
+      label: 'Nav columns',
+      maxRows: 4,
       fields: [
-        link({
-          appearances: false,
-        }),
-      ],
-      maxRows: 6,
-      admin: {
-        initCollapsed: true,
-        components: {
-          RowLabel: '@/Footer/RowLabel#RowLabel',
+        {
+          name: 'label',
+          type: 'text',
+          required: true,
+          label: 'Column heading',
         },
-      },
+        {
+          name: 'links',
+          type: 'array',
+          fields: [
+            link({ appearances: false }),
+          ],
+          maxRows: 8,
+          admin: {
+            components: {
+              RowLabel: '@/Footer/RowLabel#RowLabel',
+            },
+          },
+        },
+      ],
+    },
+    {
+      name: 'contactEmail',
+      type: 'email',
+      label: 'Contact email',
+    },
+    {
+      name: 'contactCta',
+      type: 'text',
+      label: 'Contact CTA text',
+      admin: { description: 'e.g. "Start a partnership"' },
+    },
+    {
+      name: 'contactCtaUrl',
+      type: 'text',
+      label: 'Contact CTA URL',
     },
   ],
   hooks: {

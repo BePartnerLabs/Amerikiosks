@@ -9,7 +9,7 @@
 
   /* Position below header, centered horizontally */
   position: fixed;
-  top: 4rem;
+  top: calc(4rem + 5px);
   left: 50%;
   translate: -50% 0;
   z-index: calc(var(--header-z, 100) - 1);

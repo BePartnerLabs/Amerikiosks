@@ -2,32 +2,70 @@ import { getCachedGlobal } from '@/utilities/getGlobals'
 import Link from 'next/link'
 import React from 'react'
 
-import { ThemeSelector } from '@/providers/Theme/ThemeSelector'
 import { CMSLink } from '@/components/Link'
 import { Logo } from '@/components/Logo/Logo'
+import './footer.css'
 
 export async function Footer() {
   const { getLocale } = await import('next-intl/server')
   const locale = await getLocale()
-  const footerData = await getCachedGlobal('footer', 1, locale)()
+  const footer = await getCachedGlobal('footer', 1, locale)()
 
-  const navItems = footerData?.navItems || []
+  const { brandDescription, columns, contactEmail, contactCta, contactCtaUrl } = footer ?? {}
 
   return (
-    <footer className="">
-      <div className="">
-        <Link className="" href="/">
-          <Logo />
-        </Link>
-
-        <div className="">
-          <ThemeSelector />
-          <nav className="">
-            {navItems.map(({ link }, i) => {
-              return <CMSLink className="" key={i} {...link} />
-            })}
-          </nav>
+    <footer className="ak-footer">
+      <div className="bp-content-grid">
+      <div className="breakout ak-footer__inner">
+        {/* Brand column */}
+        <div className="ak-footer__brand">
+          <Link href="/" className="ak-footer__logo">
+            <Logo />
+          </Link>
+          {brandDescription && (
+            <p className="ak-footer__tagline">{brandDescription}</p>
+          )}
         </div>
+
+        {/* Nav columns */}
+        {(columns ?? []).map((col, i) => (
+          <div key={col.id ?? i} className="ak-footer__col">
+            <p className="ak-footer__col-heading">{col.label}</p>
+            <ul className="ak-footer__col-links" role="list">
+              {(col.links ?? []).map(({ link, id }, j) => (
+                <li key={id ?? j}>
+                  <CMSLink {...link} className="ak-footer__link" />
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+
+        {/* Contact column */}
+        {(contactCta || contactEmail) && (
+          <div className="ak-footer__col">
+            <p className="ak-footer__col-heading">Contact</p>
+            <ul className="ak-footer__col-links" role="list">
+              {contactCta && (
+                <li>
+                  {contactCtaUrl ? (
+                    <Link href={contactCtaUrl} className="ak-footer__link">{contactCta}</Link>
+                  ) : (
+                    <span className="ak-footer__link">{contactCta}</span>
+                  )}
+                </li>
+              )}
+              {contactEmail && (
+                <li>
+                  <a href={`mailto:${contactEmail}`} className="ak-footer__link">
+                    {contactEmail}
+                  </a>
+                </li>
+              )}
+            </ul>
+          </div>
+        )}
+      </div>
       </div>
     </footer>
   )
