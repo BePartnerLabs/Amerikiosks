@@ -85,6 +85,29 @@ Copy `.env.example` to `.env`. Requires `DATABASE_URL` (Postgres) and `PAYLOAD_S
 - Integration: Vitest (`vitest.config.mts`), setup in `vitest.setup.ts`, env from `test.env`
 - E2E: Playwright (`playwright.config.ts`)
 
+## Design System (BPL DS)
+
+Antes de escribir cualquier componente visual, consulta el DS:
+
+- **Contrato del componente:** `https://ds.bepartnerlabs.com/components/<name>/` — markup canónico verbatim
+- **Referencia completa para agentes:** `https://ds.bepartnerlabs.com/AGENTS.md`
+- **Spec del proyecto:** `openspec/specs/design-system/spec.md`
+
+**Regla de variables CSS (3 niveles):**
+
+| Nivel | Prefijo | Dónde | Para qué |
+|---|---|---|---|
+| 1 | `--bp-*` | `:root` (viene del DS) | Tokens base — no redeclarar |
+| 1.5 | `--ak-*` | `:root` en `frontend.css` | Brand tokens del proyecto |
+| 2 | `--<component>-*` | En el selector del componente | Override del default DS — **solo si el default no sirve** |
+| 3 | `--_*` | Interno del DS | Variables privadas — nunca overridear |
+
+**Flujo correcto para agregar un componente DS:**
+1. Copia el markup de `https://ds.bepartnerlabs.com/components/<name>/` verbatim
+2. Compara el diseño con los defaults del DS
+3. Declara Level 2 overrides solo donde los defaults difieren
+4. Nunca uses `--ak-*` directamente en propiedades CSS de componentes DS
+
 ## Spec Workflow
 
 Living specs live in `openspec/specs/[feature]/spec.md`. Read the relevant spec before touching a feature.
