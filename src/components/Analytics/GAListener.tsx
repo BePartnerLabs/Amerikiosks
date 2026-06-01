@@ -12,6 +12,7 @@ export function GAListener() {
       g('event', el.dataset.gaEvent, {
         section: el.dataset.gaSection ?? undefined,
         label: el.dataset.gaLabel || el.innerText.trim().slice(0, 100) || undefined,
+        locale: document.documentElement.lang || undefined,
       })
     }
     document.addEventListener('click', handler)

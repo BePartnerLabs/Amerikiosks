@@ -8,9 +8,14 @@ import React, { useEffect, useRef, useState } from 'react'
 import type { Header } from '@/payload-types'
 import { Logo } from '@/components/Logo/Logo'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
+import dynamic from 'next/dynamic'
 import { HeaderNav } from './Nav'
-import { MobileMenu } from './MobileMenu'
 import './header.css'
+
+const MobileMenu = dynamic(() => import('./MobileMenu').then(m => ({ default: m.MobileMenu })), {
+  ssr: false,
+  loading: () => null,
+})
 
 interface HeaderClientProps {
   data: Header
@@ -63,7 +68,13 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
             <div className="bp-header__actions">
               <LanguageSwitcher />
               {data.cta?.url && (
-                <Link href={data.cta.url} className="bp-btn bp-btn--primary bp-header__cta--desktop">
+                <Link
+                  href={data.cta.url}
+                  className="bp-btn bp-btn--primary bp-header__cta--desktop"
+                  data-ga-event="cta_click"
+                  data-ga-section="header"
+                  data-ga-label={data.cta.label ?? ''}
+                >
                   {data.cta.label}
                 </Link>
               )}

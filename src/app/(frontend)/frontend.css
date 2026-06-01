@@ -76,6 +76,10 @@ img { max-width: 100%; display: block; }
   --ak-accent: #e63946;
   --ak-accent-hover: #c1121f;
   --ak-accent-fg: #ffffff;
+  /* #d42030 = 5.19:1 with white — AA-compliant button bg */
+  --ak-accent-aa: #d42030;
+  /* #ff6b75 = 5.47:1 on #102742 — AA-compliant accent on dark bg */
+  --ak-accent-light: #ff6b75;
   --ak-mega-left-bg: #011936;
   --ak-mega-right-bg: #ffffff;
   --ak-nav-link-color: rgba(255,255,255,0.85);

@@ -174,7 +174,8 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--ak-accent);
+  /* --ak-accent (#e63946) = 3.62:1 on dark bg; --ak-accent-light (#ff6b75) = 5.47:1 ✓ */
+  color: var(--ak-accent-light);
 }
 
 .ak-mobile-nav-card__label {
@@ -257,4 +258,15 @@
   font-size: var(--bp-text-xs, 0.75rem);
   color: rgba(255,255,255,0.45);
   line-height: 1.35;
+}
+
+/* ─── Focus visible ─────────────────────────────────────── */
+.ak-mobile-hamburger:focus-visible,
+.ak-mobile-sheet__back:focus-visible,
+.ak-mobile-sheet__close:focus-visible,
+.ak-mobile-nav-card:focus-visible,
+.ak-mobile-sub-item:focus-visible {
+  outline: 2px solid var(--ak-accent);
+  outline-offset: 2px;
+  border-radius: var(--bp-radius-sm);
 }

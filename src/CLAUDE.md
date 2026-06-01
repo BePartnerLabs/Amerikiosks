@@ -12,7 +12,7 @@ To document a block: `/document-block <path>` (e.g. `/document-block src/blocks/
 
 | Component | Type | Completeness | README |
 |-----------|------|-------------|--------|
-| Header | Global | 52% | [→](./Header/README.md) |
+| Header | Global | 100% | [→](./Header/README.md) |
 | Footer | Global | 38% | [→](./Footer/README.md) |
 | Hero — HighImpact | Hero Variant | 38% | [→](./heros/HighImpact/README.md) |
 

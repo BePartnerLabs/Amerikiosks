@@ -77,6 +77,8 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ data }) => {
         aria-label="Open navigation menu"
         aria-expanded={open}
         aria-controls="ak-mobile-sheet"
+        data-ga-event="mobile_menu_open"
+        data-ga-section="header"
         onClick={openMenu}
       >
         <span className="ak-mobile-hamburger__bar" aria-hidden="true" />
@@ -172,6 +174,9 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ data }) => {
               <Link
                 href={data.cta.url}
                 className="ak-mobile-sheet__cta bp-btn bp-btn--primary"
+                data-ga-event="cta_click"
+                data-ga-section="header"
+                data-ga-label={data.cta.label ?? ''}
                 onClick={closeMenu}
               >
                 {data.cta.label}
