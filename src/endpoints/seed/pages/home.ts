@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import type { Payload, PayloadRequest } from 'payload'
 
 import { uploadMedia } from '../uploadMedia'
@@ -34,9 +34,33 @@ export const seedHome = async (payload: Payload, req: PayloadRequest): Promise<v
           {
             type: 'heading',
             children: [
-              { type: 'text', detail: 0, format: 0, mode: 'normal', style: '', text: 'Automated retail that turns ', version: 1 },
-              { type: 'text', detail: 0, format: 2, mode: 'normal', style: '', text: 'placement into presence', version: 1 },
-              { type: 'text', detail: 0, format: 0, mode: 'normal', style: '', text: '.', version: 1 },
+              {
+                type: 'text',
+                detail: 0,
+                format: 0,
+                mode: 'normal',
+                style: '',
+                text: 'Automated retail that turns ',
+                version: 1,
+              },
+              {
+                type: 'text',
+                detail: 0,
+                format: 2,
+                mode: 'normal',
+                style: '',
+                text: 'placement into presence',
+                version: 1,
+              },
+              {
+                type: 'text',
+                detail: 0,
+                format: 0,
+                mode: 'normal',
+                style: '',
+                text: '.',
+                version: 1,
+              },
             ],
             direction: 'ltr' as const,
             format: '' as const,
@@ -81,9 +105,33 @@ export const seedHome = async (payload: Payload, req: PayloadRequest): Promise<v
           {
             type: 'heading',
             children: [
-              { type: 'text', detail: 0, format: 0, mode: 'normal', style: '', text: 'Retail automatizado que convierte ', version: 1 },
-              { type: 'text', detail: 0, format: 2, mode: 'normal', style: '', text: 'presencia en resultado', version: 1 },
-              { type: 'text', detail: 0, format: 0, mode: 'normal', style: '', text: '.', version: 1 },
+              {
+                type: 'text',
+                detail: 0,
+                format: 0,
+                mode: 'normal',
+                style: '',
+                text: 'Retail automatizado que convierte ',
+                version: 1,
+              },
+              {
+                type: 'text',
+                detail: 0,
+                format: 2,
+                mode: 'normal',
+                style: '',
+                text: 'presencia en resultado',
+                version: 1,
+              },
+              {
+                type: 'text',
+                detail: 0,
+                format: 0,
+                mode: 'normal',
+                style: '',
+                text: '.',
+                version: 1,
+              },
             ],
             direction: 'ltr' as const,
             format: '' as const,
@@ -194,7 +242,9 @@ function richText(text: string) {
       children: [
         {
           type: 'paragraph',
-          children: [{ type: 'text', detail: 0, format: 0, mode: 'normal', style: '', text, version: 1 }],
+          children: [
+            { type: 'text', detail: 0, format: 0, mode: 'normal', style: '', text, version: 1 },
+          ],
           direction: 'ltr' as const,
           format: '' as const,
           indent: 0,

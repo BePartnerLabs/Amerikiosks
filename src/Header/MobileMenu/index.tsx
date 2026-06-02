@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useState, useCallback, useEffect } from 'react'
 import Link from 'next/link'
+import React, { useCallback, useEffect, useState } from 'react'
 import type { Header } from '@/payload-types'
 import './mobile-menu.css'
 
@@ -19,7 +19,9 @@ const resolveHref = (item: NavItem): string => {
   if (link.type === 'custom' && link.url) return link.url
   if (link.type === 'reference' && link.reference && typeof link.reference.value === 'object') {
     const slug = (link.reference.value as { slug?: string }).slug ?? ''
-    return link.reference.relationTo === 'pages' ? `/${slug}` : `/${link.reference.relationTo}/${slug}`
+    return link.reference.relationTo === 'pages'
+      ? `/${slug}`
+      : `/${link.reference.relationTo}/${slug}`
   }
   return '#'
 }
@@ -30,7 +32,9 @@ const resolveMegaItemHref = (item: MegaItem): string => {
   if (link.type === 'custom' && link.url) return link.url
   if (link.type === 'reference' && link.reference && typeof link.reference.value === 'object') {
     const slug = (link.reference.value as { slug?: string }).slug ?? ''
-    return link.reference.relationTo === 'pages' ? `/${slug}` : `/${link.reference.relationTo}/${slug}`
+    return link.reference.relationTo === 'pages'
+      ? `/${slug}`
+      : `/${link.reference.relationTo}/${slug}`
   }
   return '#'
 }
@@ -53,7 +57,9 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ data }) => {
   // Prevent body scroll when open
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''
-    return () => { document.body.style.overflow = '' }
+    return () => {
+      document.body.style.overflow = ''
+    }
   }, [open])
 
   // Focus management
@@ -81,9 +87,18 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ data }) => {
         data-ga-section="header"
         onClick={openMenu}
       >
-        <span className="ak-mobile-hamburger__bar" aria-hidden="true" />
-        <span className="ak-mobile-hamburger__bar" aria-hidden="true" />
-        <span className="ak-mobile-hamburger__bar ak-mobile-hamburger__bar--short" aria-hidden="true" />
+        <span
+          className="ak-mobile-hamburger__bar"
+          aria-hidden="true"
+        />
+        <span
+          className="ak-mobile-hamburger__bar"
+          aria-hidden="true"
+        />
+        <span
+          className="ak-mobile-hamburger__bar ak-mobile-hamburger__bar--short"
+          aria-hidden="true"
+        />
       </button>
 
       {/* Backdrop */}
@@ -106,7 +121,10 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ data }) => {
         inert={!open || undefined}
       >
         {/* Sheet handle */}
-        <div className="ak-mobile-sheet__handle" aria-hidden="true" />
+        <div
+          className="ak-mobile-sheet__handle"
+          aria-hidden="true"
+        />
 
         {/* Sheet header */}
         <div className="ak-mobile-sheet__header">
@@ -122,10 +140,8 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ data }) => {
           ) : (
             <div aria-hidden="true" />
           )}
-          {activePanel && activePanel.megaMenu?.panelLabel && (
-            <span className="ak-mobile-sheet__panel-label">
-              {activePanel.megaMenu.panelLabel}
-            </span>
+          {activePanel?.megaMenu?.panelLabel && (
+            <span className="ak-mobile-sheet__panel-label">{activePanel.megaMenu.panelLabel}</span>
           )}
           <button
             ref={closeButtonRef}
@@ -139,10 +155,14 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ data }) => {
         </div>
 
         {/* Panels container — slides left when sub-panel active */}
-        <div className={`ak-mobile-sheet__panels${activePanel ? ' ak-mobile-sheet__panels--sub' : ''}`}>
-
+        <div
+          className={`ak-mobile-sheet__panels${activePanel ? ' ak-mobile-sheet__panels--sub' : ''}`}
+        >
           {/* Main panel */}
-          <div className="ak-mobile-sheet__panel ak-mobile-sheet__panel--main" aria-hidden={!!activePanel}>
+          <div
+            className="ak-mobile-sheet__panel ak-mobile-sheet__panel--main"
+            aria-hidden={!!activePanel}
+          >
             <div className="ak-mobile-main-nav">
               {navItems.map((item, i) => {
                 const hasMega = item.hasMegaMenu && item.megaMenu
@@ -154,9 +174,14 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ data }) => {
                     onClick={() => setActivePanel(item)}
                     aria-haspopup="dialog"
                   >
-                    <span className="ak-mobile-nav-card__eyebrow">{item.megaMenu!.panelLabel}</span>
+                    <span className="ak-mobile-nav-card__eyebrow">{item.megaMenu?.panelLabel}</span>
                     <span className="ak-mobile-nav-card__label">{item.link.label}</span>
-                    <span className="ak-mobile-nav-card__arrow" aria-hidden="true">›</span>
+                    <span
+                      className="ak-mobile-nav-card__arrow"
+                      aria-hidden="true"
+                    >
+                      ›
+                    </span>
                   </button>
                 ) : (
                   <Link
@@ -186,7 +211,10 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ data }) => {
           </div>
 
           {/* Sub panel */}
-          <div className="ak-mobile-sheet__panel ak-mobile-sheet__panel--sub" aria-hidden={!activePanel}>
+          <div
+            className="ak-mobile-sheet__panel ak-mobile-sheet__panel--sub"
+            aria-hidden={!activePanel}
+          >
             {activePanel?.megaMenu && (
               <>
                 {activePanel.megaMenu.panelDescription && (
@@ -204,7 +232,12 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ data }) => {
                     >
                       {item.icon && (
                         <span className="ak-mobile-sub-item__icon">
-                          <span className="material-symbols-outlined" aria-hidden="true">{item.icon}</span>
+                          <span
+                            className="material-symbols-outlined"
+                            aria-hidden="true"
+                          >
+                            {item.icon}
+                          </span>
                         </span>
                       )}
                       <div className="ak-mobile-sub-item__body">
@@ -219,7 +252,6 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ data }) => {
               </>
             )}
           </div>
-
         </div>
       </div>
     </>

@@ -1,20 +1,17 @@
-import type { Metadata } from 'next'
-
-import { RelatedPosts } from '@/blocks/RelatedPosts/Component'
-import { PayloadRedirects } from '@/components/PayloadRedirects'
 import configPromise from '@payload-config'
-import { getPayload } from 'payload'
+import type { Metadata } from 'next'
 import { draftMode } from 'next/headers'
-import React, { cache } from 'react'
+import { getPayload } from 'payload'
+import { cache } from 'react'
+import { RelatedPosts } from '@/blocks/RelatedPosts/Component'
+import { LivePreviewListener } from '@/components/LivePreviewListener'
+import { PayloadRedirects } from '@/components/PayloadRedirects'
 import RichText from '@/components/RichText'
 
-import type { Post } from '@/payload-types'
-
 import { PostHero } from '@/heros/PostHero'
+import { routing } from '@/i18n/routing'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
-import { LivePreviewListener } from '@/components/LivePreviewListener'
-import { routing } from '@/i18n/routing'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -53,7 +50,7 @@ export default async function Post({ params: paramsPromise }: Args) {
   const { slug = '', locale } = await paramsPromise
   // Decode to support slugs with special characters
   const decodedSlug = decodeURIComponent(slug)
-  const url = '/posts/' + decodedSlug
+  const url = `/posts/${decodedSlug}`
   const post = await queryPostBySlug({ slug: decodedSlug, locale })
 
   if (!post) return <PayloadRedirects url={url} />
@@ -63,7 +60,10 @@ export default async function Post({ params: paramsPromise }: Args) {
       <PageClient />
 
       {/* Allows redirects for valid pages too */}
-      <PayloadRedirects disableNotFound url={url} />
+      <PayloadRedirects
+        disableNotFound
+        url={url}
+      />
 
       {draft && <LivePreviewListener />}
 
@@ -71,7 +71,11 @@ export default async function Post({ params: paramsPromise }: Args) {
 
       <div className="">
         <div className="">
-          <RichText className="" data={post.content} enableGutter={false} />
+          <RichText
+            className=""
+            data={post.content}
+            enableGutter={false}
+          />
           {post.relatedPosts && post.relatedPosts.length > 0 && (
             <RelatedPosts
               className=""

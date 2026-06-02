@@ -1,5 +1,4 @@
 import { getCachedGlobal } from '@/utilities/getGlobals'
-import React from 'react'
 import { FooterContent } from './FooterContent'
 import './footer.css'
 

@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import type { Payload, PayloadRequest } from 'payload'
 import type { Media } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'

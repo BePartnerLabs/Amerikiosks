@@ -1,10 +1,7 @@
 `<script $props />` as $el where {
-    $text = text($props),
-    $text <: r`src=`,
-    not $text <: r`async`,
-    not $text <: r`defer`,
-    register_diagnostic(
-        span = $el,
-        message = "Use <Script> from next/script instead of a raw <script src>. Add async or defer if a raw tag is necessary."
-    )
+  $text = text($props),
+  $text <: r`src=`,
+  not $text <: r`async`,
+  not $text <: r`defer`,
+  register_diagnostic(span=$el, message="Use <Script> from next/script instead of a raw <script src>. Add async or defer if a raw tag is necessary.")
 }

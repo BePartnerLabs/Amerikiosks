@@ -29,20 +29,47 @@ export default function SeedPanel() {
     }
   }
 
-  const icon = (key: string) => ({ loading: ' ⏳', ok: ' ✓', error: ' ✗', idle: '' }[statuses[key] ?? 'idle'])
+  const icon = (key: string) =>
+    ({ loading: ' ⏳', ok: ' ✓', error: ' ✗', idle: '' })[statuses[key] ?? 'idle']
 
   return (
-    <div style={{ padding: '1rem', borderTop: '1px solid var(--theme-elevation-100)', marginTop: '0.5rem' }}>
-      <p style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--theme-elevation-500)', margin: '0 0 0.5rem' }}>
+    <div
+      style={{
+        padding: '1rem',
+        borderTop: '1px solid var(--theme-elevation-100)',
+        marginTop: '0.5rem',
+      }}
+    >
+      <p
+        style={{
+          fontSize: '0.65rem',
+          textTransform: 'uppercase',
+          letterSpacing: '0.1em',
+          color: 'var(--theme-elevation-500)',
+          margin: '0 0 0.5rem',
+        }}
+      >
         Seed
       </p>
-      <button onClick={() => run()} style={btn(true)}>
+      <button
+        type="button"
+        onClick={() => run()}
+        style={btn(true)}
+      >
         🌱 Seed all{icon('__all__')}
       </button>
-      <div style={{ marginTop: '0.4rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+      <div
+        style={{ marginTop: '0.4rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}
+      >
         {PARTS.map(({ key, label }) => (
-          <button key={key} onClick={() => run(key)} style={btn(false)}>
-            {label}{icon(key)}
+          <button
+            key={key}
+            type="button"
+            onClick={() => run(key)}
+            style={btn(false)}
+          >
+            {label}
+            {icon(key)}
           </button>
         ))}
       </div>

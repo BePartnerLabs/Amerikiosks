@@ -1,5 +1,5 @@
+import { type NextRequest, NextResponse } from 'next/server'
 import createMiddleware from 'next-intl/middleware'
-import { NextRequest, NextResponse } from 'next/server'
 import { routing } from './i18n/routing'
 
 const intlMiddleware = createMiddleware(routing)
@@ -26,7 +26,11 @@ export default function middleware(req: NextRequest) {
   const queryPassword = req.nextUrl.searchParams.get('preview')
   if (queryPassword === PREVIEW_PASSWORD) {
     const res = intlMiddleware(req)
-    res.cookies.set(COOKIE_NAME, PREVIEW_PASSWORD, { httpOnly: true, path: '/', maxAge: 60 * 60 * 24 * 7 })
+    res.cookies.set(COOKIE_NAME, PREVIEW_PASSWORD, {
+      httpOnly: true,
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7,
+    })
     return res
   }
 

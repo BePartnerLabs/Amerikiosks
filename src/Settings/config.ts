@@ -14,7 +14,8 @@ export const Settings: GlobalConfig = {
       type: 'text',
       label: 'Google Analytics Measurement ID',
       admin: {
-        description: 'Your GA4 Measurement ID (e.g. G-XXXXXXXXXX). Leave empty to disable analytics.',
+        description:
+          'Your GA4 Measurement ID (e.g. G-XXXXXXXXXX). Leave empty to disable analytics.',
         placeholder: 'G-XXXXXXXXXX',
       },
     },

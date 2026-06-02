@@ -1,8 +1,8 @@
 'use client'
 
 import { useLocale } from 'next-intl'
+import type React from 'react'
 import { usePathname, useRouter } from '@/i18n/routing'
-import React from 'react'
 import './language-switcher.css'
 
 export const LanguageSwitcher: React.FC = () => {

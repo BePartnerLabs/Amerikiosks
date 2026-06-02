@@ -1,9 +1,8 @@
-import React from 'react'
-import { describe, it, expect, vi, afterEach } from 'vitest'
-import { render, screen, cleanup } from '@testing-library/react'
+import { cleanup, render, screen } from '@testing-library/react'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('@/components/RichText', () => ({
-  default: ({ data }: { data: unknown }) => <div data-testid="richtext" />,
+  default: ({ data: _data }: { data: unknown }) => <div data-testid="richtext" />,
 }))
 
 import { ValuePropsBlock } from '@/blocks/ValueProps/Component'
@@ -45,14 +44,20 @@ describe('ValuePropsBlock', () => {
     const { container } = render(<ValuePropsBlock {...base} />)
     const script = container.querySelector('script[type="application/ld+json"]')
     expect(script).not.toBeNull()
-    const data = JSON.parse(script!.innerHTML)
+    const data = JSON.parse(script?.innerHTML)
     expect(data['@type']).toBe('ItemList')
     expect(data.name).toBe('Why Amerikiosks')
     expect(data.numberOfItems).toBe(2)
   })
 
   it('returns null when no heading and no items', () => {
-    const { container } = render(<ValuePropsBlock {...base} heading="" items={[]} />)
+    const { container } = render(
+      <ValuePropsBlock
+        {...base}
+        heading=""
+        items={[]}
+      />,
+    )
     expect(container.firstChild).toBeNull()
   })
 

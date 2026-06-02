@@ -1,7 +1,9 @@
-import type { RequiredDataFromCollectionSlug } from 'payload'
-import type { Payload, PayloadRequest } from 'payload'
+import type { Payload, PayloadRequest, RequiredDataFromCollectionSlug } from 'payload'
 
 type PageExtra = Partial<Omit<RequiredDataFromCollectionSlug<'pages'>, 'title' | 'slug'>>
+type PageLayoutBlock = NonNullable<RequiredDataFromCollectionSlug<'pages'>['layout']>[number] & {
+  id?: string | number | null
+}
 
 export const upsertPage = async (
   payload: Payload,
@@ -30,7 +32,7 @@ export const upsertPage = async (
     existing.docs.length > 0
       ? await payload.update({
           collection: 'pages',
-          id: existing.docs[0]!.id,
+          id: existing.docs[0]?.id,
           locale: 'en',
           data: baseData,
           req: { ...req, locale: 'en' } as PayloadRequest,
@@ -46,9 +48,9 @@ export const upsertPage = async (
 
   // Carry over block IDs from the EN doc so Payload updates localized fields
   // on the existing blocks rather than creating new ones (which would orphan EN content).
-  const esLayout = (esExtra.layout ?? []).map((block: any, i: number) => ({
+  const esLayout = (esExtra.layout ?? []).map((block, i: number) => ({
     ...block,
-    id: (doc.layout as any[])?.[i]?.id ?? block.id,
+    id: (doc.layout as PageLayoutBlock[])?.[i]?.id ?? block.id,
   }))
 
   await payload.update({

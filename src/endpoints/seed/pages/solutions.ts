@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import type { Payload, PayloadRequest } from 'payload'
 
 import { uploadMedia } from '../uploadMedia'
@@ -35,12 +35,8 @@ export const seedSolutions = async (payload: Payload, req: PayloadRequest): Prom
         },
       },
     ],
-    breadcrumb: 'Home / Who it\'s for / For brands',
-    tags: [
-      { label: 'Brand-controlled' },
-      { label: 'Fully managed' },
-      { label: 'Built to learn' },
-    ],
+    breadcrumb: "Home / Who it's for / For brands",
+    tags: [{ label: 'Brand-controlled' }, { label: 'Fully managed' }, { label: 'Built to learn' }],
     richText: {
       root: {
         type: 'root' as const,

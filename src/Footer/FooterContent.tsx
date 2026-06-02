@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import React from 'react'
 import { CMSLink } from '@/components/Link'
 import { Logo } from '@/components/Logo/Logo'
 import type { Footer } from '@/payload-types'
@@ -12,9 +11,14 @@ export function FooterContent({ footer }: FooterContentProps) {
   const { brandDescription, columns, contactEmail, contactCta, contactCtaUrl } = footer
 
   return (
-    <footer className="ak-footer" itemScope itemType="https://schema.org/WPFooter">
+    <footer
+      className="ak-footer"
+      itemScope
+      itemType="https://schema.org/WPFooter"
+    >
       <script
         type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: this is a json-ld script tag, not user-generated content
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'WPFooter' }),
         }}
@@ -23,22 +27,34 @@ export function FooterContent({ footer }: FooterContentProps) {
         <div className="breakout ak-footer__inner">
           {/* Brand column */}
           <div className="ak-footer__brand">
-            <Link href="/" className="ak-footer__logo" aria-label="Go to homepage">
+            <Link
+              href="/"
+              className="ak-footer__logo"
+              aria-label="Go to homepage"
+            >
               <Logo />
             </Link>
-            {brandDescription && (
-              <p className="ak-footer__tagline">{brandDescription}</p>
-            )}
+            {brandDescription && <p className="ak-footer__tagline">{brandDescription}</p>}
           </div>
 
           {/* Nav columns */}
           {(columns ?? []).map((col, i) => (
-            <div key={col.id ?? i} className="ak-footer__col">
+            <div
+              key={col.id ?? i}
+              className="ak-footer__col"
+            >
               <p className="ak-footer__col-heading">{col.label}</p>
-              <ul className="ak-footer__col-links" role="list">
+              <ul className="ak-footer__col-links">
                 {(col.links ?? []).map(({ link, id }, j) => (
-                  <li key={id ?? j} data-ga-event="footer_link_click" data-ga-section="footer">
-                    <CMSLink {...link} className="ak-footer__link" />
+                  <li
+                    key={id ?? j}
+                    data-ga-event="footer_link_click"
+                    data-ga-section="footer"
+                  >
+                    <CMSLink
+                      {...link}
+                      className="ak-footer__link"
+                    />
                   </li>
                 ))}
               </ul>
@@ -49,7 +65,7 @@ export function FooterContent({ footer }: FooterContentProps) {
           {(contactCta || contactEmail) && (
             <div className="ak-footer__col">
               <p className="ak-footer__col-heading">Contact</p>
-              <ul className="ak-footer__col-links" role="list">
+              <ul className="ak-footer__col-links">
                 {contactCta && (
                   <li
                     data-ga-event="footer_contact_click"
@@ -57,7 +73,12 @@ export function FooterContent({ footer }: FooterContentProps) {
                     data-ga-label={contactCta}
                   >
                     {contactCtaUrl ? (
-                      <Link href={contactCtaUrl} className="ak-footer__link">{contactCta}</Link>
+                      <Link
+                        href={contactCtaUrl}
+                        className="ak-footer__link"
+                      >
+                        {contactCta}
+                      </Link>
                     ) : (
                       <span className="ak-footer__link">{contactCta}</span>
                     )}
@@ -69,7 +90,10 @@ export function FooterContent({ footer }: FooterContentProps) {
                     data-ga-section="footer"
                     data-ga-label={contactEmail}
                   >
-                    <a href={`mailto:${contactEmail}`} className="ak-footer__link">
+                    <a
+                      href={`mailto:${contactEmail}`}
+                      className="ak-footer__link"
+                    >
                       {contactEmail}
                     </a>
                   </li>
@@ -80,9 +104,7 @@ export function FooterContent({ footer }: FooterContentProps) {
         </div>
 
         <div className="breakout ak-footer__bottom">
-          <p className="ak-footer__copyright">
-            © {new Date().getFullYear()} Amerikiosks
-          </p>
+          <p className="ak-footer__copyright">© {new Date().getFullYear()} Amerikiosks</p>
         </div>
       </div>
     </footer>

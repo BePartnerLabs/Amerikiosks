@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 
 const defaultLabels = {
   plural: 'Docs',
@@ -24,7 +24,6 @@ export const PageRange: React.FC<{
   totalDocs?: number
 }> = (props) => {
   const {
-    className,
     collection,
     collectionLabels: collectionLabelsFromProps,
     currentPage,

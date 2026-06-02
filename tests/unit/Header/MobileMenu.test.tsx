@@ -1,12 +1,23 @@
-import React from 'react'
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, fireEvent, cleanup } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import type React from 'react'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 // ── Mocks ────────────────────────────────────────────────────────────────────
 
 vi.mock('next/link', () => ({
-  default: ({ href, children, onClick, ...rest }: React.AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }) => (
-    <a href={href} onClick={onClick} {...rest}>{children}</a>
+  default: ({
+    href,
+    children,
+    onClick,
+    ...rest
+  }: React.AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }) => (
+    <a
+      href={href}
+      onClick={onClick}
+      {...rest}
+    >
+      {children}
+    </a>
   ),
 }))
 

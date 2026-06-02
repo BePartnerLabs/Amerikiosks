@@ -1,12 +1,10 @@
+import configPromise from '@payload-config'
 import type { Metadata } from 'next/types'
-
+import { getTranslations } from 'next-intl/server'
+import { getPayload } from 'payload'
 import { CollectionArchive } from '@/components/CollectionArchive'
 import { PageRange } from '@/components/PageRange'
 import { Pagination } from '@/components/Pagination'
-import configPromise from '@payload-config'
-import { getPayload } from 'payload'
-import React from 'react'
-import { getTranslations } from 'next-intl/server'
 import PageClient from './page.client'
 
 export const dynamic = 'force-static'
@@ -58,7 +56,10 @@ export default async function Page({ params: paramsPromise }: Args) {
 
       <div className="">
         {posts.totalPages > 1 && posts.page && (
-          <Pagination page={posts.page} totalPages={posts.totalPages} />
+          <Pagination
+            page={posts.page}
+            totalPages={posts.totalPages}
+          />
         )}
       </div>
     </div>

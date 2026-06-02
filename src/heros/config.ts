@@ -1,11 +1,10 @@
-import type { Field } from 'payload'
-
 import {
   FixedToolbarFeature,
   HeadingFeature,
   InlineToolbarFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
+import type { Field } from 'payload'
 
 import { linkGroup } from '@/fields/linkGroup'
 
@@ -65,7 +64,8 @@ export const hero: Field = {
       label: 'Background image (poster / fallback)',
       admin: {
         condition: (_, { type } = {}) => ['highImpact', 'mediumImpact'].includes(type),
-        description: 'For highImpact: used as video poster and img fallback. For mediumImpact: right-column image.',
+        description:
+          'For highImpact: used as video poster and img fallback. For mediumImpact: right-column image.',
       },
       relationTo: 'media',
       required: true,

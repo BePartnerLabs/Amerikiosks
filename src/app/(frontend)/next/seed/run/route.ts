@@ -1,20 +1,26 @@
-import { createLocalReq, getPayload } from 'payload'
 import config from '@payload-config'
 import { headers } from 'next/headers'
+import { createLocalReq, getPayload } from 'payload'
 
 import { seed } from '@/endpoints/seed'
 import { seedFooter } from '@/endpoints/seed/footer'
 import { seedHeader } from '@/endpoints/seed/header'
+import { seedCaseStudies } from '@/endpoints/seed/pages/case-studies'
 import { seedContact } from '@/endpoints/seed/pages/contact'
 import { seedHome } from '@/endpoints/seed/pages/home'
 import { seedSolutions } from '@/endpoints/seed/pages/solutions'
 import { seedWhereItWorks } from '@/endpoints/seed/pages/where-it-works'
-import { seedCaseStudies } from '@/endpoints/seed/pages/case-studies'
 import { seedWhyAmerikiosks } from '@/endpoints/seed/pages/why-amerikiosks'
 
 export const maxDuration = 120
 
-const parts: Record<string, (payload: any, req: any) => Promise<void>> = {
+const parts: Record<
+  string,
+  (
+    payload: Parameters<typeof seed>[0]['payload'],
+    req: Parameters<typeof seed>[0]['req'],
+  ) => Promise<void>
+> = {
   contact: seedContact,
   home: seedHome,
   solutions: seedSolutions,

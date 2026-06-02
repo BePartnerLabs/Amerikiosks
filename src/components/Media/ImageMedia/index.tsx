@@ -3,12 +3,10 @@
 import type { StaticImageData } from 'next/image'
 
 import NextImage from 'next/image'
-import React from 'react'
-
-import type { Props as MediaProps } from '../types'
-
+import type React from 'react'
 import { cssVariables } from '@/cssVariables'
 import { getMediaUrl } from '@/utilities/getMediaUrl'
+import type { Props as MediaProps } from '../types'
 
 const { breakpoints } = cssVariables
 
@@ -48,8 +46,6 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
   const {
     alt: altFromProps,
     fill,
-    pictureClassName,
-    imgClassName,
     priority,
     resource,
     size: sizeFromProps,
@@ -65,8 +61,8 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
   if (!src && resource && typeof resource === 'object') {
     const { alt: altFromResource, height: fullHeight, url, width: fullWidth } = resource
 
-    width = fullWidth!
-    height = fullHeight!
+    width = fullWidth ?? undefined
+    height = fullHeight ?? undefined
     alt = altFromResource || ''
 
     const cacheTag = resource.updatedAt

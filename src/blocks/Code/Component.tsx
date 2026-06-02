@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 
 import { Code } from './Component.client'
 
@@ -12,10 +12,13 @@ type Props = CodeBlockProps & {
   className?: string
 }
 
-export const CodeBlock: React.FC<Props> = ({ className, code, language }) => {
+export const CodeBlock: React.FC<Props> = ({ className: _className, code, language }) => {
   return (
     <div className="">
-      <Code code={code} language={language} />
+      <Code
+        code={code}
+        language={language}
+      />
     </div>
   )
 }

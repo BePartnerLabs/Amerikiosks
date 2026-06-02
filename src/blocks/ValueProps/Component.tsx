@@ -1,20 +1,25 @@
-import React from 'react'
-import type { Page } from '@/payload-types'
+import type React from 'react'
 import RichText from '@/components/RichText'
+import type { Page } from '@/payload-types'
 import './styles.css'
 
 type ValuePropsBlockType = Extract<NonNullable<Page['layout']>[number], { blockType: 'valueProps' }>
 
-export const ValuePropsBlock: React.FC<ValuePropsBlockType & { disableInnerContainer?: boolean }> = ({
-  heading,
-  items,
-}) => {
+export const ValuePropsBlock: React.FC<
+  ValuePropsBlockType & { disableInnerContainer?: boolean }
+> = ({ heading, items }) => {
   if (!heading && (!items || items.length === 0)) return null
 
   return (
-    <section className="ak-value-props" aria-label={heading ?? 'Value propositions'} itemScope itemType="https://schema.org/ItemList">
+    <section
+      className="ak-value-props"
+      aria-label={heading ?? 'Value propositions'}
+      itemScope
+      itemType="https://schema.org/ItemList"
+    >
       <script
         type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: is a static JSON-LD script tag
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             '@context': 'https://schema.org',
@@ -31,11 +36,17 @@ export const ValuePropsBlock: React.FC<ValuePropsBlockType & { disableInnerConta
           {Array.isArray(items) && items.length > 0 && (
             <div className="ak-value-props__cards">
               {items.map((item, i) => (
-                <div key={item.id ?? i} className="ak-value-props__card">
+                <div
+                  key={item.id ?? i}
+                  className="ak-value-props__card"
+                >
                   {item.title && <p className="ak-value-props__card-title">{item.title}</p>}
                   {item.body && (
                     <div className="ak-value-props__card-body">
-                      <RichText data={item.body} enableGutter={false} />
+                      <RichText
+                        data={item.body}
+                        enableGutter={false}
+                      />
                     </div>
                   )}
                 </div>

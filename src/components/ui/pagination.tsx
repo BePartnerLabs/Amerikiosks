@@ -1,15 +1,13 @@
+import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react'
+import type * as React from 'react'
 import type { ButtonProps } from '@/components/ui/button'
-
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/utilities/ui'
-import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react'
-import * as React from 'react'
 
 const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => (
   <nav
     aria-label="pagination"
     className={cn('mx-auto flex w-full justify-center', className)}
-    role="navigation"
     {...props}
   />
 )
@@ -17,12 +15,22 @@ const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => (
 const PaginationContent: React.FC<
   { ref?: React.Ref<HTMLUListElement> } & React.HTMLAttributes<HTMLUListElement>
 > = ({ className, ref, ...props }) => (
-  <ul className={cn('flex flex-row items-center gap-1', className)} ref={ref} {...props} />
+  <ul
+    className={cn('flex flex-row items-center gap-1', className)}
+    ref={ref}
+    {...props}
+  />
 )
 
 const PaginationItem: React.FC<
   { ref?: React.Ref<HTMLLIElement> } & React.HTMLAttributes<HTMLLIElement>
-> = ({ className, ref, ...props }) => <li className={cn('', className)} ref={ref} {...props} />
+> = ({ className, ref, ...props }) => (
+  <li
+    className={cn('', className)}
+    ref={ref}
+    {...props}
+  />
+)
 
 type PaginationLinkProps = {
   isActive?: boolean

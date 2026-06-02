@@ -1,10 +1,19 @@
-import React from 'react'
-import { describe, it, expect, vi, afterEach } from 'vitest'
-import { render, screen, cleanup } from '@testing-library/react'
+import { cleanup, render, screen } from '@testing-library/react'
+import type React from 'react'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('next/link', () => ({
-  default: ({ href, children, ...rest }: React.AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }) => (
-    <a href={href} {...rest}>{children}</a>
+  default: ({
+    href,
+    children,
+    ...rest
+  }: React.AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }) => (
+    <a
+      href={href}
+      {...rest}
+    >
+      {children}
+    </a>
   ),
 }))
 
@@ -13,8 +22,23 @@ vi.mock('@/components/Logo/Logo', () => ({
 }))
 
 vi.mock('@/components/Link', () => ({
-  CMSLink: ({ url, label, children, className }: { url?: string; label?: string; children?: React.ReactNode; className?: string }) => (
-    <a href={url ?? '#'} className={className}>{label ?? children}</a>
+  CMSLink: ({
+    url,
+    label,
+    children,
+    className,
+  }: {
+    url?: string
+    label?: string
+    children?: React.ReactNode
+    className?: string
+  }) => (
+    <a
+      href={url ?? '#'}
+      className={className}
+    >
+      {label ?? children}
+    </a>
   ),
 }))
 
@@ -27,9 +51,7 @@ const baseFooter: Partial<Footer> = {
     {
       id: 'col-1',
       label: 'Solutions',
-      links: [
-        { id: 'l1', link: { type: 'custom', url: '/solutions', label: 'All Solutions' } },
-      ],
+      links: [{ id: 'l1', link: { type: 'custom', url: '/solutions', label: 'All Solutions' } }],
     },
   ],
   contactEmail: 'hello@amerikiosks.com',
@@ -74,7 +96,10 @@ describe('FooterContent', () => {
 
   it('contact email has mailto href', () => {
     render(<FooterContent footer={baseFooter} />)
-    expect(screen.getByText('hello@amerikiosks.com').closest('a')).toHaveAttribute('href', 'mailto:hello@amerikiosks.com')
+    expect(screen.getByText('hello@amerikiosks.com').closest('a')).toHaveAttribute(
+      'href',
+      'mailto:hello@amerikiosks.com',
+    )
   })
 
   it('contact email li has GA4 footer_contact_click attribute', () => {
@@ -100,7 +125,7 @@ describe('FooterContent', () => {
     const { container } = render(<FooterContent footer={baseFooter} />)
     const script = container.querySelector('script[type="application/ld+json"]')
     expect(script).not.toBeNull()
-    const data = JSON.parse(script!.innerHTML)
+    const data = JSON.parse(script?.innerHTML)
     expect(data['@type']).toBe('WPFooter')
   })
 
@@ -110,7 +135,9 @@ describe('FooterContent', () => {
   })
 
   it('renders nothing in contact column when both contactEmail and contactCta are absent', () => {
-    const { container } = render(<FooterContent footer={{ ...baseFooter, contactEmail: undefined, contactCta: undefined }} />)
+    const { container } = render(
+      <FooterContent footer={{ ...baseFooter, contactEmail: undefined, contactCta: undefined }} />,
+    )
     expect(container.querySelector('.ak-footer__col-heading')?.textContent).not.toBe('Contact')
   })
 

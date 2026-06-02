@@ -1,6 +1,7 @@
 import type { CountryField } from '@payloadcms/plugin-form-builder/types'
+import type React from 'react'
 import type { Control, FieldErrorsImpl } from 'react-hook-form'
-
+import { Controller } from 'react-hook-form'
 import { Label } from '@/components/ui/label'
 import {
   Select,
@@ -9,10 +10,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import React from 'react'
-import { Controller } from 'react-hook-form'
 
-import { Error } from '../Error'
+import { FormError } from '../Error'
 import { Width } from '../Width'
 import { countryOptions } from './options'
 
@@ -24,7 +23,10 @@ export const Country: React.FC<
 > = ({ name, control, errors, label, required, width }) => {
   return (
     <Width width={width}>
-      <Label className="" htmlFor={name}>
+      <Label
+        className=""
+        htmlFor={name}
+      >
         {label}
 
         {required && (
@@ -41,14 +43,23 @@ export const Country: React.FC<
           const controlledValue = countryOptions.find((t) => t.value === value)
 
           return (
-            <Select onValueChange={(val) => onChange(val)} value={controlledValue?.value}>
-              <SelectTrigger className="w-full" id={name}>
+            <Select
+              onValueChange={(val) => onChange(val)}
+              value={controlledValue?.value}
+            >
+              <SelectTrigger
+                className="w-full"
+                id={name}
+              >
                 <SelectValue placeholder={label} />
               </SelectTrigger>
               <SelectContent>
                 {countryOptions.map(({ label, value }) => {
                   return (
-                    <SelectItem key={value} value={value}>
+                    <SelectItem
+                      key={value}
+                      value={value}
+                    >
                       {label}
                     </SelectItem>
                   )
@@ -59,7 +70,7 @@ export const Country: React.FC<
         }}
         rules={{ required }}
       />
-      {errors[name] && <Error name={name} />}
+      {errors[name] && <FormError name={name} />}
     </Width>
   )
 }

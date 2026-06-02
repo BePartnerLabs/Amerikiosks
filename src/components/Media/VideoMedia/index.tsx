@@ -1,13 +1,12 @@
 'use client'
 
-import React, { useEffect, useRef } from 'react'
-
+import type React from 'react'
+import { useEffect, useRef } from 'react'
+import { getMediaUrl } from '@/utilities/getMediaUrl'
 import type { Props as MediaProps } from '../types'
 
-import { getMediaUrl } from '@/utilities/getMediaUrl'
-
 export const VideoMedia: React.FC<MediaProps> = (props) => {
-  const { onClick, resource, videoClassName } = props
+  const { onClick, resource } = props
 
   const videoRef = useRef<HTMLVideoElement>(null)
   // const [showFallback] = useState<boolean>()

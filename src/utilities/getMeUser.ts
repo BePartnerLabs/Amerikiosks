@@ -35,9 +35,12 @@ export const getMeUser = async (args?: {
     redirect(nullUserRedirect)
   }
 
-  // Token will exist here because if it doesn't the user will be redirected
+  if (!token) {
+    throw new Error('Missing auth token')
+  }
+
   return {
-    token: token!,
+    token,
     user,
   }
 }

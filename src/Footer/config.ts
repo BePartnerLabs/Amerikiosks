@@ -30,9 +30,7 @@ export const Footer: GlobalConfig = {
         {
           name: 'links',
           type: 'array',
-          fields: [
-            link({ appearances: false }),
-          ],
+          fields: [link({ appearances: false })],
           maxRows: 8,
           admin: {
             components: {

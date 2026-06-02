@@ -11,16 +11,20 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255, 255, 255, 0.5);
   font-weight: 600;
   font-size: var(--bp-text-sm, 0.875rem);
   transition: color var(--bp-duration-fast) var(--bp-ease);
   padding: 0;
 }
 
-.ak-lang-switcher__btn:hover { color: rgba(255,255,255,0.8); }
-.ak-lang-switcher__btn[aria-current="true"] { color: var(--bp-color-text-inverse); }
+.ak-lang-switcher__btn:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+.ak-lang-switcher__btn[aria-current="true"] {
+  color: var(--bp-color-text-inverse);
+}
 
 .ak-lang-switcher__sep {
-  color: rgba(255,255,255,0.3);
+  color: rgba(255, 255, 255, 0.3);
 }

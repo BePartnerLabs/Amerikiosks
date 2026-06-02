@@ -1,9 +1,9 @@
-import type { Block } from 'payload'
 import {
   FixedToolbarFeature,
   InlineToolbarFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
+import type { Block } from 'payload'
 
 export const ValueProps: Block = {
   slug: 'valueProps',

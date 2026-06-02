@@ -1,15 +1,13 @@
 'use client'
 
-import React from 'react'
-import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
+import Link from 'next/link'
+import type React from 'react'
 
 import type { Header } from '@/payload-types'
 import './megamenu.css'
 
-type MegaMenuData = NonNullable<
-  NonNullable<Header['navItems']>[number]['megaMenu']
->
+type MegaMenuData = NonNullable<NonNullable<Header['navItems']>[number]['megaMenu']>
 
 interface MegaMenuProps {
   data: MegaMenuData
@@ -35,27 +33,21 @@ function resolveItemLink(link: NonNullable<MegaMenuData['items']>[number]['link'
   return { href: '#', newTab }
 }
 
-export const MegaMenu: React.FC<MegaMenuProps> = ({ data, id }) => {
-  const {
-    panelLabel,
-    panelHeadline,
-    panelDescription,
-    rightTitle,
-    rightSubtitle,
-    items,
-  } = data
+export const MegaMenu: React.FC<MegaMenuProps> = ({ data, id: _id }) => {
+  const { panelLabel, panelHeadline, panelDescription, rightTitle, rightSubtitle, items } = data
 
   return (
-    <div role="region" className="ak-mega">
+    <section className="ak-mega">
       <div className="ak-mega__inner">
         {/* Left dark panel */}
         <div className="ak-mega__left">
-          <span className="ak-mega__accent-bar" aria-hidden="true" />
+          <span
+            className="ak-mega__accent-bar"
+            aria-hidden="true"
+          />
           <p className="ak-mega__eyebrow">{panelLabel}</p>
           <h2 className="ak-mega__headline">{panelHeadline}</h2>
-          {panelDescription && (
-            <p className="ak-mega__description">{panelDescription}</p>
-          )}
+          {panelDescription && <p className="ak-mega__description">{panelDescription}</p>}
         </div>
 
         {/* Right panel */}
@@ -81,11 +73,12 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({ data, id }) => {
                   <div className="ak-mega__item-body">
                     <p className="ak-mega__item-title">
                       {item.title}
-                      <ChevronRight className="ak-mega__item-chevron" aria-hidden="true" />
+                      <ChevronRight
+                        className="ak-mega__item-chevron"
+                        aria-hidden="true"
+                      />
                     </p>
-                    {item.description && (
-                      <p className="ak-mega__item-desc">{item.description}</p>
-                    )}
+                    {item.description && <p className="ak-mega__item-desc">{item.description}</p>}
                   </div>
                 </Link>
               )
@@ -93,6 +86,6 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({ data, id }) => {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   )
 }

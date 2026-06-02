@@ -1,14 +1,19 @@
 'use client'
 
-import React, { Fragment, useCallback, useState } from 'react'
 import { toast } from '@payloadcms/ui'
+import type React from 'react'
+import { Fragment, useCallback, useState } from 'react'
 
 import './index.scss'
 
 const SuccessMessage: React.FC = () => (
   <div>
     Database seeded! You can now{' '}
-    <a target="_blank" href="/">
+    <a
+      target="_blank"
+      href="/"
+      rel="noopener"
+    >
       visit your website
     </a>
   </div>
@@ -42,7 +47,10 @@ export const SeedButton: React.FC = () => {
         toast.promise(
           new Promise((resolve, reject) => {
             try {
-              fetch(`${window.location.origin}/next/seed`, { method: 'POST', credentials: 'include' })
+              fetch(`${window.location.origin}/next/seed`, {
+                method: 'POST',
+                credentials: 'include',
+              })
                 .then((res) => {
                   if (res.ok) {
                     resolve(true)
@@ -79,7 +87,11 @@ export const SeedButton: React.FC = () => {
 
   return (
     <Fragment>
-      <button className="seedButton" onClick={handleClick}>
+      <button
+        type="button"
+        className="seedButton"
+        onClick={handleClick}
+      >
         Seed your database
       </button>
       {message}
