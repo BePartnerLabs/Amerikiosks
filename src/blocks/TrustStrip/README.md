@@ -42,8 +42,8 @@ Partners are managed at **Partners** in the main admin menu. Each partner has:
 
 ### Accessibility AAA
 - [ ] Contrast ratio minimum 7:1
-- [ ] All interactive elements keyboard navigable
-- [x] ARIA labels on elements without visible text — `aria-label={heading}` on `<section>`, `aria-hidden="true"` on duplicate track
+- [ ] All interactive elements keyboard navigable — **known limitation:** no pause/play button; keyboard users without `prefers-reduced-motion` cannot pause the animation (WCAG 2.2.2). Future improvement: add a visually-hidden toggle.
+- [x] ARIA labels on elements without visible text — `aria-label={heading}` on `<section>`, `aria-hidden="true"` on duplicate track, `aria-live="off"` on viewport to suppress screen reader announcements of scrolling content
 - [x] Correct HTML landmarks — `<section>` with aria-label, `<ul>/<li>` for logo list
 - [ ] Focus visible on all interactive elements
 

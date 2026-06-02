@@ -18,6 +18,7 @@ export const TrustStripCarousel: React.FC<{ partners: CarouselPartner[] }> = ({ 
       <div
         ref={viewportRef}
         className="ak-trust-strip__viewport"
+        aria-live="off"
       >
         {[0, 1].map((i) => (
           <ul
