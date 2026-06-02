@@ -38,7 +38,7 @@ Partners are managed at **Partners** in the main admin menu. Each partner has:
 
 ## Quality Checklist
 
-**Completeness: 12/21 (57%)**
+**Completeness: 14/21 (67%)**
 
 ### Accessibility AAA
 - [ ] Contrast ratio minimum 7:1
@@ -55,11 +55,11 @@ Partners are managed at **Partners** in the main admin menu. Each partner has:
 ### Performance
 - [x] Images use `next/image` with correct sizes
 - [ ] No Cumulative Layout Shift (CLS)
-- [ ] Off-viewport content lazy loaded
+- [x] Off-viewport content lazy loaded — `next/image` lazy-loads by default
 
 ### SEO / AIO / GEO
 - [ ] Content directly answers questions (GEO-ready)
-- [ ] Schema.org implemented
+- [x] Schema.org implemented — `ItemList` with `ListItem` per partner
 - [ ] Does not block indexing
 
 ### Analytics (GA4)
@@ -88,8 +88,8 @@ Partners are managed at **Partners** in the main admin menu. Each partner has:
 
 ## Schema.org
 
-- **Applicable type:** N/A — logo strip is decorative social proof, no structured data required
-- **Implemented:** ✗
+- **Applicable type:** `ItemList` — list of partner brand names
+- **Implemented:** ✓
 
 ## Delivery Notes
 
