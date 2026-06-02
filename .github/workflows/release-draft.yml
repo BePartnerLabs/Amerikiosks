@@ -12,4 +12,3 @@ permissions:
 jobs:
   release:
     uses: BePartnerLabs/centralized-workflows/.github/workflows/release-drafter.yml@main
-    secrets: inherit
