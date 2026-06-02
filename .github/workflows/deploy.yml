@@ -36,11 +36,5 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
-      - name: Run database migrations
-        run: pnpm payload migrate --skip-empty
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
-
       - name: Deploy to Vercel (production)
         run: pnpm vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
