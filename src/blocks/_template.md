@@ -55,10 +55,16 @@
 
 ### Design System (BPL DS) CSS
 - [ ] No `--_*` private DS variables used or overridden
-- [ ] `--ak-*` brand tokens not used directly in DS component CSS properties (use Level 2 `--<component>-*` overrides instead — only if DS defaults don't fit)
-- [ ] `--bp-*` base tokens not redeclared
+- [ ] `--bp-*` base tokens not redeclared inside components
+- [ ] DS component markup copied verbatim from `ds.bepartnerlabs.com/components/<name>/` (if using a DS component)
+- [ ] All DS component customisation via `--<component>-*` class variables only — no source CSS modifications
+- [ ] `--ak-*` brand tokens not used directly in DS component CSS properties (use `--<component>-*` Level 2 overrides instead)
 - [ ] Custom project components (non-DS markup) may use `--ak-*` and `--bp-*` tokens directly
-- [ ] DS grid used correctly: full-width sections wrap content in `bp-content-grid` + `breakout`; full-bleed sections use `full-bleed`; no custom `max-width` containers that duplicate DS grid behaviour
+- [ ] No inline `style=""` attributes
+- [ ] State expressed via ARIA attributes / native pseudo-classes — not `.is-active`, `.active`, `.hidden` style classes
+- [ ] Component breakpoints use `@container`; full-viewport layouts (hero, header, footer) use `@media`
+- [ ] Animations respect `prefers-reduced-motion`
+- [ ] DS grid used correctly: content in `bp-content-grid` direct children with zone class (`breakout`, `popout`, `full-width`); no custom `max-width` containers duplicating grid behaviour
 
 ### Delivery
 - [ ] Unit tests added

@@ -58,10 +58,14 @@ When `breadcrumb` is set, a `BreadcrumbList` schema is injected via `<script typ
 
 ### Design System (BPL DS) CSS
 - [x] No `--_*` private DS variables used or overridden
-- [x] `--ak-*` tokens used only in custom project component (not a DS component) — compliant
-- [x] `--bp-*` base tokens not redeclared
-- [x] No DS component markup used — fully custom, no Level 2 overrides needed
-- [x] DS grid used correctly: section wraps content in `bp-content-grid` + `breakout`
+- [x] `--bp-*` base tokens not redeclared inside component
+- [x] No DS component markup used — fully custom, no verbatim copy needed
+- [x] All customisation via component-level CSS classes — no inline `style=""` attributes
+- [x] `--ak-*` tokens used directly (valid for custom project components, not DS components)
+- [x] No `.is-active` / `.hidden` state classes — state via ARIA attributes
+- [x] Breakpoints use `@media` (this is a full-viewport layout component)
+- [ ] Animations respect `prefers-reduced-motion` — no animations currently
+- [x] DS grid used correctly: `bp-content-grid` + `breakout` child zone
 
 ### Delivery
 - [x] Unit tests added (9 tests, all passing)
