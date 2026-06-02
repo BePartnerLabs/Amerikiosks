@@ -25,6 +25,7 @@
 .ak-hero-home__video--overlay {
   position: absolute;
   inset: 0;
+  z-index: 1;
 }
 
 /* Left-to-right dark gradient overlay */
