@@ -53,6 +53,12 @@
 ### Analytics (GA4)
 - [ ] GA4 events implemented (see section below)
 
+### Design System (BPL DS) CSS
+- [ ] No `--_*` private DS variables used or overridden
+- [ ] `--ak-*` brand tokens not used directly in DS component CSS properties (use Level 2 `--<component>-*` overrides instead — only if DS defaults don't fit)
+- [ ] `--bp-*` base tokens not redeclared
+- [ ] Custom project components (non-DS markup) may use `--ak-*` and `--bp-*` tokens directly
+
 ### Delivery
 - [ ] Unit tests added
 - [ ] All fields documented in table above

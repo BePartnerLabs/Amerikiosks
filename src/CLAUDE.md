@@ -15,6 +15,8 @@ To document a block: `/document-block <path>` (e.g. `/document-block src/blocks/
 | Header | Global | 100% | [→](./Header/README.md) |
 | Footer | Global | 100% | [→](./Footer/README.md) |
 | Hero — HighImpact | Hero Variant | 95% | [→](./heros/HighImpact/README.md) |
+| Hero — MediumImpact | Hero Variant | 89% | [→](./heros/MediumImpact/README.md) |
+| Hero — LowImpact | Hero Variant | 73% | [→](./heros/LowImpact/README.md) |
 
 > Update this table when a block README is created or its completeness score changes.
 
