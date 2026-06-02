@@ -2,6 +2,8 @@
 
 Future ideas and planned improvements for the Amerikiosks website. Items are grouped by theme, not prioritized — move to a spec when ready to implement.
 
+> This PR also verifies the centralized labeler and release-drafter workflows are wired correctly.
+
 ---
 
 ## SEO & Discoverability
