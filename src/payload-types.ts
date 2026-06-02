@@ -256,6 +256,7 @@ export interface Page {
             blockName?: string | null;
             blockType: 'valueProps';
           }
+        | TrustStripBlock
       )[]
     | null;
   meta?: {
@@ -839,6 +840,24 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TrustStripBlock".
+ */
+export interface TrustStripBlock {
+  /**
+   * Small label above the heading, e.g. "WHO WE WORK WITH"
+   */
+  eyebrow?: string | null;
+  heading: string;
+  /**
+   * Max number of partners to show. 0 = show all.
+   */
+  limit?: number | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'trustStrip';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "partners".
  */
 export interface Partner {
@@ -1186,6 +1205,7 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        trustStrip?: T | TrustStripBlockSelect<T>;
       };
   meta?:
     | T
@@ -1282,6 +1302,17 @@ export interface FormBlockSelect<T extends boolean = true> {
   form?: T;
   enableIntro?: T;
   introContent?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TrustStripBlock_select".
+ */
+export interface TrustStripBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  limit?: T;
   id?: T;
   blockName?: T;
 }
