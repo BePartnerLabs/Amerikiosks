@@ -1,7 +1,7 @@
-import Image from 'next/image'
 import type React from 'react'
 import './styles.css'
 import type { Media, TrustStripBlock as TrustStripBlockProps } from '@/payload-types'
+import { TrustStripCarousel } from './Carousel'
 
 type Partner = {
   id: string
@@ -17,6 +17,12 @@ type Props = TrustStripBlockProps & {
 export const TrustStripBlock: React.FC<Props> = ({ eyebrow, heading, partners }) => {
   if (!heading || !partners?.length) return null
 
+  const carouselPartners = partners.map((p) => ({
+    id: p.id,
+    name: p.name,
+    logoUrl: p.logo.url ?? '',
+  }))
+
   return (
     <section
       className="ak-trust-strip"
@@ -25,30 +31,7 @@ export const TrustStripBlock: React.FC<Props> = ({ eyebrow, heading, partners })
     >
       {eyebrow && <p className="ak-trust-strip__eyebrow">{eyebrow}</p>}
       <h2 className="ak-trust-strip__heading">{heading}</h2>
-
-      <div className="ak-trust-strip__viewport">
-        {[0, 1].map((i) => (
-          <ul
-            key={i}
-            className="ak-trust-strip__track"
-            aria-hidden={i === 1 ? 'true' : undefined}
-          >
-            {partners.map((partner) => (
-              <li
-                key={`${i}-${partner.id}`}
-                className="ak-trust-strip__card"
-              >
-                <Image
-                  src={partner.logo.url ?? ''}
-                  alt={partner.name}
-                  width={120}
-                  height={60}
-                />
-              </li>
-            ))}
-          </ul>
-        ))}
-      </div>
+      <TrustStripCarousel partners={carouselPartners} />
     </section>
   )
 }

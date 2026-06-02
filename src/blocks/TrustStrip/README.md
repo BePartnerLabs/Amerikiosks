@@ -38,7 +38,7 @@ Partners are managed at **Partners** in the main admin menu. Each partner has:
 
 ## Quality Checklist
 
-**Completeness: 11/21 (52%)**
+**Completeness: 12/21 (57%)**
 
 ### Accessibility AAA
 - [ ] Contrast ratio minimum 7:1
@@ -63,7 +63,7 @@ Partners are managed at **Partners** in the main admin menu. Each partner has:
 - [ ] Does not block indexing
 
 ### Analytics (GA4)
-- [ ] GA4 events implemented
+- [x] GA4 events implemented
 
 ### Design System (BPL DS) CSS
 - [ ] No `--_*` private DS variables used or overridden
@@ -84,7 +84,7 @@ Partners are managed at **Partners** in the main admin menu. Each partner has:
 
 | Event name | Trigger | `data-ga-section` | Required | Implemented |
 |------------|---------|-------------------|----------|-------------|
-| `partner_logo_view` | Logo enters viewport | `trust_strip` | ✗ | ✗ |
+| `partner_logo_dwell` | Logo card leaves viewport after being ≥50% visible | `trust_strip` | ✓ | ✓ |
 
 ## Schema.org
 
