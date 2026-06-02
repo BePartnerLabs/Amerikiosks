@@ -35,6 +35,7 @@ export const LowImpactHero: React.FC<LowImpactHeroType> = ({ richText, breadcrum
       {breadcrumb && (
         <script
           type="application/ld+json"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: json-ld is a common use case for dangerouslySetInnerHTML, and the content is generated from a trusted source (the breadcrumb string)
           dangerouslySetInnerHTML={{ __html: JSON.stringify(buildBreadcrumbJsonLd(breadcrumb)) }}
         />
       )}

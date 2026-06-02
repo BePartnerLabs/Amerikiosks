@@ -1,0 +1,100 @@
+/* ── Trust Strip ─────────────────────────────────────── */
+.ak-trust-strip {
+  padding: var(--ak-section-py, 4rem) 0;
+  text-align: center;
+  overflow: hidden;
+}
+
+.ak-trust-strip__eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ak-color-primary, #1e3a5f);
+  margin-bottom: 0.75rem;
+}
+
+.ak-trust-strip__heading {
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 700;
+  color: var(--ak-color-heading, #0f2040);
+  margin-bottom: 2.5rem;
+}
+
+.ak-trust-strip__viewport {
+  display: flex;
+  gap: 0;
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+.ak-trust-strip__viewport:hover .ak-trust-strip__track {
+  animation-play-state: paused;
+}
+
+.ak-trust-strip__track {
+  display: flex;
+  gap: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  animation: ak-marquee 40s linear infinite;
+  flex-shrink: 0;
+}
+
+.ak-trust-strip__card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.06);
+  padding: 1rem 1.5rem;
+  min-width: 160px;
+  height: 88px;
+  flex-shrink: 0;
+}
+
+.ak-trust-strip__card img {
+  object-fit: contain;
+}
+
+@keyframes ak-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@container trust-strip (max-width: 640px) {
+  .ak-trust-strip {
+    padding: var(--ak-section-py-mobile, 2.5rem) 0;
+  }
+
+  .ak-trust-strip__heading {
+    margin-bottom: 1.75rem;
+    padding: 0 1rem;
+  }
+
+  .ak-trust-strip__track {
+    gap: 0.625rem;
+    animation-duration: 28s;
+  }
+
+  .ak-trust-strip__card {
+    min-width: 120px;
+    height: 68px;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ak-trust-strip__track {
+    animation-play-state: paused;
+  }
+}
