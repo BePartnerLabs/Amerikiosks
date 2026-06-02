@@ -56,6 +56,17 @@
 ### Analytics (GA4)
 - [x] GA4 events implemented (see section below)
 
+### Design System (BPL DS) CSS
+- [x] No `--_*` private DS variables used or overridden
+- [x] `--bp-*` base tokens not redeclared inside component
+- [x] No DS component markup used — fully custom, no verbatim copy needed
+- [x] All customisation via component-level CSS classes — no inline `style=""` attributes
+- [x] `--ak-*` tokens used directly (valid for custom project components, not DS components)
+- [x] No `.is-active` / `.hidden` state classes
+- [x] Breakpoints use `@media` (full-viewport layout block — correct)
+- [x] No animations — `prefers-reduced-motion` N/A
+- [x] DS grid used correctly: `bp-content-grid` + `breakout` child zone
+
 ### Delivery
 - [x] Unit tests added
 - [x] All fields documented in table above
