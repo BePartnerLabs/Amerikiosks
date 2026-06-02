@@ -53,6 +53,19 @@
 ### Analytics (GA4)
 - [ ] GA4 events implemented (see section below)
 
+### Design System (BPL DS) CSS
+- [ ] No `--_*` private DS variables used or overridden
+- [ ] `--bp-*` base tokens not redeclared inside components
+- [ ] DS component markup copied verbatim from `ds.bepartnerlabs.com/components/<name>/` (if using a DS component)
+- [ ] All DS component customisation via `--<component>-*` class variables only — no source CSS modifications
+- [ ] `--ak-*` brand tokens not used directly in DS component CSS properties (use `--<component>-*` Level 2 overrides instead)
+- [ ] Custom project components (non-DS markup) may use `--ak-*` and `--bp-*` tokens directly
+- [ ] No inline `style=""` attributes
+- [ ] State expressed via ARIA attributes / native pseudo-classes — not `.is-active`, `.active`, `.hidden` style classes
+- [ ] Component breakpoints use `@container`; full-viewport layouts (hero, header, footer) use `@media`
+- [ ] Animations respect `prefers-reduced-motion`
+- [ ] DS grid used correctly: content in `bp-content-grid` direct children with zone class (`breakout`, `popout`, `full-width`); no custom `max-width` containers duplicating grid behaviour
+
 ### Delivery
 - [ ] Unit tests added
 - [ ] All fields documented in table above

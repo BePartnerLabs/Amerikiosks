@@ -69,6 +69,18 @@
 ### Analytics (GA4)
 - [x] GA4 events implemented (see section below)
 
+### Design System (BPL DS) CSS
+- [x] No `--_*` private DS variables used or overridden
+- [x] `--bp-*` base tokens not redeclared inside component
+- [x] No DS component markup used — fully custom, no verbatim copy needed
+- [x] `--ak-*` tokens used directly (valid for custom project components, not DS components)
+- [x] No `.is-active` / `.hidden` state classes — open/close state via JS class toggling on drawer
+- [x] `@container header-inner` used for mobile menu breakpoint (correct per DS rules)
+- [x] `@media` used for global viewport layout (correct)
+- [ ] Animations respect `prefers-reduced-motion` — mobile drawer slide + chevron rotation not gated
+- [ ] Inline `style=""` present: sentinel `height: 1px` div and chevron `transform` — low risk but non-compliant
+- [x] DS grid used correctly: `bp-content-grid` + `breakout` child zone
+
 ### Delivery
 - [x] Unit tests added
 - [x] All fields documented in table above
