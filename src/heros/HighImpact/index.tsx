@@ -57,7 +57,6 @@ export const HighImpactHero: React.FC<Page['hero']> = ({
           />
         )}
         {videoUrl && (
-          // biome-ignore lint/a11y/noAriaHiddenOnFocusable: decorative background video
           <video
             autoPlay
             muted
