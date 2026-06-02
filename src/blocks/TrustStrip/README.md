@@ -38,7 +38,7 @@ Partners are managed at **Partners** in the main admin menu. Each partner has:
 
 ## Quality Checklist
 
-**Completeness: 9/21 (43%)**
+**Completeness: 11/21 (52%)**
 
 ### Accessibility AAA
 - [ ] Contrast ratio minimum 7:1
@@ -71,8 +71,8 @@ Partners are managed at **Partners** in the main admin menu. Each partner has:
 - [ ] DS component markup copied verbatim (N/A — custom component)
 - [ ] All DS component customisation via `--<component>-*` class variables only
 - [x] `--ak-*` brand tokens used via CSS variables with fallbacks
-- [ ] No inline `style=""` attributes — objectFit passed as style prop to next/image (acceptable)
-- [ ] Animations respect `prefers-reduced-motion`
+- [x] No inline `style=""` attributes
+- [x] Animations respect `prefers-reduced-motion`
 
 ### Delivery
 - [x] Unit tests added

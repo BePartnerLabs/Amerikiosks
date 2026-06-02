@@ -43,7 +43,6 @@ export const TrustStripBlock: React.FC<Props> = ({ eyebrow, heading, partners })
                   alt={partner.name}
                   width={120}
                   height={60}
-                  style={{ objectFit: 'contain' }}
                 />
               </li>
             ))}
