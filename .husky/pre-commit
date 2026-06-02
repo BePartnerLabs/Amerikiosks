@@ -1,2 +1,3 @@
 pnpm lint-staged
 pnpm tsc --noEmit
+pnpm vitest run --config ./vitest.config.mts tests/unit

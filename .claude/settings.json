@@ -24,6 +24,11 @@
             "type": "command",
             "command": ".claude/hooks/typecheck.sh",
             "statusMessage": "Running TypeScript check..."
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/unit-tests.sh",
+            "statusMessage": "Running unit tests..."
           }
         ]
       }
