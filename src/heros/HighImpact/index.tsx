@@ -57,11 +57,14 @@ export const HighImpactHero: React.FC<Page['hero']> = ({
           />
         )}
         {videoUrl && (
+          // biome-ignore lint/a11y/noAriaHiddenOnFocusable: decorative background video
           <video
             autoPlay
             muted
             loop
             playsInline
+            tabIndex={-1}
+            aria-hidden="true"
             className="ak-hero-home__video ak-hero-home__video--overlay"
           >
             <source

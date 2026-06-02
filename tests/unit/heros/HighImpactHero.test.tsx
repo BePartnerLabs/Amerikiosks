@@ -145,7 +145,7 @@ describe('HighImpactHero', () => {
     const { container } = render(<HighImpactHero {...baseHero} />)
     const script = container.querySelector('script[type="application/ld+json"]')
     expect(script).not.toBeNull()
-    const data = JSON.parse(script?.innerHTML ?? '{}')
+    const data = JSON.parse((script as Element).innerHTML)
     expect(data['@type']).toBe('WebPageElement')
   })
 
