@@ -3,10 +3,11 @@
  * table when the DB was already bootstrapped via dev-mode schema push.
  * Run with: node scripts/mark-migrations-applied.mjs
  */
+
+import { readFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import pg from '../node_modules/.pnpm/pg@8.16.3/node_modules/pg/lib/index.js'
-import { readFileSync } from 'fs'
-import { fileURLToPath } from 'url'
-import { dirname, join } from 'path'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const envPath = join(__dirname, '..', '.env')
@@ -36,14 +37,11 @@ await client.connect()
 const migrations = ['20260528_232318', '20260601_000000']
 
 for (const name of migrations) {
-  const { rows } = await client.query(
-    'SELECT id FROM payload_migrations WHERE name = $1',
-    [name]
-  )
+  const { rows } = await client.query('SELECT id FROM payload_migrations WHERE name = $1', [name])
   if (rows.length === 0) {
     await client.query(
       'INSERT INTO payload_migrations (name, batch, updated_at, created_at) VALUES ($1, $2, now(), now())',
-      [name, 1]
+      [name, 1],
     )
     console.log(`Marked ${name} as applied`)
   } else {

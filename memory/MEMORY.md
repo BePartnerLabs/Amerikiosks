@@ -6,3 +6,4 @@
 - [Logos](reference_logos.md) — logo-9=favicon/isotype, logo-1=mobile header, logo-4=desktop header — all in public/logos/
 - [I18n — Todo es traducible](project_i18n_translatable_elements.md) — Todos los campos de contenido van en EN+ES; slugs siempre en inglés; locale en seed debe ir via `req`, no solo top-level param
 - [URL Productiva](project_production_url.md) — https://amerikiosks.vercel.app/ — URL base productiva en Vercel (dominio custom pendiente)
+- [Centralized BPL Workflows](project_centralized_workflows.md) — Future: move CI/release/deploy workflows to BePartnerLabs org repo when a second project needs them

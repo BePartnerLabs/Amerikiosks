@@ -1,4 +1,6 @@
 'use client'
+import { useRouter } from 'next/navigation'
+import type React from 'react'
 import {
   Pagination as PaginationComponent,
   PaginationContent,
@@ -8,8 +10,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination'
-import { useRouter } from 'next/navigation'
-import React from 'react'
 
 export const Pagination: React.FC<{
   className?: string
@@ -18,7 +18,7 @@ export const Pagination: React.FC<{
 }> = (props) => {
   const router = useRouter()
 
-  const { className, page, totalPages } = props
+  const { page, totalPages } = props
   const hasNextPage = page < totalPages
   const hasPrevPage = page > 1
 

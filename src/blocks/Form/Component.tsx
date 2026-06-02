@@ -1,15 +1,14 @@
 'use client'
 import type { FormFieldBlock, Form as FormType } from '@payloadcms/plugin-form-builder/types'
-
+import type { DefaultTypedEditorState } from '@payloadcms/richtext-lexical'
 import { useRouter } from 'next/navigation'
-import React, { useCallback, useState } from 'react'
-import { useForm, FormProvider } from 'react-hook-form'
+import type React from 'react'
+import { useCallback, useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
 import RichText from '@/components/RichText'
 import { Button } from '@/components/ui/button'
-import type { DefaultTypedEditorState } from '@payloadcms/richtext-lexical'
-
-import { fields } from './fields'
 import { getClientSideURL } from '@/utilities/getURL'
+import { fields } from './fields'
 
 export type FormBlockType = {
   blockName?: string
@@ -116,7 +115,11 @@ export const FormBlock: React.FC<
   return (
     <div className="container lg:max-w-[48rem]">
       {enableIntro && introContent && !hasSubmitted && (
-        <RichText className="mb-8 lg:mb-12" data={introContent} enableGutter={false} />
+        <RichText
+          className="mb-8 lg:mb-12"
+          data={introContent}
+          enableGutter={false}
+        />
       )}
       <div className="p-4 lg:p-6 border border-border rounded-[0.8rem]">
         <FormProvider {...formMethods}>
@@ -126,32 +129,46 @@ export const FormBlock: React.FC<
           {isLoading && !hasSubmitted && <p>Loading, please wait...</p>}
           {error && <div>{`${error.status || '500'}: ${error.message || ''}`}</div>}
           {!hasSubmitted && (
-            <form id={formID} onSubmit={handleSubmit(onSubmit)}>
+            <form
+              id={formID}
+              onSubmit={handleSubmit(onSubmit)}
+            >
               <div className="mb-4 last:mb-0">
-                {formFromProps &&
-                  formFromProps.fields &&
-                  formFromProps.fields?.map((field, index) => {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    const Field: React.FC<any> = fields?.[field.blockType as keyof typeof fields]
-                    if (Field) {
-                      return (
-                        <div className="mb-6 last:mb-0" key={index}>
-                          <Field
-                            form={formFromProps}
-                            {...field}
-                            {...formMethods}
-                            control={control}
-                            errors={errors}
-                            register={register}
-                          />
-                        </div>
-                      )
-                    }
-                    return null
-                  })}
+                {formFromProps?.fields?.map((field, index) => {
+                  const Field = fields?.[field.blockType as keyof typeof fields] as
+                    | React.ComponentType<Record<string, unknown>>
+                    | undefined
+                  const fieldKey =
+                    (field as { id?: string; name?: string; blockName?: string }).id ||
+                    (field as { id?: string; name?: string; blockName?: string }).name ||
+                    (field as { id?: string; name?: string; blockName?: string }).blockName ||
+                    `${field.blockType}-field-${index}`
+                  if (Field) {
+                    return (
+                      <div
+                        className="mb-6 last:mb-0"
+                        key={fieldKey}
+                      >
+                        <Field
+                          form={formFromProps}
+                          {...field}
+                          {...formMethods}
+                          control={control}
+                          errors={errors}
+                          register={register}
+                        />
+                      </div>
+                    )
+                  }
+                  return null
+                })}
               </div>
 
-              <Button form={formID} type="submit" variant="default">
+              <Button
+                form={formID}
+                type="submit"
+                variant="default"
+              >
                 {submitButtonLabel}
               </Button>
             </form>

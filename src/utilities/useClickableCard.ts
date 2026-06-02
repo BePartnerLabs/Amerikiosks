@@ -1,7 +1,7 @@
 'use client'
-import type { RefObject } from 'react'
 
 import { useRouter } from 'next/navigation'
+import type { RefObject } from 'react'
 import { useCallback, useEffect, useRef } from 'react'
 
 type UseClickableCardType<T extends HTMLElement> = {
@@ -36,7 +36,7 @@ function useClickableCard<T extends HTMLElement>({
       if (e.target) {
         const target = e.target as Element
 
-        const timeNow = +new Date()
+        const timeNow = Date.now()
         const parent = target?.closest('a')
 
         pressedButton.current = e.button
@@ -50,13 +50,13 @@ function useClickableCard<T extends HTMLElement>({
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [router, card, link, timeDown],
+    [],
   )
 
   const handleMouseUp = useCallback(
     (e: MouseEvent) => {
       if (link.current?.href) {
-        const timeNow = +new Date()
+        const timeNow = Date.now()
         const difference = timeNow - timeDown.current
 
         if (link.current?.href && difference <= 250) {
@@ -72,7 +72,7 @@ function useClickableCard<T extends HTMLElement>({
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [router, card, link, timeDown],
+    [router, newTab, scroll, external],
   )
 
   useEffect(() => {
@@ -93,7 +93,7 @@ function useClickableCard<T extends HTMLElement>({
       abortController.abort()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [card, link, router])
+  }, [handleMouseDown, handleMouseUp])
 
   return {
     card: {

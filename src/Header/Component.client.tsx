@@ -1,18 +1,18 @@
 'use client'
 
-import { useHeaderTheme } from '@/providers/HeaderTheme'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import React, { useEffect, useRef, useState } from 'react'
-
-import type { Header } from '@/payload-types'
-import { Logo } from '@/components/Logo/Logo'
+import type React from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
-import dynamic from 'next/dynamic'
+import { Logo } from '@/components/Logo/Logo'
+import type { Header } from '@/payload-types'
+import { useHeaderTheme } from '@/providers/HeaderTheme'
 import { HeaderNav } from './Nav'
 import './header.css'
 
-const MobileMenu = dynamic(() => import('./MobileMenu').then(m => ({ default: m.MobileMenu })), {
+const MobileMenu = dynamic(() => import('./MobileMenu').then((m) => ({ default: m.MobileMenu })), {
   ssr: false,
   loading: () => null,
 })
@@ -24,18 +24,18 @@ interface HeaderClientProps {
 export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
   const [theme, setTheme] = useState<string | null>(null)
   const { headerTheme, setHeaderTheme } = useHeaderTheme()
-  const pathname = usePathname()
+  const _pathname = usePathname()
   const headerRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     setHeaderTheme(null)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname])
+  }, [setHeaderTheme])
 
   useEffect(() => {
     if (headerTheme && headerTheme !== theme) setTheme(headerTheme)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [headerTheme])
+  }, [headerTheme, theme])
 
   useEffect(() => {
     const sentinel = document.getElementById('header-sentinel')
@@ -43,7 +43,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
     if (!sentinel || !header) return
     const observer = new IntersectionObserver(
       ([entry]) => header.classList.toggle('is-scrolled', !entry.isIntersecting),
-      { rootMargin: '-1px' }
+      { rootMargin: '-1px' },
     )
     observer.observe(sentinel)
     return () => observer.disconnect()
@@ -51,7 +51,11 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
 
   return (
     <>
-      <div id="header-sentinel" aria-hidden="true" style={{ height: '1px' }} />
+      <div
+        id="header-sentinel"
+        aria-hidden="true"
+        style={{ height: '1px' }}
+      />
       <header
         ref={headerRef}
         className="bp-header"
@@ -59,8 +63,15 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
       >
         <div className="bp-content-grid">
           <div className="breakout bp-header__inner">
-            <Link href="/" className="bp-header__logo" aria-label="Go to homepage">
-              <Logo loading="eager" priority="high" />
+            <Link
+              href="/"
+              className="bp-header__logo"
+              aria-label="Go to homepage"
+            >
+              <Logo
+                loading="eager"
+                priority="high"
+              />
             </Link>
 
             <HeaderNav data={data} />

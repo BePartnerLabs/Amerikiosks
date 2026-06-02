@@ -13,8 +13,20 @@ export const seedFooter = async (payload: Payload, req: PayloadRequest): Promise
         {
           label: 'Solutions',
           links: [
-            { link: { type: 'custom', label: 'Retail experiences', url: '/solutions/retail-experiences' } },
-            { link: { type: 'custom', label: 'Brand activations', url: '/solutions/brand-activations' } },
+            {
+              link: {
+                type: 'custom',
+                label: 'Retail experiences',
+                url: '/solutions/retail-experiences',
+              },
+            },
+            {
+              link: {
+                type: 'custom',
+                label: 'Brand activations',
+                url: '/solutions/brand-activations',
+              },
+            },
             { link: { type: 'custom', label: 'Venue programs', url: '/solutions/venue-programs' } },
           ],
         },
@@ -36,7 +48,7 @@ export const seedFooter = async (payload: Payload, req: PayloadRequest): Promise
     depth: 0,
   })
 
-  const columns = enResult.columns as any[]
+  const columns = enResult.columns as Array<{ id?: string; links?: Array<{ id?: string }> }>
 
   await payload.updateGlobal({
     slug: 'footer',
@@ -49,18 +61,48 @@ export const seedFooter = async (payload: Payload, req: PayloadRequest): Promise
           id: columns[0]?.id,
           label: 'Soluciones',
           links: [
-            { id: columns[0]?.links?.[0]?.id, link: { type: 'custom', label: 'Experiencias de retail', url: '/solutions/retail-experiences' } },
-            { id: columns[0]?.links?.[1]?.id, link: { type: 'custom', label: 'Activaciones de marca', url: '/solutions/brand-activations' } },
-            { id: columns[0]?.links?.[2]?.id, link: { type: 'custom', label: 'Programas para venues', url: '/solutions/venue-programs' } },
+            {
+              id: columns[0]?.links?.[0]?.id,
+              link: {
+                type: 'custom',
+                label: 'Experiencias de retail',
+                url: '/solutions/retail-experiences',
+              },
+            },
+            {
+              id: columns[0]?.links?.[1]?.id,
+              link: {
+                type: 'custom',
+                label: 'Activaciones de marca',
+                url: '/solutions/brand-activations',
+              },
+            },
+            {
+              id: columns[0]?.links?.[2]?.id,
+              link: {
+                type: 'custom',
+                label: 'Programas para venues',
+                url: '/solutions/venue-programs',
+              },
+            },
           ],
         },
         {
           id: columns[1]?.id,
           label: 'Compañía',
           links: [
-            { id: columns[1]?.links?.[0]?.id, link: { type: 'custom', label: 'Nuestra historia', url: '/our-story' } },
-            { id: columns[1]?.links?.[1]?.id, link: { type: 'custom', label: 'Dónde funciona', url: '/where-it-works' } },
-            { id: columns[1]?.links?.[2]?.id, link: { type: 'custom', label: 'Insights destacados', url: '/insights' } },
+            {
+              id: columns[1]?.links?.[0]?.id,
+              link: { type: 'custom', label: 'Nuestra historia', url: '/our-story' },
+            },
+            {
+              id: columns[1]?.links?.[1]?.id,
+              link: { type: 'custom', label: 'Dónde funciona', url: '/where-it-works' },
+            },
+            {
+              id: columns[1]?.links?.[2]?.id,
+              link: { type: 'custom', label: 'Insights destacados', url: '/insights' },
+            },
           ],
         },
       ],

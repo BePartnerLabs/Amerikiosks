@@ -1,10 +1,8 @@
-import React from 'react'
-
-import type { Page } from '@/payload-types'
-
+import type React from 'react'
 import { CMSLink } from '@/components/Link'
 import { Media } from '@/components/Media'
 import RichText from '@/components/RichText'
+import type { Page } from '@/payload-types'
 import './medium-impact.css'
 
 export const MediumImpactHero: React.FC<Page['hero']> = ({
@@ -22,12 +20,17 @@ export const MediumImpactHero: React.FC<Page['hero']> = ({
           <div className="ak-hero-interior__text">
             {breadcrumb && <p className="ak-hero-interior__breadcrumb">{breadcrumb}</p>}
 
-            {richText && <RichText data={richText} enableGutter={false} />}
+            {richText && (
+              <RichText
+                data={richText}
+                enableGutter={false}
+              />
+            )}
 
             {Array.isArray(links) && links.length > 0 && (
               <ul className="ak-hero-interior__actions">
                 {links.map(({ link }, i) => (
-                  <li key={i}>
+                  <li key={link.url ?? link.label ?? i}>
                     <CMSLink {...link} />
                   </li>
                 ))}
@@ -48,7 +51,10 @@ export const MediumImpactHero: React.FC<Page['hero']> = ({
           {/* Media column */}
           {media && typeof media === 'object' && (
             <div className="ak-hero-interior__media">
-              <Media priority resource={media} />
+              <Media
+                priority
+                resource={media}
+              />
             </div>
           )}
         </div>

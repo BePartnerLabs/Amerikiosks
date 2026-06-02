@@ -1,6 +1,6 @@
-import { Button, type ButtonProps } from '@/components/ui/button'
 import Link from 'next/link'
-import React from 'react'
+import type React from 'react'
+import { Button, type ButtonProps } from '@/components/ui/button'
 
 import type { Page, Post } from '@/payload-types'
 
@@ -47,7 +47,11 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
   /* Ensure we don't break any styles set by richText */
   if (appearance === 'inline' || appearance === 'link') {
     return (
-      <Link className={className ?? ''} href={href || url || ''} {...newTabProps}>
+      <Link
+        className={className ?? ''}
+        href={href || url || ''}
+        {...newTabProps}
+      >
         {label && label}
         {children && children}
       </Link>
@@ -55,8 +59,16 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
   }
 
   return (
-    <Button asChild className={className ?? ''} size={size} variant={appearance}>
-      <Link href={href || url || ''} {...newTabProps}>
+    <Button
+      asChild
+      className={className ?? ''}
+      size={size}
+      variant={appearance}
+    >
+      <Link
+        href={href || url || ''}
+        {...newTabProps}
+      >
         {label && label}
         {children && children}
       </Link>

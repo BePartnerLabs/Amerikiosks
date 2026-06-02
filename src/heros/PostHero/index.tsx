@@ -1,9 +1,7 @@
-import { formatDateTime } from 'src/utilities/formatDateTime'
 import React from 'react'
-
-import type { Post } from '@/payload-types'
-
+import { formatDateTime } from 'src/utilities/formatDateTime'
 import { Media } from '@/components/Media'
+import type { Post } from '@/payload-types'
 import { formatAuthors } from '@/utilities/formatAuthors'
 
 export const PostHero: React.FC<{
@@ -24,11 +22,16 @@ export const PostHero: React.FC<{
                 const { title: categoryTitle } = category
 
                 const titleToUse = categoryTitle || 'Untitled category'
+                const categoryKey =
+                  'id' in category &&
+                  (typeof category.id === 'string' || typeof category.id === 'number')
+                    ? category.id
+                    : titleToUse
 
                 const isLast = index === categories.length - 1
 
                 return (
-                  <React.Fragment key={index}>
+                  <React.Fragment key={categoryKey}>
                     {titleToUse}
                     {!isLast && <React.Fragment>, &nbsp;</React.Fragment>}
                   </React.Fragment>
@@ -64,7 +67,12 @@ export const PostHero: React.FC<{
       </div>
       <div className="">
         {heroImage && typeof heroImage !== 'string' && (
-          <Media fill priority imgClassName="" resource={heroImage} />
+          <Media
+            fill
+            priority
+            imgClassName=""
+            resource={heroImage}
+          />
         )}
         <div className="" />
       </div>

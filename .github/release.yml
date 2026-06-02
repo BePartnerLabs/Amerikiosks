@@ -1,0 +1,18 @@
+changelog:
+  categories:
+    - title: Features
+      labels:
+        - feat
+      types:
+        - feat
+    - title: Bug Fixes
+      labels:
+        - fix
+      types:
+        - fix
+    - title: Performance
+      types:
+        - perf
+    - title: Reverts
+      types:
+        - revert

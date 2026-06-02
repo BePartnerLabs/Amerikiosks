@@ -1,32 +1,35 @@
-import { MediaBlock } from '@/blocks/MediaBlock/Component'
-import {
+import type {
   DefaultNodeTypes,
+  DefaultTypedEditorState,
   SerializedBlockNode,
   SerializedLinkNode,
-  type DefaultTypedEditorState,
 } from '@payloadcms/richtext-lexical'
 import {
-  JSXConvertersFunction,
-  LinkJSXConverter,
   RichText as ConvertRichText,
+  type JSXConvertersFunction,
+  LinkJSXConverter,
 } from '@payloadcms/richtext-lexical/react'
-
-import { CodeBlock, CodeBlockProps } from '@/blocks/Code/Component'
-
+import { BannerBlock } from '@/blocks/Banner/Component'
+import { CallToActionBlock } from '@/blocks/CallToAction/Component'
+import { CodeBlock, type CodeBlockProps } from '@/blocks/Code/Component'
+import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import type {
   BannerBlock as BannerBlockProps,
   CallToActionBlock as CTABlockProps,
   MediaBlock as MediaBlockProps,
 } from '@/payload-types'
-import { BannerBlock } from '@/blocks/Banner/Component'
-import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 
 type NodeTypes =
   | DefaultNodeTypes
   | SerializedBlockNode<CTABlockProps | MediaBlockProps | BannerBlockProps | CodeBlockProps>
 
 const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
-  const { value, relationTo } = linkNode.fields.doc!
+  const doc = linkNode.fields.doc
+  if (!doc) {
+    throw new Error('Expected doc to be defined')
+  }
+
+  const { value, relationTo } = doc
   if (typeof value !== 'object') {
     throw new Error('Expected value to be an object')
   }
@@ -38,7 +41,12 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
   ...defaultConverters,
   ...LinkJSXConverter({ internalDocToHref }),
   blocks: {
-    banner: ({ node }) => <BannerBlock className="" {...node.fields} />,
+    banner: ({ node }) => (
+      <BannerBlock
+        className=""
+        {...node.fields}
+      />
+    ),
     mediaBlock: ({ node }) => (
       <MediaBlock
         className=""
@@ -49,7 +57,12 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
         disableInnerContainer={true}
       />
     ),
-    code: ({ node }) => <CodeBlock className="" {...node.fields} />,
+    code: ({ node }) => (
+      <CodeBlock
+        className=""
+        {...node.fields}
+      />
+    ),
     cta: ({ node }) => <CallToActionBlock {...node.fields} />,
   },
 })

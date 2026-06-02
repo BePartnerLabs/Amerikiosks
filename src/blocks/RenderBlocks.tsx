@@ -1,13 +1,12 @@
-import React, { Fragment } from 'react'
-
-import type { Page } from '@/payload-types'
-
+import type React from 'react'
+import { Fragment } from 'react'
 import { ArchiveBlock } from '@/blocks/ArchiveBlock/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
 import { FormBlock } from '@/blocks/Form/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { ValuePropsBlock } from '@/blocks/ValueProps/Component'
+import type { Page } from '@/payload-types'
 
 const blockComponents = {
   archive: ArchiveBlock,
@@ -28,17 +27,19 @@ export const RenderBlocks: React.FC<{
   if (hasBlocks) {
     return (
       <Fragment>
-        {blocks.map((block, index) => {
+        {blocks.map((block) => {
           const { blockType } = block
 
           if (blockType && blockType in blockComponents) {
-            const Block = blockComponents[blockType]
+            const Block = blockComponents[blockType] as React.ComponentType<Record<string, unknown>>
 
             if (Block) {
               return (
-                <div className="" key={index}>
-                  {/* @ts-expect-error there may be some mismatch between the expected types here */}
-                  <Block {...block} disableInnerContainer />
+                <div
+                  className=""
+                  key={block.id ?? `${blockType}-${block.blockName ?? 'block'}`}
+                >
+                  <Block {...block} />
                 </div>
               )
             }

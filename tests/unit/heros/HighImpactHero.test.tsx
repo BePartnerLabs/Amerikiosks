@@ -1,25 +1,48 @@
-import React from 'react'
-import { describe, it, expect, vi, afterEach } from 'vitest'
-import { render, screen, cleanup } from '@testing-library/react'
+import { cleanup, render, screen } from '@testing-library/react'
+import Image from 'next/image'
+import type React from 'react'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('@/providers/HeaderTheme', () => ({
   useHeaderTheme: () => ({ setHeaderTheme: vi.fn(), headerTheme: null }),
 }))
 
 vi.mock('@/components/Link', () => ({
-  CMSLink: ({ label, url, children, ...rest }: { label?: string; url?: string; children?: React.ReactNode }) => (
-    <a href={url ?? '#'} {...rest}>{label ?? children}</a>
+  CMSLink: ({
+    label,
+    url,
+    children,
+    ...rest
+  }: {
+    label?: string
+    url?: string
+    children?: React.ReactNode
+  }) => (
+    <a
+      href={url ?? '#'}
+      {...rest}
+    >
+      {label ?? children}
+    </a>
   ),
 }))
 
 vi.mock('@/components/Media', () => ({
   Media: ({ resource }: { resource: { url?: string; alt?: string } }) => (
-    <img src={resource?.url ?? ''} alt={resource?.alt ?? ''} />
+    <Image
+      src={resource?.url ?? ''}
+      alt={resource?.alt ?? ''}
+      width={1920}
+      height={1080}
+      unoptimized
+    />
   ),
 }))
 
 vi.mock('@/components/RichText', () => ({
-  default: ({ data }: { data: unknown }) => <div data-testid="richtext">{JSON.stringify(data)}</div>,
+  default: ({ data }: { data: unknown }) => (
+    <div data-testid="richtext">{JSON.stringify(data)}</div>
+  ),
 }))
 
 import { HighImpactHero } from '@/heros/HighImpact'
@@ -29,11 +52,22 @@ type HeroProps = Page['hero']
 
 const baseHero: HeroProps = {
   type: 'highImpact',
-  richText: { root: { type: 'root', children: [], direction: null, format: '', indent: 0, version: 1 } },
-  links: [
-    { link: { type: 'custom', url: '/demo', label: 'Get a Demo', appearance: 'default' } },
-  ],
-  media: { id: 1, url: '/hero.jpg', alt: 'Airport hero image', updatedAt: '', createdAt: '', filename: 'hero.jpg', mimeType: 'image/jpeg', filesize: 1000, width: 1920, height: 1080 },
+  richText: {
+    root: { type: 'root', children: [], direction: null, format: '', indent: 0, version: 1 },
+  },
+  links: [{ link: { type: 'custom', url: '/demo', label: 'Get a Demo', appearance: 'default' } }],
+  media: {
+    id: 1,
+    url: '/hero.jpg',
+    alt: 'Airport hero image',
+    updatedAt: '',
+    createdAt: '',
+    filename: 'hero.jpg',
+    mimeType: 'image/jpeg',
+    filesize: 1000,
+    width: 1920,
+    height: 1080,
+  },
   backgroundVideo: null,
 }
 
@@ -75,7 +109,15 @@ describe('HighImpactHero', () => {
   it('renders video when backgroundVideo is provided', () => {
     const heroWithVideo: HeroProps = {
       ...baseHero,
-      backgroundVideo: { id: 2, url: '/hero.mp4', updatedAt: '', createdAt: '', filename: 'hero.mp4', mimeType: 'video/mp4', filesize: 5000 },
+      backgroundVideo: {
+        id: 2,
+        url: '/hero.mp4',
+        updatedAt: '',
+        createdAt: '',
+        filename: 'hero.mp4',
+        mimeType: 'video/mp4',
+        filesize: 5000,
+      },
     }
     const { container } = render(<HighImpactHero {...heroWithVideo} />)
     expect(container.querySelector('video')).not.toBeNull()
@@ -85,7 +127,15 @@ describe('HighImpactHero', () => {
   it('video has aria-hidden when present', () => {
     const heroWithVideo: HeroProps = {
       ...baseHero,
-      backgroundVideo: { id: 2, url: '/hero.mp4', updatedAt: '', createdAt: '', filename: 'hero.mp4', mimeType: 'video/mp4', filesize: 5000 },
+      backgroundVideo: {
+        id: 2,
+        url: '/hero.mp4',
+        updatedAt: '',
+        createdAt: '',
+        filename: 'hero.mp4',
+        mimeType: 'video/mp4',
+        filesize: 5000,
+      },
     }
     const { container } = render(<HighImpactHero {...heroWithVideo} />)
     expect(container.querySelector('video')).toHaveAttribute('aria-hidden', 'true')
@@ -95,12 +145,17 @@ describe('HighImpactHero', () => {
     const { container } = render(<HighImpactHero {...baseHero} />)
     const script = container.querySelector('script[type="application/ld+json"]')
     expect(script).not.toBeNull()
-    const data = JSON.parse(script!.innerHTML)
+    const data = JSON.parse((script as Element).innerHTML)
     expect(data['@type']).toBe('WebPageElement')
   })
 
   it('renders no CTA list when links is empty', () => {
-    render(<HighImpactHero {...baseHero} links={[]} />)
+    render(
+      <HighImpactHero
+        {...baseHero}
+        links={[]}
+      />,
+    )
     expect(screen.queryByRole('list')).toBeNull()
   })
 })

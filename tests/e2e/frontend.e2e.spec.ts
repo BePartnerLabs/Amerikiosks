@@ -1,4 +1,4 @@
-import { test, expect, Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 test.describe('Frontend', () => {
   test('can load homepage', async ({ page }) => {
@@ -12,21 +12,17 @@ test.describe('Frontend', () => {
     const header = page.locator('header').first()
     await expect(header).toBeVisible()
     // Header must exist and be sticky
-    const position = await header.evaluate((el) =>
-      getComputedStyle(el).position,
-    )
+    const position = await header.evaluate((el) => getComputedStyle(el).position)
     expect(position).toBe('sticky')
   })
 
   test('header contains logo and CTA button', async ({ page }) => {
     await page.goto('http://localhost:3000')
     await expect(page.locator('header a[href="/"]')).toBeVisible()
-    await expect(
-      page.locator('header a[href="/start-a-partnership"]'),
-    ).toBeVisible()
-    await expect(
-      page.locator('header a[href="/start-a-partnership"]'),
-    ).toHaveText('Start a Partnership')
+    await expect(page.locator('header a[href="/start-a-partnership"]')).toBeVisible()
+    await expect(page.locator('header a[href="/start-a-partnership"]')).toHaveText(
+      'Start a Partnership',
+    )
   })
 
   test('nav item with mega menu shows chevron', async ({ page }) => {

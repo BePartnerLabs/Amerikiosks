@@ -1,10 +1,10 @@
 'use client'
 
-import React, { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
-
-import type { Header as HeaderType } from '@/payload-types'
+import type React from 'react'
+import { useState } from 'react'
 import { CMSLink } from '@/components/Link'
+import type { Header as HeaderType } from '@/payload-types'
 import { MegaMenu } from './MegaMenu'
 
 export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
@@ -12,8 +12,11 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
   const [openId, setOpenId] = useState<string | null>(null)
 
   return (
-    <nav className="bp-header__nav" aria-label="Main">
-      <ul className="bp-nav" role="list">
+    <nav
+      className="bp-header__nav"
+      aria-label="Main"
+    >
+      <ul className="bp-nav">
         {navItems.map(({ link, hasMegaMenu, megaMenu, id }, i) => {
           const itemId = id ?? `nav-${i}`
           const panelId = `megamenu-${itemId}`
@@ -21,7 +24,10 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
 
           if (hasMegaMenu && megaMenu) {
             return (
-              <li key={itemId} className="bp-nav__item">
+              <li
+                key={itemId}
+                className="bp-nav__item"
+              >
                 <button
                   type="button"
                   className="bp-nav__megamenu-btn"
@@ -48,7 +54,10 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
                     setOpenId(open ? itemId : null)
                   }}
                 >
-                  <MegaMenu data={megaMenu} id={panelId} />
+                  <MegaMenu
+                    data={megaMenu}
+                    id={panelId}
+                  />
                 </div>
               </li>
             )

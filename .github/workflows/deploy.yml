@@ -1,16 +1,11 @@
 name: Deploy to Vercel
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  release:
+    types: [published]
 
-# Cancel in-progress runs for the same branch so stale builds don't block new ones.
 concurrency:
-  group: deploy-${{ github.ref }}
+  group: deploy-production
   cancel-in-progress: true
 
 env:
@@ -35,23 +30,5 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Type check
-        run: pnpm tsc --noEmit
-
-      - name: Unit tests
-        run: pnpm vitest run --config ./vitest.config.mts
-
-      # All env vars (DATABASE_URL, PAYLOAD_SECRET, etc.) are already set in
-      # Vercel's dashboard — no need to build locally and upload prebuilt.
-      # Let Vercel build on its own infrastructure (faster cache, better CPUs).
       - name: Deploy to Vercel (production)
-        if: github.ref == 'refs/heads/main'
         run: pnpm vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
-
-      - name: Deploy to Vercel (preview)
-        if: github.ref != 'refs/heads/main'
-        run: |
-          pnpm vercel deploy --token=${{ secrets.VERCEL_TOKEN }}
-          DYNAMIC_URL="http://localhost:3000/es?preview=JPlCl39D3J9G"
-          echo "app_url=$DYNAMIC_URL" >> $GITHUB_OUTPUT
-

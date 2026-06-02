@@ -1,11 +1,11 @@
 'use client'
-import useClickableCard from '@/utilities/useClickableCard'
 import Link from 'next/link'
-import React, { Fragment } from 'react'
+import type React from 'react'
+import { Fragment } from 'react'
+import { Media } from '@/components/Media'
 
 import type { Post } from '@/payload-types'
-
-import { Media } from '@/components/Media'
+import useClickableCard from '@/utilities/useClickableCard'
 
 export type CardPostData = Pick<Post, 'slug' | 'categories' | 'meta' | 'title'>
 
@@ -18,7 +18,7 @@ export const Card: React.FC<{
   title?: string
 }> = (props) => {
   const { card, link } = useClickableCard({})
-  const { className, doc, relationTo, showCategories, title: titleFromProps } = props
+  const { doc, relationTo, showCategories, title: titleFromProps } = props
 
   const { slug, categories, meta, title } = doc || {}
   const { description, image: metaImage } = meta || {}
@@ -35,7 +35,12 @@ export const Card: React.FC<{
     >
       <div className="">
         {!metaImage && <div className="">No image</div>}
-        {metaImage && typeof metaImage !== 'string' && <Media resource={metaImage} size="33vw" />}
+        {metaImage && typeof metaImage !== 'string' && (
+          <Media
+            resource={metaImage}
+            size="33vw"
+          />
+        )}
       </div>
       <div className="">
         {showCategories && hasCategories && (
@@ -45,11 +50,15 @@ export const Card: React.FC<{
                 const { title: titleFromCategory } = category
 
                 const categoryTitle = titleFromCategory || 'Untitled category'
+                const categoryKey =
+                  'id' in category && category.id
+                    ? String(category.id)
+                    : `${slug || 'post'}-${categoryTitle}`
 
                 const isLast = index === categories.length - 1
 
                 return (
-                  <Fragment key={index}>
+                  <Fragment key={categoryKey}>
                     {categoryTitle}
                     {!isLast && <Fragment>, &nbsp;</Fragment>}
                   </Fragment>
@@ -63,7 +72,11 @@ export const Card: React.FC<{
         {titleToUse && (
           <div className="">
             <h3>
-              <Link className="" href={href} ref={link.ref}>
+              <Link
+                className=""
+                href={href}
+                ref={link.ref}
+              >
                 {titleToUse}
               </Link>
             </h3>

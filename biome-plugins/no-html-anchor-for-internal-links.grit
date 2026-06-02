@@ -1,0 +1,6 @@
+or {
+  `<a href="/$_" $...>$...</a>` as $el,
+  `<a href='/$_' $...>$...</a>` as $el
+} where {
+  register_diagnostic(span=$el, message="Use <Link> from next/link for internal navigation instead of a raw <a> tag.")
+}

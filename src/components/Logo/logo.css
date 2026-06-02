@@ -1,7 +1,20 @@
-.logo-desktop { display: none; height: 20px; width: auto; }
-.logo-mobile  { display: block; width: 40px; height: 40px; object-fit: contain; }
+.logo-desktop {
+  display: none;
+  height: 20px;
+  width: auto;
+}
+.logo-mobile {
+  display: block;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
 
 @media (min-width: 60rem) {
-  .logo-desktop { display: block; }
-  .logo-mobile  { display: none; }
+  .logo-desktop {
+    display: block;
+  }
+  .logo-mobile {
+    display: none;
+  }
 }

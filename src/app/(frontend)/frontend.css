@@ -1,13 +1,22 @@
 /* frontend.css — global reset + brand tokens. Component styles live in their own .css files. */
 /* Material Symbols font is loaded via <link> in layout.tsx with display=optional */
 
-*, *::before, *::after { box-sizing: border-box; }
-body { margin: 0; font-family: sans-serif; }
-img { max-width: 100%; display: block; }
-
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: sans-serif;
+}
+img {
+  max-width: 100%;
+  display: block;
+}
 
 .material-symbols-outlined {
-  font-family: 'Material Symbols Outlined';
+  font-family: "Material Symbols Outlined", sans-serif;
   font-weight: normal;
   font-style: normal;
   font-size: 24px;
@@ -17,7 +26,11 @@ img { max-width: 100%; display: block; }
   display: inline-block;
   white-space: nowrap;
   direction: ltr;
-  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 300,
+    "GRAD" 0,
+    "opsz" 24;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -64,10 +77,10 @@ img { max-width: 100%; display: block; }
   --bp-color-text-inverse: #f2eee6;
   --bp-color-border: #e5e0d8;
   /* Shadows */
-  --bp-shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-  --bp-shadow-md: 0 4px 6px rgba(0,0,0,0.07);
-  --bp-shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
-  --bp-shadow-xl: 0 20px 60px rgba(0,0,0,0.15);
+  --bp-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --bp-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --bp-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --bp-shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.15);
 }
 
 /* ─── Amerikiosks brand tokens ─────────────────────────── */
@@ -82,16 +95,16 @@ img { max-width: 100%; display: block; }
   --ak-accent-light: #ff6b75;
   --ak-mega-left-bg: #011936;
   --ak-mega-right-bg: #ffffff;
-  --ak-nav-link-color: rgba(255,255,255,0.85);
+  --ak-nav-link-color: rgba(255, 255, 255, 0.85);
   --ak-nav-link-hover: var(--ak-accent);
 }
 
 /* ─── BPL DS Button (bp-btn) ───────────────────────────── */
 .bp-btn {
-  --_padding:   var(--btn-padding, var(--bp-space-2) var(--bp-space-4));
-  --_radius:    var(--btn-radius, var(--bp-radius));
+  --_padding: var(--btn-padding, var(--bp-space-2) var(--bp-space-4));
+  --_radius: var(--btn-radius, var(--bp-radius));
   --_font-size: var(--btn-font-size, var(--bp-text-sm, 0.875rem));
-  --_border:    var(--btn-border, none);
+  --_border: var(--btn-border, none);
 
   display: inline-flex;
   align-items: center;
@@ -106,7 +119,7 @@ img { max-width: 100%; display: block; }
 }
 
 .bp-btn--primary {
-  --_bg:    var(--btn-bg, var(--ak-accent));
+  --_bg: var(--btn-bg, var(--ak-accent));
   --_color: var(--btn-color, var(--ak-accent-fg));
 
   background-color: var(--_bg);

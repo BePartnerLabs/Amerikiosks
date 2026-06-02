@@ -1,5 +1,5 @@
+import type * as React from 'react'
 import { cn } from '@/utilities/ui'
-import * as React from 'react'
 
 const Card: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, ...props }) => {
   return (
@@ -45,7 +45,13 @@ const CardDescription: React.FC<React.HTMLAttributes<HTMLParagraphElement>> = ({
 }
 
 const CardContent: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, ...props }) => {
-  return <div data-slot="card-content" className={cn('p-6 pt-0', className)} {...props} />
+  return (
+    <div
+      data-slot="card-content"
+      className={cn('p-6 pt-0', className)}
+      {...props}
+    />
+  )
 }
 
 const CardFooter: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, ...props }) => {
@@ -58,4 +64,4 @@ const CardFooter: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className,
   )
 }
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }

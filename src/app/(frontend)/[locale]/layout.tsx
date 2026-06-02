@@ -1,24 +1,23 @@
-import type { Metadata, Viewport } from 'next'
-import { cn } from '@/utilities/ui'
 import { GeistMono } from 'geist/font/mono'
 import { GeistSans } from 'geist/font/sans'
+import type { Metadata, Viewport } from 'next'
 import { Poppins } from 'next/font/google'
+import { draftMode } from 'next/headers'
+import { notFound } from 'next/navigation'
+import Script from 'next/script'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
-import { notFound } from 'next/navigation'
-import React from 'react'
-
+import type React from 'react'
 import { AdminBar } from '@/components/AdminBar'
+import { GAListener } from '@/components/Analytics/GAListener'
 import { Footer } from '@/Footer/Component'
 import { Header } from '@/Header/Component'
+import { routing } from '@/i18n/routing'
 import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
-import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
-import { draftMode } from 'next/headers'
-import { routing } from '@/i18n/routing'
 import { getCachedGlobal } from '@/utilities/getGlobals'
-import Script from 'next/script'
-import { GAListener } from '@/components/Analytics/GAListener'
+import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
+import { cn } from '@/utilities/ui'
 
 import '../globals.css'
 import '../frontend.css'
@@ -57,15 +56,26 @@ export default async function LocaleLayout({ children, params }: Props) {
     >
       <head>
         <InitTheme />
-        <link href="/favicon.ico" rel="icon" sizes="32x32" />
-        <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+        <link
+          href="/favicon.ico"
+          rel="icon"
+          sizes="32x32"
+        />
+        <link
+          href="/favicon.svg"
+          rel="icon"
+          type="image/svg+xml"
+        />
         {gaId && (
           <>
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
               strategy="afterInteractive"
             />
-            <Script id="ga4-init" strategy="afterInteractive">{`
+            <Script
+              id="ga4-init"
+              strategy="afterInteractive"
+            >{`
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
@@ -74,23 +84,34 @@ export default async function LocaleLayout({ children, params }: Props) {
           </>
         )}
         {/* Material Symbols — preconnect + non-blocking load, display=optional prevents FOUT */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="preconnect"
+          href="https://fonts.googleapis.com"
+        />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
         <link
           rel="stylesheet"
+          // biome-ignore lint/suspicious/useGoogleFontDisplay: material symbols font needs display=block to prevent FOUT, and is not user-generated content
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block"
         />
       </head>
       <body>
-        <a href="#main-content" className="skip-to-content">Skip to content</a>
+        <a
+          href="#main-content"
+          className="skip-to-content"
+        >
+          Skip to content
+        </a>
         <NextIntlClientProvider messages={messages}>
           <Providers>
             <GAListener />
             <AdminBar adminBarProps={{ preview: isEnabled }} />
             <Header />
-            <main id="main-content">
-              {children}
-            </main>
+            <main id="main-content">{children}</main>
             <Footer />
           </Providers>
         </NextIntlClientProvider>

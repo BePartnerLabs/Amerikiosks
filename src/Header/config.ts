@@ -74,7 +74,8 @@ export const Header: GlobalConfig = {
                   type: 'text',
                   label: 'Icon',
                   admin: {
-                    description: 'Material Symbols icon name e.g. storefront, handshake, campaign, rocket_launch',
+                    description:
+                      'Material Symbols icon name e.g. storefront, handshake, campaign, rocket_launch',
                     components: {
                       Field: '@/components/MaterialIconPicker#MaterialIconPicker',
                     },
@@ -133,7 +134,7 @@ export const Header: GlobalConfig = {
         },
       ],
     },
-  ],  // end global fields
+  ], // end global fields
   hooks: {
     afterChange: [revalidateHeader],
   },
