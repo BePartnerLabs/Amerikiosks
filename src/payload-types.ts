@@ -1888,6 +1888,10 @@ export interface Footer {
 export interface Setting {
   id: number;
   /**
+   * When enabled, robots.txt disallows all crawlers and a <meta name="robots" content="noindex"> tag is added site-wide. Turn off when the site is ready to go public.
+   */
+  noIndex?: boolean | null;
+  /**
    * Your GA4 Measurement ID (e.g. G-XXXXXXXXXX). Leave empty to disable analytics.
    */
   googleAnalyticsId?: string | null;
@@ -1987,6 +1991,7 @@ export interface FooterSelect<T extends boolean = true> {
  * via the `definition` "settings_select".
  */
 export interface SettingsSelect<T extends boolean = true> {
+  noIndex?: T;
   googleAnalyticsId?: T;
   updatedAt?: T;
   createdAt?: T;

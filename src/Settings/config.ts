@@ -10,6 +10,16 @@ export const Settings: GlobalConfig = {
   },
   fields: [
     {
+      name: 'noIndex',
+      type: 'checkbox',
+      label: 'Block search engine indexing',
+      defaultValue: true,
+      admin: {
+        description:
+          'When enabled, robots.txt disallows all crawlers and a <meta name="robots" content="noindex"> tag is added site-wide. Turn off when the site is ready to go public.',
+      },
+    },
+    {
       name: 'googleAnalyticsId',
       type: 'text',
       label: 'Google Analytics Measurement ID',
