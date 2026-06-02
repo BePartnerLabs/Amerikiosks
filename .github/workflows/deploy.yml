@@ -31,6 +31,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Mark existing migrations as applied (dev-mode baseline)
+        run: node scripts/mark-migrations-applied.mjs
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
       - name: Run database migrations
         run: pnpm payload migrate --skip-empty
         env:
