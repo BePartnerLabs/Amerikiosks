@@ -21,6 +21,7 @@ export const TrustStripBlock: React.FC<Props> = ({ eyebrow, heading, partners })
     <section
       className="ak-trust-strip"
       aria-label={heading}
+      style={{ containerType: 'inline-size', containerName: 'trust-strip' }}
     >
       {eyebrow && <p className="ak-trust-strip__eyebrow">{eyebrow}</p>}
       <h2 className="ak-trust-strip__heading">{heading}</h2>
