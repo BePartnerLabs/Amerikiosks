@@ -58,6 +58,7 @@
 - [ ] `--ak-*` brand tokens not used directly in DS component CSS properties (use Level 2 `--<component>-*` overrides instead — only if DS defaults don't fit)
 - [ ] `--bp-*` base tokens not redeclared
 - [ ] Custom project components (non-DS markup) may use `--ak-*` and `--bp-*` tokens directly
+- [ ] DS grid used correctly: full-width sections wrap content in `bp-content-grid` + `breakout`; full-bleed sections use `full-bleed`; no custom `max-width` containers that duplicate DS grid behaviour
 
 ### Delivery
 - [ ] Unit tests added

@@ -61,6 +61,7 @@ When `breadcrumb` is set, a `BreadcrumbList` schema is injected via `<script typ
 - [x] `--ak-*` tokens used only in custom project component (not a DS component) — compliant
 - [x] `--bp-*` base tokens not redeclared
 - [x] No DS component markup used — fully custom, no Level 2 overrides needed
+- [x] DS grid used correctly: section wraps content in `bp-content-grid` + `breakout`
 
 ### Delivery
 - [x] Unit tests added (9 tests, all passing)
