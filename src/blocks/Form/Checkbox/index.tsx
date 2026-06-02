@@ -5,7 +5,7 @@ import { useFormContext } from 'react-hook-form'
 import { Checkbox as CheckboxUi } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 
-import { Error as FormError } from '../Error'
+import { FormError } from '../Error'
 import { Width } from '../Width'
 
 export const Checkbox: React.FC<

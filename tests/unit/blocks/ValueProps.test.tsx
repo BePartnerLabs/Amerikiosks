@@ -44,7 +44,7 @@ describe('ValuePropsBlock', () => {
     const { container } = render(<ValuePropsBlock {...base} />)
     const script = container.querySelector('script[type="application/ld+json"]')
     expect(script).not.toBeNull()
-    const data = JSON.parse(script?.innerHTML)
+    const data = JSON.parse(script?.innerHTML ?? '{}')
     expect(data['@type']).toBe('ItemList')
     expect(data.name).toBe('Why Amerikiosks')
     expect(data.numberOfItems).toBe(2)
