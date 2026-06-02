@@ -11,6 +11,7 @@ import { seedHome } from '@/endpoints/seed/pages/home'
 import { seedSolutions } from '@/endpoints/seed/pages/solutions'
 import { seedWhereItWorks } from '@/endpoints/seed/pages/where-it-works'
 import { seedWhyAmerikiosks } from '@/endpoints/seed/pages/why-amerikiosks'
+import { seedPartners } from '@/endpoints/seed/partners'
 
 export const maxDuration = 120
 
@@ -29,6 +30,7 @@ const parts: Record<
   'why-amerikiosks': seedWhyAmerikiosks,
   header: seedHeader,
   footer: seedFooter,
+  partners: seedPartners,
 }
 
 export async function POST(req: Request): Promise<Response> {

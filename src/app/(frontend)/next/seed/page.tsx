@@ -9,6 +9,7 @@ const PARTS = [
   { key: 'why-amerikiosks', label: 'Why Amerikiosks page' },
   { key: 'header', label: 'Header' },
   { key: 'footer', label: 'Footer' },
+  { key: 'partners', label: 'Partners (Trust Strip logos)' },
 ]
 
 type Status = 'idle' | 'loading' | 'ok' | 'error'
