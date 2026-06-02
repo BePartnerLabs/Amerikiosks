@@ -1,1 +1,1 @@
-# Tests run in CI — nothing to do here
+pnpm lint-staged

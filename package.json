@@ -74,6 +74,7 @@
     "autoprefixer": "^10.4.19",
     "husky": "^9.1.7",
     "jsdom": "28.0.0",
+    "lint-staged": "^17.0.7",
     "postcss": "^8.4.38",
     "prettier": "^3.4.2",
     "tailwindcss": "^4.1.18",
@@ -83,6 +84,9 @@
     "vercel": "^54.7.1",
     "vite-tsconfig-paths": "6.0.5",
     "vitest": "4.0.18"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,json,css}": "biome check --write --no-errors-on-unmatched"
   },
   "engines": {
     "node": "^18.20.2 || >=20.9.0",

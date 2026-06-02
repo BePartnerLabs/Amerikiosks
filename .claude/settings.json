@@ -1,0 +1,37 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path' | { read -r f; pnpm biome check --write --no-errors-on-unmatched \"$f\"; } 2>/dev/null || true",
+            "statusMessage": "Biome: checking..."
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/check-component-docs.sh",
+            "statusMessage": "Checking component docs..."
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/warn-main-branch.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
