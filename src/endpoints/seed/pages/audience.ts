@@ -1,4 +1,6 @@
+import path from 'node:path'
 import type { Payload, PayloadRequest } from 'payload'
+import { uploadMedia } from '../uploadMedia'
 import { upsertPage } from './utils'
 
 const audiencePages = [
@@ -6,6 +8,8 @@ const audiencePages = [
     slug: 'for-brands',
     title: 'For Brands',
     titleEs: 'Para Marcas',
+    heroAsset: 'hero-for-brands.png',
+    heroAlt: 'Branded kiosk in a retail venue for brand activations',
     description:
       'Turn high-traffic venues into premium branded retail moments with Amerikiosks kiosk programs.',
     descriptionEs:
@@ -15,6 +19,8 @@ const audiencePages = [
     slug: 'for-venues',
     title: 'For Venues',
     titleEs: 'Para Venues',
+    heroAsset: 'image-hero1.webp',
+    heroAlt: 'Premium kiosk placement in a hospitality venue',
     description:
       'Add a new revenue stream and elevate the guest experience with curated branded kiosks.',
     descriptionEs:
@@ -24,6 +30,8 @@ const audiencePages = [
     slug: 'for-agencies',
     title: 'For Agencies',
     titleEs: 'Para Agencias',
+    heroAsset: 'hero-home.png',
+    heroAlt: 'Amerikiosks kiosk activation at a high-traffic location',
     description:
       'Deliver unforgettable retail activations for your brand clients through the Amerikiosks network.',
     descriptionEs:
@@ -33,6 +41,8 @@ const audiencePages = [
     slug: 'for-emerging-brands',
     title: 'For Emerging Brands',
     titleEs: 'Para Marcas Emergentes',
+    heroAsset: 'hero-for-brands.png',
+    heroAlt: 'Emerging brand kiosk launch in a premium venue',
     description:
       'Launch your brand in premium venues without the overhead of a full retail build-out.',
     descriptionEs:
@@ -49,22 +59,37 @@ export const seedAudiencePages = async (
   const ids: Record<string, string> = {}
 
   for (const page of audiencePages) {
+    const heroImage = await uploadMedia(
+      payload,
+      req,
+      path.join(process.cwd(), `src/endpoints/seed/assets/${page.heroAsset}`),
+      page.heroAlt,
+    )
+
     const result = await upsertPage(
       payload,
       req,
       {
         title: page.title,
         slug: page.slug,
-        hero: { type: 'lowImpact' as const, richText: null },
+        hero: { type: 'lowImpact' as const, media: heroImage.id, richText: null },
         layout: [],
-        meta: { title: `${page.title} — Amerikiosks`, description: page.description },
+        meta: {
+          title: `${page.title} — Amerikiosks`,
+          description: page.description,
+          image: heroImage.id,
+        },
       },
       {
         title: page.titleEs,
         slug: page.slug,
-        hero: { type: 'lowImpact' as const, richText: null },
+        hero: { type: 'lowImpact' as const, media: heroImage.id, richText: null },
         layout: [],
-        meta: { title: `${page.titleEs} — Amerikiosks`, description: page.descriptionEs },
+        meta: {
+          title: `${page.titleEs} — Amerikiosks`,
+          description: page.descriptionEs,
+          image: heroImage.id,
+        },
       },
     )
     ids[page.slug] = String(result.id)
