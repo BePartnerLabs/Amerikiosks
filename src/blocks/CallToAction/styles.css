@@ -5,7 +5,39 @@
 .ak-cta {
   background-color: var(--ak-header-bg, #0e1117);
   color: #fff;
+  position: relative;
+  overflow: hidden;
 }
+
+/* ─── Brand pattern overlays ─────────────────────────────────── */
+
+.ak-cta::before,
+.ak-cta::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 206px;
+  height: 146px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  pointer-events: none;
+}
+
+.ak-cta::before {
+  left: 0;
+  background-image: url("/brand-patterns/pattern-left.svg");
+  background-position: left center;
+}
+
+.ak-cta::after {
+  right: 0;
+  width: 266px;
+  background-image: url("/brand-patterns/pattern-right.svg");
+  background-position: right center;
+}
+
+/* ─── Layout ─────────────────────────────────────────────────── */
 
 .ak-cta__inner {
   padding-block: var(--bp-space-12, 3rem);
@@ -14,6 +46,8 @@
   justify-content: space-between;
   gap: var(--bp-space-8, 2rem);
   flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
 }
 
 .ak-cta__text {
@@ -37,6 +71,13 @@
   flex-wrap: wrap;
 }
 
+@media (max-width: 64rem) {
+  .ak-cta::before,
+  .ak-cta::after {
+    opacity: 0.4;
+  }
+}
+
 @media (max-width: 40rem) {
   .ak-cta__inner {
     flex-direction: column;
@@ -45,5 +86,10 @@
 
   .ak-cta__actions {
     width: 100%;
+  }
+
+  .ak-cta::before,
+  .ak-cta::after {
+    display: none;
   }
 }
