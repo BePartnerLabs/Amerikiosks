@@ -8,6 +8,8 @@ import type { Block } from 'payload'
 export const CardGrid: Block = {
   slug: 'cardGrid',
   interfaceName: 'CardGridBlock',
+  imageURL: '/block-previews/card-grid-compact.png',
+  imageAltText: 'Card Grid block — compact, icon, and pillar variants',
   labels: { singular: 'Card Grid', plural: 'Card Grids' },
   fields: [
     {

@@ -3,6 +3,8 @@ import type { Block } from 'payload'
 export const AudienceShowcase: Block = {
   slug: 'audienceShowcase',
   interfaceName: 'AudienceShowcaseBlock',
+  imageURL: '/block-previews/audience-showcase.png',
+  imageAltText: 'Audience Showcase block — 2×2 image overlay card grid',
   labels: { singular: 'Audience Showcase', plural: 'Audience Showcases' },
   fields: [
     {

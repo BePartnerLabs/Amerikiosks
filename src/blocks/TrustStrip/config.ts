@@ -3,6 +3,8 @@ import type { Block } from 'payload'
 export const TrustStrip: Block = {
   slug: 'trustStrip',
   interfaceName: 'TrustStripBlock',
+  imageURL: '/block-previews/trust-strip.png',
+  imageAltText: 'Trust Strip block — partner logos carousel',
   labels: {
     singular: 'Trust Strip',
     plural: 'Trust Strips',
