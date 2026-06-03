@@ -213,6 +213,19 @@ export const seedHome = async (payload: Payload, req: PayloadRequest): Promise<v
     ],
   }
 
+  const trustStripBlock = {
+    blockType: 'trustStrip' as const,
+    eyebrow: 'WHO WE WORK WITH',
+    heading: 'Trusted by leading brands',
+    limit: 0,
+  }
+
+  const trustStripBlockEs = {
+    ...trustStripBlock,
+    eyebrow: 'CON QUIÉN TRABAJAMOS',
+    heading: 'La confianza de las mejores marcas',
+  }
+
   const meta = {
     title: 'Amerikiosks — Automated Retail Solutions',
     description:
@@ -230,8 +243,20 @@ export const seedHome = async (payload: Payload, req: PayloadRequest): Promise<v
   await upsertPage(
     payload,
     req,
-    { title: 'Home', slug: 'home', hero: heroData, layout: [valuePropsBlock], meta },
-    { title: 'Inicio', slug: 'home', hero: heroDataEs, layout: [valuePropsBlockEs], meta: metaEs },
+    {
+      title: 'Home',
+      slug: 'home',
+      hero: heroData,
+      layout: [valuePropsBlock, trustStripBlock],
+      meta,
+    },
+    {
+      title: 'Inicio',
+      slug: 'home',
+      hero: heroDataEs,
+      layout: [valuePropsBlockEs, trustStripBlockEs],
+      meta: metaEs,
+    },
   )
 }
 
