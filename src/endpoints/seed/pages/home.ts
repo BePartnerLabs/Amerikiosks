@@ -241,10 +241,10 @@ export const seedHome = async (
     subheading:
       'Amerikiosks helps partners create branded retail experiences that are placed with intention and operated end to end.',
     items: [
-      { page: Number(audiencePageIds['for-brands']) || 0, cta: 'Explore brand programs' },
-      { page: Number(audiencePageIds['for-venues']) || 0, cta: 'Explore venue revenue' },
-      { page: Number(audiencePageIds['for-agencies']) || 0, cta: 'Explore activations' },
-      { page: Number(audiencePageIds['for-emerging-brands']) || 0, cta: 'Explore launch paths' },
+      { page: Number(audiencePageIds['for-brands']), cta: 'Explore brand programs' },
+      { page: Number(audiencePageIds['for-venues']), cta: 'Explore venue revenue' },
+      { page: Number(audiencePageIds['for-agencies']), cta: 'Explore activations' },
+      { page: Number(audiencePageIds['for-emerging-brands']), cta: 'Explore launch paths' },
     ],
   }
 
