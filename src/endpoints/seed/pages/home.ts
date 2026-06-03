@@ -168,8 +168,9 @@ export const seedHome = async (payload: Payload, req: PayloadRequest): Promise<v
   }
 
   const valuePropsBlock = {
-    blockType: 'valueProps' as const,
-    blockName: 'Value Props — Home',
+    blockType: 'cardGrid' as const,
+    blockName: 'Card Grid — Home Value Props',
+    variant: 'compact' as const,
     heading: 'The right moment\ndoes more.',
     items: [
       {
