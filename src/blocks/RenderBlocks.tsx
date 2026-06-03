@@ -1,7 +1,7 @@
 import type React from 'react'
 import { Fragment } from 'react'
 import { ArchiveBlock } from '@/blocks/ArchiveBlock/Component'
-import { AudienceShowcaseBlock } from '@/blocks/AudienceShowcase/Component'
+import { AudienceShowcaseServer } from '@/blocks/AudienceShowcase/Server'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { CardGridBlock } from '@/blocks/CardGrid/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
@@ -12,7 +12,7 @@ import type { Page } from '@/payload-types'
 
 const blockComponents = {
   archive: ArchiveBlock,
-  audienceShowcase: AudienceShowcaseBlock,
+  audienceShowcase: AudienceShowcaseServer,
   content: ContentBlock,
   cta: CallToActionBlock,
   formBlock: FormBlock,
