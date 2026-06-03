@@ -223,7 +223,16 @@ export interface Page {
       | null;
   };
   layout?:
-    | (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock | CardGridBlock | TrustStripBlock)[]
+    | (
+        | CallToActionBlock
+        | ContentBlock
+        | MediaBlock
+        | ArchiveBlock
+        | FormBlock
+        | CardGridBlock
+        | TrustStripBlock
+        | AudienceShowcaseBlock
+      )[]
     | null;
   meta?: {
     title?: string | null;
@@ -890,6 +899,38 @@ export interface TrustStripBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AudienceShowcaseBlock".
+ */
+export interface AudienceShowcaseBlock {
+  /**
+   * Small label above heading, e.g. "WHO IT'S FOR"
+   */
+  eyebrow?: string | null;
+  heading: string;
+  subheading?: string | null;
+  items?:
+    | {
+        /**
+         * Pulls title + hero image from this page automatically.
+         */
+        page: number | Page;
+        /**
+         * Overrides the page title on the card if set.
+         */
+        label?: string | null;
+        /**
+         * CTA link label, e.g. "Explore brand programs"
+         */
+        cta?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'audienceShowcase';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "partners".
  */
 export interface Partner {
@@ -1225,6 +1266,7 @@ export interface PagesSelect<T extends boolean = true> {
         formBlock?: T | FormBlockSelect<T>;
         cardGrid?: T | CardGridBlockSelect<T>;
         trustStrip?: T | TrustStripBlockSelect<T>;
+        audienceShowcase?: T | AudienceShowcaseBlockSelect<T>;
       };
   meta?:
     | T
@@ -1369,6 +1411,25 @@ export interface TrustStripBlockSelect<T extends boolean = true> {
   eyebrow?: T;
   heading?: T;
   limit?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AudienceShowcaseBlock_select".
+ */
+export interface AudienceShowcaseBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  subheading?: T;
+  items?:
+    | T
+    | {
+        page?: T;
+        label?: T;
+        cta?: T;
+        id?: T;
+      };
   id?: T;
   blockName?: T;
 }

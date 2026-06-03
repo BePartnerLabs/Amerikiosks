@@ -11,6 +11,7 @@ import { hero } from '@/heros/config'
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { Archive } from '../../blocks/ArchiveBlock/config'
+import { AudienceShowcase } from '../../blocks/AudienceShowcase/config'
 import { CallToAction } from '../../blocks/CallToAction/config'
 import { CardGrid } from '../../blocks/CardGrid/config'
 import { Content } from '../../blocks/Content/config'
@@ -73,7 +74,16 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock, CardGrid, TrustStrip],
+              blocks: [
+                CallToAction,
+                Content,
+                MediaBlock,
+                Archive,
+                FormBlock,
+                CardGrid,
+                TrustStrip,
+                AudienceShowcase,
+              ],
               admin: {
                 initCollapsed: true,
               },
