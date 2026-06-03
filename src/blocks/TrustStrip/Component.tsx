@@ -1,6 +1,7 @@
 import type React from 'react'
 import './styles.css'
 import type { Media, TrustStripBlock as TrustStripBlockProps } from '@/payload-types'
+import { toSnakeCase } from '@/utilities/toSnakeCase'
 import { TrustStripCarousel } from './Carousel'
 
 type Partner = {
@@ -26,7 +27,13 @@ const buildJsonLd = (heading: string, partners: Partner[]) => ({
   })),
 })
 
-export const TrustStripBlock: React.FC<Props> = ({ eyebrow, heading, partners }) => {
+export const TrustStripBlock: React.FC<Props> = ({
+  eyebrow,
+  heading,
+  partners,
+  blockName,
+  blockType,
+}) => {
   if (!heading || !partners?.length) return null
 
   const carouselPartners = partners.map((p) => ({
@@ -40,6 +47,8 @@ export const TrustStripBlock: React.FC<Props> = ({ eyebrow, heading, partners })
       className="ak-trust-strip"
       aria-label={heading}
       style={{ containerType: 'inline-size', containerName: 'trust-strip' }}
+      data-ga-block={toSnakeCase(blockType)}
+      data-ga-section={blockName ?? undefined}
     >
       <script
         type="application/ld+json"

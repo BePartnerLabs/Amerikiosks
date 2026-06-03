@@ -6,6 +6,7 @@ type Gtag = (
   command: 'event',
   eventName: string | undefined,
   params: {
+    block?: string
     section?: string
     label?: string
     locale?: string
@@ -19,8 +20,10 @@ export function GAListener() {
       if (!el) return
       const g = (window as Window & { gtag?: Gtag }).gtag
       if (typeof g !== 'function') return
+      const blockEl = el.closest<HTMLElement>('[data-ga-block]')
       g('event', el.dataset.gaEvent, {
-        section: el.dataset.gaSection ?? undefined,
+        block: blockEl?.dataset.gaBlock ?? undefined,
+        section: el.dataset.gaSection ?? blockEl?.dataset.gaSection ?? undefined,
         label: el.dataset.gaLabel || el.innerText.trim().slice(0, 100) || undefined,
         locale: document.documentElement.lang || undefined,
       })
