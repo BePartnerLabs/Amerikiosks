@@ -169,6 +169,7 @@ export const seedHome = async (payload: Payload, req: PayloadRequest): Promise<v
 
   const valuePropsBlock = {
     blockType: 'valueProps' as const,
+    blockName: 'Value Props — Home',
     heading: 'The right moment\ndoes more.',
     items: [
       {
@@ -215,6 +216,7 @@ export const seedHome = async (payload: Payload, req: PayloadRequest): Promise<v
 
   const trustStripBlock = {
     blockType: 'trustStrip' as const,
+    blockName: 'Trust Strip — Home',
     eyebrow: 'WHO WE WORK WITH',
     heading: 'Trusted by leading brands',
     limit: 0,

@@ -1,13 +1,14 @@
 import type React from 'react'
 import RichText from '@/components/RichText'
 import type { Page } from '@/payload-types'
+import { toSnakeCase } from '@/utilities/toSnakeCase'
 import './styles.css'
 
 type ValuePropsBlockType = Extract<NonNullable<Page['layout']>[number], { blockType: 'valueProps' }>
 
 export const ValuePropsBlock: React.FC<
   ValuePropsBlockType & { disableInnerContainer?: boolean }
-> = ({ heading, items }) => {
+> = ({ heading, items, blockName, blockType }) => {
   if (!heading && (!items || items.length === 0)) return null
 
   return (
@@ -16,6 +17,8 @@ export const ValuePropsBlock: React.FC<
       aria-label={heading ?? 'Value propositions'}
       itemScope
       itemType="https://schema.org/ItemList"
+      data-ga-block={toSnakeCase(blockType)}
+      data-ga-section={blockName ?? undefined}
     >
       <script
         type="application/ld+json"
