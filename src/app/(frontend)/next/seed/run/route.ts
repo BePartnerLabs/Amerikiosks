@@ -5,6 +5,7 @@ import { createLocalReq, getPayload } from 'payload'
 import { seed } from '@/endpoints/seed'
 import { seedFooter } from '@/endpoints/seed/footer'
 import { seedHeader } from '@/endpoints/seed/header'
+import { seedAudiencePages } from '@/endpoints/seed/pages/audience'
 import { seedCaseStudies } from '@/endpoints/seed/pages/case-studies'
 import { seedContact } from '@/endpoints/seed/pages/contact'
 import { seedHome } from '@/endpoints/seed/pages/home'
@@ -22,8 +23,14 @@ const parts: Record<
     req: Parameters<typeof seed>[0]['req'],
   ) => Promise<void>
 > = {
+  audience: async (payload, req) => {
+    await seedAudiencePages(payload, req)
+  },
   contact: seedContact,
-  home: seedHome,
+  home: async (payload, req) => {
+    const audiencePageIds = await seedAudiencePages(payload, req)
+    await seedHome(payload, req, audiencePageIds)
+  },
   solutions: seedSolutions,
   'where-it-works': seedWhereItWorks,
   'case-studies': seedCaseStudies,
