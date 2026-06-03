@@ -2,11 +2,11 @@ import type React from 'react'
 import { Fragment } from 'react'
 import { ArchiveBlock } from '@/blocks/ArchiveBlock/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
+import { CardGridBlock } from '@/blocks/CardGrid/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
 import { FormBlock } from '@/blocks/Form/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { TrustStripServer } from '@/blocks/TrustStrip/Server'
-import { ValuePropsBlock } from '@/blocks/ValueProps/Component'
 import type { Page } from '@/payload-types'
 
 const blockComponents = {
@@ -15,7 +15,7 @@ const blockComponents = {
   cta: CallToActionBlock,
   formBlock: FormBlock,
   mediaBlock: MediaBlock,
-  valueProps: ValuePropsBlock,
+  cardGrid: CardGridBlock,
   trustStrip: TrustStripServer,
 }
 

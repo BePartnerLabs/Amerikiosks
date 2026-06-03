@@ -1,0 +1,260 @@
+/* ═══════════════════════════════════════════════════════════════
+   CardGrid block — shared + variant-specific styles
+   Variants: compact | icon | pillar
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Shared base ────────────────────────────────────────────── */
+.ak-card-grid__inner {
+  padding-block: var(--bp-space-16, 4rem);
+}
+
+.ak-card-grid__cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--bp-space-4, 1rem);
+}
+
+.ak-card-grid__card {
+  border-radius: var(--bp-radius-md, 0.75rem);
+  padding: var(--bp-space-6, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--bp-space-3, 0.75rem);
+}
+
+.ak-card-grid__card-title {
+  margin: 0;
+  font-size: var(--bp-text-sm, 0.875rem);
+  font-weight: 700;
+}
+
+.ak-card-grid__card-body {
+  margin: 0;
+  font-size: var(--bp-text-sm, 0.875rem);
+  line-height: 1.6;
+}
+
+.ak-card-grid__card-link {
+  margin-top: auto;
+  font-size: var(--bp-text-sm, 0.875rem);
+  font-weight: 600;
+  color: var(--ak-accent, #ec254e);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.ak-card-grid__card-link:hover {
+  text-decoration: underline;
+}
+
+.ak-card-grid__cta {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--bp-space-10, 2.5rem);
+}
+
+.ak-card-grid__cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 2rem;
+  border: 2px solid currentColor;
+  border-radius: var(--bp-radius-md, 0.75rem);
+  font-weight: 600;
+  font-size: var(--bp-text-sm, 0.875rem);
+  text-decoration: none;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+}
+
+.ak-card-grid__cta-btn:hover {
+  background-color: currentColor;
+}
+
+/* ─── compact variant ────────────────────────────────────────── */
+.ak-card-grid--compact {
+  background-color: var(--ak-header-bg);
+  color: #fff;
+}
+
+.ak-card-grid--compact .ak-card-grid__inner {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: var(--bp-space-12, 3rem);
+  align-items: start;
+}
+
+.ak-card-grid--compact .ak-card-grid__header {
+  position: sticky;
+  top: var(--bp-space-8, 2rem);
+}
+
+.ak-card-grid--compact .ak-card-grid__eyebrow {
+  margin: 0 0 var(--bp-space-2, 0.5rem);
+  font-size: var(--bp-text-xs, 0.75rem);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.ak-card-grid--compact .ak-card-grid__heading {
+  margin: 0;
+  font-family: var(--font-poppins, sans-serif);
+  font-size: clamp(1.5rem, 2vw + 0.75rem, 2.25rem);
+  font-weight: 700;
+  line-height: 1.15;
+  color: #fff;
+}
+
+.ak-card-grid--compact .ak-card-grid__card {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-top: 2px solid var(--ak-accent, #ec254e);
+}
+
+.ak-card-grid--compact .ak-card-grid__card-title {
+  color: #fff;
+}
+
+.ak-card-grid--compact .ak-card-grid__card-body {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* ─── icon variant ───────────────────────────────────────────── */
+.ak-card-grid--icon {
+  background-color: var(--bp-color-surface, #fff);
+}
+
+.ak-card-grid--icon .ak-card-grid__header {
+  text-align: center;
+  margin-bottom: var(--bp-space-10, 2.5rem);
+}
+
+.ak-card-grid--icon .ak-card-grid__eyebrow {
+  margin: 0 0 var(--bp-space-2, 0.5rem);
+  font-size: var(--bp-text-xs, 0.75rem);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ak-accent, #ec254e);
+}
+
+.ak-card-grid--icon .ak-card-grid__heading {
+  margin: 0;
+  font-family: var(--font-poppins, sans-serif);
+  font-size: clamp(1.75rem, 2.5vw + 1rem, 3rem);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--bp-color-heading, #0f1e3c);
+}
+
+.ak-card-grid--icon .ak-card-grid__card {
+  background-color: #fff;
+  border: 1px solid var(--bp-color-border, #e5e7eb);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.ak-card-grid--icon .ak-card-grid__card-icon {
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--ak-accent, #ec254e);
+}
+
+.ak-card-grid--icon .ak-card-grid__card-title {
+  color: var(--bp-color-heading, #0f1e3c);
+  font-size: var(--bp-text-base, 1rem);
+}
+
+.ak-card-grid--icon .ak-card-grid__card-body {
+  color: var(--bp-color-muted, #6b7280);
+}
+
+/* ─── pillar variant ─────────────────────────────────────────── */
+.ak-card-grid--pillar {
+  background-color: var(--bp-color-surface, #fff);
+}
+
+.ak-card-grid--pillar .ak-card-grid__header {
+  text-align: center;
+  margin-bottom: var(--bp-space-10, 2.5rem);
+}
+
+.ak-card-grid--pillar .ak-card-grid__eyebrow {
+  margin: 0 0 var(--bp-space-2, 0.5rem);
+  font-size: var(--bp-text-xs, 0.75rem);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ak-accent, #ec254e);
+}
+
+.ak-card-grid--pillar .ak-card-grid__heading {
+  margin: 0;
+  font-family: var(--font-poppins, sans-serif);
+  font-size: clamp(1.75rem, 2.5vw + 1rem, 3rem);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--bp-color-heading, #0f1e3c);
+}
+
+.ak-card-grid--pillar .ak-card-grid__subheading {
+  margin: var(--bp-space-4, 1rem) 0 0;
+  font-size: var(--bp-text-base, 1rem);
+  color: var(--bp-color-muted, #6b7280);
+  max-width: 60ch;
+  margin-inline: auto;
+  line-height: 1.6;
+}
+
+.ak-card-grid--pillar .ak-card-grid__card {
+  background-color: #fff;
+  border: 1px solid var(--bp-color-border, #e5e7eb);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.ak-card-grid--pillar .ak-card-grid__card-eyebrow {
+  margin: 0;
+  font-size: var(--bp-text-xs, 0.75rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bp-color-muted, #6b7280);
+}
+
+.ak-card-grid--pillar .ak-card-grid__card-title {
+  color: var(--bp-color-heading, #0f1e3c);
+  font-size: var(--bp-text-base, 1rem);
+}
+
+.ak-card-grid--pillar .ak-card-grid__card-body {
+  color: var(--bp-color-muted, #6b7280);
+}
+
+.ak-card-grid--pillar .ak-card-grid__cta-btn {
+  color: var(--bp-color-heading, #0f1e3c);
+}
+
+/* ─── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 64rem) {
+  .ak-card-grid__cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 40rem) {
+  .ak-card-grid--compact .ak-card-grid__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .ak-card-grid__cards {
+    grid-template-columns: 1fr;
+  }
+
+  .ak-card-grid__cta-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
