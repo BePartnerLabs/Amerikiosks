@@ -223,41 +223,7 @@ export interface Page {
       | null;
   };
   layout?:
-    | (
-        | CallToActionBlock
-        | ContentBlock
-        | MediaBlock
-        | ArchiveBlock
-        | FormBlock
-        | {
-            heading: string;
-            items?:
-              | {
-                  title: string;
-                  body?: {
-                    root: {
-                      type: string;
-                      children: {
-                        type: any;
-                        version: number;
-                        [k: string]: unknown;
-                      }[];
-                      direction: ('ltr' | 'rtl') | null;
-                      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                      indent: number;
-                      version: number;
-                    };
-                    [k: string]: unknown;
-                  } | null;
-                  id?: string | null;
-                }[]
-              | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'valueProps';
-          }
-        | TrustStripBlock
-      )[]
+    | (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock | CardGridBlock | TrustStripBlock)[]
     | null;
   meta?: {
     title?: string | null;
@@ -840,6 +806,72 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CardGridBlock".
+ */
+export interface CardGridBlock {
+  variant: 'compact' | 'icon' | 'pillar';
+  /**
+   * Small label above the heading, e.g. "WHERE IT WORKS"
+   */
+  eyebrow?: string | null;
+  heading: string;
+  /**
+   * Optional text below the heading. Used in pillar variant.
+   */
+  subheading?: string | null;
+  /**
+   * Optional button shown below cards. Used in pillar variant.
+   */
+  link?: {
+    label?: string | null;
+    url?: string | null;
+    type?: ('custom' | 'reference') | null;
+    reference?: (number | null) | Page;
+  };
+  items?:
+    | {
+        /**
+         * Small label above the card title. Used in pillar variant.
+         */
+        eyebrow?: string | null;
+        /**
+         * Icon identifier. Used in icon variant.
+         */
+        icon?: string | null;
+        title: string;
+        body?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        /**
+         * Optional CTA link per card. Used in icon variant.
+         */
+        link?: {
+          label?: string | null;
+          url?: string | null;
+          type?: ('custom' | 'reference') | null;
+          reference?: (number | null) | Page;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'cardGrid';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "TrustStripBlock".
  */
 export interface TrustStripBlock {
@@ -1191,20 +1223,7 @@ export interface PagesSelect<T extends boolean = true> {
         mediaBlock?: T | MediaBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
-        valueProps?:
-          | T
-          | {
-              heading?: T;
-              items?:
-                | T
-                | {
-                    title?: T;
-                    body?: T;
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
+        cardGrid?: T | CardGridBlockSelect<T>;
         trustStrip?: T | TrustStripBlockSelect<T>;
       };
   meta?:
@@ -1302,6 +1321,43 @@ export interface FormBlockSelect<T extends boolean = true> {
   form?: T;
   enableIntro?: T;
   introContent?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CardGridBlock_select".
+ */
+export interface CardGridBlockSelect<T extends boolean = true> {
+  variant?: T;
+  eyebrow?: T;
+  heading?: T;
+  subheading?: T;
+  link?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        type?: T;
+        reference?: T;
+      };
+  items?:
+    | T
+    | {
+        eyebrow?: T;
+        icon?: T;
+        title?: T;
+        body?: T;
+        link?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              type?: T;
+              reference?: T;
+            };
+        id?: T;
+      };
   id?: T;
   blockName?: T;
 }
