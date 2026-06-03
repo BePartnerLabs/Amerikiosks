@@ -4,7 +4,11 @@ import type { Payload, PayloadRequest } from 'payload'
 import { uploadMedia } from '../uploadMedia'
 import { upsertPage } from './utils'
 
-export const seedHome = async (payload: Payload, req: PayloadRequest): Promise<void> => {
+export const seedHome = async (
+  payload: Payload,
+  req: PayloadRequest,
+  audiencePageIds: Record<string, string> = {},
+): Promise<void> => {
   payload.logger.info('— Seeding home page...')
 
   const [heroImage, heroVideo] = await Promise.all([
