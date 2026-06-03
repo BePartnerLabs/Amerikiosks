@@ -1,88 +1,74 @@
 'use client'
 import Link from 'next/link'
 import type React from 'react'
-import { Fragment } from 'react'
 import { Media } from '@/components/Media'
-
 import type { Post } from '@/payload-types'
 import useClickableCard from '@/utilities/useClickableCard'
+import './styles.css'
 
 export type CardPostData = Pick<Post, 'slug' | 'categories' | 'meta' | 'title'>
 
 export const Card: React.FC<{
-  alignItems?: 'center'
   className?: string
   doc?: CardPostData
+  featured?: boolean
   relationTo?: 'posts'
   showCategories?: boolean
   title?: string
 }> = (props) => {
   const { card, link } = useClickableCard({})
-  const { doc, relationTo, showCategories, title: titleFromProps } = props
+  const { doc, featured = false, relationTo, title: titleFromProps } = props
 
-  const { slug, categories, meta, title } = doc || {}
+  const { slug, meta, title } = doc || {}
   const { description, image: metaImage } = meta || {}
-
-  const hasCategories = categories && Array.isArray(categories) && categories.length > 0
   const titleToUse = titleFromProps || title
-  const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
   const href = `/${relationTo}/${slug}`
 
   return (
     <article
-      className=""
+      className={`ak-post-card${featured ? ' ak-post-card--featured' : ''}`}
       ref={card.ref}
     >
-      <div className="">
-        {!metaImage && <div className="">No image</div>}
-        {metaImage && typeof metaImage !== 'string' && (
+      <div className="ak-post-card__media">
+        {metaImage && typeof metaImage !== 'string' ? (
           <Media
             resource={metaImage}
-            size="33vw"
+            fill={featured}
+            size={featured ? '(max-width: 640px) 100vw, 60vw' : '33vw'}
+            imgClassName="ak-post-card__img"
+          />
+        ) : (
+          <div
+            className="ak-post-card__placeholder"
+            aria-hidden="true"
           />
         )}
       </div>
-      <div className="">
-        {showCategories && hasCategories && (
-          <div className="">
-            {categories?.map((category, index) => {
-              if (typeof category === 'object') {
-                const { title: titleFromCategory } = category
-
-                const categoryTitle = titleFromCategory || 'Untitled category'
-                const categoryKey =
-                  'id' in category && category.id
-                    ? String(category.id)
-                    : `${slug || 'post'}-${categoryTitle}`
-
-                const isLast = index === categories.length - 1
-
-                return (
-                  <Fragment key={categoryKey}>
-                    {categoryTitle}
-                    {!isLast && <Fragment>, &nbsp;</Fragment>}
-                  </Fragment>
-                )
-              }
-
-              return null
-            })}
-          </div>
-        )}
+      <div className="ak-post-card__body">
         {titleToUse && (
-          <div className="">
-            <h3>
-              <Link
-                className=""
-                href={href}
-                ref={link.ref}
-              >
-                {titleToUse}
-              </Link>
-            </h3>
-          </div>
+          <h3 className="ak-post-card__title">
+            <Link
+              href={href}
+              ref={link.ref}
+              className="ak-post-card__title-link"
+              data-ga-event="insight_card_click"
+              data-ga-label={titleToUse}
+            >
+              {titleToUse}
+            </Link>
+          </h3>
         )}
-        {description && <div className="">{description && <p>{sanitizedDescription}</p>}</div>}
+        {description && (
+          <p className="ak-post-card__description">{description.replace(/\s/g, ' ')}</p>
+        )}
+        <Link
+          href={href}
+          className="ak-post-card__cta"
+          aria-hidden="true"
+          tabIndex={-1}
+        >
+          Know more ›
+        </Link>
       </div>
     </article>
   )

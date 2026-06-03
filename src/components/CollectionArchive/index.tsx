@@ -1,39 +1,38 @@
 import type React from 'react'
-
 import { Card, type CardPostData } from '@/components/Card'
+import './styles.css'
 
 export type Props = {
   posts: CardPostData[]
 }
 
-export const CollectionArchive: React.FC<Props> = (props) => {
-  const { posts } = props
+export const CollectionArchive: React.FC<Props> = ({ posts }) => {
+  if (!posts?.length) return null
+
+  const [featured, ...rest] = posts
 
   return (
-    <div className="">
-      <div>
-        <div className="">
-          {posts?.map((result, index) => {
-            if (typeof result === 'object' && result !== null) {
-              return (
-                <div
-                  className=""
-                  key={String(index)}
-                >
-                  <Card
-                    className=""
-                    doc={result}
-                    relationTo="posts"
-                    showCategories
-                  />
-                </div>
-              )
-            }
-
-            return null
-          })}
+    <div className="ak-collection-archive">
+      {featured && (
+        <div className="ak-collection-archive__featured">
+          <Card
+            doc={featured}
+            relationTo="posts"
+            featured
+          />
         </div>
-      </div>
+      )}
+      {rest.length > 0 && (
+        <div className="ak-collection-archive__grid">
+          {rest.map((post, index) => (
+            <Card
+              key={String(index)}
+              doc={post}
+              relationTo="posts"
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
