@@ -233,6 +233,29 @@ export const seedHome = async (
     heading: 'La confianza de las mejores marcas',
   }
 
+  const audienceShowcaseBlock = {
+    blockType: 'audienceShowcase' as const,
+    blockName: 'Audience Showcase — Home',
+    eyebrow: "WHO IT'S FOR",
+    heading: 'One platform.\nFour ways to show up with purpose.',
+    subheading:
+      'Amerikiosks helps partners create branded retail experiences that are placed with intention and operated end to end.',
+    items: [
+      { page: Number(audiencePageIds['for-brands']) || 0, cta: 'Explore brand programs' },
+      { page: Number(audiencePageIds['for-venues']) || 0, cta: 'Explore venue revenue' },
+      { page: Number(audiencePageIds['for-agencies']) || 0, cta: 'Explore activations' },
+      { page: Number(audiencePageIds['for-emerging-brands']) || 0, cta: 'Explore launch paths' },
+    ],
+  }
+
+  const audienceShowcaseBlockEs = {
+    ...audienceShowcaseBlock,
+    eyebrow: 'PARA QUIÉN',
+    heading: 'Una plataforma.\nCuatro formas de estar con propósito.',
+    subheading:
+      'Amerikiosks ayuda a los partners a crear experiencias de retail de marca colocadas con intención y operadas de principio a fin.',
+  }
+
   const meta = {
     title: 'Amerikiosks — Automated Retail Solutions',
     description:
@@ -254,14 +277,14 @@ export const seedHome = async (
       title: 'Home',
       slug: 'home',
       hero: heroData,
-      layout: [valuePropsBlock, trustStripBlock],
+      layout: [valuePropsBlock, trustStripBlock, audienceShowcaseBlock],
       meta,
     },
     {
       title: 'Inicio',
       slug: 'home',
       hero: heroDataEs,
-      layout: [valuePropsBlockEs, trustStripBlockEs],
+      layout: [valuePropsBlockEs, trustStripBlockEs, audienceShowcaseBlockEs],
       meta: metaEs,
     },
   )
