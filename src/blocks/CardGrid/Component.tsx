@@ -75,10 +75,10 @@ export const CardGridBlock: React.FC<CardGridBlockProps> = ({
                   >
                     {item.icon && variant === 'icon' && (
                       <span
-                        className="ak-card-grid__card-icon"
+                        className="ak-card-grid__card-icon-wrap"
                         aria-hidden="true"
                       >
-                        {item.icon}
+                        <span className="ak-card-grid__card-icon">{item.icon}</span>
                       </span>
                     )}
                     {item.eyebrow && variant === 'pillar' && (

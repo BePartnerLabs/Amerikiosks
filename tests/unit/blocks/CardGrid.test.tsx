@@ -87,4 +87,29 @@ describe('CardGridBlock', () => {
     expect(screen.getByText('From first opportunity to daily operation.')).toBeInTheDocument()
     expect(screen.getByText('STRATEGY')).toBeInTheDocument()
   })
+
+  it('renders pillar card eyebrow with card-eyebrow class', () => {
+    const { container } = render(
+      <CardGridBlock
+        {...base}
+        variant="pillar"
+        items={[{ id: 'i1', title: 'T', eyebrow: 'STRATEGY', body: null }]}
+      />,
+    )
+    const el = container.querySelector('.ak-card-grid__card-eyebrow')
+    expect(el).not.toBeNull()
+    expect(el?.textContent).toBe('STRATEGY')
+  })
+
+  it('renders icon variant card with icon wrapper', () => {
+    const { container } = render(
+      <CardGridBlock
+        {...base}
+        variant="icon"
+        items={[{ id: 'i1', title: 'Hotels', icon: '🏨', body: null }]}
+      />,
+    )
+    expect(container.querySelector('.ak-card-grid__card-icon-wrap')).not.toBeNull()
+    expect(container.querySelector('.ak-card-grid__card-icon')).not.toBeNull()
+  })
 })
