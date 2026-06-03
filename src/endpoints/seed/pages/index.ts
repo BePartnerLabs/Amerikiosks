@@ -7,9 +7,13 @@ import { seedSolutions } from './solutions'
 import { seedWhereItWorks } from './where-it-works'
 import { seedWhyAmerikiosks } from './why-amerikiosks'
 
-export const seedPages = async (payload: Payload, req: PayloadRequest): Promise<void> => {
+export const seedPages = async (
+  payload: Payload,
+  req: PayloadRequest,
+  { postIds = [] }: { postIds?: string[] } = {},
+): Promise<void> => {
   const audiencePageIds = await seedAudiencePages(payload, req)
-  await seedHome(payload, req, audiencePageIds)
+  await seedHome(payload, req, audiencePageIds, postIds)
   await seedSolutions(payload, req)
   await seedWhereItWorks(payload, req)
   await seedCaseStudies(payload, req)

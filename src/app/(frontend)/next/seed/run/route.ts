@@ -13,6 +13,7 @@ import { seedSolutions } from '@/endpoints/seed/pages/solutions'
 import { seedWhereItWorks } from '@/endpoints/seed/pages/where-it-works'
 import { seedWhyAmerikiosks } from '@/endpoints/seed/pages/why-amerikiosks'
 import { seedPartners } from '@/endpoints/seed/partners'
+import { seedPosts } from '@/endpoints/seed/posts'
 
 export const maxDuration = 120
 
@@ -29,7 +30,11 @@ const parts: Record<
   contact: seedContact,
   home: async (payload, req) => {
     const audiencePageIds = await seedAudiencePages(payload, req)
-    await seedHome(payload, req, audiencePageIds)
+    const postIds = await seedPosts(payload, req)
+    await seedHome(payload, req, audiencePageIds, postIds)
+  },
+  posts: async (payload, req) => {
+    await seedPosts(payload, req)
   },
   solutions: seedSolutions,
   'where-it-works': seedWhereItWorks,
