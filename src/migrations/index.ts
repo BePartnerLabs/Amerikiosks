@@ -6,7 +6,6 @@ import * as migration_20260603_132818 from './20260603_132818'
 import * as migration_20260603_173934 from './20260603_173934'
 import * as migration_20260603_174311 from './20260603_174311'
 import * as migration_20260603_181629 from './20260603_181629'
-
 export const migrations = [
   {
     up: migration_20260601_174356.up,
