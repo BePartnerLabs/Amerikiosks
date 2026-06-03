@@ -1,0 +1,29 @@
+/* ═══════════════════════════════════════════════════════════════
+   CollectionArchive — featured + grid layout
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Featured card (first post, full-width horizontal) ─────── */
+
+.ak-collection-archive__featured {
+  margin-bottom: var(--bp-space-8, 2rem);
+}
+
+/* ─── 3-col grid for remaining posts ────────────────────────── */
+
+.ak-collection-archive__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--bp-space-6, 1.5rem);
+}
+
+@media (max-width: 64rem) {
+  .ak-collection-archive__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 40rem) {
+  .ak-collection-archive__grid {
+    grid-template-columns: 1fr;
+  }
+}

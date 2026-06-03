@@ -1,0 +1,27 @@
+/* ═══════════════════════════════════════════════════════════════
+   ArchiveBlock — insights section
+   ═══════════════════════════════════════════════════════════════ */
+
+.ak-archive {
+  background-color: var(--bp-color-surface, #fff);
+}
+
+.ak-archive__inner {
+  padding-block: var(--bp-space-16, 4rem);
+}
+
+.ak-archive__header {
+  text-align: center;
+  margin-bottom: var(--bp-space-10, 2.5rem);
+  max-width: 60ch;
+  margin-inline: auto;
+}
+
+.ak-archive__header h2 {
+  margin: 0;
+  font-family: var(--font-poppins, sans-serif);
+  font-size: clamp(1.75rem, 2.5vw + 1rem, 3rem);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--bp-color-heading, #0f1e3c);
+}

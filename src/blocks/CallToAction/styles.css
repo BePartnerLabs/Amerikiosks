@@ -1,0 +1,49 @@
+/* ═══════════════════════════════════════════════════════════════
+   CallToAction block
+   ═══════════════════════════════════════════════════════════════ */
+
+.ak-cta {
+  background-color: var(--ak-header-bg, #0e1117);
+  color: #fff;
+}
+
+.ak-cta__inner {
+  padding-block: var(--bp-space-12, 3rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bp-space-8, 2rem);
+  flex-wrap: wrap;
+}
+
+.ak-cta__text {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.ak-cta__text h2 {
+  margin: 0;
+  font-family: var(--font-poppins, sans-serif);
+  font-size: clamp(1.5rem, 2vw + 0.75rem, 2.25rem);
+  font-weight: 700;
+  line-height: 1.2;
+  color: #fff;
+}
+
+.ak-cta__actions {
+  flex-shrink: 0;
+  display: flex;
+  gap: var(--bp-space-3, 0.75rem);
+  flex-wrap: wrap;
+}
+
+@media (max-width: 40rem) {
+  .ak-cta__inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ak-cta__actions {
+    width: 100%;
+  }
+}
