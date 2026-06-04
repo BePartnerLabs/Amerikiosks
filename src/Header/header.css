@@ -25,7 +25,7 @@
 
 /* ─── BPL DS Header (bp-header) ────────────────────────── */
 .bp-header {
-  --_bg-color: var(--header-bg, var(--ak-dark-bg));
+  --_bg-color: var(--bg-color, var(--ak-dark-bg));
   position: sticky;
   top: 0;
   z-index: var(--header-z, 100);
