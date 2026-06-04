@@ -43,7 +43,7 @@ export const Select: React.FC<
               value={controlledValue?.value}
             >
               <SelectTrigger
-                className="w-full"
+                className="ak-form__select-trigger"
                 id={name}
               >
                 <SelectValue placeholder={label} />

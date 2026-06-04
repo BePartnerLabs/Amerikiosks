@@ -6,7 +6,7 @@ import { Width } from '../Width'
 export const Message: React.FC<{ message: DefaultTypedEditorState }> = ({ message }) => {
   return (
     <Width
-      className="my-12"
+      className="ak-form__message-block"
       width="100"
     >
       {message && <RichText data={message} />}

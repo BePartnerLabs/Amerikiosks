@@ -1,0 +1,68 @@
+/* ═══════════════════════════════════════════════════════════════
+   Form block — placeholder styles, ready for DS migration
+   Replace shadcn primitives with DS components when available.
+   ═══════════════════════════════════════════════════════════════ */
+
+.ak-form {
+  max-width: 48rem;
+  margin-inline: auto;
+}
+
+.ak-form__intro {
+  margin-bottom: var(--bp-space-8, 2rem);
+}
+
+.ak-form__card {
+  padding: var(--bp-space-6, 1.5rem);
+  border: 1px solid var(--ak-color-border);
+  border-radius: var(--bp-radius-lg, 0.75rem);
+  background-color: var(--ak-color-surface);
+}
+
+.ak-form__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bp-space-6, 1.5rem);
+}
+
+.ak-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bp-space-2, 0.5rem);
+}
+
+.ak-form__checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: var(--bp-space-2, 0.5rem);
+}
+
+.ak-form__error {
+  margin-top: var(--bp-space-2, 0.5rem);
+  font-size: var(--bp-text-sm, 0.875rem);
+  color: var(--ak-accent);
+}
+
+.ak-form__status {
+  font-size: var(--bp-text-sm, 0.875rem);
+  padding: var(--bp-space-3, 0.75rem);
+  border-radius: var(--bp-radius, 0.625rem);
+}
+
+.ak-form__status--error {
+  color: var(--ak-accent);
+  background-color: color-mix(in srgb, var(--ak-accent) 8%, transparent);
+}
+
+.ak-form__loading {
+  color: var(--ak-color-muted);
+  font-size: var(--bp-text-sm, 0.875rem);
+}
+
+.ak-form__message-block {
+  margin-block: var(--bp-space-12, 3rem);
+}
+
+.ak-form__select-trigger {
+  width: 100%;
+}

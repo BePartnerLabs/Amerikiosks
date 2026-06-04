@@ -9,6 +9,7 @@ import RichText from '@/components/RichText'
 import { Button } from '@/components/ui/button'
 import { getClientSideURL } from '@/utilities/getURL'
 import { fields } from './fields'
+import './styles.css'
 
 export type FormBlockType = {
   blockName?: string
@@ -56,7 +57,6 @@ export const FormBlock: React.FC<
           value,
         }))
 
-        // delay loading indicator by 1s
         loadingTimerID = setTimeout(() => {
           setIsLoading(true)
         }, 1000)
@@ -79,12 +79,10 @@ export const FormBlock: React.FC<
 
           if (req.status >= 400) {
             setIsLoading(false)
-
             setError({
               message: res.errors?.[0]?.message || 'Internal Server Error',
               status: res.status,
             })
-
             return
           }
 
@@ -93,17 +91,12 @@ export const FormBlock: React.FC<
 
           if (confirmationType === 'redirect' && redirect) {
             const { url } = redirect
-
-            const redirectUrl = url
-
-            if (redirectUrl) router.push(redirectUrl)
+            if (url) router.push(url)
           }
         } catch (err) {
           console.warn(err)
           setIsLoading(false)
-          setError({
-            message: 'Something went wrong.',
-          })
+          setError({ message: 'Something went wrong.' })
         }
       }
 
@@ -113,27 +106,33 @@ export const FormBlock: React.FC<
   )
 
   return (
-    <div className="container lg:max-w-[48rem]">
+    <div className="ak-form">
       {enableIntro && introContent && !hasSubmitted && (
         <RichText
-          className="mb-8 lg:mb-12"
+          className="ak-form__intro"
           data={introContent}
           enableGutter={false}
         />
       )}
-      <div className="p-4 lg:p-6 border border-border rounded-[0.8rem]">
+      <div className="ak-form__card">
         <FormProvider {...formMethods}>
           {!isLoading && hasSubmitted && confirmationType === 'message' && (
             <RichText data={confirmationMessage} />
           )}
-          {isLoading && !hasSubmitted && <p>Loading, please wait...</p>}
-          {error && <div>{`${error.status || '500'}: ${error.message || ''}`}</div>}
+          {isLoading && !hasSubmitted && (
+            <p className="ak-form__loading">Loading, please wait...</p>
+          )}
+          {error && (
+            <div className="ak-form__status ak-form__status--error">
+              {`${error.status || '500'}: ${error.message || ''}`}
+            </div>
+          )}
           {!hasSubmitted && (
             <form
               id={formID}
               onSubmit={handleSubmit(onSubmit)}
             >
-              <div className="mb-4 last:mb-0">
+              <div className="ak-form__fields">
                 {formFromProps?.fields?.map((field, index) => {
                   const Field = fields?.[field.blockType as keyof typeof fields] as
                     | React.ComponentType<Record<string, unknown>>
@@ -146,7 +145,7 @@ export const FormBlock: React.FC<
                   if (Field) {
                     return (
                       <div
-                        className="mb-6 last:mb-0"
+                        className="ak-form__field"
                         key={fieldKey}
                       >
                         <Field

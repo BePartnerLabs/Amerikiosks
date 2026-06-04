@@ -19,7 +19,7 @@ export const Checkbox: React.FC<
 
   return (
     <Width width={width}>
-      <div className="flex items-center gap-2">
+      <div className="ak-form__checkbox-row">
         <CheckboxUi
           defaultChecked={defaultValue}
           id={name}
