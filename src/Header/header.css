@@ -25,11 +25,12 @@
 
 /* ─── BPL DS Header (bp-header) ────────────────────────── */
 .bp-header {
+  --_bg-color: var(--header-bg, var(--ak-dark-bg));
   position: sticky;
   top: 0;
   z-index: var(--header-z, 100);
   width: 100%;
-  background-color: var(--header-bg, var(--ak-header-bg));
+  background-color: var(--_bg-color);
 }
 
 .bp-header.is-scrolled {
