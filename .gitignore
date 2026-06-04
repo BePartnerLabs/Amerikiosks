@@ -2,7 +2,9 @@ build
 dist / media
 node_modules
 .DS_Store
-.env
+.env.local
+.env.prod
+.env.*.local
 .next
 next-env.d.ts
 .vercel
@@ -21,6 +23,5 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 .superpowers/
-.env*
 tsconfig.tsbuildinfo
 .superpowers/
