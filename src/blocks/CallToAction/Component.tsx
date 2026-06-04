@@ -14,6 +14,7 @@ export const CallToActionBlock: React.FC<CTABlockProps> = ({
   return (
     <section
       className="ak-cta"
+      aria-label={blockName ?? 'Call to action'}
       data-ga-block={toSnakeCase(blockType)}
       data-ga-section={blockName ?? undefined}
     >

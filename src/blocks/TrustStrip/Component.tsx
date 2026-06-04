@@ -46,7 +46,6 @@ export const TrustStripBlock: React.FC<Props> = ({
     <section
       className="ak-trust-strip"
       aria-label={heading}
-      style={{ containerType: 'inline-size', containerName: 'trust-strip' }}
       data-ga-block={toSnakeCase(blockType)}
       data-ga-section={blockName ?? undefined}
     >

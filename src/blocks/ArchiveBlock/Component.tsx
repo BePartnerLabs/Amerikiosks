@@ -52,6 +52,7 @@ export const ArchiveBlock: React.FC<ArchiveBlockProps & { id?: string }> = async
     <section
       className="ak-archive"
       id={`block-${id}`}
+      aria-label={blockName ?? 'Archive'}
       data-ga-block="archive"
       data-ga-section={blockName ?? undefined}
     >

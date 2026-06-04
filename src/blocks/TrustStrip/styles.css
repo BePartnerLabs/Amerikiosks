@@ -1,5 +1,7 @@
 /* ── Trust Strip ─────────────────────────────────────── */
 .ak-trust-strip {
+  container-type: inline-size;
+  container-name: trust-strip;
   padding: var(--ak-section-py, 4rem) 0;
   text-align: center;
   overflow: hidden;
