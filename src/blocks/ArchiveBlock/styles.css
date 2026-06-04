@@ -3,7 +3,7 @@
    ═══════════════════════════════════════════════════════════════ */
 
 .ak-archive {
-  background-color: var(--bp-color-surface, #fff);
+  background-color: var(--ak-color-surface);
 }
 
 .ak-archive__inner {
@@ -23,5 +23,5 @@
   font-size: clamp(1.75rem, 2.5vw + 1rem, 3rem);
   font-weight: 700;
   line-height: 1.2;
-  color: var(--bp-color-heading, #0f1e3c);
+  color: var(--ak-color-heading);
 }

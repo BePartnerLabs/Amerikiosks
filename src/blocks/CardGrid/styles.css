@@ -38,7 +38,7 @@
   margin-top: auto;
   font-size: var(--bp-text-sm, 0.875rem);
   font-weight: 600;
-  color: var(--ak-accent, #ec254e);
+  color: var(--ak-accent);
   text-decoration: none;
   display: inline-flex;
   align-items: center;
@@ -76,7 +76,7 @@
 
 /* ─── compact variant ────────────────────────────────────────── */
 .ak-card-grid--compact {
-  background-color: var(--ak-header-bg);
+  background-color: var(--ak-dark-bg);
   color: #fff;
 }
 
@@ -98,7 +98,7 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--ak-dark-fg-subtle);
 }
 
 .ak-card-grid--compact .ak-card-grid__heading {
@@ -111,8 +111,8 @@
 }
 
 .ak-card-grid--compact .ak-card-grid__card {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-top: 2px solid var(--ak-accent, #ec254e);
+  background-color: var(--ak-dark-card-bg);
+  border-top: 2px solid var(--ak-accent);
 }
 
 .ak-card-grid--compact .ak-card-grid__card-title {
@@ -120,12 +120,12 @@
 }
 
 .ak-card-grid--compact .ak-card-grid__card-body {
-  color: rgba(255, 255, 255, 0.65);
+  color: var(--ak-dark-fg-muted);
 }
 
 /* ─── icon variant ───────────────────────────────────────────── */
 .ak-card-grid--icon {
-  background-color: var(--bp-color-surface, #fff);
+  background-color: var(--ak-color-surface);
 }
 
 .ak-card-grid--icon .ak-card-grid__header {
@@ -139,7 +139,7 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--ak-accent, #ec254e);
+  color: var(--ak-accent);
 }
 
 .ak-card-grid--icon .ak-card-grid__heading {
@@ -148,12 +148,12 @@
   font-size: clamp(1.75rem, 2.5vw + 1rem, 3rem);
   font-weight: 700;
   line-height: 1.15;
-  color: var(--bp-color-heading, #0f1e3c);
+  color: var(--ak-color-heading);
 }
 
 .ak-card-grid--icon .ak-card-grid__card {
   background-color: #fff;
-  border: 1px solid var(--bp-color-border, #e5e7eb);
+  border: 1px solid var(--ak-color-border);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
@@ -163,7 +163,7 @@
   justify-content: center;
   width: 2.25rem;
   height: 2.25rem;
-  background-color: color-mix(in srgb, var(--ak-accent, #ec254e) 12%, transparent);
+  background-color: color-mix(in srgb, var(--ak-accent) 12%, transparent);
   border-radius: 0.5rem;
 }
 
@@ -173,17 +173,17 @@
 }
 
 .ak-card-grid--icon .ak-card-grid__card-title {
-  color: var(--bp-color-heading, #0f1e3c);
+  color: var(--ak-color-heading);
   font-size: var(--bp-text-base, 1rem);
 }
 
 .ak-card-grid--icon .ak-card-grid__card-body {
-  color: var(--bp-color-muted, #6b7280);
+  color: var(--ak-color-muted);
 }
 
 /* ─── pillar variant ─────────────────────────────────────────── */
 .ak-card-grid--pillar {
-  background-color: var(--bp-color-surface, #fff);
+  background-color: var(--ak-color-surface);
 }
 
 .ak-card-grid--pillar .ak-card-grid__header {
@@ -197,7 +197,7 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--ak-accent, #ec254e);
+  color: var(--ak-accent);
 }
 
 .ak-card-grid--pillar .ak-card-grid__heading {
@@ -206,13 +206,13 @@
   font-size: clamp(1.75rem, 2.5vw + 1rem, 3rem);
   font-weight: 700;
   line-height: 1.15;
-  color: var(--bp-color-heading, #0f1e3c);
+  color: var(--ak-color-heading);
 }
 
 .ak-card-grid--pillar .ak-card-grid__subheading {
   margin: var(--bp-space-4, 1rem) 0 0;
   font-size: var(--bp-text-base, 1rem);
-  color: var(--bp-color-muted, #6b7280);
+  color: var(--ak-color-muted);
   max-width: 60ch;
   margin-inline: auto;
   line-height: 1.6;
@@ -220,7 +220,7 @@
 
 .ak-card-grid--pillar .ak-card-grid__card {
   background-color: #fff;
-  border: 1px solid var(--bp-color-border, #e5e7eb);
+  border: 1px solid var(--ak-color-border);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
@@ -230,20 +230,20 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--ak-accent, #ec254e);
+  color: var(--ak-accent);
 }
 
 .ak-card-grid--pillar .ak-card-grid__card-title {
-  color: var(--bp-color-heading, #0f1e3c);
+  color: var(--ak-color-heading);
   font-size: var(--bp-text-base, 1rem);
 }
 
 .ak-card-grid--pillar .ak-card-grid__card-body {
-  color: var(--bp-color-muted, #6b7280);
+  color: var(--ak-color-muted);
 }
 
 .ak-card-grid--pillar .ak-card-grid__cta-btn {
-  color: var(--bp-color-heading, #0f1e3c);
+  color: var(--ak-color-heading);
 }
 
 /* ─── Responsive ─────────────────────────────────────────────── */

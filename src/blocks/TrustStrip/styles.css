@@ -10,14 +10,14 @@
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--ak-color-primary, #1e3a5f);
+  color: var(--ak-color-primary);
   margin-bottom: 0.75rem;
 }
 
 .ak-trust-strip__heading {
   font-size: clamp(1.5rem, 3vw, 2.25rem);
   font-weight: 700;
-  color: var(--ak-color-heading, #0f2040);
+  color: var(--ak-color-heading);
   margin-bottom: 2.5rem;
 }
 

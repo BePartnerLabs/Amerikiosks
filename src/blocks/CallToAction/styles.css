@@ -3,7 +3,7 @@
    ═══════════════════════════════════════════════════════════════ */
 
 .ak-cta {
-  background-color: var(--ak-header-bg, #0e1117);
+  background-color: var(--ak-dark-bg);
   color: #fff;
   position: relative;
   overflow: hidden;

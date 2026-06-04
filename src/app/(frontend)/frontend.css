@@ -85,6 +85,7 @@ img {
 
 /* ─── Amerikiosks brand tokens ─────────────────────────── */
 :root {
+  /* Brand base */
   --ak-header-bg: #011936;
   --ak-accent: #e63946;
   --ak-accent-hover: #c1121f;
@@ -97,6 +98,21 @@ img {
   --ak-mega-right-bg: #ffffff;
   --ak-nav-link-color: rgba(255, 255, 255, 0.85);
   --ak-nav-link-hover: var(--ak-accent);
+
+  /* Color palette */
+  --ak-color-heading: #0f1e3c;
+  --ak-color-primary: #1e3a5f;
+  --ak-color-muted: #6b6760;
+  --ak-color-surface: #ffffff;
+  --ak-color-surface-2: #f3f4f6;
+  --ak-color-border: #e5e0d8;
+
+  /* Dark section (compact cards, CTA) */
+  --ak-dark-bg: var(--ak-header-bg);
+  --ak-dark-fg: #ffffff;
+  --ak-dark-fg-muted: rgba(255, 255, 255, 0.65);
+  --ak-dark-fg-subtle: rgba(255, 255, 255, 0.5);
+  --ak-dark-card-bg: rgba(255, 255, 255, 0.05);
 }
 
 /* ─── BPL DS Button (bp-btn) ───────────────────────────── */
