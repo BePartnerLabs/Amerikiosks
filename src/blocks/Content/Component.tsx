@@ -1,32 +1,32 @@
 import type React from 'react'
 import RichText from '@/components/RichText'
 import type { ContentBlock as ContentBlockProps } from '@/payload-types'
-
 import { CMSLink } from '../../components/Link'
+import './styles.css'
+
+const colSizeClass: Record<string, string> = {
+  full: 'ak-content__col--full',
+  half: 'ak-content__col--half',
+  oneThird: 'ak-content__col--oneThird',
+  twoThirds: 'ak-content__col--twoThirds',
+}
 
 export const ContentBlock: React.FC<ContentBlockProps> = (props) => {
   const { columns } = props
 
-  const _colsSpanClasses = {
-    full: '12',
-    half: '6',
-    oneThird: '4',
-    twoThirds: '8',
-  }
-
   return (
-    <div className="">
-      <div className="">
+    <div className="ak-content">
+      <div className="ak-content__columns">
         {columns &&
           columns.length > 0 &&
           columns.map((col) => {
-            const { enableLink, link, richText, size: _size } = col
+            const { enableLink, link, richText, size } = col
             const columnKey =
-              col.id ?? `${_size ?? 'col'}-${link?.url ?? link?.label ?? 'content-column'}`
+              col.id ?? `${size ?? 'col'}-${link?.url ?? link?.label ?? 'content-column'}`
 
             return (
               <div
-                className=""
+                className={`ak-content__col ${colSizeClass[size ?? 'full'] ?? ''}`}
                 key={columnKey}
               >
                 {richText && (
@@ -35,7 +35,6 @@ export const ContentBlock: React.FC<ContentBlockProps> = (props) => {
                     enableGutter={false}
                   />
                 )}
-
                 {enableLink && <CMSLink {...link} />}
               </div>
             )

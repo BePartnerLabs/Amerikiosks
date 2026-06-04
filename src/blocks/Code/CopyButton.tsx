@@ -16,10 +16,9 @@ export function CopyButton({ code }: { code: string }) {
   }
 
   return (
-    <div className="">
+    <div className="ak-code__copy">
       <Button
-        className=""
-        variant={'secondary'}
+        variant="secondary"
         onClick={async () => {
           await navigator.clipboard.writeText(code)
           updateCopyStatus()

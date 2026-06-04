@@ -1,0 +1,30 @@
+/* ═══════════════════════════════════════════════════════════════
+   RelatedPosts block — placeholder styles, ready for DS migration
+   ═══════════════════════════════════════════════════════════════ */
+
+.ak-related-posts {
+  padding-block: var(--bp-space-16, 4rem);
+}
+
+.ak-related-posts__intro {
+  margin-bottom: var(--bp-space-8, 2rem);
+  text-align: center;
+}
+
+.ak-related-posts__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--bp-space-6, 1.5rem);
+}
+
+@media (max-width: 64rem) {
+  .ak-related-posts__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 40rem) {
+  .ak-related-posts__grid {
+    grid-template-columns: 1fr;
+  }
+}

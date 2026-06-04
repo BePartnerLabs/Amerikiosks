@@ -1,0 +1,42 @@
+/* ═══════════════════════════════════════════════════════════════
+   Content block — placeholder styles, ready for DS migration
+   Column sizes: full | half | oneThird | twoThirds
+   ═══════════════════════════════════════════════════════════════ */
+
+.ak-content {
+  padding-block: var(--bp-space-16, 4rem);
+}
+
+.ak-content__columns {
+  display: grid;
+  gap: var(--bp-space-8, 2rem);
+  grid-template-columns: repeat(12, 1fr);
+}
+
+.ak-content__col {
+  grid-column: span 12;
+}
+
+.ak-content__col--full {
+  grid-column: span 12;
+}
+
+.ak-content__col--half {
+  grid-column: span 6;
+}
+
+.ak-content__col--oneThird {
+  grid-column: span 4;
+}
+
+.ak-content__col--twoThirds {
+  grid-column: span 8;
+}
+
+@media (max-width: 48rem) {
+  .ak-content__col--half,
+  .ak-content__col--oneThird,
+  .ak-content__col--twoThirds {
+    grid-column: span 12;
+  }
+}

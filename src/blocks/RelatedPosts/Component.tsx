@@ -3,6 +3,7 @@ import type React from 'react'
 import RichText from '@/components/RichText'
 import type { Post } from '@/payload-types'
 import { Card } from '../../components/Card'
+import './styles.css'
 
 export type RelatedPostsProps = {
   className?: string
@@ -10,22 +11,20 @@ export type RelatedPostsProps = {
   introContent?: DefaultTypedEditorState
 }
 
-export const RelatedPosts: React.FC<RelatedPostsProps> = (props) => {
-  const { className: _className, docs, introContent } = props
-
+export const RelatedPosts: React.FC<RelatedPostsProps> = ({ docs, introContent }) => {
   return (
-    <div className="">
+    <div className="ak-related-posts">
       {introContent && (
-        <RichText
-          data={introContent}
-          enableGutter={false}
-        />
+        <div className="ak-related-posts__intro">
+          <RichText
+            data={introContent}
+            enableGutter={false}
+          />
+        </div>
       )}
-
-      <div className="">
+      <div className="ak-related-posts__grid">
         {docs?.map((doc) => {
           if (typeof doc === 'string') return null
-
           return (
             <Card
               key={doc.id}

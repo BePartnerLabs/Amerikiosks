@@ -1,0 +1,19 @@
+/* ═══════════════════════════════════════════════════════════════
+   MediaBlock — placeholder styles, ready for DS migration
+   ═══════════════════════════════════════════════════════════════ */
+
+.ak-media-block {
+  padding-block: var(--bp-space-8, 2rem);
+}
+
+.ak-media-block__media {
+  border-radius: var(--bp-radius-md, 0.5rem);
+  overflow: hidden;
+}
+
+.ak-media-block__caption {
+  margin-top: var(--bp-space-3, 0.75rem);
+  font-size: var(--bp-text-sm, 0.875rem);
+  color: var(--ak-color-muted);
+  text-align: center;
+}

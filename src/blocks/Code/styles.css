@@ -1,0 +1,37 @@
+/* ═══════════════════════════════════════════════════════════════
+   Code block — placeholder styles, ready for DS migration
+   ═══════════════════════════════════════════════════════════════ */
+
+.ak-code {
+  position: relative;
+  border-radius: var(--bp-radius-md, 0.5rem);
+  overflow: hidden;
+}
+
+.ak-code__pre {
+  overflow-x: auto;
+  padding: var(--bp-space-6, 1.5rem);
+  font-size: var(--bp-text-sm, 0.875rem);
+  line-height: 1.7;
+  background-color: var(--ak-dark-bg);
+  color: var(--ak-dark-fg);
+}
+
+.ak-code__line-number {
+  display: inline-block;
+  width: 2rem;
+  user-select: none;
+  color: var(--ak-dark-fg-subtle);
+  margin-right: var(--bp-space-4, 1rem);
+  text-align: right;
+}
+
+.ak-code__line-content {
+  display: inline;
+}
+
+.ak-code__copy {
+  position: absolute;
+  top: var(--bp-space-3, 0.75rem);
+  right: var(--bp-space-3, 0.75rem);
+}

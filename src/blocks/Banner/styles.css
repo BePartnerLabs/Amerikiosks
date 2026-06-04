@@ -1,0 +1,35 @@
+/* ═══════════════════════════════════════════════════════════════
+   Banner block — placeholder styles, ready for DS migration
+   Variants: info | warning | error | success
+   ═══════════════════════════════════════════════════════════════ */
+
+.ak-banner {
+  padding: var(--bp-space-4, 1rem);
+  border-radius: var(--bp-radius, 0.625rem);
+  border-left: 4px solid currentColor;
+}
+
+.ak-banner--info {
+  background-color: color-mix(in srgb, var(--ak-color-primary) 8%, transparent);
+  color: var(--ak-color-primary);
+}
+
+.ak-banner--warning {
+  background-color: color-mix(in srgb, #f59e0b 8%, transparent);
+  color: #92400e;
+}
+
+.ak-banner--error {
+  background-color: color-mix(in srgb, var(--ak-accent) 8%, transparent);
+  color: var(--ak-accent);
+}
+
+.ak-banner--success {
+  background-color: color-mix(in srgb, #10b981 8%, transparent);
+  color: #065f46;
+}
+
+.ak-banner__content {
+  font-size: var(--bp-text-sm, 0.875rem);
+  line-height: 1.6;
+}

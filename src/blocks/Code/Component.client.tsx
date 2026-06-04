@@ -18,9 +18,8 @@ export const Code: React.FC<Props> = ({ code, language = '' }) => {
       theme={themes.vsDark}
     >
       {({ getLineProps, getTokenProps, tokens }) => (
-        <pre className="">
+        <pre className="ak-code__pre">
           {tokens.map((line, i) =>
-            // Using content-based key to avoid pure index usage.
             (() => {
               const lineKey = line.map((token) => token.content).join('') || `line-${i + 1}`
               return (
@@ -28,8 +27,8 @@ export const Code: React.FC<Props> = ({ code, language = '' }) => {
                   key={lineKey}
                   {...getLineProps({ className: 'table-row', line })}
                 >
-                  <span className="">{i + 1}</span>
-                  <span className="">
+                  <span className="ak-code__line-number">{i + 1}</span>
+                  <span className="ak-code__line-content">
                     {line.map((token) => (
                       <span
                         key={`${token.types.join('-')}:${token.content}`}

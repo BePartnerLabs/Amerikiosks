@@ -1,6 +1,6 @@
 import type React from 'react'
-
 import { Code } from './Component.client'
+import './styles.css'
 
 export type CodeBlockProps = {
   code: string
@@ -8,13 +8,12 @@ export type CodeBlockProps = {
   blockType: 'code'
 }
 
-type Props = CodeBlockProps & {
-  className?: string
-}
-
-export const CodeBlock: React.FC<Props> = ({ className: _className, code, language }) => {
+export const CodeBlock: React.FC<CodeBlockProps & { className?: string }> = ({
+  code,
+  language,
+}) => {
   return (
-    <div className="">
+    <div className="ak-code">
       <Code
         code={code}
         language={language}
