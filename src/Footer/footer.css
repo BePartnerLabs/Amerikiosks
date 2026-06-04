@@ -1,6 +1,7 @@
 .ak-footer {
-  background-color: var(--ak-header-bg);
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  --_bg-color: var(--bg-color, var(--ak-dark-bg));
+  background-color: var(--_bg-color);
+  border-top: 1px solid var(--ak-dark-border-subtle);
 }
 
 .ak-footer__inner {
@@ -31,25 +32,25 @@
 /* ─── Bottom bar ─────────────────────────────────────────── */
 .ak-footer__bottom {
   padding-block: var(--bp-space-6, 1.5rem);
-  border-top: 1px solid #fff;
+  border-top: 1px solid var(--ak-dark-border);
 }
 
 .ak-footer__copyright {
   margin: 0;
   font-size: var(--bp-text-sm, 0.875rem);
-  color: #fff;
+  color: var(--ak-dark-fg);
 }
 
 /* ─── Brand ─────────────────────────────────────────────── */
 .ak-footer__logo {
   display: inline-block;
-  color: #fff;
+  color: var(--ak-dark-fg);
 }
 
 .ak-footer__tagline {
   margin: var(--bp-space-4, 1rem) 0 0;
   font-size: var(--bp-text-sm, 0.875rem);
-  color: #fff;
+  color: var(--ak-dark-fg);
   line-height: 1.65;
   max-width: 48ch;
 }
@@ -59,7 +60,7 @@
   margin: 0 0 var(--bp-space-4, 1rem);
   font-size: var(--bp-text-sm, 0.875rem);
   font-weight: 700;
-  color: #fff;
+  color: var(--ak-dark-fg);
 }
 
 .ak-footer__col-links {
@@ -73,13 +74,13 @@
 
 .ak-footer__link {
   font-size: var(--bp-text-sm, 0.875rem);
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--ak-dark-fg-subtle);
   text-decoration: none;
   transition: color var(--bp-duration-fast) var(--bp-ease);
 }
 
 .ak-footer__link:hover {
-  color: #fff;
+  color: var(--ak-dark-fg);
 }
 
 .ak-footer__link:focus-visible,

@@ -1,10 +1,3 @@
-:root {
-  --ak-header-fg: #ffffff;
-  --ak-overlay-bg: rgba(0, 0, 0, 0.5);
-  --z-mobile-backdrop: 200;
-  --z-mobile-sheet: 201;
-}
-
 /* ─── Mobile hamburger ──────────────────────────────────── */
 .ak-mobile-hamburger {
   display: none;
@@ -21,7 +14,7 @@
   display: block;
   width: 22px;
   height: 2px;
-  background-color: var(--ak-header-fg);
+  background-color: var(--ak-dark-fg);
   border-radius: var(--bp-radius-full);
   transition: opacity var(--bp-duration-fast) var(--bp-ease);
 }
@@ -55,7 +48,7 @@
   position: fixed;
   inset: 0;
   background: var(--ak-overlay-bg);
-  z-index: var(--z-mobile-backdrop);
+  z-index: var(--ak-z-mobile-backdrop);
 }
 
 /* ─── Bottom sheet ──────────────────────────────────────── */
@@ -64,10 +57,11 @@
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: var(--z-mobile-sheet);
-  background-color: var(--ak-header-bg);
+  z-index: var(--ak-z-mobile-sheet);
+  --_bg-color: var(--bg-color, var(--ak-dark-bg));
+  background-color: var(--_bg-color);
   border-radius: var(--bp-radius-xl) var(--bp-radius-xl) 0 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid var(--ak-dark-border);
   transform: translateY(100%);
   transition: transform var(--bp-duration-normal) var(--bp-ease);
   max-height: 85dvh;
@@ -84,7 +78,7 @@
 .ak-mobile-sheet__handle {
   width: 36px;
   height: 3px;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--ak-dark-fg-dim);
   border-radius: var(--bp-radius-full);
   margin: var(--bp-space-3) auto var(--bp-space-1);
   flex-shrink: 0;
@@ -123,7 +117,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--ak-dark-fg-muted);
   font-size: 1.125rem;
   line-height: 1;
   padding: var(--bp-space-1) var(--bp-space-2);
@@ -132,7 +126,7 @@
 }
 
 .ak-mobile-sheet__close:hover {
-  color: var(--ak-header-fg);
+  color: var(--ak-dark-fg);
 }
 
 /* ─── Panels ────────────────────────────────────────────── */
@@ -170,7 +164,7 @@
   flex-direction: column;
   gap: var(--bp-space-1);
   padding: var(--bp-space-3);
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--ak-dark-card-bg);
   border-radius: var(--bp-radius);
   border: none;
   cursor: pointer;
@@ -182,7 +176,7 @@
 
 .ak-mobile-nav-card:hover,
 .ak-mobile-nav-card:active {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--ak-dark-card-bg-hover);
 }
 
 .ak-mobile-nav-card__eyebrow {
@@ -197,7 +191,7 @@
 .ak-mobile-nav-card__label {
   font-size: var(--bp-text-sm, 0.875rem);
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--ak-dark-fg-high);
 }
 
 .ak-mobile-nav-card__arrow {
@@ -205,7 +199,7 @@
   bottom: var(--bp-space-3);
   right: var(--bp-space-3);
   font-size: 1rem;
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--ak-dark-fg-dim);
 }
 
 /* ─── CTA ───────────────────────────────────────────────── */
@@ -218,7 +212,7 @@
 /* ─── Sub panel ─────────────────────────────────────────── */
 .ak-mobile-sub__description {
   font-size: var(--bp-text-sm, 0.875rem);
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--ak-dark-fg-subtle);
   margin: 0 0 var(--bp-space-4);
   line-height: 1.5;
 }
@@ -234,7 +228,7 @@
   align-items: center;
   gap: var(--bp-space-3);
   padding: var(--bp-space-3);
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--ak-dark-card-bg);
   border-radius: var(--bp-radius);
   text-decoration: none;
   transition: background-color var(--bp-duration-fast) var(--bp-ease);
@@ -242,7 +236,7 @@
 
 .ak-mobile-sub-item:hover,
 .ak-mobile-sub-item:active {
-  background: rgba(255, 255, 255, 0.09);
+  background: var(--ak-dark-card-bg-hover);
 }
 
 .ak-mobile-sub-item__icon {
@@ -250,11 +244,11 @@
   width: 2.5rem;
   height: 2.5rem;
   border-radius: var(--bp-radius-sm);
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--ak-dark-card-bg);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--ak-dark-fg-muted);
 }
 
 .ak-mobile-sub-item__icon .material-symbols-outlined {
@@ -271,12 +265,12 @@
 .ak-mobile-sub-item__title {
   font-size: var(--bp-text-sm, 0.875rem);
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--ak-dark-fg);
 }
 
 .ak-mobile-sub-item__desc {
   font-size: var(--bp-text-xs, 0.75rem);
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--ak-dark-fg-subtle);
   line-height: 1.35;
   overflow-wrap: break-word;
 }

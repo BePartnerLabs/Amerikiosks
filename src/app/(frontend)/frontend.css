@@ -109,11 +109,30 @@ img {
   --ak-color-surface-2: #f3f4f6;
   --ak-color-border: #e5e0d8;
 
-  /* Dark section (compact cards, CTA) */
+  /* Dark section fg scale */
   --ak-dark-fg: #ffffff;
+  --ak-dark-fg-high: rgba(255, 255, 255, 0.85);
   --ak-dark-fg-muted: rgba(255, 255, 255, 0.65);
   --ak-dark-fg-subtle: rgba(255, 255, 255, 0.5);
+  --ak-dark-fg-dim: rgba(255, 255, 255, 0.25);
+
+  /* Dark section bg/border scale */
   --ak-dark-card-bg: rgba(255, 255, 255, 0.05);
+  --ak-dark-card-bg-hover: rgba(255, 255, 255, 0.1);
+  --ak-dark-border: rgba(255, 255, 255, 0.12);
+  --ak-dark-border-subtle: rgba(255, 255, 255, 0.06);
+
+  /* Mega menu */
+  --ak-mega-eyebrow-color: #76939e;
+  --ak-mega-accent-bg: color-mix(in srgb, var(--ak-accent) 12%, transparent);
+
+  /* Overlay */
+  --ak-overlay-bg: rgba(0, 0, 0, 0.5);
+
+  /* Z-index scale */
+  --ak-z-header: 100;
+  --ak-z-mobile-backdrop: 200;
+  --ak-z-mobile-sheet: 201;
 }
 
 /* ─── BPL DS Button (bp-btn) ───────────────────────────── */

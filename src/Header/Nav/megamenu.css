@@ -41,7 +41,7 @@
   border-radius: var(--bp-radius-lg);
   overflow: hidden;
   box-shadow: var(--bp-shadow-xl);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--ak-dark-border-subtle);
 }
 
 .ak-mega__inner {
@@ -71,7 +71,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #76939e;
+  color: var(--ak-mega-eyebrow-color);
   margin: 0;
 }
 
@@ -85,7 +85,7 @@
 
 .ak-mega__description {
   font-size: var(--bp-text-sm, 0.875rem);
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--ak-dark-fg-muted);
   line-height: 1.6;
   margin: 0;
 }
@@ -144,7 +144,7 @@
 .ak-mega__item:hover .ak-mega__item-icon,
 .ak-mega__item:active .ak-mega__item-icon {
   color: var(--ak-accent);
-  background-color: rgba(236, 37, 78, 0.12);
+  background-color: var(--ak-mega-accent-bg);
 }
 
 .ak-mega__item-icon .material-symbols-outlined {

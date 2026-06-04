@@ -36,10 +36,10 @@
   z-index: 1;
   background: linear-gradient(
     to right,
-    rgba(1, 25, 54, 0.88) 0%,
-    rgba(1, 25, 54, 0.72) 35%,
-    rgba(1, 25, 54, 0.24) 65%,
-    rgba(1, 25, 54, 0.04) 100%
+    color-mix(in srgb, var(--ak-dark-bg) 88%, transparent) 0%,
+    color-mix(in srgb, var(--ak-dark-bg) 72%, transparent) 35%,
+    color-mix(in srgb, var(--ak-dark-bg) 24%, transparent) 65%,
+    color-mix(in srgb, var(--ak-dark-bg) 4%, transparent) 100%
   );
 }
 
@@ -67,7 +67,7 @@
 
 .ak-hero-home__content h1 em,
 .ak-hero-home__content h2 em {
-  color: var(--ak-accent, #ec254e);
+  color: var(--ak-accent);
   font-style: normal;
 }
 
@@ -75,7 +75,7 @@
   margin: 0 0 var(--bp-space-6, 1.5rem);
   font-size: var(--bp-text-base, 1rem);
   line-height: 1.65;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--ak-dark-fg-muted);
   max-width: 52ch;
 }
 
