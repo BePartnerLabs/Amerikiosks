@@ -47,7 +47,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fff;
+  background: var(--ak-color-surface);
   border: 1px solid #e2e8f0;
   border-radius: 12px;
   box-shadow: 0 1px 4px rgb(0 0 0 / 0.06);

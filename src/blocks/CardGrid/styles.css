@@ -152,7 +152,7 @@
 }
 
 .ak-card-grid--icon .ak-card-grid__card {
-  background-color: #fff;
+  background-color: var(--ak-color-surface);
   border: 1px solid var(--ak-color-border);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
@@ -219,7 +219,7 @@
 }
 
 .ak-card-grid--pillar .ak-card-grid__card {
-  background-color: #fff;
+  background-color: var(--ak-color-surface);
   border: 1px solid var(--ak-color-border);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }

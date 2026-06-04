@@ -100,10 +100,11 @@ img {
   --ak-nav-link-hover: var(--ak-accent);
 
   /* Color palette */
+  --ak-color-white: #ffffff;
   --ak-color-heading: #0f1e3c;
   --ak-color-primary: #1e3a5f;
   --ak-color-muted: #6b6760;
-  --ak-color-surface: #ffffff;
+  --ak-color-surface: var(--ak-color-white);
   --ak-color-surface-2: #f3f4f6;
   --ak-color-border: #e5e0d8;
 
