@@ -5,7 +5,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "migrate:prod": "dotenv -e .env.prod -- node scripts/mark-migrations-applied.mjs && cross-env NODE_OPTIONS=--no-deprecation dotenv -e .env.prod -- payload migrate",
+    "migrate:prod": "cross-env NODE_OPTIONS=--no-deprecation dotenv -e .env.prod -- payload migrate",
     "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
     "postbuild": "next-sitemap --config next-sitemap.config.cjs",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
