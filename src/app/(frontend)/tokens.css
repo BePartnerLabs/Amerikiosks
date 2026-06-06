@@ -75,6 +75,9 @@
   /* Header */
   --ak-bg: var(--brand-color-palette-navy-950);
 
+  /* Footer */
+  --ak-footer-bg: var(--brand-color-palette-navy-900);
+
   /* Megamenu */
   --ak-mega-left-bg: var(--brand-color-palette-navy-900);
   --ak-mega-right-bg: var(--brand-color-palette-white);
