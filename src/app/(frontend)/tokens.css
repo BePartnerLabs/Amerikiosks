@@ -14,6 +14,8 @@
 
   /* 01 Brand — Color Palette */
   --brand-color-palette-navy-950: hsla(214, 100%, 5%, 1); /* #000D1A */
+  --brand-color-palette-navy-900: hsla(213, 96%, 11%, 1); /* megamenu left panel */
+  --brand-color-palette-slate-400: hsla(196, 17%, 54%, 1); /* megamenu eyebrow */
   --brand-color-palette-coral-600: hsla(347, 76%, 48%, 1); /* #D41A3A */
   --brand-color-palette-white: hsla(0, 0%, 100%, 1); /* #FFFFFF */
 
@@ -72,6 +74,12 @@
 
   /* Header */
   --ak-bg: var(--brand-color-palette-navy-950);
+
+  /* Megamenu */
+  --ak-mega-left-bg: var(--brand-color-palette-navy-900);
+  --ak-mega-right-bg: var(--brand-color-palette-white);
+  --ak-mega-eyebrow-color: var(--brand-color-palette-slate-400);
+  --ak-mega-fg: var(--brand-color-palette-white);
 
   /* DS bp-* surface mapping — DS components inherit these automatically */
   --bp-primary: var(--ak-accent);
