@@ -8,7 +8,7 @@
 }
 body {
   margin: 0;
-  font-family: sans-serif;
+  font-family: poppins, sans-serif;
 }
 img {
   max-width: 100%;
@@ -81,6 +81,62 @@ img {
   --bp-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
   --bp-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
   --bp-shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+/* ─── Figma design tokens — Amerikiosks (source of truth) ── */
+/* Extracted: 2026-06-04 · File TAuNJf2iXWthC0mh3dt0pl · node 219-286 */
+:root {
+  /* 01 Brand — Color Palette */
+  --brand-color-palette-navy-950: hsla(214, 100%, 5%, 1); /* #000D1A */
+  --brand-color-palette-coral-600: hsla(347, 76%, 48%, 1); /* #D41A3A */
+  --brand-color-palette-white: hsla(0, 0%, 100%, 1); /* #FFFFFF */
+
+  /* 02 Semantic — Border */
+  --md-semantic-border-width-default: 1px;
+
+  /* Size — Spacing scale */
+  --md-size-space-2: 2px;
+  --md-size-space-4: 4px;
+  --md-size-space-8: 8px;
+  --md-size-space-12: 12px;
+  --md-size-space-16: 16px;
+  --md-size-space-20: 20px;
+  --md-size-space-24: 24px;
+  --md-size-space-32: 32px;
+  --md-size-space-40: 40px;
+  --md-size-space-48: 48px;
+  --md-size-space-56: 56px;
+  --md-size-space-64: 64px;
+  --md-size-space-80: 80px;
+  --md-size-space-96: 96px;
+
+  /* UI Text sizes */
+  --ui-text-badge-label-font-size: 14px;
+  --ui-text-badge-label-line-height: 21px;
+  --ui-text-button-label-font-size: 16px;
+  --ui-text-button-label-line-height: 24px;
+
+  /* Button tokens */
+  --md-btn-text-font-size: var(--ui-text-button-label-font-size);
+  --md-btn-text-font-weight: 500;
+  --md-btn-text-line-height: var(--ui-text-button-label-line-height);
+
+  /* Navbar tokens */
+  --navbar-height: 78px;
+  --navbar-bg: var(--brand-color-palette-navy-950);
+  --navbar-border-bottom: var(--md-semantic-border-width-default) solid currentColor;
+  --navbar-padding-vertical: var(--md-size-space-12);
+  --navbar-padding-horizontal: var(--md-size-space-48);
+  --navbar-inner-height: 50px;
+  --navbar-inner-width: 1344px;
+
+  /* Semantic aliases */
+  --color-bg-dark: var(--brand-color-palette-navy-950);
+  --color-accent: var(--brand-color-palette-coral-600);
+  --color-text-inverse: var(--brand-color-palette-white);
+  --color-bg-default: var(--brand-color-palette-white);
+  --btn-primary-bg: var(--brand-color-palette-coral-600);
+  --btn-primary-color: var(--brand-color-palette-white);
 }
 
 /* ─── Amerikiosks brand tokens ─────────────────────────── */

@@ -15,7 +15,7 @@
 }
 
 .ak-card-grid__card {
-  border-radius: var(--bp-radius-md, 0.75rem);
+  border-radius: 0 0 var(--bp-radius-md, 0.75rem) var(--bp-radius-md, 0.75rem);
   padding: var(--bp-space-6, 1.5rem);
   display: flex;
   flex-direction: column;
@@ -102,25 +102,27 @@
 }
 
 .ak-card-grid--compact .ak-card-grid__heading {
+  --_color: var(--color, var(--ak-color-white));
+
   margin: 0;
   font-family: var(--font-poppins, sans-serif);
   font-size: clamp(1.5rem, 2vw + 0.75rem, 2.25rem);
-  font-weight: 700;
+  font-weight: 400;
   line-height: 1.15;
-  color: #fff;
+  color: var(--_color);
 }
 
 .ak-card-grid--compact .ak-card-grid__card {
   background-color: var(--ak-dark-card-bg);
-  border-top: 2px solid var(--ak-accent);
+  border-top: 3px solid var(--ak-accent);
 }
 
 .ak-card-grid--compact .ak-card-grid__card-title {
-  color: #fff;
+  color: var(--ak-color-white);
 }
 
 .ak-card-grid--compact .ak-card-grid__card-body {
-  color: var(--ak-dark-fg-muted);
+  color: var(--ak-color-white);
 }
 
 /* ─── icon variant ───────────────────────────────────────────── */
@@ -143,12 +145,13 @@
 }
 
 .ak-card-grid--icon .ak-card-grid__heading {
+  --_color: var(--color, var(--ak-color-heading));
   margin: 0;
   font-family: var(--font-poppins, sans-serif);
   font-size: clamp(1.75rem, 2.5vw + 1rem, 3rem);
-  font-weight: 700;
+  font-weight: 400;
   line-height: 1.15;
-  color: var(--ak-color-heading);
+  color: var(--_color);
 }
 
 .ak-card-grid--icon .ak-card-grid__card {
@@ -178,7 +181,7 @@
 }
 
 .ak-card-grid--icon .ak-card-grid__card-body {
-  color: var(--ak-color-muted);
+  color: var(--ak-color-white);
 }
 
 /* ─── pillar variant ─────────────────────────────────────────── */
@@ -201,12 +204,13 @@
 }
 
 .ak-card-grid--pillar .ak-card-grid__heading {
+  --_color: var(--color, var(--ak-color-heading));
   margin: 0;
   font-family: var(--font-poppins, sans-serif);
   font-size: clamp(1.75rem, 2.5vw + 1rem, 3rem);
   font-weight: 700;
   line-height: 1.15;
-  color: var(--ak-color-heading);
+  color: var(--_color);
 }
 
 .ak-card-grid--pillar .ak-card-grid__subheading {
@@ -239,7 +243,7 @@
 }
 
 .ak-card-grid--pillar .ak-card-grid__card-body {
-  color: var(--ak-color-muted);
+  color: var(--ak-color-white);
 }
 
 .ak-card-grid--pillar .ak-card-grid__cta-btn {

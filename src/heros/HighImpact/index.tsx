@@ -1,11 +1,8 @@
-'use client'
 import type React from 'react'
-import { useEffect } from 'react'
 import { CMSLink } from '@/components/Link'
 import { Media } from '@/components/Media'
 import RichText from '@/components/RichText'
 import type { Page } from '@/payload-types'
-import { useHeaderTheme } from '@/providers/HeaderTheme'
 import './high-impact.css'
 
 export const HighImpactHero: React.FC<Page['hero']> = ({
@@ -14,12 +11,6 @@ export const HighImpactHero: React.FC<Page['hero']> = ({
   backgroundVideo,
   richText,
 }) => {
-  const { setHeaderTheme } = useHeaderTheme()
-
-  useEffect(() => {
-    setHeaderTheme('dark')
-  })
-
   const videoUrl =
     backgroundVideo && typeof backgroundVideo === 'object' && 'url' in backgroundVideo
       ? (backgroundVideo.url as string)
@@ -31,7 +22,6 @@ export const HighImpactHero: React.FC<Page['hero']> = ({
   return (
     <section
       className="ak-hero-home"
-      data-theme="dark"
       aria-label="Hero"
       itemScope
       itemType="https://schema.org/WebPageElement"
