@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   gap: var(--bp-space-1);
-  font-size: var(--bp-text-sm, 0.875rem);
+  font-size: var(--bp-text-sm);
   font-weight: 600;
 }
 
@@ -11,20 +11,21 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--ak-dark-fg-subtle);
+  color: var(--ak-white);
   font-weight: 600;
-  font-size: var(--bp-text-sm, 0.875rem);
+  font-size: var(--bp-text-sm);
   transition: color var(--bp-duration-fast) var(--bp-ease);
   padding: 0;
 }
 
 .ak-lang-switcher__btn:hover {
-  color: var(--ak-dark-fg-high);
+  color: var(--ak-white);
 }
+
 .ak-lang-switcher__btn[aria-current="true"] {
-  color: var(--bp-color-text-inverse);
+  color: var(--ak-accent);
 }
 
 .ak-lang-switcher__sep {
-  color: var(--ak-dark-fg-dim);
+  color: color-mix(in srgb, var(--ak-white) 40%, transparent);
 }
