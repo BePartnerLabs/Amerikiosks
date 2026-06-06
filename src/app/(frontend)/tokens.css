@@ -9,6 +9,9 @@
 
 /* ─── Layer 1: Figma primitives ────────────────────────────── */
 :root {
+  /* 01 Brand — Typography */
+  --brand-font-family: "Poppins", sans-serif;
+
   /* 01 Brand — Color Palette */
   --brand-color-palette-navy-950: hsla(214, 100%, 5%, 1); /* #000D1A */
   --brand-color-palette-coral-600: hsla(347, 76%, 48%, 1); /* #D41A3A */
@@ -40,6 +43,7 @@
   --ui-text-button-label-line-height: 24px;
 
   /* Button tokens */
+  --md-btn-shape-border-radius: var(--bp-radius-md); /* 8px / 0.5rem */
   --md-btn-text-font-size: var(--ui-text-button-label-font-size);
   --md-btn-text-font-weight: 500;
   --md-btn-text-line-height: var(--ui-text-button-label-line-height);
@@ -56,6 +60,12 @@
 
 /* ─── Layer 2: Semantic aliases — confirmed per element ─────── */
 :root {
+  /* Typography */
+  --ak-font-base: var(--brand-font-family);
+
+  /* Radius */
+  --ak-radius: var(--md-btn-shape-border-radius);
+
   /* Header background */
   --ak-bg: var(--brand-color-palette-navy-950);
 }

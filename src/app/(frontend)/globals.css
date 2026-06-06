@@ -134,8 +134,8 @@
     [content-end] minmax(0, var(--_breakout-size))
     [breakout-end] minmax(var(--_padding-inline), 1fr)
     [full-width-end];
-  --padding-inline: clamp(1.25rem, 1vw + 1rem, 2rem);
-  --content-max-width: 72rem;
+  --padding-inline: clamp(1rem, 3vw, 3rem);
+  --content-max-width: 1344px;
   --breakout-max-width: 90rem;
   --_padding-inline: var(--padding-inline);
   --_content-max-width: var(--content-max-width);
