@@ -55,13 +55,16 @@
   z-index: 2;
   max-width: 72ch;
   padding-block: 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bp-space-6);
 }
 
 .ak-hero-home__content h1,
 .ak-hero-home__content h2 {
-  margin: 0 0 var(--bp-space-6);
+  margin: 0;
   font-family: var(--ak-font-base);
-  font-size: clamp(2rem, 4vw + 1rem, 3.5rem);
+  font-size: clamp(2rem, 4vw + 1rem, 3rem);
   font-weight: 800;
   line-height: 1.1;
   color: var(--ak-white);
@@ -74,8 +77,8 @@
 }
 
 .ak-hero-home__content p {
-  margin: 0 0 var(--bp-space-6);
-  font-size: var(--bp-text-base);
+  margin: 0;
+  font-size: var(--bp-text-lg);
   line-height: 1.65;
   color: var(--ak-white);
   max-width: 52ch;
@@ -86,7 +89,7 @@
   flex-wrap: wrap;
   gap: var(--bp-space-4);
   list-style: none;
-  margin: var(--bp-space-8) 0 0;
+  margin: 0;
   padding: 0;
 }
 
@@ -104,6 +107,6 @@
 
   .ak-hero-home__content h1,
   .ak-hero-home__content h2 {
-    font-size: clamp(1.75rem, 6vw, 2.5rem);
+    font-size: clamp(1.5rem, 6vw, 2rem);
   }
 }
