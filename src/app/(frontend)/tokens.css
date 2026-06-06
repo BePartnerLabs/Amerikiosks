@@ -66,6 +66,15 @@
   /* Radius */
   --ak-radius: var(--md-btn-shape-border-radius);
 
-  /* Header background */
+  /* Colors */
+  --ak-white: var(--brand-color-palette-white);
+  --ak-accent: var(--brand-color-palette-coral-600);
+
+  /* Header */
   --ak-bg: var(--brand-color-palette-navy-950);
+
+  /* DS bp-* surface mapping — DS components inherit these automatically */
+  --bp-primary: var(--ak-accent);
+  --bp-primary-fg: var(--ak-white);
+  --bp-color-bg-elevated: var(--ak-white);
 }

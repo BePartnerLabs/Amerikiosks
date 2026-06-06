@@ -1,15 +1,17 @@
 /* ─── Skip to content ──────────────────────────────────── */
 .skip-to-content {
+  --_background: var(--bp-primary);
+  --_color: var(--bp-primary-fg);
   position: absolute;
   top: -100%;
   left: var(--bp-space-4);
   z-index: 9999;
   padding: var(--bp-space-2) var(--bp-space-4);
-  background: var(--ak-accent);
-  color: #fff;
-  font-weight: 600;
-  font-size: var(--bp-text-sm, 0.875rem);
-  border-radius: 0 0 var(--bp-radius-sm) var(--bp-radius-sm);
+  background: var(--_background);
+  color: var(--_color);
+  font-weight: var(--md-btn-text-font-weight);
+  font-size: var(--bp-text-sm);
+  border-radius: 0 0 var(--ak-radius) var(--ak-radius);
   text-decoration: none;
   transition: top var(--bp-duration-fast) var(--bp-ease);
 }
@@ -25,12 +27,12 @@
 
 /* ─── BPL DS Header (bp-header) ────────────────────────── */
 .bp-header {
-  --_bg-color: var(--bg-color, var(--ak-bg));
+  --_background: var(--header-bg, var(--ak-bg));
   position: sticky;
   top: 0;
   z-index: var(--header-z, 100);
   width: 100%;
-  background-color: var(--_bg-color);
+  background-color: var(--_background);
 }
 
 .bp-header.is-scrolled {
@@ -39,7 +41,7 @@
 }
 
 .bp-header__inner {
-  padding-block: var(--bp-space-4);
+  padding-block: var(--navbar-padding-vertical);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -51,8 +53,7 @@
   display: flex;
   align-items: center;
   text-decoration: none;
-  /* light-dark() ready: swap to light-dark(#011936, #fff) when color-scheme is wired up */
-  color: var(--ak-logo-color, #fff);
+  color: var(--ak-white);
 }
 
 .bp-header__actions {
@@ -62,11 +63,7 @@
   flex-shrink: 0;
 }
 
-/* AA-compliant button: #d42030 gives 5.19:1 with white (--ak-accent fails at 4.17:1) */
-.bp-header .bp-btn--primary {
-  --btn-bg: var(--ak-accent-aa);
-  --btn-bg-hover: var(--ak-accent-hover);
-}
+/* CTA button inherits --bp-primary (coral) — no override needed */
 
 /* ─── bp-nav component CSS ─────────────────────────────────── */
 .bp-header__nav {
@@ -84,11 +81,9 @@
   padding: 0;
 }
 
-/* ─── Level 2 token overrides for bp-nav inside bp-header ── */
-/* Only declared where DS defaults differ from our design     */
+/* Level 2 override — white links inside header (DS default: --bp-color-text) */
 .bp-header .bp-nav {
-  --nav-link-color: var(--ak-nav-link-color); /* DS default: --bp-color-text */
-  --nav-link-hover: var(--ak-accent); /* DS default: --bp-color-text */
+  --nav-link-color: var(--ak-white);
 }
 
 .bp-nav__item {
@@ -102,7 +97,7 @@
   align-items: center;
   gap: var(--bp-space-1);
   padding: var(--bp-space-2) var(--bp-space-3);
-  font-size: var(--bp-text-sm, 0.875rem);
+  font-size: var(--bp-text-sm);
   font-weight: 500;
   font-family: inherit;
   color: var(--_color);
@@ -116,7 +111,7 @@
 .bp-nav__megamenu-btn:hover,
 .bp-nav__link:hover,
 .bp-nav__megamenu-btn[aria-expanded="true"] {
-  --_color: var(--nav-link-hover, var(--bp-color-text));
+  --_color: var(--nav-link-color, var(--bp-color-text));
 }
 
 .bp-nav__chevron {
@@ -130,10 +125,10 @@
 .bp-nav__link:focus-visible {
   outline: 2px solid var(--ak-accent);
   outline-offset: 2px;
-  border-radius: var(--bp-radius-sm);
+  border-radius: var(--ak-radius);
 }
 
-/* Hide desktop nav + CTA on mobile — .bp-header__ prefix adds specificity over .bp-btn */
+/* Hide desktop nav + CTA on mobile */
 @media (max-width: 59.99rem) {
   .bp-header__nav {
     display: none;
