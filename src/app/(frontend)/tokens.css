@@ -14,7 +14,8 @@
 
   /* 01 Brand — Color Palette */
   --brand-color-palette-navy-950: hsla(214, 100%, 5%, 1); /* #000D1A */
-  --brand-color-palette-navy-900: hsla(213, 96%, 11%, 1); /* megamenu left panel */
+  --brand-color-palette-navy-900: hsla(213, 96%, 11%, 1); /* megamenu left panel, footer */
+  --brand-color-palette-navy-800: hsla(209, 73%, 16%, 1); /* card background */
   --brand-color-palette-slate-400: hsla(196, 17%, 54%, 1); /* megamenu eyebrow */
   --brand-color-palette-coral-600: hsla(347, 76%, 48%, 1); /* #D41A3A */
   --brand-color-palette-white: hsla(0, 0%, 100%, 1); /* #FFFFFF */
@@ -77,6 +78,11 @@
 
   /* Footer */
   --ak-footer-bg: var(--brand-color-palette-navy-900);
+
+  /* CardGrid — compact */
+  --ak-card-grid-bg: var(--brand-color-palette-navy-900);
+  --ak-card-bg: var(--brand-color-palette-navy-800);
+  --ak-card-shadow: 0px 8px 20px 0px hsla(0, 0%, 0%, 0.08);
 
   /* Megamenu */
   --ak-mega-left-bg: var(--brand-color-palette-navy-900);
