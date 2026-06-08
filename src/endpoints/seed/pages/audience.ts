@@ -19,8 +19,8 @@ const audiencePages = [
     slug: 'for-venues',
     title: 'For Venues',
     titleEs: 'Para Venues',
-    heroAsset: 'image-hero1.webp',
-    heroAlt: 'Premium kiosk placement in a hospitality venue',
+    heroAsset: 'hero-for-venues.jpg',
+    heroAlt: 'Amerikiosks kiosk in a premium airport lounge venue',
     description:
       'Add a new revenue stream and elevate the guest experience with curated branded kiosks.',
     descriptionEs:
@@ -30,8 +30,8 @@ const audiencePages = [
     slug: 'for-agencies',
     title: 'For Agencies',
     titleEs: 'Para Agencias',
-    heroAsset: 'hero-home.png',
-    heroAlt: 'Amerikiosks kiosk activation at a high-traffic location',
+    heroAsset: 'hero-for-agencies.png',
+    heroAlt: 'Amerikiosks kiosk activation on a busy urban street',
     description:
       'Deliver unforgettable retail activations for your brand clients through the Amerikiosks network.',
     descriptionEs:
