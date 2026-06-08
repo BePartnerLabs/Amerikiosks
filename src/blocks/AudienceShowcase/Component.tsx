@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import type React from 'react'
+import { SectionHeader } from '@/components/SectionHeader'
 import type {
   AudienceShowcaseBlock as AudienceShowcaseBlockProps,
   Media,
@@ -43,9 +44,12 @@ export const AudienceShowcaseBlock: React.FC<AudienceShowcaseBlockProps> = ({
       <div className="bp-content-grid">
         <div className="breakout ak-audience-showcase__inner">
           <div className="ak-audience-showcase__header">
-            {eyebrow && <p className="ak-audience-showcase__eyebrow">{eyebrow}</p>}
-            <h2 className="ak-audience-showcase__heading">{heading}</h2>
-            {subheading && <p className="ak-audience-showcase__subheading">{subheading}</p>}
+            <SectionHeader
+              eyebrow={eyebrow}
+              heading={heading}
+              subtitle={subheading}
+              align="center"
+            />
           </div>
 
           {populatedItems.length > 0 && (

@@ -90,6 +90,16 @@
   --ak-brand-card-bg: var(--brand-color-palette-steel-50);
   --ak-brand-card-border: var(--brand-color-palette-steel-100);
 
+  /* Dark card overlay */
+  --ak-dark-background: var(--brand-color-palette-navy-950);
+  --ak-dark-foreground: var(--brand-color-palette-white);
+  --ak-card-overlay-gradient: linear-gradient(
+    to top,
+    hsla(0, 0%, 0%, 0.72) 0%,
+    hsla(0, 0%, 0%, 0.08) 55%
+  );
+  --ak-card-shadow-md: 0 2px 12px hsla(0, 0%, 0%, 0.15);
+
   /* Surface / border / text */
   --ak-color-surface: var(--brand-color-palette-white);
   --ak-color-heading: var(--brand-color-palette-navy-900);

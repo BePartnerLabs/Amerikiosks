@@ -7,33 +7,6 @@
   margin-bottom: var(--bp-space-10, 2.5rem);
 }
 
-.ak-audience-showcase__eyebrow {
-  margin: 0 0 var(--bp-space-2, 0.5rem);
-  font-size: var(--bp-text-xs, 0.75rem);
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ak-color-muted);
-}
-
-.ak-audience-showcase__heading {
-  margin: 0;
-  font-family: var(--font-poppins, sans-serif);
-  font-size: clamp(1.75rem, 2.5vw + 1rem, 3rem);
-  font-weight: 700;
-  line-height: 1.2;
-  color: var(--ak-color-heading);
-  white-space: pre-line;
-}
-
-.ak-audience-showcase__subheading {
-  margin: var(--bp-space-4, 1rem) auto 0;
-  font-size: var(--bp-text-base, 1rem);
-  color: var(--ak-color-muted);
-  line-height: 1.6;
-  max-width: 60ch;
-}
-
 .ak-audience-showcase__grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -41,14 +14,15 @@
 }
 
 .ak-audience-showcase__card {
+  --_background: var(--audience-card-background, var(--ak-dark-background));
   position: relative;
   display: block;
   height: 25rem;
   border-radius: var(--bp-radius-md, 0.75rem);
   overflow: hidden;
   text-decoration: none;
-  background-color: var(--ak-dark-bg);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  background-color: var(--_background);
+  box-shadow: var(--ak-card-shadow-md);
 }
 
 .ak-audience-showcase__card-img {
@@ -63,7 +37,7 @@
 .ak-audience-showcase__card-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.08) 55%);
+  background: var(--ak-card-overlay-gradient);
 }
 
 .ak-audience-showcase__card-content {
@@ -75,19 +49,21 @@
 }
 
 .ak-audience-showcase__card-title {
+  --_color: var(--audience-card-title-color, var(--ak-dark-foreground));
   margin: 0;
   font-size: var(--bp-text-xl, 1.25rem);
   font-weight: 700;
-  color: var(--ak-dark-fg);
+  color: var(--_color);
   line-height: 1.2;
 }
 
 .ak-audience-showcase__card-cta {
+  --_color: var(--audience-card-cta-color, var(--ak-accent));
   display: block;
   margin-top: var(--bp-space-2, 0.5rem);
   font-size: var(--bp-text-sm, 0.875rem);
   font-weight: 600;
-  color: var(--ak-accent);
+  color: var(--_color);
 }
 
 @media (max-width: 64rem) {
