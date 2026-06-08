@@ -1,5 +1,6 @@
 import type React from 'react'
 import './styles.css'
+import { SectionHeader } from '@/components/SectionHeader'
 import type { Media, TrustStripBlock as TrustStripBlockProps } from '@/payload-types'
 import { toSnakeCase } from '@/utilities/toSnakeCase'
 import { TrustStripCarousel } from './Carousel'
@@ -53,8 +54,11 @@ export const TrustStripBlock: React.FC<Props> = ({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(buildJsonLd(heading, partners)) }}
       />
-      {eyebrow && <p className="ak-trust-strip__eyebrow">{eyebrow}</p>}
-      <h2 className="ak-trust-strip__heading">{heading}</h2>
+      <SectionHeader
+        eyebrow={eyebrow}
+        heading={heading}
+        align="center"
+      />
       <TrustStripCarousel partners={carouselPartners} />
     </section>
   )

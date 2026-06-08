@@ -8,6 +8,12 @@
             "type": "command",
             "command": "jq -r '.tool_input.file_path' | { read -r f; pnpm biome check --write --no-errors-on-unmatched \"$f\"; } 2>/dev/null || true",
             "statusMessage": "Biome: checking..."
+          },
+          {
+            "type": "prompt",
+            "prompt": "A CSS file was just edited. Review the changes in $ARGUMENTS and check for BPL DS token compliance violations:\n1. Component surface properties (background-color, color, border-color) should use private vars: --_property: var(--component-property, var(--ak-fallback))\n2. Public slots must match the CSS property name (--foo-background not --foo-bg, --foo-color not --foo-fg)\n3. No hardcoded color literals (hex, rgb, hsl) — use tokens\n4. --ak-* tokens used directly in non-private property values are violations\n\nIf violations are found, set ok to false and describe what needs fixing. If compliant, set ok to true.",
+            "statusMessage": "DS: checking compliance...",
+            "timeout": 30
           }
         ]
       }
