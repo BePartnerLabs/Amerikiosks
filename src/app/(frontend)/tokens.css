@@ -93,11 +93,7 @@
   /* Dark card overlay */
   --ak-dark-background: var(--brand-color-palette-navy-950);
   --ak-dark-foreground: var(--brand-color-palette-white);
-  --ak-card-overlay-gradient: linear-gradient(
-    to top,
-    hsla(0, 0%, 0%, 0.72) 0%,
-    hsla(0, 0%, 0%, 0.08) 55%
-  );
+  --ak-card-overlay: var(--md-semantic-surface-background-overlay-default, hsla(0, 0%, 0%, 0.6));
   --ak-card-shadow-md: 0 2px 12px hsla(0, 0%, 0%, 0.15);
 
   /* Surface / border / text */

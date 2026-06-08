@@ -35,9 +35,10 @@
 }
 
 .ak-audience-showcase__card-overlay {
+  --_overlay: var(--audience-card-overlay, var(--ak-card-overlay));
   position: absolute;
   inset: 0;
-  background: var(--ak-card-overlay-gradient);
+  background: var(--_overlay);
 }
 
 .ak-audience-showcase__card-content {
