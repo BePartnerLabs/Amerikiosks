@@ -16,7 +16,9 @@
 .ak-audience-showcase__card {
   --_background: var(--audience-card-background, var(--ak-dark-background));
   position: relative;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 25rem;
   border-radius: var(--bp-radius-md, 0.75rem);
   overflow: hidden;
@@ -42,34 +44,51 @@
 }
 
 .ak-audience-showcase__card-content {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: var(--bp-space-5, 1.25rem);
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--bp-space-8, 2rem);
+  gap: var(--bp-space-3, 0.75rem);
 }
 
 .ak-audience-showcase__card-title {
   --_color: var(--audience-card-title-color, var(--ak-dark-foreground));
   margin: 0;
-  font-size: var(--bp-text-xl, 1.25rem);
+  font-size: var(--bp-text-2xl, 1.5rem);
   font-weight: 700;
   color: var(--_color);
   line-height: 1.2;
 }
 
-.ak-audience-showcase__card-cta {
-  --_color: var(--audience-card-cta-color, var(--ak-accent));
-  display: block;
-  margin-top: var(--bp-space-2, 0.5rem);
+.ak-audience-showcase__card-description {
+  --_color: var(--audience-card-description-color, var(--ak-dark-foreground));
+  margin: 0;
   font-size: var(--bp-text-sm, 0.875rem);
-  font-weight: 600;
+  font-weight: 400;
   color: var(--_color);
+  line-height: 1.5;
+  opacity: 0.85;
+  max-width: 28ch;
+}
+
+.ak-audience-showcase__card-cta {
+  --_color: var(--audience-card-cta-color, var(--ak-dark-foreground));
+  display: inline-block;
+  margin-top: var(--bp-space-2, 0.5rem);
+  padding: 0.5rem 1.5rem;
+  font-size: var(--bp-text-sm, 0.875rem);
+  font-weight: 500;
+  color: var(--_color);
+  border: 1.5px solid var(--_color);
+  border-radius: var(--bp-radius-md, 0.75rem);
 }
 
 @media (max-width: 64rem) {
   .ak-audience-showcase__card {
-    height: 17.5rem;
+    height: 20rem;
   }
 }
 
@@ -79,10 +98,6 @@
   }
 
   .ak-audience-showcase__card {
-    height: 13.75rem;
-  }
-
-  .ak-audience-showcase__card-cta {
-    display: none;
+    height: 16rem;
   }
 }

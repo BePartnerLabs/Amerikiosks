@@ -82,13 +82,13 @@ export const AudienceShowcaseBlock: React.FC<AudienceShowcaseBlockProps> = ({
                     />
                     <div className="ak-audience-showcase__card-content">
                       <p className="ak-audience-showcase__card-title">{title}</p>
+                      {item.page.meta?.description && (
+                        <p className="ak-audience-showcase__card-description">
+                          {item.page.meta.description}
+                        </p>
+                      )}
                       {item.cta && (
-                        <span
-                          className="ak-audience-showcase__card-cta"
-                          aria-hidden="true"
-                        >
-                          {item.cta} ›
-                        </span>
+                        <span className="ak-audience-showcase__card-cta">{item.cta}</span>
                       )}
                     </div>
                   </Link>
