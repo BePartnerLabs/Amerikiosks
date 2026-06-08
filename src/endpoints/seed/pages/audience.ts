@@ -10,10 +10,8 @@ const audiencePages = [
     titleEs: 'Para Marcas',
     heroAsset: 'hero-for-brands.png',
     heroAlt: 'Branded kiosk in a retail venue for brand activations',
-    description:
-      'Turn high-traffic venues into premium branded retail moments with Amerikiosks kiosk programs.',
-    descriptionEs:
-      'Convierte venues de alto tráfico en momentos de retail premium de marca con los programas de kiosk de Amerikiosks.',
+    description: 'Launch premium physical touchpoints without opening stores.',
+    descriptionEs: 'Lanza puntos de contacto físicos premium sin abrir tiendas.',
   },
   {
     slug: 'for-venues',
@@ -21,10 +19,8 @@ const audiencePages = [
     titleEs: 'Para Venues',
     heroAsset: 'hero-for-venues.jpg',
     heroAlt: 'Amerikiosks kiosk in a premium airport lounge venue',
-    description:
-      'Add a new revenue stream and elevate the guest experience with curated branded kiosks.',
-    descriptionEs:
-      'Añade una nueva fuente de ingresos y eleva la experiencia del huésped con kiosks de marca curados.',
+    description: 'Monetize high-traffic areas without adding staff or friction.',
+    descriptionEs: 'Monetiza zonas de alto tráfico sin añadir personal ni fricción.',
   },
   {
     slug: 'for-agencies',
@@ -32,10 +28,8 @@ const audiencePages = [
     titleEs: 'Para Agencias',
     heroAsset: 'hero-for-agencies.png',
     heroAlt: 'Amerikiosks kiosk activation on a busy urban street',
-    description:
-      'Deliver unforgettable retail activations for your brand clients through the Amerikiosks network.',
-    descriptionEs:
-      'Entrega activaciones de retail inolvidables para tus clientes de marca a través de la red de Amerikiosks.',
+    description: 'Turn briefs into measurable retail activations people notice.',
+    descriptionEs: 'Convierte briefings en activaciones de retail medibles que la gente nota.',
   },
   {
     slug: 'for-emerging-brands',
@@ -43,20 +37,24 @@ const audiencePages = [
     titleEs: 'Para Marcas Emergentes',
     heroAsset: 'hero-for-brands.png',
     heroAlt: 'Emerging brand kiosk launch in a premium venue',
-    description:
-      'Launch your brand in premium venues without the overhead of a full retail build-out.',
-    descriptionEs:
-      'Lanza tu marca en venues premium sin los costos de una apertura retail completa.',
+    description: 'Test real-world retail presence before scaling into stores.',
+    descriptionEs: 'Prueba tu presencia retail en el mundo real antes de escalar a tiendas.',
   },
 ]
+
+export type AudienceSeedResult = {
+  pageIds: Record<string, string>
+  mediaIds: Record<string, number>
+}
 
 export const seedAudiencePages = async (
   payload: Payload,
   req: PayloadRequest,
-): Promise<Record<string, string>> => {
+): Promise<AudienceSeedResult> => {
   payload.logger.info('— Seeding audience sub-pages...')
 
-  const ids: Record<string, string> = {}
+  const pageIds: Record<string, string> = {}
+  const mediaIds: Record<string, number> = {}
 
   for (const page of audiencePages) {
     const heroImage = await uploadMedia(
@@ -65,6 +63,8 @@ export const seedAudiencePages = async (
       path.join(process.cwd(), `src/endpoints/seed/assets/${page.heroAsset}`),
       page.heroAlt,
     )
+
+    mediaIds[page.slug] = heroImage.id as number
 
     const result = await upsertPage(
       payload,
@@ -91,8 +91,8 @@ export const seedAudiencePages = async (
         },
       },
     )
-    ids[page.slug] = String(result.id)
+    pageIds[page.slug] = String(result.id)
   }
 
-  return ids
+  return { pageIds, mediaIds }
 }

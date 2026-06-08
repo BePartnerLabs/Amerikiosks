@@ -12,12 +12,7 @@ import './styles.css'
 
 type PopulatedItem = NonNullable<AudienceShowcaseBlockProps['items']>[number] & {
   page: Page
-}
-
-function getHeroMedia(page: Page): Media | null {
-  const hero = page.hero as { media?: Media | string | null } | undefined
-  if (!hero?.media || typeof hero.media === 'string') return null
-  return hero.media
+  image: Media
 }
 
 export const AudienceShowcaseBlock: React.FC<AudienceShowcaseBlockProps> = ({
@@ -31,7 +26,11 @@ export const AudienceShowcaseBlock: React.FC<AudienceShowcaseBlockProps> = ({
   if (!heading) return null
 
   const populatedItems = (items ?? []).filter(
-    (item): item is PopulatedItem => item.page !== null && typeof item.page === 'object',
+    (item): item is PopulatedItem =>
+      item.page !== null &&
+      typeof item.page === 'object' &&
+      item.image !== null &&
+      typeof item.image === 'object',
   )
 
   return (
@@ -55,9 +54,9 @@ export const AudienceShowcaseBlock: React.FC<AudienceShowcaseBlockProps> = ({
           {populatedItems.length > 0 && (
             <div className="ak-audience-showcase__grid">
               {populatedItems.map((item) => {
-                const media = getHeroMedia(item.page)
                 const title = item.label ?? item.page.title
                 const href = `/${item.page.slug}`
+                const description = item.page.meta?.description
 
                 return (
                   <Link
@@ -67,25 +66,21 @@ export const AudienceShowcaseBlock: React.FC<AudienceShowcaseBlockProps> = ({
                     data-ga-event="audience_card_click"
                     data-ga-label={item.page.title}
                   >
-                    {media?.url && (
-                      <Image
-                        src={media.url}
-                        alt={media.alt ?? title}
-                        fill
-                        className="ak-audience-showcase__card-img"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      />
-                    )}
+                    <Image
+                      src={item.image.url!}
+                      alt={item.image.alt ?? title}
+                      fill
+                      className="ak-audience-showcase__card-img"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    />
                     <div
                       className="ak-audience-showcase__card-overlay"
                       aria-hidden="true"
                     />
                     <div className="ak-audience-showcase__card-content">
                       <p className="ak-audience-showcase__card-title">{title}</p>
-                      {item.page.meta?.description && (
-                        <p className="ak-audience-showcase__card-description">
-                          {item.page.meta.description}
-                        </p>
+                      {description && (
+                        <p className="ak-audience-showcase__card-description">{description}</p>
                       )}
                       {item.cta && (
                         <span className="ak-audience-showcase__card-cta">{item.cta}</span>

@@ -35,7 +35,14 @@ export const AudienceShowcase: Block = {
           type: 'relationship',
           relationTo: 'pages',
           required: true,
-          admin: { description: 'Pulls title + hero image from this page automatically.' },
+          admin: { description: 'Pulls title and description from this page.' },
+        },
+        {
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media',
+          required: true,
+          admin: { description: 'Card background image.' },
         },
         {
           name: 'label',

@@ -29,9 +29,9 @@ const parts: Record<
   },
   contact: seedContact,
   home: async (payload, req) => {
-    const audiencePageIds = await seedAudiencePages(payload, req)
+    const { pageIds, mediaIds } = await seedAudiencePages(payload, req)
     const postIds = await seedPosts(payload, req)
-    await seedHome(payload, req, audiencePageIds, postIds)
+    await seedHome(payload, req, pageIds, postIds, mediaIds)
   },
   posts: async (payload, req) => {
     await seedPosts(payload, req)

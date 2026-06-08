@@ -911,9 +911,13 @@ export interface AudienceShowcaseBlock {
   items?:
     | {
         /**
-         * Pulls title + hero image from this page automatically.
+         * Pulls title and description from this page.
          */
         page: number | Page;
+        /**
+         * Card background image.
+         */
+        image: number | Media;
         /**
          * Overrides the page title on the card if set.
          */
@@ -1426,6 +1430,7 @@ export interface AudienceShowcaseBlockSelect<T extends boolean = true> {
     | T
     | {
         page?: T;
+        image?: T;
         label?: T;
         cta?: T;
         id?: T;
