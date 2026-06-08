@@ -90,6 +90,14 @@
   --ak-brand-card-bg: var(--brand-color-palette-steel-50);
   --ak-brand-card-border: var(--brand-color-palette-steel-100);
 
+  /* Surface / border / text */
+  --ak-color-surface: var(--brand-color-palette-white);
+  --ak-color-heading: var(--brand-color-palette-navy-900);
+  --ak-color-border: var(--brand-color-palette-steel-100);
+  --ak-color-muted: var(--brand-color-palette-steel-600);
+  --ak-color-white: var(--brand-color-palette-white);
+  --ak-card-shadow-subtle: 0 1px 4px hsla(0, 0%, 0%, 0.06);
+
   /* CardGrid — compact */
   --ak-card-grid-bg: var(--brand-color-palette-navy-900);
   --ak-card-bg: var(--brand-color-palette-navy-800);

@@ -35,10 +35,11 @@
 }
 
 .ak-card-grid__card-link {
+  --_color: var(--card-link-color, var(--ak-accent));
   margin-top: auto;
   font-size: var(--bp-text-sm, 0.875rem);
   font-weight: 600;
-  color: var(--ak-accent);
+  color: var(--_color);
   text-decoration: none;
   display: inline-flex;
   align-items: center;
@@ -76,9 +77,10 @@
 
 /* ─── compact variant ────────────────────────────────────────── */
 .ak-card-grid--compact {
-  --_background: var(--card-grid-bg, var(--ak-card-grid-bg));
+  --_background: var(--card-grid-background, var(--ak-card-grid-bg));
+  --_color: var(--card-grid-color, var(--ak-white));
   background-color: var(--_background);
-  color: var(--ak-white);
+  color: var(--_color);
 }
 
 .ak-card-grid--compact .ak-card-grid__inner {
@@ -93,45 +95,40 @@
   align-self: start;
 }
 
-.ak-card-grid--compact .ak-card-grid__eyebrow {
-  margin: 0 0 var(--bp-space-2, 0.5rem);
-  font-size: var(--bp-text-xs, 0.75rem);
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ak-mega-eyebrow-color);
+/* compact overrides SectionHeader tokens for dark bg */
+.ak-card-grid--compact .ak-section-header {
+  --section-heading-color: var(--ak-white);
+  --section-eyebrow-color: var(--ak-mega-eyebrow-color);
 }
 
-.ak-card-grid--compact .ak-card-grid__heading {
-  --_color: var(--card-grid-heading-color, var(--ak-white));
-  margin: 0;
-  font-family: var(--ak-font-base);
+.ak-card-grid--compact .ak-section-header__heading {
   font-size: clamp(1.25rem, 2vw + 0.5rem, 1.75rem);
   font-weight: 400;
-  line-height: 1.15;
-  color: var(--_color);
 }
 
 .ak-card-grid--compact .ak-card-grid__card {
-  --_card-bg: var(--card-bg, var(--ak-card-bg));
+  --_card-background: var(--card-background, var(--ak-card-bg));
   --_card-shadow: var(--card-shadow, var(--ak-card-shadow));
-  background-color: var(--_card-bg);
+  background-color: var(--_card-background);
   border-radius: 0 0 0.75rem 0.75rem;
   border-top: 3px solid var(--ak-accent);
   box-shadow: var(--_card-shadow);
 }
 
 .ak-card-grid--compact .ak-card-grid__card-title {
-  color: var(--ak-white);
+  --_color: var(--card-title-color, var(--ak-white));
+  color: var(--_color);
 }
 
 .ak-card-grid--compact .ak-card-grid__card-body {
-  color: var(--ak-white);
+  --_color: var(--card-body-color, var(--ak-white));
+  color: var(--_color);
 }
 
 /* ─── icon variant ───────────────────────────────────────────── */
 .ak-card-grid--icon {
-  background-color: var(--ak-color-surface);
+  --_background: var(--card-grid-background, var(--ak-color-surface));
+  background-color: var(--_background);
 }
 
 .ak-card-grid--icon .ak-card-grid__header {
@@ -139,38 +136,21 @@
   margin-bottom: var(--bp-space-10, 2.5rem);
 }
 
-.ak-card-grid--icon .ak-card-grid__eyebrow {
-  margin: 0 0 var(--bp-space-2, 0.5rem);
-  font-size: var(--bp-text-xs, 0.75rem);
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ak-accent);
-}
-
-.ak-card-grid--icon .ak-card-grid__heading {
-  --_color: var(--color, var(--ak-color-heading));
-  margin: 0;
-  font-family: var(--font-poppins, sans-serif);
-  font-size: clamp(1.75rem, 2.5vw + 1rem, 3rem);
-  font-weight: 400;
-  line-height: 1.15;
-  color: var(--_color);
-}
-
 .ak-card-grid--icon .ak-card-grid__card {
-  background-color: var(--ak-color-surface);
+  --_background: var(--card-background, var(--ak-color-surface));
+  background-color: var(--_background);
   border: 1px solid var(--ak-color-border);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--ak-card-shadow-subtle);
 }
 
 .ak-card-grid--icon .ak-card-grid__card-icon-wrap {
+  --_icon-background: color-mix(in srgb, var(--ak-accent) 12%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
   width: 2.25rem;
   height: 2.25rem;
-  background-color: color-mix(in srgb, var(--ak-accent) 12%, transparent);
+  background-color: var(--_icon-background);
   border-radius: 0.5rem;
 }
 
@@ -180,17 +160,20 @@
 }
 
 .ak-card-grid--icon .ak-card-grid__card-title {
-  color: var(--ak-color-heading);
+  --_color: var(--card-title-color, var(--ak-color-heading));
+  color: var(--_color);
   font-size: var(--bp-text-base, 1rem);
 }
 
 .ak-card-grid--icon .ak-card-grid__card-body {
-  color: var(--ak-color-white);
+  --_color: var(--card-body-color, var(--ak-color-white));
+  color: var(--_color);
 }
 
 /* ─── pillar variant ─────────────────────────────────────────── */
 .ak-card-grid--pillar {
-  background-color: var(--ak-color-surface);
+  --_background: var(--card-grid-background, var(--ak-color-surface));
+  background-color: var(--_background);
 }
 
 .ak-card-grid--pillar .ak-card-grid__header {
@@ -198,60 +181,37 @@
   margin-bottom: var(--bp-space-10, 2.5rem);
 }
 
-.ak-card-grid--pillar .ak-card-grid__eyebrow {
-  margin: 0 0 var(--bp-space-2, 0.5rem);
-  font-size: var(--bp-text-xs, 0.75rem);
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ak-accent);
-}
-
-.ak-card-grid--pillar .ak-card-grid__heading {
-  --_color: var(--color, var(--ak-color-heading));
-  margin: 0;
-  font-family: var(--font-poppins, sans-serif);
-  font-size: clamp(1.75rem, 2.5vw + 1rem, 3rem);
-  font-weight: 700;
-  line-height: 1.15;
-  color: var(--_color);
-}
-
-.ak-card-grid--pillar .ak-card-grid__subheading {
-  margin: var(--bp-space-4, 1rem) 0 0;
-  font-size: var(--bp-text-base, 1rem);
-  color: var(--ak-color-muted);
-  max-width: 60ch;
-  margin-inline: auto;
-  line-height: 1.6;
-}
-
 .ak-card-grid--pillar .ak-card-grid__card {
-  background-color: var(--ak-color-surface);
+  --_background: var(--card-background, var(--ak-color-surface));
+  background-color: var(--_background);
   border: 1px solid var(--ak-color-border);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--ak-card-shadow-subtle);
 }
 
 .ak-card-grid--pillar .ak-card-grid__card-eyebrow {
+  --_color: var(--card-eyebrow-color, var(--ak-accent));
   margin: 0;
   font-size: var(--bp-text-xs, 0.75rem);
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--ak-accent);
+  color: var(--_color);
 }
 
 .ak-card-grid--pillar .ak-card-grid__card-title {
-  color: var(--ak-color-heading);
+  --_color: var(--card-title-color, var(--ak-color-heading));
+  color: var(--_color);
   font-size: var(--bp-text-base, 1rem);
 }
 
 .ak-card-grid--pillar .ak-card-grid__card-body {
-  color: var(--ak-color-white);
+  --_color: var(--card-body-color, var(--ak-color-white));
+  color: var(--_color);
 }
 
 .ak-card-grid--pillar .ak-card-grid__cta-btn {
-  color: var(--ak-color-heading);
+  --_color: var(--cta-btn-color, var(--ak-color-heading));
+  color: var(--_color);
 }
 
 /* ─── Responsive ─────────────────────────────────────────────── */
