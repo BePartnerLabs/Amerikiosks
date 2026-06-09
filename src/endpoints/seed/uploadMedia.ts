@@ -1,7 +1,22 @@
+import fs from 'node:fs/promises'
 import path from 'node:path'
 import type { Payload, PayloadRequest } from 'payload'
 import type { Media } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
+
+// Prefer the local file so seeding works without a running server (Docker,
+// one-off scripts); fall back to HTTP for serverless, where public/ is CDN-only.
+export const readSeedAsset = async (name: string): Promise<Buffer> => {
+  const localPath = path.join(process.cwd(), 'public', 'seed-assets', name)
+  try {
+    return await fs.readFile(localPath)
+  } catch {
+    const url = `${getServerSideURL()}/seed-assets/${name}`
+    const response = await fetch(url)
+    if (!response.ok) throw new Error(`Failed to fetch seed asset: ${url}`)
+    return Buffer.from(await response.arrayBuffer())
+  }
+}
 
 export const uploadMedia = async (
   payload: Payload,
@@ -22,12 +37,7 @@ export const uploadMedia = async (
   }
   const mimetype = mimeMap[ext] ?? 'application/octet-stream'
 
-  const baseURL = getServerSideURL()
-  const url = `${baseURL}/seed-assets/${name}`
-  const response = await fetch(url)
-  if (!response.ok) throw new Error(`Failed to fetch seed asset: ${url}`)
-  const buffer = await response.arrayBuffer()
-  const data = Buffer.from(buffer)
+  const data = await readSeedAsset(name)
 
   return payload.create({
     collection: 'media',
