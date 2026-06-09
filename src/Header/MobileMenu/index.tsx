@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import React, { useCallback, useEffect, useState } from 'react'
 import type { Header } from '@/payload-types'
+import '../Nav/megamenu.css'
 import './mobile-menu.css'
 
 type NavItem = NonNullable<Header['navItems']>[number]
@@ -175,7 +176,9 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ data }) => {
                     aria-haspopup="dialog"
                   >
                     <span className="ak-mobile-nav-card__eyebrow">{item.megaMenu?.panelLabel}</span>
-                    <span className="ak-mobile-nav-card__label">{item.link.label}</span>
+                    <span className="ak-mobile-nav-card__label">
+                      {item.megaMenu?.panelHeadline ?? item.link.label}
+                    </span>
                     <span
                       className="ak-mobile-nav-card__arrow"
                       aria-hidden="true"
@@ -218,20 +221,18 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ data }) => {
             {activePanel?.megaMenu && (
               <>
                 {activePanel.megaMenu.panelDescription && (
-                  <p className="ak-mobile-sub__description">
-                    {activePanel.megaMenu.panelDescription}
-                  </p>
+                  <p className="ak-mega__description">{activePanel.megaMenu.panelDescription}</p>
                 )}
-                <div className="ak-mobile-sub__items">
+                <div className="ak-mega__items">
                   {(activePanel.megaMenu.items ?? []).map((item, i) => (
                     <Link
                       key={item.id ?? i}
                       href={resolveMegaItemHref(item)}
-                      className="ak-mobile-sub-item"
+                      className="ak-mega__item"
                       onClick={closeMenu}
                     >
                       {item.icon && (
-                        <span className="ak-mobile-sub-item__icon">
+                        <span className="ak-mega__item-icon">
                           <span
                             className="material-symbols-outlined"
                             aria-hidden="true"
@@ -240,10 +241,10 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ data }) => {
                           </span>
                         </span>
                       )}
-                      <div className="ak-mobile-sub-item__body">
-                        <span className="ak-mobile-sub-item__title">{item.title}</span>
+                      <div className="ak-mega__item-body">
+                        <p className="ak-mega__item-title">{item.title}</p>
                         {item.description && (
-                          <span className="ak-mobile-sub-item__desc">{item.description}</span>
+                          <p className="ak-mega__item-desc">{item.description}</p>
                         )}
                       </div>
                     </Link>

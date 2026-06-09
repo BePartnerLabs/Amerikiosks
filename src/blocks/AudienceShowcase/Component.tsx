@@ -55,8 +55,8 @@ export const AudienceShowcaseBlock: React.FC<AudienceShowcaseBlockProps> = ({
             <div className="ak-audience-showcase__grid">
               {populatedItems.map((item) => {
                 const title = item.label ?? item.page.title
+                const description = item.description ?? item.page.meta?.description
                 const href = `/${item.page.slug}`
-                const description = item.page.meta?.description
 
                 return (
                   <Link
@@ -67,7 +67,7 @@ export const AudienceShowcaseBlock: React.FC<AudienceShowcaseBlockProps> = ({
                     data-ga-label={item.page.title}
                   >
                     <Image
-                      src={item.image.url!}
+                      src={item.image.url ?? ''}
                       alt={item.image.alt ?? title}
                       fill
                       className="ak-audience-showcase__card-img"

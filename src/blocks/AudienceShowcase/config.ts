@@ -48,7 +48,18 @@ export const AudienceShowcase: Block = {
           name: 'label',
           type: 'text',
           localized: true,
-          admin: { description: 'Overrides the page title on the card if set.' },
+          admin: {
+            description: 'Overrides the card title. If not set, defaults to the linked page title.',
+          },
+        },
+        {
+          name: 'description',
+          type: 'textarea',
+          localized: true,
+          admin: {
+            description:
+              'Overrides the card description. If not set, defaults to the linked page SEO description.',
+          },
         },
         {
           name: 'cta',

@@ -1,31 +1,87 @@
-/* ─── Language Switcher ─────────────────────────────────── */
+/* ─── Language Switcher pill toggle ─────────────────────── */
+.ak-lang-switcher__legend {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 .ak-lang-switcher {
-  display: flex;
+  border: none;
+  margin: 0;
+  --_track-background: color-mix(in srgb, var(--ak-white) 10%, transparent);
+  --_indicator-background: var(--lang-switcher-indicator, var(--ak-accent));
+  --_color-inactive: color-mix(in srgb, var(--ak-white) 55%, transparent);
+  --_color-active: var(--ak-white);
+  --_size: 1.75rem;
+  --_padding: 3px;
+
+  position: relative;
+  display: inline-flex;
   align-items: center;
-  gap: var(--bp-space-1);
-  font-size: var(--bp-text-sm);
-  font-weight: 600;
+  background: var(--_track-background);
+  border-radius: var(--bp-radius-full);
+  padding: var(--_padding);
+  gap: 0;
+}
+
+/* Sliding indicator — moves left/right based on active locale */
+.ak-lang-switcher__indicator {
+  position: absolute;
+  top: var(--_padding);
+  left: var(--_padding);
+  width: var(--_size);
+  height: var(--_size);
+  background: var(--_indicator-background);
+  border-radius: var(--bp-radius-full);
+  pointer-events: none;
+  /* view-transition morphs position — CSS transition as fallback */
+  view-transition-name: ak-lang-indicator;
+  transition: transform var(--bp-duration-normal) var(--bp-ease-spring, var(--bp-ease));
+}
+
+/* Customize the view transition animation for the indicator */
+::view-transition-old(ak-lang-indicator),
+::view-transition-new(ak-lang-indicator) {
+  animation-duration: 220ms;
+  animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+  mix-blend-mode: normal;
+}
+
+/* Slide indicator to the right when ES is active */
+.ak-lang-switcher[data-locale="es"] .ak-lang-switcher__indicator {
+  transform: translateX(var(--_size));
 }
 
 .ak-lang-switcher__btn {
+  position: relative;
+  z-index: 1;
+  width: var(--_size);
+  height: var(--_size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--ak-white);
-  font-weight: 600;
-  font-size: var(--bp-text-sm);
-  transition: color var(--bp-duration-fast) var(--bp-ease);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--_color-inactive);
+  transition: color var(--bp-duration-normal) var(--bp-ease);
   padding: 0;
+  border-radius: var(--bp-radius-full);
 }
 
-.ak-lang-switcher__btn:hover {
-  color: var(--ak-white);
+.ak-lang-switcher__btn[aria-pressed="true"] {
+  color: var(--_color-active);
+  cursor: default;
 }
 
-.ak-lang-switcher__btn[aria-current="true"] {
-  color: var(--ak-accent);
-}
-
-.ak-lang-switcher__sep {
-  color: color-mix(in srgb, var(--ak-white) 40%, transparent);
+.ak-lang-switcher__btn:focus-visible {
+  --_outline: var(--_indicator-background);
+  outline: 2px solid var(--_outline);
+  outline-offset: 2px;
 }

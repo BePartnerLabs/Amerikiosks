@@ -2,6 +2,11 @@
 /* Material Symbols font is loaded via <link> in layout.tsx with display=optional */
 @import "./tokens.css";
 
+/* Cross-document view transitions (opt-in per page via MPA navigation) */
+@view-transition {
+  navigation: auto;
+}
+
 *,
 *::before,
 *::after {

@@ -40,12 +40,33 @@ export const AdminBar: React.FC<{
   ) as keyof typeof collectionLabels
   const router = useRouter()
 
+  const barRef = React.useRef<HTMLDivElement>(null)
+
   const onAuthChange = React.useCallback((user: PayloadMeUser) => {
-    setShow(Boolean(user?.id))
+    const visible = Boolean(user?.id)
+    setShow(visible)
+    if (!visible) {
+      document.documentElement.style.removeProperty('--admin-bar-height')
+    }
   }, [])
+
+  React.useEffect(() => {
+    if (!show || !barRef.current) return
+    const el = barRef.current
+    const update = () =>
+      document.documentElement.style.setProperty('--admin-bar-height', `${el.offsetHeight}px`)
+    update()
+    const ro = new ResizeObserver(update)
+    ro.observe(el)
+    return () => {
+      ro.disconnect()
+      document.documentElement.style.removeProperty('--admin-bar-height')
+    }
+  }, [show])
 
   return (
     <div
+      ref={barRef}
       className={cn(baseClass, 'py-2 bg-black text-white', {
         block: show,
         hidden: !show,

@@ -919,9 +919,13 @@ export interface AudienceShowcaseBlock {
          */
         image: number | Media;
         /**
-         * Overrides the page title on the card if set.
+         * Overrides the card title. If not set, defaults to the linked page title.
          */
         label?: string | null;
+        /**
+         * Overrides the card description. If not set, defaults to the linked page SEO description.
+         */
+        description?: string | null;
         /**
          * CTA link label, e.g. "Explore brand programs"
          */
@@ -1432,6 +1436,7 @@ export interface AudienceShowcaseBlockSelect<T extends boolean = true> {
         page?: T;
         image?: T;
         label?: T;
+        description?: T;
         cta?: T;
         id?: T;
       };

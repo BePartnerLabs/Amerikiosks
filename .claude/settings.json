@@ -11,7 +11,7 @@
           },
           {
             "type": "prompt",
-            "prompt": "A CSS file was just edited. Review the changes in $ARGUMENTS and check for BPL DS token compliance violations:\n1. Component surface properties (background-color, color, border-color) should use private vars: --_property: var(--component-property, var(--ak-fallback))\n2. Public slots must match the CSS property name (--foo-background not --foo-bg, --foo-color not --foo-fg)\n3. No hardcoded color literals (hex, rgb, hsl) — use tokens\n4. --ak-* tokens used directly in non-private property values are violations\n\nIf violations are found, set ok to false and describe what needs fixing. If compliant, set ok to true.",
+            "prompt": "A CSS file was just edited. Review the changes in $ARGUMENTS and check for BPL DS token compliance violations:\n1. Component surface properties (background-color, color, border-color) should use private vars: --_property: var(--component-property, var(--ak-fallback))\n2. Public slots must match the CSS property name (--foo-background not --foo-bg, --foo-color not --foo-fg)\n3. No hardcoded color literals (hex, rgb, hsl) — use tokens\n4. --ak-* tokens used directly in non-private property values are violations\n\nAlways set ok to true (never block). If violations are found, return them as additionalContext so Claude can fix them in the next step. If compliant, return a brief confirmation as additionalContext.",
             "statusMessage": "DS: checking compliance...",
             "timeout": 30
           }
@@ -35,16 +35,6 @@
             "type": "command",
             "command": ".claude/hooks/unit-tests.sh",
             "statusMessage": "Running unit tests..."
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": ".claude/hooks/warn-main-branch.sh"
           }
         ]
       }

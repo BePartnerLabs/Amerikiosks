@@ -272,6 +272,28 @@ export const seedHome = async (
     heading: 'Una plataforma.\nCuatro formas de estar con propósito.',
     subheading:
       'Amerikiosks ayuda a los partners a crear experiencias de retail de marca colocadas con intención y operadas de principio a fin.',
+    items: [
+      {
+        page: Number(audiencePageIds['for-brands']),
+        image: audienceMediaIds['for-brands'],
+        cta: 'Explorar programas de marca',
+      },
+      {
+        page: Number(audiencePageIds['for-venues']),
+        image: audienceMediaIds['for-venues'],
+        cta: 'Explorar ingresos por venue',
+      },
+      {
+        page: Number(audiencePageIds['for-agencies']),
+        image: audienceMediaIds['for-agencies'],
+        cta: 'Explorar activaciones',
+      },
+      {
+        page: Number(audiencePageIds['for-emerging-brands']),
+        image: audienceMediaIds['for-emerging-brands'],
+        cta: 'Explorar rutas de lanzamiento',
+      },
+    ],
   }
 
   const meta = {

@@ -20,16 +20,14 @@
   -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
 }
 
-.ak-trust-strip__viewport:hover .ak-trust-strip__track {
-  animation-play-state: paused;
-}
-
 .ak-trust-strip__track {
+  --_gap: var(--md-size-space-16);
   display: flex;
-  gap: var(--md-size-space-16);
+  gap: var(--_gap);
   list-style: none;
   margin: 0;
   padding: 0;
+  padding-inline-end: var(--_gap);
   animation: ak-marquee 40s linear infinite;
   flex-shrink: 0;
 }
@@ -52,6 +50,10 @@
   object-fit: contain;
 }
 
+.ak-trust-strip__viewport:hover .ak-trust-strip__track {
+  animation-play-state: paused;
+}
+
 @keyframes ak-marquee {
   from {
     transform: translateX(0);
@@ -67,7 +69,7 @@
   }
 
   .ak-trust-strip__track {
-    gap: 0.625rem;
+    --_gap: 0.625rem;
     animation-duration: 28s;
   }
 

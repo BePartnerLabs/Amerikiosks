@@ -11,10 +11,11 @@
 }
 
 .ak-mobile-hamburger__bar {
+  --_color: var(--hamburger-color, var(--ak-white));
   display: block;
   width: 22px;
   height: 2px;
-  background-color: var(--ak-dark-fg);
+  background-color: var(--_color);
   border-radius: var(--bp-radius-full);
   transition: opacity var(--bp-duration-fast) var(--bp-ease);
 }
@@ -23,7 +24,7 @@
   width: 14px;
 }
 
-/* Show hamburger, hide desktop nav on mobile — media query as primary (iOS Safari compat) */
+/* Show hamburger on mobile — media query as primary (iOS Safari compat) */
 @media (max-width: 59.99rem) {
   .ak-mobile-hamburger {
     display: flex;
@@ -33,7 +34,6 @@
   }
 }
 
-/* Container query overrides for precision (supported browsers) */
 @container header-inner (max-width: 59.99rem) {
   .ak-mobile-hamburger {
     display: flex;
@@ -45,23 +45,44 @@
 
 /* ─── Backdrop ──────────────────────────────────────────── */
 .ak-mobile-backdrop {
+  --_background: color-mix(in srgb, var(--ak-bg) 80%, transparent);
   position: fixed;
   inset: 0;
-  background: var(--ak-overlay-bg);
-  z-index: var(--ak-z-mobile-backdrop);
+  background: var(--_background);
+  z-index: 199;
 }
 
 /* ─── Bottom sheet ──────────────────────────────────────── */
+/*
+  Public override slots (Level 2 — per-instance, scoped):
+    --sheet-background   sheet surface color
+    --sheet-color        foreground / text color
+
+  Private resolvers (Level 3 — internal only):
+    --_background        resolves sheet-background
+    --_color             resolves sheet-color
+    --_accent            brand accent inherited by descendants
+    --_border            top separator
+    --_handle            drag handle fill
+    --_muted             dim tone for secondary text and controls
+*/
 .ak-mobile-sheet {
+  --_background: var(--sheet-background, var(--ak-footer-bg));
+  --_color: var(--sheet-color, var(--ak-white));
+  --_accent: var(--ak-accent);
+  --_border: color-mix(in srgb, var(--ak-white) 8%, transparent);
+  --_handle: color-mix(in srgb, var(--ak-white) 18%, transparent);
+  --_muted: color-mix(in srgb, var(--ak-white) 40%, transparent);
+
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: var(--ak-z-mobile-sheet);
-  --_bg-color: var(--bg-color, var(--ak-dark-bg));
-  background-color: var(--_bg-color);
+  z-index: 200;
+  background-color: var(--_background);
+  color: var(--_color);
   border-radius: var(--bp-radius-xl) var(--bp-radius-xl) 0 0;
-  border-top: 1px solid var(--ak-dark-border);
+  border-top: 1px solid var(--_border);
   transform: translateY(100%);
   transition: transform var(--bp-duration-normal) var(--bp-ease);
   max-height: 85dvh;
@@ -78,7 +99,7 @@
 .ak-mobile-sheet__handle {
   width: 36px;
   height: 3px;
-  background: var(--ak-dark-fg-dim);
+  background: var(--_handle);
   border-radius: var(--bp-radius-full);
   margin: var(--bp-space-3) auto var(--bp-space-1);
   flex-shrink: 0;
@@ -94,30 +115,34 @@
 }
 
 .ak-mobile-sheet__back {
+  --_color: var(--_accent);
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--ak-accent);
+  color: var(--_color);
   font-size: 1.5rem;
   font-weight: 700;
   line-height: 1;
   padding: var(--bp-space-1) var(--bp-space-2);
   margin-left: calc(-1 * var(--bp-space-2));
+  transition: opacity var(--bp-duration-fast) var(--bp-ease);
 }
 
 .ak-mobile-sheet__panel-label {
+  --_color: var(--_accent);
   font-size: var(--bp-text-xs, 0.6875rem);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--ak-accent);
+  color: var(--_color);
 }
 
 .ak-mobile-sheet__close {
+  --_color: var(--_muted);
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--ak-dark-fg-muted);
+  color: var(--_color);
   font-size: 1.125rem;
   line-height: 1;
   padding: var(--bp-space-1) var(--bp-space-2);
@@ -125,8 +150,11 @@
   transition: color var(--bp-duration-fast) var(--bp-ease);
 }
 
-.ak-mobile-sheet__close:hover {
-  color: var(--ak-dark-fg);
+@media (hover: hover) {
+  /* Rule 2: redeclare the token in the state selector */
+  .ak-mobile-sheet__close:hover {
+    --_color: var(--sheet-color, var(--ak-white));
+  }
 }
 
 /* ─── Panels ────────────────────────────────────────────── */
@@ -146,7 +174,6 @@
   transition: transform var(--bp-duration-normal) var(--bp-ease);
 }
 
-/* Slide both panels left when sub-panel is active */
 .ak-mobile-sheet__panels--sub .ak-mobile-sheet__panel {
   transform: translateX(-100%);
 }
@@ -160,11 +187,12 @@
 }
 
 .ak-mobile-nav-card {
+  --_background: var(--ak-card-bg);
   display: flex;
   flex-direction: column;
   gap: var(--bp-space-1);
   padding: var(--bp-space-3);
-  background: var(--ak-dark-card-bg);
+  background: var(--_background);
   border-radius: var(--bp-radius);
   border: none;
   cursor: pointer;
@@ -174,24 +202,31 @@
   position: relative;
 }
 
-.ak-mobile-nav-card:hover,
+@media (hover: hover) {
+  /* Rule 2: redeclare in state selector */
+  .ak-mobile-nav-card:hover {
+    --_background: color-mix(in srgb, var(--ak-card-bg) 72%, var(--ak-white));
+  }
+}
+
 .ak-mobile-nav-card:active {
-  background: var(--ak-dark-card-bg-hover);
+  --_background: color-mix(in srgb, var(--ak-card-bg) 72%, var(--ak-white));
 }
 
 .ak-mobile-nav-card__eyebrow {
+  --_color: var(--_accent);
   font-size: var(--bp-text-xs, 0.6875rem);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  /* --ak-accent (#e63946) = 3.62:1 on dark bg; --ak-accent-light (#ff6b75) = 5.47:1 ✓ */
-  color: var(--ak-accent-light);
+  color: var(--_color);
 }
 
 .ak-mobile-nav-card__label {
+  --_color: var(--sheet-color, var(--ak-white));
   font-size: var(--bp-text-sm, 0.875rem);
   font-weight: 600;
-  color: var(--ak-dark-fg-high);
+  color: var(--_color);
 }
 
 .ak-mobile-nav-card__arrow {
@@ -199,7 +234,49 @@
   bottom: var(--bp-space-3);
   right: var(--bp-space-3);
   font-size: 1rem;
-  color: var(--ak-dark-fg-dim);
+  color: var(--_muted);
+}
+
+/* ─── Mega items inside dark sheet ──────────────────────── */
+.ak-mobile-sheet .ak-mega__item {
+  --_background: var(--ak-card-bg);
+  background: var(--_background);
+  border-radius: var(--bp-radius);
+  transition: background-color var(--bp-duration-fast) var(--bp-ease);
+}
+
+@media (hover: hover) {
+  .ak-mobile-sheet .ak-mega__item:hover {
+    --_background: color-mix(in srgb, var(--ak-card-bg) 72%, var(--ak-white));
+  }
+}
+
+.ak-mobile-sheet .ak-mega__item:active {
+  --_background: color-mix(in srgb, var(--ak-card-bg) 72%, var(--ak-white));
+}
+
+.ak-mobile-sheet .ak-mega__item-icon {
+  --_background: color-mix(in srgb, var(--ak-white) 8%, transparent);
+  background-color: var(--_background);
+  color: var(--_muted);
+}
+
+.ak-mobile-sheet .ak-mega__item:hover .ak-mega__item-icon,
+.ak-mobile-sheet .ak-mega__item:active .ak-mega__item-icon {
+  --_background: color-mix(in srgb, var(--ak-accent) 18%, transparent);
+  --_color: var(--_accent);
+  background-color: var(--_background);
+  color: var(--_color);
+}
+
+.ak-mobile-sheet .ak-mega__item-title {
+  --_color: var(--sheet-color, var(--ak-white));
+  color: var(--_color);
+}
+
+.ak-mobile-sheet .ak-mega__item-desc,
+.ak-mobile-sheet .ak-mega__description {
+  color: var(--_muted);
 }
 
 /* ─── CTA ───────────────────────────────────────────────── */
@@ -209,79 +286,14 @@
   width: 100%;
 }
 
-/* ─── Sub panel ─────────────────────────────────────────── */
-.ak-mobile-sub__description {
-  font-size: var(--bp-text-sm, 0.875rem);
-  color: var(--ak-dark-fg-subtle);
-  margin: 0 0 var(--bp-space-4);
-  line-height: 1.5;
-}
-
-.ak-mobile-sub__items {
-  display: flex;
-  flex-direction: column;
-  gap: var(--bp-space-2);
-}
-
-.ak-mobile-sub-item {
-  display: flex;
-  align-items: center;
-  gap: var(--bp-space-3);
-  padding: var(--bp-space-3);
-  background: var(--ak-dark-card-bg);
-  border-radius: var(--bp-radius);
-  text-decoration: none;
-  transition: background-color var(--bp-duration-fast) var(--bp-ease);
-}
-
-.ak-mobile-sub-item:hover,
-.ak-mobile-sub-item:active {
-  background: var(--ak-dark-card-bg-hover);
-}
-
-.ak-mobile-sub-item__icon {
-  flex-shrink: 0;
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: var(--bp-radius-sm);
-  background: var(--ak-dark-card-bg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--ak-dark-fg-muted);
-}
-
-.ak-mobile-sub-item__icon .material-symbols-outlined {
-  font-size: 1.25rem;
-}
-
-.ak-mobile-sub-item__body {
-  display: flex;
-  flex-direction: column;
-  gap: var(--bp-space-px, 2px);
-  min-width: 0;
-}
-
-.ak-mobile-sub-item__title {
-  font-size: var(--bp-text-sm, 0.875rem);
-  font-weight: 600;
-  color: var(--ak-dark-fg);
-}
-
-.ak-mobile-sub-item__desc {
-  font-size: var(--bp-text-xs, 0.75rem);
-  color: var(--ak-dark-fg-subtle);
-  line-height: 1.35;
-  overflow-wrap: break-word;
-}
-
 /* ─── Focus visible ─────────────────────────────────────── */
 .ak-mobile-hamburger:focus-visible,
 .ak-mobile-sheet__back:focus-visible,
 .ak-mobile-sheet__close:focus-visible,
 .ak-mobile-nav-card:focus-visible,
-.ak-mobile-sub-item:focus-visible {
-  outline: 2px solid var(--ak-accent);
+.ak-mobile-sheet .ak-mega__item:focus-visible {
+  --_outline-color: var(--_accent, var(--ak-accent));
+  outline: 2px solid var(--_outline-color);
   outline-offset: 2px;
   border-radius: var(--bp-radius-sm);
 }
