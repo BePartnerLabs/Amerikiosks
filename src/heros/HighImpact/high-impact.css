@@ -4,7 +4,7 @@
   display: flex;
   align-items: center;
   overflow: hidden;
-  color: #fff;
+  color: var(--ak-white);
 }
 
 /* Background media (image or video) */
@@ -28,19 +28,21 @@
   z-index: 1;
 }
 
-/* Left-to-right dark gradient overlay */
+/* Directional gradient overlay — matches Figma */
 .ak-hero-home::after {
+  --_overlay: var(
+    --hero-overlay,
+    linear-gradient(
+      97.22deg,
+      color-mix(in srgb, var(--ak-bg) 90%, transparent) 11.65%,
+      transparent 96.46%
+    )
+  );
   content: "";
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: linear-gradient(
-    to right,
-    color-mix(in srgb, var(--ak-dark-bg) 88%, transparent) 0%,
-    color-mix(in srgb, var(--ak-dark-bg) 72%, transparent) 35%,
-    color-mix(in srgb, var(--ak-dark-bg) 24%, transparent) 65%,
-    color-mix(in srgb, var(--ak-dark-bg) 4%, transparent) 100%
-  );
+  background: var(--_overlay);
 }
 
 .ak-hero-home > .bp-content-grid {
@@ -52,17 +54,20 @@
   position: relative;
   z-index: 2;
   max-width: 72ch;
-  padding-block: var(--bp-space-20, 5rem);
+  padding-block: 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bp-space-6);
 }
 
 .ak-hero-home__content h1,
 .ak-hero-home__content h2 {
-  margin: 0 0 var(--bp-space-6, 1.5rem);
-  font-family: var(--font-poppins, sans-serif);
-  font-size: clamp(2rem, 4vw + 1rem, 3.5rem);
+  margin: 0;
+  font-family: var(--ak-font-base);
+  font-size: clamp(2rem, 4vw + 1rem, 3rem);
   font-weight: 800;
   line-height: 1.1;
-  color: #fff;
+  color: var(--ak-white);
 }
 
 .ak-hero-home__content h1 em,
@@ -72,27 +77,27 @@
 }
 
 .ak-hero-home__content p {
-  margin: 0 0 var(--bp-space-6, 1.5rem);
-  font-size: var(--bp-text-base, 1rem);
+  margin: 0;
+  font-size: var(--bp-text-lg);
   line-height: 1.65;
-  color: var(--ak-dark-fg-muted);
+  color: var(--ak-white);
   max-width: 52ch;
 }
 
 .ak-hero-home__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--bp-space-4, 1rem);
+  gap: var(--bp-space-4);
   list-style: none;
-  margin: var(--bp-space-8, 2rem) 0 0;
+  margin: 0;
   padding: 0;
 }
 
 /* ─── Focus visible for CTA links ──────────────────────── */
 .ak-hero-home__actions a:focus-visible {
-  outline: 2px solid #fff;
+  outline: 2px solid var(--ak-white);
   outline-offset: 3px;
-  border-radius: var(--bp-radius-sm);
+  border-radius: var(--ak-radius);
 }
 
 @media (max-width: 36rem) {
@@ -102,6 +107,6 @@
 
   .ak-hero-home__content h1,
   .ak-hero-home__content h2 {
-    font-size: clamp(1.75rem, 6vw, 2.5rem);
+    font-size: clamp(1.5rem, 6vw, 2rem);
   }
 }

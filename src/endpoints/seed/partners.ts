@@ -14,6 +14,17 @@ const PARTNERS = [
 export const seedPartners = async (payload: Payload, req: PayloadRequest): Promise<void> => {
   payload.logger.info('Seeding partners...')
 
+  const existing = await payload.find({
+    collection: 'partners',
+    limit: 0,
+    req,
+  })
+
+  if (existing.totalDocs > 0) {
+    payload.logger.info(`Partners already seeded (${existing.totalDocs} found) — skipping.`)
+    return
+  }
+
   for (const partner of PARTNERS) {
     const logo = await uploadMedia(
       payload,

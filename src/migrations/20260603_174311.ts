@@ -24,6 +24,20 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
     CREATE TYPE "public"."enum__pages_v_blocks_card_grid_items_link_type" AS ENUM('custom', 'reference');
   `)
 
+  // Drop defaults before casting varchar → ENUM (Postgres can't cast defaults automatically)
+  await db.execute(sql`
+    ALTER TABLE "pages_blocks_card_grid"
+      ALTER COLUMN "variant" DROP DEFAULT,
+      ALTER COLUMN "link_type" DROP DEFAULT;
+    ALTER TABLE "pages_blocks_card_grid_items"
+      ALTER COLUMN "link_type" DROP DEFAULT;
+    ALTER TABLE "_pages_v_blocks_card_grid"
+      ALTER COLUMN "variant" DROP DEFAULT,
+      ALTER COLUMN "link_type" DROP DEFAULT;
+    ALTER TABLE "_pages_v_blocks_card_grid_items"
+      ALTER COLUMN "link_type" DROP DEFAULT;
+  `)
+
   // Convert varchar → ENUM for variant and link_type columns
   await db.execute(sql`
     ALTER TABLE "pages_blocks_card_grid"

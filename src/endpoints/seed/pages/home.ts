@@ -9,6 +9,7 @@ export const seedHome = async (
   req: PayloadRequest,
   audiencePageIds: Record<string, string> = {},
   postIds: string[] = [],
+  audienceMediaIds: Record<string, number> = {},
 ): Promise<void> => {
   payload.logger.info('— Seeding home page...')
 
@@ -242,10 +243,26 @@ export const seedHome = async (
     subheading:
       'Amerikiosks helps partners create branded retail experiences that are placed with intention and operated end to end.',
     items: [
-      { page: Number(audiencePageIds['for-brands']), cta: 'Explore brand programs' },
-      { page: Number(audiencePageIds['for-venues']), cta: 'Explore venue revenue' },
-      { page: Number(audiencePageIds['for-agencies']), cta: 'Explore activations' },
-      { page: Number(audiencePageIds['for-emerging-brands']), cta: 'Explore launch paths' },
+      {
+        page: Number(audiencePageIds['for-brands']),
+        image: audienceMediaIds['for-brands'],
+        cta: 'Explore brand programs',
+      },
+      {
+        page: Number(audiencePageIds['for-venues']),
+        image: audienceMediaIds['for-venues'],
+        cta: 'Explore venue revenue',
+      },
+      {
+        page: Number(audiencePageIds['for-agencies']),
+        image: audienceMediaIds['for-agencies'],
+        cta: 'Explore activations',
+      },
+      {
+        page: Number(audiencePageIds['for-emerging-brands']),
+        image: audienceMediaIds['for-emerging-brands'],
+        cta: 'Explore launch paths',
+      },
     ],
   }
 
@@ -255,6 +272,28 @@ export const seedHome = async (
     heading: 'Una plataforma.\nCuatro formas de estar con propósito.',
     subheading:
       'Amerikiosks ayuda a los partners a crear experiencias de retail de marca colocadas con intención y operadas de principio a fin.',
+    items: [
+      {
+        page: Number(audiencePageIds['for-brands']),
+        image: audienceMediaIds['for-brands'],
+        cta: 'Explorar programas de marca',
+      },
+      {
+        page: Number(audiencePageIds['for-venues']),
+        image: audienceMediaIds['for-venues'],
+        cta: 'Explorar ingresos por venue',
+      },
+      {
+        page: Number(audiencePageIds['for-agencies']),
+        image: audienceMediaIds['for-agencies'],
+        cta: 'Explorar activaciones',
+      },
+      {
+        page: Number(audiencePageIds['for-emerging-brands']),
+        image: audienceMediaIds['for-emerging-brands'],
+        cta: 'Explorar rutas de lanzamiento',
+      },
+    ],
   }
 
   const meta = {

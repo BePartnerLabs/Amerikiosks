@@ -1,5 +1,11 @@
-/* frontend.css — global reset + brand tokens. Component styles live in their own .css files. */
+/* frontend.css — global reset + DS utilities. Design tokens live in tokens.css. */
 /* Material Symbols font is loaded via <link> in layout.tsx with display=optional */
+@import "./tokens.css";
+
+/* Cross-document view transitions (opt-in per page via MPA navigation) */
+@view-transition {
+  navigation: auto;
+}
 
 *,
 *::before,
@@ -8,7 +14,7 @@
 }
 body {
   margin: 0;
-  font-family: sans-serif;
+  font-family: var(--ak-font-base);
 }
 img {
   max-width: 100%;
@@ -83,85 +89,28 @@ img {
   --bp-shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.15);
 }
 
-/* ─── Amerikiosks brand tokens ─────────────────────────── */
-:root {
-  /* Brand base */
-  --ak-dark-bg: #011936;
-  --ak-header-bg: var(--ak-dark-bg);
-  --ak-accent: #e63946;
-  --ak-accent-hover: #c1121f;
-  --ak-accent-fg: #ffffff;
-  /* #d42030 = 5.19:1 with white — AA-compliant button bg */
-  --ak-accent-aa: #d42030;
-  /* #ff6b75 = 5.47:1 on #102742 — AA-compliant accent on dark bg */
-  --ak-accent-light: #ff6b75;
-  --ak-mega-left-bg: #011936;
-  --ak-mega-right-bg: #ffffff;
-  --ak-nav-link-color: rgba(255, 255, 255, 0.85);
-  --ak-nav-link-hover: var(--ak-accent);
-
-  /* Color palette */
-  --ak-color-white: #ffffff;
-  --ak-color-heading: #0f1e3c;
-  --ak-color-primary: #1e3a5f;
-  --ak-color-muted: #6b6760;
-  --ak-color-surface: var(--ak-color-white);
-  --ak-color-surface-2: #f3f4f6;
-  --ak-color-border: #e5e0d8;
-
-  /* Dark section fg scale */
-  --ak-dark-fg: #ffffff;
-  --ak-dark-fg-high: rgba(255, 255, 255, 0.85);
-  --ak-dark-fg-muted: rgba(255, 255, 255, 0.65);
-  --ak-dark-fg-subtle: rgba(255, 255, 255, 0.5);
-  --ak-dark-fg-dim: rgba(255, 255, 255, 0.25);
-
-  /* Dark section bg/border scale */
-  --ak-dark-card-bg: rgba(255, 255, 255, 0.05);
-  --ak-dark-card-bg-hover: rgba(255, 255, 255, 0.1);
-  --ak-dark-border: rgba(255, 255, 255, 0.12);
-  --ak-dark-border-subtle: rgba(255, 255, 255, 0.06);
-
-  /* Mega menu */
-  --ak-mega-eyebrow-color: #76939e;
-  --ak-mega-accent-bg: color-mix(in srgb, var(--ak-accent) 12%, transparent);
-
-  /* Overlay */
-  --ak-overlay-bg: rgba(0, 0, 0, 0.5);
-
-  /* Z-index scale */
-  --ak-z-header: 100;
-  --ak-z-mobile-backdrop: 200;
-  --ak-z-mobile-sheet: 201;
-}
-
 /* ─── BPL DS Button (bp-btn) ───────────────────────────── */
 .bp-btn {
-  --_padding: var(--btn-padding, var(--bp-space-2) var(--bp-space-4));
-  --_radius: var(--btn-radius, var(--bp-radius));
-  --_font-size: var(--btn-font-size, var(--bp-text-sm, 0.875rem));
+  --_background: var(--btn-background, var(--bp-primary));
+  --_color: var(--btn-color, var(--bp-primary-fg));
+  --_border-radius: var(--btn-border-radius, var(--ak-radius));
+  --_padding: var(--btn-padding, var(--bp-space-3) var(--bp-space-6));
   --_border: var(--btn-border, none);
 
   display: inline-flex;
   align-items: center;
   padding: var(--_padding);
-  border-radius: var(--_radius);
-  font-size: var(--_font-size);
-  font-weight: 600;
+  border-radius: var(--_border-radius);
+  font-size: var(--bp-text-sm);
+  font-weight: var(--md-btn-text-font-weight);
   text-decoration: none;
   cursor: pointer;
   border: var(--_border);
+  background-color: var(--_background);
+  color: var(--_color);
   transition: background-color var(--bp-duration-fast) var(--bp-ease);
 }
 
-.bp-btn--primary {
-  --_bg: var(--btn-bg, var(--ak-accent));
-  --_color: var(--btn-color, var(--ak-accent-fg));
-
-  background-color: var(--_bg);
-  color: var(--_color);
-}
-
 .bp-btn--primary:hover {
-  --_bg: var(--btn-bg-hover, var(--ak-accent-hover));
+  --btn-background: color-mix(in srgb, var(--bp-primary) 85%, black);
 }

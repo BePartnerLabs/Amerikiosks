@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import type React from 'react'
 import RichText from '@/components/RichText'
+import { SectionHeader } from '@/components/SectionHeader'
 import type { CardGridBlock as CardGridBlockProps, Page } from '@/payload-types'
 import { toSnakeCase } from '@/utilities/toSnakeCase'
 import './styles.css'
@@ -53,13 +54,16 @@ export const CardGridBlock: React.FC<CardGridBlockProps> = ({
 
       <div className="bp-content-grid">
         <div className="breakout ak-card-grid__inner">
-          <div className="ak-card-grid__header">
-            {eyebrow && <p className="ak-card-grid__eyebrow">{eyebrow}</p>}
-            {heading && <h2 className="ak-card-grid__heading">{heading}</h2>}
-            {subheading && variant === 'pillar' && (
-              <p className="ak-card-grid__subheading">{subheading}</p>
-            )}
-          </div>
+          {heading && (
+            <div className="ak-card-grid__header">
+              <SectionHeader
+                eyebrow={eyebrow}
+                heading={heading}
+                subtitle={variant === 'pillar' ? subheading : undefined}
+                align={variant === 'compact' ? 'left' : 'center'}
+              />
+            </div>
+          )}
 
           {Array.isArray(items) && items.length > 0 && (
             <div className="ak-card-grid__cards">

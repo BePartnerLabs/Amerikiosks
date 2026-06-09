@@ -3,6 +3,7 @@ import { useState } from 'react'
 
 const PARTS = [
   { key: 'home', label: 'Home page' },
+  { key: 'audience', label: 'Audience pages (brands, venues, agencies, emerging brands)' },
   { key: 'solutions', label: 'Solutions page' },
   { key: 'where-it-works', label: 'Where It Works page' },
   { key: 'case-studies', label: 'Case Studies page' },

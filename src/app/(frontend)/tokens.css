@@ -1,0 +1,122 @@
+/* ─────────────────────────────────────────────────────────────
+   tokens.css — Design token source of truth for Amerikiosks
+   Figma file: TAuNJf2iXWthC0mh3dt0pl · node 219-286
+   Extracted: 2026-06-04
+
+   Layer 1: Figma primitives  — never use directly in components
+   Layer 2: Semantic aliases  — added here as each element is confirmed
+   ───────────────────────────────────────────────────────────── */
+
+/* ─── Layer 1: Figma primitives ────────────────────────────── */
+:root {
+  /* 01 Brand — Typography */
+  --brand-font-family: "Poppins", sans-serif;
+
+  /* 01 Brand — Color Palette */
+  --brand-color-palette-navy-950: hsla(214, 100%, 5%, 1); /* #000D1A */
+  --brand-color-palette-navy-900: hsla(213, 96%, 11%, 1); /* megamenu left panel, footer */
+  --brand-color-palette-navy-800: hsla(209, 73%, 16%, 1); /* card background */
+  --brand-color-palette-slate-400: hsla(196, 17%, 54%, 1); /* megamenu eyebrow */
+  --brand-color-palette-steel-600: hsla(204, 43%, 39%, 1); /* section eyebrow */
+  --brand-color-palette-steel-100: hsla(205, 37%, 90%, 1); /* card border */
+  --brand-color-palette-steel-50: hsla(206, 54%, 97%, 1); /* card background */
+  --brand-color-palette-coral-600: hsla(347, 76%, 48%, 1); /* #D41A3A */
+  --brand-color-palette-white: hsla(0, 0%, 100%, 1); /* #FFFFFF */
+
+  /* 02 Semantic — Border */
+  --md-semantic-border-width-default: 1px;
+
+  /* Size — Spacing scale */
+  --md-size-space-2: 2px;
+  --md-size-space-4: 4px;
+  --md-size-space-8: 8px;
+  --md-size-space-12: 12px;
+  --md-size-space-16: 16px;
+  --md-size-space-20: 20px;
+  --md-size-space-24: 24px;
+  --md-size-space-32: 32px;
+  --md-size-space-40: 40px;
+  --md-size-space-48: 48px;
+  --md-size-space-56: 56px;
+  --md-size-space-64: 64px;
+  --md-size-space-80: 80px;
+  --md-size-space-96: 96px;
+
+  /* UI Text sizes */
+  --ui-text-badge-label-font-size: 14px;
+  --ui-text-badge-label-line-height: 21px;
+  --ui-text-button-label-font-size: 16px;
+  --ui-text-button-label-line-height: 24px;
+
+  /* Button tokens */
+  --md-btn-shape-border-radius: var(--bp-radius-md); /* 8px / 0.5rem */
+  --md-btn-text-font-size: var(--ui-text-button-label-font-size);
+  --md-btn-text-font-weight: 500;
+  --md-btn-text-line-height: var(--ui-text-button-label-line-height);
+
+  /* Navbar tokens */
+  --navbar-height: 78px;
+  --navbar-bg: var(--brand-color-palette-navy-950);
+  --navbar-border-bottom: var(--md-semantic-border-width-default) solid currentColor;
+  --navbar-padding-vertical: var(--md-size-space-12);
+  --navbar-padding-horizontal: var(--md-size-space-48);
+  --navbar-inner-height: 50px;
+  --navbar-inner-width: 1344px;
+}
+
+/* ─── Layer 2: Semantic aliases — confirmed per element ─────── */
+:root {
+  /* Typography */
+  --ak-font-base: var(--brand-font-family);
+
+  /* Section header */
+  --ak-eyebrow-color: var(--brand-color-palette-steel-600);
+  --ak-section-heading-color: var(--brand-color-palette-navy-900);
+
+  /* Radius */
+  --ak-radius: var(--md-btn-shape-border-radius);
+
+  /* Colors */
+  --ak-white: var(--brand-color-palette-white);
+  --ak-accent: var(--brand-color-palette-coral-600);
+
+  /* Header */
+  --ak-bg: var(--brand-color-palette-navy-950);
+
+  /* Footer */
+  --ak-footer-bg: var(--brand-color-palette-navy-900);
+
+  /* Brand card (TrustStrip) */
+  --ak-brand-card-bg: var(--brand-color-palette-steel-50);
+  --ak-brand-card-border: var(--brand-color-palette-steel-100);
+
+  /* Dark card overlay */
+  --ak-dark-background: var(--brand-color-palette-navy-950);
+  --ak-dark-foreground: var(--brand-color-palette-white);
+  --ak-card-overlay: var(--md-semantic-surface-background-overlay-default, hsla(0, 0%, 0%, 0.6));
+  --ak-card-shadow-md: 0 2px 12px hsla(0, 0%, 0%, 0.15);
+
+  /* Surface / border / text */
+  --ak-color-surface: var(--brand-color-palette-white);
+  --ak-color-heading: var(--brand-color-palette-navy-900);
+  --ak-color-border: var(--brand-color-palette-steel-100);
+  --ak-color-muted: var(--brand-color-palette-steel-600);
+  --ak-color-white: var(--brand-color-palette-white);
+  --ak-card-shadow-subtle: 0 1px 4px hsla(0, 0%, 0%, 0.06);
+
+  /* CardGrid — compact */
+  --ak-card-grid-bg: var(--brand-color-palette-navy-900);
+  --ak-card-bg: var(--brand-color-palette-navy-800);
+  --ak-card-shadow: 0px 8px 20px 0px hsla(0, 0%, 0%, 0.08);
+
+  /* Megamenu */
+  --ak-mega-left-bg: var(--brand-color-palette-navy-900);
+  --ak-mega-right-bg: var(--brand-color-palette-white);
+  --ak-mega-eyebrow-color: var(--brand-color-palette-slate-400);
+  --ak-mega-fg: var(--brand-color-palette-white);
+
+  /* DS bp-* surface mapping — DS components inherit these automatically */
+  --bp-primary: var(--ak-accent);
+  --bp-primary-fg: var(--ak-white);
+  --bp-color-bg-elevated: var(--ak-white);
+}

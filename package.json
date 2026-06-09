@@ -89,7 +89,8 @@
     "vitest": "4.1.8"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx,json,css}": "biome check --write --no-errors-on-unmatched"
+    "*.{ts,tsx,js,jsx,json,css}": "biome check --write --no-errors-on-unmatched",
+    "*.css": "node scripts/validate-ds-tokens.mjs"
   },
   "engines": {
     "node": "^18.20.2 || >=20.9.0",

@@ -14,7 +14,6 @@ import { Footer } from '@/Footer/Component'
 import { Header } from '@/Header/Component'
 import { routing } from '@/i18n/routing'
 import { Providers } from '@/providers'
-import { InitTheme } from '@/providers/Theme/InitTheme'
 import { getCachedGlobal } from '@/utilities/getGlobals'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { cn } from '@/utilities/ui'
@@ -55,7 +54,6 @@ export default async function LocaleLayout({ children, params }: Props) {
       suppressHydrationWarning
     >
       <head>
-        <InitTheme />
         <link
           href="/favicon.ico"
           rel="icon"

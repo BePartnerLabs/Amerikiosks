@@ -35,13 +35,31 @@ export const AudienceShowcase: Block = {
           type: 'relationship',
           relationTo: 'pages',
           required: true,
-          admin: { description: 'Pulls title + hero image from this page automatically.' },
+          admin: { description: 'Pulls title and description from this page.' },
+        },
+        {
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media',
+          required: true,
+          admin: { description: 'Card background image.' },
         },
         {
           name: 'label',
           type: 'text',
           localized: true,
-          admin: { description: 'Overrides the page title on the card if set.' },
+          admin: {
+            description: 'Overrides the card title. If not set, defaults to the linked page title.',
+          },
+        },
+        {
+          name: 'description',
+          type: 'textarea',
+          localized: true,
+          admin: {
+            description:
+              'Overrides the card description. If not set, defaults to the linked page SEO description.',
+          },
         },
         {
           name: 'cta',

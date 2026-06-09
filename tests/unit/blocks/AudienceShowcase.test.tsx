@@ -1,7 +1,11 @@
 import { cleanup, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 import { AudienceShowcaseBlock } from '@/blocks/AudienceShowcase/Component'
-import type { AudienceShowcaseBlock as AudienceShowcaseBlockType, Page } from '@/payload-types'
+import type {
+  AudienceShowcaseBlock as AudienceShowcaseBlockType,
+  Media,
+  Page,
+} from '@/payload-types'
 
 const makePage = (slug: string, title: string): Page =>
   ({
@@ -15,6 +19,9 @@ const makePage = (slug: string, title: string): Page =>
     createdAt: '',
   }) as unknown as Page
 
+const makeMedia = (url: string): Media =>
+  ({ id: url, url, alt: '', updatedAt: '', createdAt: '' }) as unknown as Media
+
 const base: AudienceShowcaseBlockType = {
   blockType: 'audienceShowcase',
   blockName: 'Audience Showcase — Home',
@@ -22,8 +29,18 @@ const base: AudienceShowcaseBlockType = {
   heading: 'One platform.\nFour ways to show up with purpose.',
   eyebrow: "WHO IT'S FOR",
   items: [
-    { id: 'item-1', page: makePage('for-brands', 'For Brands'), cta: 'Explore brand programs' },
-    { id: 'item-2', page: makePage('for-venues', 'For Venues'), cta: 'Explore venue revenue' },
+    {
+      id: 'item-1',
+      page: makePage('for-brands', 'For Brands'),
+      image: makeMedia('/brands.jpg'),
+      cta: 'Explore brand programs',
+    },
+    {
+      id: 'item-2',
+      page: makePage('for-venues', 'For Venues'),
+      image: makeMedia('/venues.jpg'),
+      cta: 'Explore venue revenue',
+    },
   ],
 }
 
@@ -61,7 +78,13 @@ describe('AudienceShowcaseBlock', () => {
     const withOverride: AudienceShowcaseBlockType = {
       ...base,
       items: [
-        { id: 'item-1', page: makePage('for-brands', 'For Brands'), label: 'Brands', cta: 'Go' },
+        {
+          id: 'item-1',
+          page: makePage('for-brands', 'For Brands'),
+          image: makeMedia('/brands.jpg'),
+          label: 'Brands',
+          cta: 'Go',
+        },
       ],
     }
     render(<AudienceShowcaseBlock {...withOverride} />)

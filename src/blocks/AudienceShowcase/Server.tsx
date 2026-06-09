@@ -1,4 +1,5 @@
 import config from '@payload-config'
+import { getLocale } from 'next-intl/server'
 import { getPayload } from 'payload'
 import type React from 'react'
 import type { AudienceShowcaseBlock as AudienceShowcaseBlockProps } from '@/payload-types'
@@ -12,15 +13,24 @@ export const AudienceShowcaseServer: React.FC<AudienceShowcaseBlockProps> = asyn
   }
 
   const payload = await getPayload({ config })
+  const locale = await getLocale()
 
   const populatedItems = await Promise.all(
     items.map(async (item) => {
-      if (!item.page || typeof item.page !== 'string') return item
+      if (!item.page) return item
+      const pageId =
+        typeof item.page === 'number'
+          ? item.page
+          : typeof item.page === 'string'
+            ? Number(item.page)
+            : item.page.id
       const page = await payload.findByID({
         collection: 'pages',
-        id: item.page,
+        id: pageId,
         depth: 1,
         overrideAccess: false,
+        locale: locale as 'en' | 'es',
+        select: { title: true, slug: true, meta: true },
       })
       return { ...item, page }
     }),
@@ -29,7 +39,7 @@ export const AudienceShowcaseServer: React.FC<AudienceShowcaseBlockProps> = asyn
   return (
     <AudienceShowcaseBlock
       {...rest}
-      items={populatedItems}
+      items={populatedItems as AudienceShowcaseBlockProps['items']}
     />
   )
 }

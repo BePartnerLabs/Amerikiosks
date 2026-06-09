@@ -2,25 +2,14 @@
 .ak-trust-strip {
   container-type: inline-size;
   container-name: trust-strip;
-  padding: var(--ak-section-py, 4rem) 0;
+  padding-block-start: var(--md-size-space-48);
+  padding-block-end: var(--md-size-space-64);
   text-align: center;
   overflow: hidden;
 }
 
-.ak-trust-strip__eyebrow {
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ak-color-primary);
-  margin-bottom: 0.75rem;
-}
-
-.ak-trust-strip__heading {
-  font-size: clamp(1.5rem, 3vw, 2.25rem);
-  font-weight: 700;
-  color: var(--ak-color-heading);
-  margin-bottom: 2.5rem;
+.ak-trust-strip .ak-section-header {
+  margin-bottom: var(--md-size-space-24);
 }
 
 .ak-trust-strip__viewport {
@@ -31,36 +20,38 @@
   -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
 }
 
-.ak-trust-strip__viewport:hover .ak-trust-strip__track {
-  animation-play-state: paused;
-}
-
 .ak-trust-strip__track {
+  --_gap: var(--md-size-space-16);
   display: flex;
-  gap: 1rem;
+  gap: var(--_gap);
   list-style: none;
   margin: 0;
   padding: 0;
+  padding-inline-end: var(--_gap);
   animation: ak-marquee 40s linear infinite;
   flex-shrink: 0;
 }
 
 .ak-trust-strip__card {
+  --_background: var(--trust-card-background, var(--ak-brand-card-bg));
+  --_border-color: var(--trust-card-border-color, var(--ak-brand-card-border));
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--ak-color-surface);
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  box-shadow: 0 1px 4px rgb(0 0 0 / 0.06);
-  padding: 1rem 1.5rem;
-  min-width: 160px;
-  height: 88px;
+  background: var(--_background);
+  border: 1px solid var(--_border-color);
+  border-radius: 0.75rem;
+  width: 188px;
+  aspect-ratio: 188 / 76;
   flex-shrink: 0;
 }
 
 .ak-trust-strip__card img {
   object-fit: contain;
+}
+
+.ak-trust-strip__viewport:hover .ak-trust-strip__track {
+  animation-play-state: paused;
 }
 
 @keyframes ak-marquee {
@@ -74,24 +65,17 @@
 
 @container trust-strip (max-width: 640px) {
   .ak-trust-strip {
-    padding: var(--ak-section-py-mobile, 2.5rem) 0;
-  }
-
-  .ak-trust-strip__heading {
-    margin-bottom: 1.75rem;
-    padding: 0 1rem;
+    padding-block: var(--md-size-space-40);
   }
 
   .ak-trust-strip__track {
-    gap: 0.625rem;
+    --_gap: 0.625rem;
     animation-duration: 28s;
   }
 
   .ak-trust-strip__card {
-    min-width: 120px;
-    height: 68px;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
+    width: 120px;
+    height: 56px;
   }
 }
 

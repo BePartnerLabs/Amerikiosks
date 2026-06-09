@@ -12,8 +12,8 @@ export const seedPages = async (
   req: PayloadRequest,
   { postIds = [] }: { postIds?: string[] } = {},
 ): Promise<void> => {
-  const audiencePageIds = await seedAudiencePages(payload, req)
-  await seedHome(payload, req, audiencePageIds, postIds)
+  const { pageIds, mediaIds } = await seedAudiencePages(payload, req)
+  await seedHome(payload, req, pageIds, postIds, mediaIds)
   await seedSolutions(payload, req)
   await seedWhereItWorks(payload, req)
   await seedCaseStudies(payload, req)

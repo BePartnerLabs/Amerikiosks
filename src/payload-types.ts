@@ -911,13 +911,21 @@ export interface AudienceShowcaseBlock {
   items?:
     | {
         /**
-         * Pulls title + hero image from this page automatically.
+         * Pulls title and description from this page.
          */
         page: number | Page;
         /**
-         * Overrides the page title on the card if set.
+         * Card background image.
+         */
+        image: number | Media;
+        /**
+         * Overrides the card title. If not set, defaults to the linked page title.
          */
         label?: string | null;
+        /**
+         * Overrides the card description. If not set, defaults to the linked page SEO description.
+         */
+        description?: string | null;
         /**
          * CTA link label, e.g. "Explore brand programs"
          */
@@ -1426,7 +1434,9 @@ export interface AudienceShowcaseBlockSelect<T extends boolean = true> {
     | T
     | {
         page?: T;
+        image?: T;
         label?: T;
+        description?: T;
         cta?: T;
         id?: T;
       };
