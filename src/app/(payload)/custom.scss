@@ -23,4 +23,48 @@
   --theme-success-500:     #22c55e;
   --theme-warning-500:     #f59e0b;
   --theme-error-500:       #ef4444;
+
+  // Brand tokens available inside the editor
+  --ak-accent:             hsla(347, 76%, 48%, 1); // coral-600
+  --ak-font-base:          "Poppins", sans-serif;
+}
+
+// ─── Rich text editor preview ─────────────────────────────────────────────────
+// Mirrors frontend typography so content looks the same in admin as on the site.
+.ContentEditable__root {
+  font-family: var(--ak-font-base);
+  line-height: 1.65;
+
+  // italic accent — the main pattern used in hero headings
+  em {
+    color: var(--ak-accent);
+    font-style: normal;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--ak-font-base);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-block: 0.5rem 0.25rem;
+  }
+
+  h1 { font-size: clamp(2rem, 4vw + 1rem, 3rem); }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.375rem; }
+  h4 { font-size: 1.125rem; }
+
+  p {
+    margin-block: 1rem;
+    max-width: 72ch;
+  }
+
+  a {
+    color: var(--ak-accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  strong {
+    font-weight: 700;
+  }
 }
