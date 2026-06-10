@@ -127,7 +127,7 @@
 
 /* ─── icon variant ───────────────────────────────────────────── */
 .ak-card-grid--icon {
-  --_background: var(--card-grid-background, var(--ak-color-surface));
+  --_background: var(--card-grid-background, var(--brand-color-palette-steel-50));
   background-color: var(--_background);
 }
 
@@ -137,9 +137,12 @@
 }
 
 .ak-card-grid--icon .ak-card-grid__card {
-  --_background: var(--card-background, var(--ak-color-surface));
+  --_background: var(--card-background, var(--brand-color-palette-white));
   background-color: var(--_background);
-  border: 1px solid var(--ak-color-border);
+  border-top: 3px solid var(--ak-accent);
+  border-right: 1px solid var(--ak-color-border);
+  border-bottom: 1px solid var(--ak-color-border);
+  border-left: 1px solid var(--ak-color-border);
   box-shadow: var(--ak-card-shadow-subtle);
 }
 
@@ -168,7 +171,7 @@
 }
 
 .ak-card-grid--icon .ak-card-grid__card-body {
-  --_color: var(--card-body-color, var(--ak-color-white));
+  --_color: var(--card-body-color, var(--bp-color-text-muted));
   color: var(--_color);
 }
 
