@@ -147,14 +147,11 @@
 }
 
 .ak-card-grid--icon .ak-card-grid__card-icon-wrap {
-  --_icon-background: color-mix(in srgb, var(--ak-accent) 12%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
   width: 2.5rem;
   height: 2.5rem;
-  background-color: var(--_icon-background);
-  border-radius: 0.5rem;
 }
 
 .ak-card-grid--icon .ak-card-grid__card-icon {
