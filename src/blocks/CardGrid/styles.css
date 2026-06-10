@@ -15,7 +15,7 @@
 }
 
 .ak-card-grid__card {
-  border-radius: 0 0 var(--bp-radius-md, 0.75rem) var(--bp-radius-md, 0.75rem);
+  border-radius: 0 0 var(--bp-radius-lg, 0.75rem) var(--bp-radius-lg, 0.75rem);
   padding: var(--bp-space-6, 1.5rem);
   display: flex;
   flex-direction: column;
@@ -110,7 +110,7 @@
   --_card-background: var(--card-background, var(--ak-card-bg));
   --_card-shadow: var(--card-shadow, var(--ak-card-shadow));
   background-color: var(--_card-background);
-  border-radius: 0 0 0.75rem 0.75rem;
+  border-radius: 0 0 var(--bp-radius-lg, 0.75rem) var(--bp-radius-lg, 0.75rem);
   border-top: 3px solid var(--ak-accent);
   box-shadow: var(--_card-shadow);
 }
