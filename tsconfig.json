@@ -24,6 +24,7 @@
     "paths": {
       "@payload-config": ["./src/payload.config.ts"],
       "react": ["./node_modules/@types/react"],
+      "sharp": ["./node_modules/sharp/lib/index.d.ts"],
       "@/*": ["./src/*"],
       "@/blocks/*": ["./src/blocks/*"],
       "@/collections/*": ["./src/collections/*"],
