@@ -3,9 +3,12 @@ name: Deploy to Vercel
 on:
   release:
     types: [published]
+  push:
+    branches:
+      - main
 
 concurrency:
-  group: deploy-production
+  group: deploy-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -14,7 +17,7 @@ env:
 
 jobs:
   deploy:
-    name: Deploy to Vercel
+    name: Deploy to Vercel (${{ github.event_name == 'release' && 'production' || 'preview' }})
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -32,4 +35,9 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Deploy to Vercel (production)
+        if: github.event_name == 'release'
         run: pnpm vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy to Vercel (preview)
+        if: github.event_name == 'push'
+        run: pnpm vercel deploy --token=${{ secrets.VERCEL_TOKEN }}
