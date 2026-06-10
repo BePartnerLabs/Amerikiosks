@@ -115,11 +115,10 @@ export const CardGridBlock: React.FC<CardGridBlockProps> = ({
                       >
                         {item.link.label}
                         <span
-                          className="ak-card-grid__card-link-arrow"
+                          className="ak-card-grid__card-link-arrow material-symbols-outlined"
                           aria-hidden="true"
                         >
-                          {' '}
-                          &rsaquo;
+                          arrow_forward_ios
                         </span>
                       </Link>
                     )}
