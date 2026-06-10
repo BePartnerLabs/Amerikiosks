@@ -68,7 +68,7 @@
 .ak-card-grid__card-link-arrow {
   --_color: var(--card-link-arrow-color, var(--ak-accent));
   color: var(--_color);
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1;
 }
 
