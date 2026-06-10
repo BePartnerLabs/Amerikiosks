@@ -59,7 +59,7 @@
     "react": "19.2.7",
     "react-dom": "19.2.7",
     "react-hook-form": "7.78.0",
-    "sharp": "0.35.0",
+    "sharp": "0.34.5",
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
