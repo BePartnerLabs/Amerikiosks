@@ -1,4 +1,5 @@
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
+import { importExportPlugin } from '@payloadcms/plugin-import-export'
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
 import { redirectsPlugin } from '@payloadcms/plugin-redirects'
 import { searchPlugin } from '@payloadcms/plugin-search'
@@ -24,8 +25,12 @@ const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
 }
 
 export const plugins: Plugin[] = [
+  importExportPlugin({
+    collections: [{ slug: 'pages' }, { slug: 'posts' }, { slug: 'media' }, { slug: 'categories' }],
+  }),
   vercelBlobStorage({
     token: process.env.BLOB_READ_WRITE_TOKEN || '',
+    addRandomSuffix: false,
     collections: {
       media: true,
     },

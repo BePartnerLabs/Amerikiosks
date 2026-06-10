@@ -26,3 +26,4 @@ node_modules/
 .superpowers/
 tsconfig.tsbuildinfo
 .superpowers/
+.env*
