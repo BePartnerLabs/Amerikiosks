@@ -68,8 +68,9 @@
 .ak-card-grid__card-link-arrow {
   --_color: var(--card-link-arrow-color, var(--ak-accent));
   color: var(--_color);
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1;
+  font-variation-settings: "opsz" 16;
 }
 
 .ak-card-grid__cta {
@@ -172,15 +173,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 40px;
+  height: 40px;
 }
 
 .ak-card-grid--icon .ak-card-grid__card-icon {
   --_color: var(--card-icon-color, var(--ak-accent));
-  font-size: 1.5rem;
+  font-size: 40px;
   line-height: 1;
   color: var(--_color);
+  font-variation-settings: "opsz" 40;
 }
 
 .ak-card-grid--icon .ak-card-grid__card-title {
