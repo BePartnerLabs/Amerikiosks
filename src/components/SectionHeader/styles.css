@@ -16,6 +16,8 @@
   font-weight: 500;
   line-height: 1.15;
   color: var(--_color);
+  white-space: pre-line;
+  text-wrap: balance;
 }
 
 .ak-section-header__subtitle {
@@ -29,6 +31,11 @@
 
 .ak-section-header--center {
   text-align: center;
+}
+
+.ak-section-header--center .ak-section-header__heading {
+  max-width: 48ch;
+  margin-inline: auto;
 }
 
 .ak-section-header--center .ak-section-header__subtitle {
