@@ -37,6 +37,14 @@ export const uploadMedia = async (
   }
   const mimetype = mimeMap[ext] ?? 'application/octet-stream'
 
+  const existing = await payload.find({
+    collection: 'media',
+    where: { filename: { equals: name } },
+    limit: 1,
+    req,
+  })
+  if (existing.docs.length > 0) return existing.docs[0] as Media
+
   const data = await readSeedAsset(name)
 
   return payload.create({

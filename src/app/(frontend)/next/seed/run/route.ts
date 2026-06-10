@@ -1,4 +1,5 @@
 import config from '@payload-config'
+import { del, list } from '@vercel/blob'
 import { headers } from 'next/headers'
 import { createLocalReq, getPayload } from 'payload'
 
@@ -58,6 +59,32 @@ export async function POST(req: Request): Promise<Response> {
   const part = searchParams.get('part')
 
   try {
+    // Clean up any orphaned seed blobs before seeding so re-runs on a reset DB don't conflict
+    const blobToken = process.env.BLOB_READ_WRITE_TOKEN
+    if (blobToken) {
+      const seedStems = [
+        'hero-for-agencies',
+        'hero-for-brands',
+        'hero-for-venues',
+        'hero-home',
+        'image-hero1',
+        'image-post1',
+        'image-post2',
+        'image-post3',
+        'partner-cvs',
+        'partner-hilton',
+        'partner-holiday-inn',
+        'partner-kroger',
+        'partner-mia',
+        'partner-royal-caribbean',
+      ]
+      const { blobs } = await list({ token: blobToken, limit: 1000 })
+      const toDelete = blobs
+        .filter((b) => seedStems.some((stem) => b.pathname.includes(stem)))
+        .map((b) => b.url)
+      if (toDelete.length > 0) await del(toDelete, { token: blobToken })
+    }
+
     if (part) {
       const fn = parts[part]
       if (!fn) return new Response(`Unknown part: ${part}`, { status: 400 })
