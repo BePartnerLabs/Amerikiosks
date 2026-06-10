@@ -28,13 +28,17 @@ export const plugins: Plugin[] = [
   importExportPlugin({
     collections: [{ slug: 'pages' }, { slug: 'posts' }, { slug: 'media' }, { slug: 'categories' }],
   }),
-  vercelBlobStorage({
-    token: process.env.BLOB_READ_WRITE_TOKEN || '',
-    addRandomSuffix: false,
-    collections: {
-      media: true,
-    },
-  }),
+  // Only use Vercel Blob in prod/preview. Locally, Payload falls back to
+  // the staticDir in Media.ts (/public/media) when no token is set.
+  ...(process.env.BLOB_READ_WRITE_TOKEN
+    ? [
+        vercelBlobStorage({
+          token: process.env.BLOB_READ_WRITE_TOKEN,
+          addRandomSuffix: false,
+          collections: { media: true },
+        }),
+      ]
+    : []),
   redirectsPlugin({
     collections: ['pages', 'posts'],
     overrides: {
