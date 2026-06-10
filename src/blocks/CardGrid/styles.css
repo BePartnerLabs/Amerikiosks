@@ -46,12 +46,7 @@
 }
 
 .ak-card-grid__card-link:hover {
-  text-decoration: underline;
-  text-decoration-skip-ink: auto;
-}
-
-.ak-card-grid__card-link:hover .ak-card-grid__card-link-arrow {
-  text-decoration: none;
+  opacity: 0.8;
 }
 
 /* Stretch link — card clicable completa, accesible */
