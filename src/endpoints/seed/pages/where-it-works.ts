@@ -144,7 +144,7 @@ const cardGridBlock = {
   heading: 'Places where attention,\nneed, and brand presence meet.',
   items: [
     {
-      icon: '✈️',
+      icon: 'flight_takeoff',
       title: 'Travel and Transit',
       body: richText(
         'Reach travelers in high-intent moments across airports, stations, and transit hubs.',
@@ -156,7 +156,7 @@ const cardGridBlock = {
       },
     },
     {
-      icon: '🎭',
+      icon: 'movie',
       title: 'Entertainment Venues',
       body: richText(
         'Meet fans and guests while anticipation is high and discovery feels part of the event.',
@@ -164,7 +164,7 @@ const cardGridBlock = {
       link: { type: 'custom' as const, label: 'Explore event venues', url: '/where-it-works' },
     },
     {
-      icon: '🏨',
+      icon: 'hotel',
       title: 'Hospitality',
       body: richText(
         'Curate useful branded moments for hotels, resorts, casinos, and destination guests.',
@@ -172,7 +172,7 @@ const cardGridBlock = {
       link: { type: 'custom' as const, label: 'Explore hospitality', url: '/where-it-works' },
     },
     {
-      icon: '🏪',
+      icon: 'shopping_bag',
       title: 'Retail and Campuses',
       body: richText(
         'Create convenient retail touchpoints in daily spaces without opening a full store.',
@@ -188,7 +188,7 @@ const cardGridBlockEs = {
   heading: 'Lugares donde la atención,\nla necesidad y la marca se encuentran.',
   items: [
     {
-      icon: '✈️',
+      icon: 'flight_takeoff',
       title: 'Viajes y Tránsito',
       body: richText(
         'Alcanza a viajeros en momentos de alta intención en aeropuertos, estaciones y hubs de tránsito.',
@@ -200,7 +200,7 @@ const cardGridBlockEs = {
       },
     },
     {
-      icon: '🎭',
+      icon: 'movie',
       title: 'Venues de Entretenimiento',
       body: richText(
         'Conecta con fans y asistentes cuando la anticipación es alta y el descubrimiento es parte del evento.',
@@ -212,7 +212,7 @@ const cardGridBlockEs = {
       },
     },
     {
-      icon: '🏨',
+      icon: 'hotel',
       title: 'Hospitalidad',
       body: richText(
         'Crea momentos de marca útiles en hoteles, resorts, casinos y destinos turísticos.',
@@ -220,7 +220,7 @@ const cardGridBlockEs = {
       link: { type: 'custom' as const, label: 'Explorar hospitalidad', url: '/where-it-works' },
     },
     {
-      icon: '🏪',
+      icon: 'shopping_bag',
       title: 'Retail y Campus',
       body: richText(
         'Crea puntos de contacto de retail convenientes en espacios cotidianos sin abrir una tienda completa.',
