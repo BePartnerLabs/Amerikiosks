@@ -72,7 +72,7 @@ export const CardGridBlock: React.FC<CardGridBlockProps> = ({
                 return (
                   <div
                     key={item.id ?? i}
-                    className="ak-card-grid__card"
+                    className={`ak-card-grid__card${cardUrl && variant === 'icon' ? ' ak-card-grid__card--linked' : ''}`}
                     itemScope
                     itemProp="itemListElement"
                     itemType="https://schema.org/ListItem"
@@ -114,7 +114,13 @@ export const CardGridBlock: React.FC<CardGridBlockProps> = ({
                         data-ga-label={item.title}
                       >
                         {item.link.label}
-                        <span aria-hidden="true"> &rsaquo;</span>
+                        <span
+                          className="ak-card-grid__card-link-arrow"
+                          aria-hidden="true"
+                        >
+                          {' '}
+                          &rsaquo;
+                        </span>
                       </Link>
                     )}
                   </div>
