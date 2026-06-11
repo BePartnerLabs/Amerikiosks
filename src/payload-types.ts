@@ -1110,10 +1110,6 @@ export interface FAQWithFormBlock {
      * Heading shown above the form, e.g. "Start a brand program"
      */
     heading: string;
-    /**
-     * Odoo API URL for form submission, e.g. https://odoo.example.com/api/leads
-     */
-    odooEndpoint?: string | null;
   };
   id?: string | null;
   blockName?: string | null;
@@ -1833,7 +1829,6 @@ export interface FAQWithFormBlockSelect<T extends boolean = true> {
     | T
     | {
         heading?: T;
-        odooEndpoint?: T;
       };
   id?: T;
   blockName?: T;
