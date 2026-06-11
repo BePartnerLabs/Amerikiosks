@@ -14,7 +14,7 @@ const projects = [
       'A branded vending experience placed where fans are already browsing, waiting, and ready to buy.',
     descriptionEs:
       'Una experiencia de venta de marca colocada donde los fanáticos ya están navegando, esperando y listos para comprar.',
-    asset: 'machine-full-size.jpg',
+    asset: 'project-fan-stand.jpg',
     tag: 'brand',
   },
   {
@@ -27,7 +27,7 @@ const projects = [
       'A premium automated format for reaching high-intent audiences in dwell-time environments.',
     descriptionEs:
       'Un formato automatizado premium para llegar a audiencias de alta intención en entornos de espera.',
-    asset: 'machine-campaign.jpg',
+    asset: 'project-airport-retail.png',
     tag: 'brand',
   },
 ]
