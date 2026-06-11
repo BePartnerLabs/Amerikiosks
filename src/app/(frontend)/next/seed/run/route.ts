@@ -80,6 +80,10 @@ export async function POST(req: Request): Promise<Response> {
       'partner-kroger',
       'partner-mia',
       'partner-royal-caribbean',
+      'machine-full-size',
+      'machine-campaign',
+      'machine-compact',
+      'machine-premium',
     ]
     // 1. Delete existing seed media records via Payload (adapter removes blobs too)
     const { docs: seedMedia } = await payload.find({

@@ -93,6 +93,24 @@ const richText = (text: string) => ({
 export const seedForBrands = async (payload: Payload, req: PayloadRequest): Promise<void> => {
   payload.logger.info('— Seeding For Brands page (machines, FAQs, page)...')
 
+  // Delete any existing for-brands page so upsertPage creates fresh (avoids
+  // validation errors when the stub was previously created with a different hero type)
+  const existingPage = await payload.find({
+    collection: 'pages',
+    where: { slug: { equals: 'for-brands' } },
+    limit: 1,
+    req,
+  })
+  if (existingPage.totalDocs > 0) {
+    await payload.delete({
+      collection: 'pages',
+      id: existingPage.docs[0]!.id,
+      overrideAccess: true,
+      req,
+    })
+    payload.logger.info('  Deleted existing for-brands page stub')
+  }
+
   // ── Machine images + records ───────────────────────────────────────────────
   const machineIds: number[] = []
 
@@ -386,6 +404,62 @@ export const seedForBrands = async (payload: Payload, req: PayloadRequest): Prom
     {
       title: 'Para Marcas',
       slug: 'for-brands',
+      hero: {
+        type: 'mediumImpact',
+        media: heroImage.id,
+        richText: {
+          root: {
+            type: 'root',
+            version: 1,
+            direction: null,
+            format: '' as const,
+            indent: 0,
+            children: [
+              {
+                type: 'heading',
+                tag: 'h1',
+                version: 1,
+                children: [
+                  {
+                    type: 'text',
+                    version: 1,
+                    text: 'Para marcas listas para aparecer con intención.',
+                  },
+                ],
+              },
+              {
+                type: 'paragraph',
+                version: 1,
+                children: [
+                  {
+                    type: 'text',
+                    version: 1,
+                    text: 'Lanza experiencias de retail de marca en venues premium sin construir tiendas ni gestionar operaciones diarias.',
+                  },
+                ],
+              },
+            ],
+          },
+        },
+        links: [
+          {
+            link: {
+              label: 'Iniciar un programa de marca',
+              type: 'custom',
+              url: '/contact',
+              appearance: 'default',
+            },
+          },
+          {
+            link: {
+              label: 'Ver casos de éxito',
+              type: 'custom',
+              url: '/insights',
+              appearance: 'outline',
+            },
+          },
+        ],
+      },
       layout: [],
       meta: {
         title: 'Para Marcas — Amerikiosks',
