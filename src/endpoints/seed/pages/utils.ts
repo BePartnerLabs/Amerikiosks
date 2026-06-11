@@ -57,12 +57,12 @@ export const upsertPage = async (
   const esLayout = (esExtra.layout ?? []).map((block, i: number) => {
     const enBlock = enLayout[i] as unknown as Record<string, unknown> | undefined
     const blockId = enBlock?.id ?? (block as unknown as Record<string, unknown>).id
-    // Strip items — Payload's Drizzle adapter does DELETE+INSERT (not UPDATE) for array rows
-    // during locale updates, which causes uniqueness conflicts with existing EN row IDs.
-    // Omitting items leaves the shared rows untouched; localized fields fall back to EN.
-    // For links (simple array, no join tables): carry EN IDs so Payload updates in-place.
+    // For array fields Payload's Drizzle adapter does DELETE+INSERT (not UPDATE) during locale
+    // updates, causing uniqueness conflicts with existing EN row IDs.
+    // Strategy: carry EN row IDs and pass only localized scalar fields per row — never
+    // relationship/upload fields, which are shared across locales and would re-insert.
     const {
-      items: _items,
+      items: esItems,
       links: esLinks,
       ...blockRest
     } = block as unknown as Record<string, unknown>
@@ -76,10 +76,38 @@ export const upsertPage = async (
           }))
         : undefined
 
+    const enItems = (enBlock?.items ?? []) as Array<Record<string, unknown>>
+    const mergedItems =
+      Array.isArray(esItems) && esItems.length > 0
+        ? (esItems as Array<Record<string, unknown>>).map((esItem, j) => {
+            const enItem = enItems[j] ?? {}
+            // Omit id — passing the EN row's id causes a uniqueness conflict because
+            // Drizzle does INSERT (not UPDATE) for array rows in locale updates.
+            // Pass required non-localized fields (page, image) from EN so validation passes;
+            // localized scalar fields (cta, label, description) come from the ES spec.
+            const { id: _id, page: _esPage, image: _esImage, ...localizedFields } = esItem
+            // Coerce to ID only — never pass objects, which would trigger blob re-upload.
+            const pageId =
+              typeof enItem.page === 'object' && enItem.page !== null
+                ? (enItem.page as { id: number }).id
+                : enItem.page
+            const imageId =
+              typeof enItem.image === 'object' && enItem.image !== null
+                ? (enItem.image as { id: number }).id
+                : enItem.image
+            return {
+              page: pageId,
+              image: imageId,
+              ...localizedFields,
+            }
+          })
+        : undefined
+
     return {
       ...blockRest,
       id: blockId,
       ...(mergedLinks !== undefined ? { links: mergedLinks } : {}),
+      ...(mergedItems !== undefined ? { items: mergedItems } : {}),
     }
   })
 
