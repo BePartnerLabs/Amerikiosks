@@ -27,3 +27,4 @@ node_modules/
 tsconfig.tsbuildinfo
 .superpowers/
 .env*
+.claude/*.local.md
