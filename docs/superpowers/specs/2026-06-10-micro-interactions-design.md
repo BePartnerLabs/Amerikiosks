@@ -67,6 +67,35 @@ Opacity-only transitions are safe (non-vestibular) and may remain unconditional.
 - On `:active`: `opacity: 0.7` + `scale(0.95)` for tactile press feedback.
 - Wrap transform in `prefers-reduced-motion: no-preference`.
 
+### HighImpact Hero (`src/heros/HighImpact/high-impact.css`)
+
+Staggered fade-up entrance on `.ak-hero-home__content > *`. Pure CSS `@keyframes`, no JS.
+
+Keyframe:
+```css
+@keyframes ak-fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+```
+
+Applied to children with staggered delays:
+- `h1, h2` — `500ms ease-out`, delay `0ms`
+- `p` — `500ms ease-out`, delay `150ms`
+- `.ak-hero-home__actions` — `500ms ease-out`, delay `300ms`
+
+Use `animation-fill-mode: both` so elements start invisible before the animation fires.
+Wrap in `prefers-reduced-motion: no-preference`.
+
+### MediumImpact Hero (`src/heros/MediumImpact/medium-impact.css`)
+
+Same `ak-fade-up` keyframe (defined once, shared via tokens or redeclared) applied to `.ak-hero-interior__text > *`:
+- `richText` wrapper / `h1, h2` — delay `0ms`
+- `p` — delay `150ms`
+- `.ak-hero-interior__actions` — delay `300ms`
+
+Wrap in `prefers-reduced-motion: no-preference`.
+
 ### Blocks with no changes
 
 | Block | Reason |
@@ -84,3 +113,5 @@ Opacity-only transitions are safe (non-vestibular) and may remain unconditional.
 - `src/blocks/InsightsShowcase/styles.css`
 - `src/blocks/CallToAction/styles.css`
 - `src/blocks/Code/styles.css`
+- `src/heros/HighImpact/high-impact.css`
+- `src/heros/MediumImpact/medium-impact.css`
