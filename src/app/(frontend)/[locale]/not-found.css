@@ -39,6 +39,10 @@
   background-position: right center;
 }
 
+.ak-not-found > .bp-content-grid {
+  width: 100%;
+}
+
 .ak-not-found__inner {
   position: relative;
   z-index: 1;
