@@ -1,7 +1,7 @@
 import configPromise from '@payload-config'
 import Image from 'next/image'
 import Link from 'next/link'
-import { getLocale } from 'next-intl/server'
+import { getLocale, getTranslations } from 'next-intl/server'
 import { getPayload } from 'payload'
 import type React from 'react'
 import { SectionHeader } from '@/components/SectionHeader'
@@ -17,6 +17,7 @@ export const InsightsShowcaseBlock: React.FC<InsightsShowcaseBlockProps> = async
 }) => {
   const payload = await getPayload({ config: configPromise })
   const locale = (await getLocale()) as 'en' | 'es'
+  const t = await getTranslations('insights')
 
   const { docs } = await payload.find({
     collection: 'insights',
@@ -87,7 +88,7 @@ export const InsightsShowcaseBlock: React.FC<InsightsShowcaseBlockProps> = async
                 data-ga-event="insights_featured_click"
                 data-ga-label={featured.title}
               >
-                Know more
+                {t('knowMore')}
                 <span
                   className="ak-insights-showcase__link-arrow material-symbols-outlined"
                   aria-hidden="true"
@@ -133,7 +134,7 @@ export const InsightsShowcaseBlock: React.FC<InsightsShowcaseBlockProps> = async
                         data-ga-event="insights_card_click"
                         data-ga-label={insight.title}
                       >
-                        Know more
+                        {t('knowMore')}
                         <span
                           className="ak-insights-showcase__link-arrow material-symbols-outlined"
                           aria-hidden="true"

@@ -11,9 +11,10 @@
     "noResults": "No se encontraron resultados para",
     "heading": "Resultados de búsqueda"
   },
-  "posts": {
-    "heading": "Publicaciones",
-    "readMore": "Leer más"
+  "insights": {
+    "heading": "Insights",
+    "readMore": "Leer más",
+    "knowMore": "Saber más"
   },
   "pagination": {
     "previous": "Anterior",
