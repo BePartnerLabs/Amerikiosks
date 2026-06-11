@@ -1,10 +1,11 @@
 .ak-hero-home {
+  --_color: var(--hero-color, var(--ak-white));
   position: relative;
   min-height: 85dvh;
   display: flex;
   align-items: center;
   overflow: hidden;
-  color: var(--ak-white);
+  color: var(--_color);
 }
 
 /* Background media (image or video) */
@@ -30,11 +31,12 @@
 
 /* Directional gradient overlay — matches Figma */
 .ak-hero-home::after {
+  --_bg: var(--ak-bg);
   --_overlay: var(
     --hero-overlay,
     linear-gradient(
       97.22deg,
-      color-mix(in srgb, var(--ak-bg) 90%, transparent) 11.65%,
+      color-mix(in srgb, var(--_bg) 90%, transparent) 11.65%,
       transparent 96.46%
     )
   );
@@ -67,12 +69,12 @@
   font-size: clamp(2rem, 4vw + 1rem, 3rem);
   font-weight: 800;
   line-height: 1.1;
-  color: var(--ak-white);
 }
 
 .ak-hero-home__content h1 em,
 .ak-hero-home__content h2 em {
-  color: var(--ak-accent);
+  --_em-color: var(--hero-accent-color, var(--ak-accent));
+  color: var(--_em-color);
   font-style: normal;
 }
 
@@ -80,7 +82,6 @@
   margin: 0;
   font-size: var(--bp-text-lg);
   line-height: 1.65;
-  color: var(--ak-white);
   max-width: 52ch;
 }
 
@@ -98,6 +99,24 @@
   outline: 2px solid var(--ak-white);
   outline-offset: 3px;
   border-radius: var(--ak-radius);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ak-hero-home__content > * {
+    animation: ak-fade-up 500ms ease-out both;
+  }
+
+  .ak-hero-home__content > *:nth-child(2) {
+    animation-delay: 150ms;
+  }
+
+  .ak-hero-home__content > *:nth-child(3) {
+    animation-delay: 300ms;
+  }
+
+  .ak-hero-home__content > *:nth-child(n + 4) {
+    animation-delay: 450ms;
+  }
 }
 
 @media (max-width: 36rem) {
