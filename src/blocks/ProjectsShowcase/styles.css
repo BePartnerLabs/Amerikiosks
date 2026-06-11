@@ -46,9 +46,10 @@
 
 /* ─── Card image ──────────────────────────────────────────────── */
 .ak-projects-showcase__card-img {
+  --_card-img-ratio: var(--projects-showcase-card-img-ratio, 3 / 2);
   position: relative;
   width: 100%;
-  aspect-ratio: 424 / 180;
+  aspect-ratio: var(--_card-img-ratio);
   overflow: hidden;
 }
 
