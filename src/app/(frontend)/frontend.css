@@ -154,6 +154,6 @@ img {
 }
 
 /* ─── Page-level token overrides ───────────────────────────── */
-[data-slug="for-brands"] .ak-projects-showcase__card-img {
+[data-slug^="for-"] .ak-projects-showcase__card-img {
   --projects-showcase-card-img-ratio: 424 / 180;
 }
