@@ -68,7 +68,13 @@ export const hero: Field = {
           'For highImpact: used as video poster and img fallback. For mediumImpact: right-column image.',
       },
       relationTo: 'media',
-      required: true,
+      required: false,
+      validate: (value: unknown, { siblingData }: { siblingData?: Record<string, unknown> }) => {
+        if (['highImpact', 'mediumImpact'].includes(siblingData?.type as string) && !value) {
+          return 'Background image is required for High Impact and Medium Impact heroes.'
+        }
+        return true
+      },
     },
     {
       name: 'backgroundVideo',
