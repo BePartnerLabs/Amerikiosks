@@ -18,7 +18,6 @@
   content: "";
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
   width: 206px;
   height: 146px;
   background-repeat: no-repeat;
@@ -30,6 +29,7 @@
   left: 0;
   background-image: url("/brand-patterns/pattern-left.svg");
   background-position: left center;
+  animation: ak-cta-breathe 8s ease-in-out infinite;
 }
 
 .ak-cta::after {
@@ -37,6 +37,74 @@
   width: 266px;
   background-image: url("/brand-patterns/pattern-right.svg");
   background-position: right center;
+  animation: ak-cta-breathe 9s ease-in-out infinite 1s;
+}
+
+/* Continuous subtle breathe — fallback for all browsers */
+@keyframes ak-cta-breathe {
+  0%,
+  100% {
+    transform: translateY(-50%) scale(1) rotate(0deg);
+  }
+  33% {
+    transform: translateY(calc(-50% - 8px)) scale(1.06) rotate(1deg);
+  }
+  66% {
+    transform: translateY(calc(-50% + 6px)) scale(1.03) rotate(-0.5deg);
+  }
+}
+
+/* Scroll-driven enhancement — ties scale to section entering viewport */
+@supports (animation-timeline: view()) {
+  .ak-cta::before {
+    animation:
+      ak-cta-scroll-left linear both,
+      ak-cta-breathe 8s ease-in-out infinite;
+    animation-timeline: view(), auto;
+    animation-range:
+      entry 0% entry 60%,
+      auto;
+  }
+
+  .ak-cta::after {
+    animation:
+      ak-cta-scroll-right linear both,
+      ak-cta-breathe 9s ease-in-out infinite 1s;
+    animation-timeline: view(), auto;
+    animation-range:
+      entry 0% entry 60%,
+      auto;
+  }
+
+  @keyframes ak-cta-scroll-left {
+    from {
+      transform: translateY(-50%) scale(0.92) translateX(-12px);
+      opacity: 0.6;
+    }
+    to {
+      transform: translateY(-50%) scale(1) translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes ak-cta-scroll-right {
+    from {
+      transform: translateY(-50%) scale(0.92) translateX(12px);
+      opacity: 0.6;
+    }
+    to {
+      transform: translateY(-50%) scale(1) translateX(0);
+      opacity: 1;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ak-cta::before,
+  .ak-cta::after {
+    animation: none;
+    transform: translateY(-50%);
+  }
 }
 
 /* ─── Layout ─────────────────────────────────────────────────── */
