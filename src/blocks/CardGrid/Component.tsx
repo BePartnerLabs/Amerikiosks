@@ -136,6 +136,12 @@ export const CardGridBlock: React.FC<CardGridBlockProps> = ({
                 data-ga-event="card_grid_cta_click"
               >
                 {link.label}
+                <span
+                  className="ak-card-grid__cta-btn-arrow material-symbols-outlined"
+                  aria-hidden="true"
+                >
+                  arrow_forward_ios
+                </span>
               </Link>
             </div>
           )}

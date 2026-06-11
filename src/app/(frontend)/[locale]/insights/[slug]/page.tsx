@@ -19,7 +19,7 @@ export async function generateStaticParams() {
 
   for (const locale of routing.locales) {
     const posts = await payload.find({
-      collection: 'posts',
+      collection: 'insights',
       draft: false,
       limit: 1000,
       overrideAccess: false,
@@ -103,7 +103,7 @@ const queryPostBySlug = cache(async ({ slug, locale }: { slug: string; locale: s
   const payload = await getPayload({ config: configPromise })
 
   const result = await payload.find({
-    collection: 'posts',
+    collection: 'insights',
     draft,
     limit: 1,
     overrideAccess: draft,

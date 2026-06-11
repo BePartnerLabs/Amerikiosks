@@ -2,7 +2,7 @@ import Link from 'next/link'
 import type React from 'react'
 import { Button, type ButtonProps } from '@/components/ui/button'
 
-import type { Page, Post } from '@/payload-types'
+import type { Insight, Page } from '@/payload-types'
 
 type CMSLinkType = {
   appearance?: 'inline' | ButtonProps['variant']
@@ -11,8 +11,8 @@ type CMSLinkType = {
   label?: string | null
   newTab?: boolean | null
   reference?: {
-    relationTo: 'pages' | 'posts'
-    value: Page | Post | string | number
+    relationTo: 'pages' | 'insights'
+    value: Page | Insight | string | number
   } | null
   size?: ButtonProps['size'] | null
   type?: 'custom' | 'reference' | null

@@ -2,9 +2,9 @@ import type { Payload, PayloadRequest } from 'payload'
 
 import { seedFooter } from './footer'
 import { seedHeader } from './header'
+import { seedPosts } from './insights'
 import { seedPages } from './pages'
 import { seedPartners } from './partners'
-import { seedPosts } from './posts'
 
 export const seed = async ({
   payload,

@@ -6,6 +6,7 @@ import { createLocalReq, getPayload } from 'payload'
 import { seed } from '@/endpoints/seed'
 import { seedFooter } from '@/endpoints/seed/footer'
 import { seedHeader } from '@/endpoints/seed/header'
+import { seedPosts } from '@/endpoints/seed/insights'
 import { seedAudiencePages } from '@/endpoints/seed/pages/audience'
 import { seedCaseStudies } from '@/endpoints/seed/pages/case-studies'
 import { seedContact } from '@/endpoints/seed/pages/contact'
@@ -14,7 +15,6 @@ import { seedSolutions } from '@/endpoints/seed/pages/solutions'
 import { seedWhereItWorks } from '@/endpoints/seed/pages/where-it-works'
 import { seedWhyAmerikiosks } from '@/endpoints/seed/pages/why-amerikiosks'
 import { seedPartners } from '@/endpoints/seed/partners'
-import { seedPosts } from '@/endpoints/seed/posts'
 
 export const maxDuration = 120
 
@@ -59,25 +59,41 @@ export async function POST(req: Request): Promise<Response> {
   const part = searchParams.get('part')
 
   try {
-    // Clean up any orphaned seed blobs before seeding so re-runs on a reset DB don't conflict
+    // Delete existing seed media records via Payload so the storage adapter
+    // (Vercel Blob or local filesystem) cleans up the files too. This prevents
+    // "blob already exists" errors when re-seeding after a DB reset.
+    const seedStems = [
+      'hero-for-agencies',
+      'hero-for-brands',
+      'hero-for-venues',
+      'hero-home',
+      'image-hero1',
+      'image-post1',
+      'image-post2',
+      'image-post3',
+      'partner-cvs',
+      'partner-hilton',
+      'partner-holiday-inn',
+      'partner-kroger',
+      'partner-mia',
+      'partner-royal-caribbean',
+    ]
+    // 1. Delete existing seed media records via Payload (adapter removes blobs too)
+    const { docs: seedMedia } = await payload.find({
+      collection: 'media',
+      where: { or: seedStems.map((stem) => ({ filename: { contains: stem } })) },
+      limit: 200,
+    })
+    for (const doc of seedMedia) {
+      try {
+        await payload.delete({ collection: 'media', id: doc.id, overrideAccess: true })
+      } catch {
+        // record may be referenced by pages; blob will be cleaned below
+      }
+    }
+    // 2. Delete any orphaned blobs (DB was reset but blobs remain)
     const blobToken = process.env.BLOB_READ_WRITE_TOKEN
     if (blobToken) {
-      const seedStems = [
-        'hero-for-agencies',
-        'hero-for-brands',
-        'hero-for-venues',
-        'hero-home',
-        'image-hero1',
-        'image-post1',
-        'image-post2',
-        'image-post3',
-        'partner-cvs',
-        'partner-hilton',
-        'partner-holiday-inn',
-        'partner-kroger',
-        'partner-mia',
-        'partner-royal-caribbean',
-      ]
       const { blobs } = await list({ token: blobToken, limit: 1000 })
       const toDelete = blobs
         .filter((b) => seedStems.some((stem) => b.pathname.includes(stem)))

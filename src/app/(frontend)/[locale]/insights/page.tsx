@@ -16,11 +16,11 @@ type Args = {
 
 export default async function Page({ params: paramsPromise }: Args) {
   const { locale } = await paramsPromise
-  const t = await getTranslations('posts')
+  const t = await getTranslations('insights')
   const payload = await getPayload({ config: configPromise })
 
   const posts = await payload.find({
-    collection: 'posts',
+    collection: 'insights',
     depth: 1,
     limit: 12,
     overrideAccess: false,
@@ -45,7 +45,7 @@ export default async function Page({ params: paramsPromise }: Args) {
 
       <div className="">
         <PageRange
-          collection="posts"
+          collection="insights"
           currentPage={posts.page}
           limit={12}
           totalDocs={posts.totalDocs}

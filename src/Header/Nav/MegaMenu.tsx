@@ -26,7 +26,7 @@ function resolveItemLink(link: NonNullable<MegaMenuData['items']>[number]['link'
     if (ref.relationTo === 'pages' && typeof ref.value === 'object') {
       return { href: `/${ref.value.slug ?? ''}`, newTab }
     }
-    if (ref.relationTo === 'posts' && typeof ref.value === 'object') {
+    if (ref.relationTo === 'insights' && typeof ref.value === 'object') {
       return { href: `/posts/${ref.value.slug ?? ''}`, newTab }
     }
   }

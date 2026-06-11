@@ -40,7 +40,6 @@ export const plugins: Plugin[] = [
         vercelBlobStorage({
           token: process.env.BLOB_READ_WRITE_TOKEN,
           addRandomSuffix: false,
-          allowOverwrite: true,
           collections: { media: true },
         }),
       ]

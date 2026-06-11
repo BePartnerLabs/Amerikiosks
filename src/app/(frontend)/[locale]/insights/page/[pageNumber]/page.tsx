@@ -20,7 +20,7 @@ type Args = {
 
 export default async function Page({ params: paramsPromise }: Args) {
   const { pageNumber, locale } = await paramsPromise
-  const t = await getTranslations('posts')
+  const t = await getTranslations('insights')
   const payload = await getPayload({ config: configPromise })
 
   const sanitizedPageNumber = Number(pageNumber)
@@ -28,7 +28,7 @@ export default async function Page({ params: paramsPromise }: Args) {
   if (!Number.isInteger(sanitizedPageNumber)) notFound()
 
   const posts = await payload.find({
-    collection: 'posts',
+    collection: 'insights',
     depth: 1,
     limit: 12,
     page: sanitizedPageNumber,
@@ -48,7 +48,7 @@ export default async function Page({ params: paramsPromise }: Args) {
 
       <div className="">
         <PageRange
-          collection="posts"
+          collection="insights"
           currentPage={posts.page}
           limit={12}
           totalDocs={posts.totalDocs}
@@ -79,7 +79,7 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
   const { totalDocs } = await payload.count({
-    collection: 'posts',
+    collection: 'insights',
     overrideAccess: false,
   })
 
