@@ -41,17 +41,14 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
-      - name: Verify env vars pulled
-        run: |
-          if ! grep -q "PAYLOAD_SECRET" .env.local 2>/dev/null; then
-            echo "ERROR: PAYLOAD_SECRET not found in pulled .env.local — check VERCEL_TOKEN secret and Vercel env vars"
-            exit 1
-          fi
+      - name: Export env vars to GITHUB_ENV
+        run: grep -v '^#' .env.local | grep -v '^$' >> $GITHUB_ENV
 
       - name: Run migrations
-        run: pnpm dotenv -e .env.local -- pnpm payload migrate
+        run: pnpm payload migrate
         env:
           CI: true
+          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
 
   deploy:
     name: Deploy to Vercel (${{ github.event_name == 'release' && 'production' || 'preview' }})
