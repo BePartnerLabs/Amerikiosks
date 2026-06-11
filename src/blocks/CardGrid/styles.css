@@ -60,9 +60,25 @@
   inset: 0;
 }
 
-.ak-card-grid__card--linked:hover {
-  box-shadow: var(--ak-card-shadow-md);
-  transition: box-shadow 0.15s ease;
+@media (prefers-reduced-motion: no-preference) {
+  .ak-card-grid__card--linked {
+    transition:
+      box-shadow var(--ak-transition-fast),
+      transform var(--ak-transition-fast);
+  }
+
+  .ak-card-grid__card--linked:hover {
+    box-shadow: var(--ak-shadow-lift);
+    transform: translateY(-2px);
+  }
+
+  .ak-card-grid__card-link-arrow {
+    transition: transform var(--ak-transition-fast);
+  }
+
+  .ak-card-grid__card--linked:hover .ak-card-grid__card-link-arrow {
+    transform: translateX(3px);
+  }
 }
 
 .ak-card-grid__card-link-arrow {
@@ -91,6 +107,7 @@
   text-decoration: none;
   transition:
     background-color 0.15s,
+    border-color 0.15s,
     color 0.15s;
 }
 
@@ -150,7 +167,7 @@
 
 /* ─── icon variant ───────────────────────────────────────────── */
 .ak-card-grid--icon {
-  --_background: var(--card-grid-background, var(--brand-color-palette-steel-50));
+  --_background: var(--card-grid-background, var(--ak-section-bg-blue));
   background-color: var(--_background);
 }
 
@@ -198,8 +215,8 @@
 
 /* ─── pillar variant ─────────────────────────────────────────── */
 .ak-card-grid--pillar {
-  --_background: var(--card-grid-background, var(--ak-color-surface));
-  background-color: var(--_background);
+  --_background: var(--card-grid-background, var(--ak-section-bg-gradient-up));
+  background: var(--_background);
 }
 
 .ak-card-grid--pillar .ak-card-grid__header {
@@ -211,11 +228,14 @@
   --_background: var(--card-background, var(--ak-color-surface));
   background-color: var(--_background);
   border: 1px solid var(--ak-color-border);
+  border-top: 3px solid var(--card-top-border-color, hsla(196, 17%, 54%, 1));
   box-shadow: var(--ak-card-shadow-subtle);
+  aspect-ratio: 312 / 177;
+  overflow: hidden;
 }
 
 .ak-card-grid--pillar .ak-card-grid__card-eyebrow {
-  --_color: var(--card-eyebrow-color, var(--ak-accent));
+  --_color: var(--card-eyebrow-color, hsla(196, 17%, 54%, 1));
   margin: 0;
   font-size: var(--bp-text-xs, 0.75rem);
   font-weight: 700;
@@ -225,19 +245,31 @@
 }
 
 .ak-card-grid--pillar .ak-card-grid__card-title {
-  --_color: var(--card-title-color, var(--ak-color-heading));
+  --_color: var(--card-title-color, hsla(213, 96%, 11%, 1));
   color: var(--_color);
   font-size: var(--bp-text-base, 1rem);
 }
 
 .ak-card-grid--pillar .ak-card-grid__card-body {
-  --_color: var(--card-body-color, var(--ak-color-white));
+  --_color: var(--card-body-color, hsla(213, 96%, 11%, 0.68));
   color: var(--_color);
 }
 
 .ak-card-grid--pillar .ak-card-grid__cta-btn {
   --_color: var(--cta-btn-color, var(--ak-color-heading));
   color: var(--_color);
+}
+
+.ak-card-grid--pillar .ak-card-grid__cta-btn:hover {
+  background-color: var(--_color);
+  border-color: var(--_color);
+  color: white;
+}
+
+.ak-card-grid--pillar .ak-card-grid__cta-btn-arrow {
+  font-size: 16px;
+  line-height: 1;
+  font-variation-settings: "opsz" 16;
 }
 
 /* ─── Responsive ─────────────────────────────────────────────── */
