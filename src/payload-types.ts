@@ -74,6 +74,7 @@ export interface Config {
     users: User;
     partners: Partner;
     machines: Machine;
+    faqItems: FaqItem;
     exports: Export;
     imports: Import;
     redirects: Redirect;
@@ -100,6 +101,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     partners: PartnersSelect<false> | PartnersSelect<true>;
     machines: MachinesSelect<false> | MachinesSelect<true>;
+    faqItems: FaqItemsSelect<false> | FaqItemsSelect<true>;
     exports: ExportsSelect<false> | ExportsSelect<true>;
     imports: ImportsSelect<false> | ImportsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
@@ -1012,6 +1014,44 @@ export interface Machine {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faqItems".
+ */
+export interface FaqItem {
+  id: number;
+  question: string;
+  answer: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Higher weight appears first. Use multiples of 10 (10, 20, 30…) so items can be inserted between existing ones.
+   */
+  weight?: number | null;
+  /**
+   * e.g. brands, venues, replenishment, branding, pricing
+   */
+  tags?:
+    | {
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "exports".
  */
 export interface Export {
@@ -1302,6 +1342,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'machines';
         value: number | Machine;
+      } | null)
+    | ({
+        relationTo: 'faqItems';
+        value: number | FaqItem;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1791,6 +1835,23 @@ export interface MachinesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faqItems_select".
+ */
+export interface FaqItemsSelect<T extends boolean = true> {
+  question?: T;
+  answer?: T;
+  weight?: T;
+  tags?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2380,6 +2441,7 @@ export interface TaskCreateCollectionExport {
       | 'users'
       | 'partners'
       | 'machines'
+      | 'faqItems'
       | 'exports'
       | 'imports';
     drafts?: ('yes' | 'no') | null;

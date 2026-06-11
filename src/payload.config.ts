@@ -5,6 +5,7 @@ import { buildConfig, type PayloadRequest } from 'payload'
 import sharp from 'sharp'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { Categories } from './collections/Categories'
+import { FAQItems } from './collections/FAQItems'
 import { Insights } from './collections/Insights'
 import { Machines } from './collections/Machines'
 import { Media } from './collections/Media'
@@ -70,7 +71,7 @@ export default buildConfig({
     },
     push: false,
   }),
-  collections: [Pages, Insights, Media, Categories, Users, Partners, Machines],
+  collections: [Pages, Insights, Media, Categories, Users, Partners, Machines, FAQItems],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer, Settings],
   localization: {
