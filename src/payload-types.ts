@@ -73,6 +73,7 @@ export interface Config {
     categories: Category;
     users: User;
     partners: Partner;
+    machines: Machine;
     exports: Export;
     imports: Import;
     redirects: Redirect;
@@ -98,6 +99,7 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     partners: PartnersSelect<false> | PartnersSelect<true>;
+    machines: MachinesSelect<false> | MachinesSelect<true>;
     exports: ExportsSelect<false> | ExportsSelect<true>;
     imports: ImportsSelect<false> | ImportsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
@@ -979,6 +981,37 @@ export interface Partner {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "machines".
+ */
+export interface Machine {
+  id: number;
+  name: string;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  /**
+   * Short label shown on cards, e.g. "Full-size branded machine"
+   */
+  tagline?: string | null;
+  image: number | Media;
+  /**
+   * e.g. full-size, compact, campaign, premium — used for block-level filtering
+   */
+  tags?:
+    | {
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  layout?: unknown[] | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "exports".
  */
 export interface Export {
@@ -1265,6 +1298,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'partners';
         value: number | Partner;
+      } | null)
+    | ({
+        relationTo: 'machines';
+        value: number | Machine;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1733,6 +1770,27 @@ export interface PartnersSelect<T extends boolean = true> {
   order?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "machines_select".
+ */
+export interface MachinesSelect<T extends boolean = true> {
+  name?: T;
+  generateSlug?: T;
+  slug?: T;
+  tagline?: T;
+  image?: T;
+  tags?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
+  layout?: T | {};
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2314,7 +2372,16 @@ export interface TaskCreateCollectionExport {
     id: string;
     name: string;
     batchSize?: number | null;
-    collectionSlug: 'pages' | 'insights' | 'media' | 'categories' | 'users' | 'partners' | 'exports' | 'imports';
+    collectionSlug:
+      | 'pages'
+      | 'insights'
+      | 'media'
+      | 'categories'
+      | 'users'
+      | 'partners'
+      | 'machines'
+      | 'exports'
+      | 'imports';
     drafts?: ('yes' | 'no') | null;
     exportCollection: string;
     fields?: string[] | null;

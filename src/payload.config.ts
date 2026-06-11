@@ -6,6 +6,7 @@ import sharp from 'sharp'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { Categories } from './collections/Categories'
 import { Insights } from './collections/Insights'
+import { Machines } from './collections/Machines'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Partners } from './collections/Partners'
@@ -69,7 +70,7 @@ export default buildConfig({
     },
     push: false,
   }),
-  collections: [Pages, Insights, Media, Categories, Users, Partners],
+  collections: [Pages, Insights, Media, Categories, Users, Partners, Machines],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer, Settings],
   localization: {
