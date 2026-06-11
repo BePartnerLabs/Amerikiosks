@@ -57,6 +57,9 @@ export const seedAudiencePages = async (
   const mediaIds: Record<string, number> = {}
 
   for (const page of audiencePages) {
+    // If the page already exists (fully seeded by its own seed function), just
+    // collect its ID — don't overwrite a richer hero with this stub.
+    // Always upload media (idempotent) so mediaIds is always populated
     const heroImage = await uploadMedia(
       payload,
       req,
@@ -65,6 +68,20 @@ export const seedAudiencePages = async (
     )
 
     mediaIds[page.slug] = heroImage.id as number
+
+    const existing = await payload.find({
+      collection: 'pages',
+      where: { slug: { equals: page.slug } },
+      limit: 1,
+      depth: 0,
+      req,
+    })
+
+    if (existing.totalDocs > 0) {
+      pageIds[page.slug] = String(existing.docs[0]!.id)
+      payload.logger.info(`  Audience page exists, skipping stub: ${page.slug}`)
+      continue
+    }
 
     const result = await upsertPage(
       payload,
