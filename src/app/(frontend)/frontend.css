@@ -118,6 +118,16 @@ img {
 }
 
 /* ─── Section scroll reveal ────────────────────────────────── */
+/* opacity-only — no translateY to avoid gaps between full-bleed sections */
+@keyframes ak-section-reveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     .ak-card-grid,
@@ -126,7 +136,7 @@ img {
     .ak-cta,
     .ak-content,
     .ak-media-block {
-      animation: ak-fade-up 600ms ease-out both;
+      animation: ak-section-reveal 600ms ease-out both;
       animation-timeline: view();
       animation-range: entry 0% cover 20%;
     }
