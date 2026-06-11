@@ -37,6 +37,16 @@ jobs:
 
       - name: Pull Vercel env vars
         run: pnpm vercel env pull .env.local --yes --environment=${{ github.event_name == 'release' && 'production' || 'preview' }} --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Verify env vars pulled
+        run: |
+          if ! grep -q "PAYLOAD_SECRET" .env.local 2>/dev/null; then
+            echo "ERROR: PAYLOAD_SECRET not found in pulled .env.local — check VERCEL_TOKEN secret and Vercel env vars"
+            exit 1
+          fi
 
       - name: Run migrations
         run: pnpm dotenv -e .env.local -- pnpm payload migrate
