@@ -3,7 +3,7 @@ import { getPayload } from 'payload'
 import type React from 'react'
 import { CollectionArchive } from '@/components/CollectionArchive'
 import RichText from '@/components/RichText'
-import type { ArchiveBlock as ArchiveBlockProps, Post } from '@/payload-types'
+import type { ArchiveBlock as ArchiveBlockProps, Insight } from '@/payload-types'
 import './styles.css'
 
 export const ArchiveBlock: React.FC<ArchiveBlockProps & { id?: string }> = async (props) => {
@@ -20,7 +20,7 @@ export const ArchiveBlock: React.FC<ArchiveBlockProps & { id?: string }> = async
 
   const limit = limitFromProps || 4
 
-  let posts: Post[] = []
+  let posts: Insight[] = []
 
   if (populateBy === 'collection') {
     const payload = await getPayload({ config: configPromise })
@@ -31,7 +31,7 @@ export const ArchiveBlock: React.FC<ArchiveBlockProps & { id?: string }> = async
     })
 
     const fetchedPosts = await payload.find({
-      collection: 'posts',
+      collection: 'insights',
       depth: 1,
       limit,
       ...(flattenedCategories && flattenedCategories.length > 0
@@ -44,7 +44,7 @@ export const ArchiveBlock: React.FC<ArchiveBlockProps & { id?: string }> = async
     if (selectedDocs?.length) {
       posts = selectedDocs
         .filter((post) => typeof post.value === 'object')
-        .map((post) => post.value as Post)
+        .map((post) => post.value as Insight)
     }
   }
 

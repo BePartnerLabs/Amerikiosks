@@ -9,16 +9,16 @@ import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import type { Plugin } from 'payload'
 import { revalidateRedirects } from '@/hooks/revalidateRedirects'
-import type { Page, Post } from '@/payload-types'
+import type { Insight, Page } from '@/payload-types'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
 import { searchFields } from '@/search/fieldOverrides'
 import { getServerSideURL } from '@/utilities/getURL'
 
-const generateTitle: GenerateTitle<Post | Page> = ({ doc }) => {
+const generateTitle: GenerateTitle<Insight | Page> = ({ doc }) => {
   return doc?.title ? `${doc.title} | Amerikiosks` : 'Amerikiosks'
 }
 
-const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
+const generateURL: GenerateURL<Insight | Page> = ({ doc }) => {
   const url = getServerSideURL()
 
   return doc?.slug ? `${url}/${doc.slug}` : url
@@ -26,7 +26,12 @@ const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
 
 export const plugins: Plugin[] = [
   importExportPlugin({
-    collections: [{ slug: 'pages' }, { slug: 'posts' }, { slug: 'media' }, { slug: 'categories' }],
+    collections: [
+      { slug: 'pages' },
+      { slug: 'insights' },
+      { slug: 'media' },
+      { slug: 'categories' },
+    ],
   }),
   // Only use Vercel Blob in prod/preview. Locally, Payload falls back to
   // the staticDir in Media.ts (/public/media) when no token is set.
@@ -40,7 +45,7 @@ export const plugins: Plugin[] = [
       ]
     : []),
   redirectsPlugin({
-    collections: ['pages', 'posts'],
+    collections: ['pages', 'insights'],
     overrides: {
       // @ts-expect-error - This is a valid override, mapped fields don't resolve to the same type
       fields: ({ defaultFields }) => {
@@ -96,7 +101,7 @@ export const plugins: Plugin[] = [
     },
   }),
   searchPlugin({
-    collections: ['posts'],
+    collections: ['insights'],
     beforeSync: beforeSyncWithSearch,
     searchOverrides: {
       fields: ({ defaultFields }) => {

@@ -16,6 +16,7 @@ import { CallToAction } from '../../blocks/CallToAction/config'
 import { CardGrid } from '../../blocks/CardGrid/config'
 import { Content } from '../../blocks/Content/config'
 import { FormBlock } from '../../blocks/Form/config'
+import { InsightsShowcase } from '../../blocks/InsightsShowcase/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { TrustStrip } from '../../blocks/TrustStrip/config'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
@@ -83,6 +84,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 CardGrid,
                 TrustStrip,
                 AudienceShowcase,
+                InsightsShowcase,
               ],
               admin: {
                 initCollapsed: true,

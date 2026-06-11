@@ -6,6 +6,7 @@ import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { CardGridBlock } from '@/blocks/CardGrid/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
 import { FormBlock } from '@/blocks/Form/Component'
+import { InsightsShowcaseBlock } from '@/blocks/InsightsShowcase/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { TrustStripServer } from '@/blocks/TrustStrip/Server'
 import type { Page } from '@/payload-types'
@@ -18,6 +19,7 @@ const blockComponents = {
   formBlock: FormBlock,
   mediaBlock: MediaBlock,
   cardGrid: CardGridBlock,
+  insightsShowcase: InsightsShowcaseBlock,
   trustStrip: TrustStripServer,
 }
 
