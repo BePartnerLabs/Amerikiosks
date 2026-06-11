@@ -13,6 +13,24 @@ export const seedPages = async (
   req: PayloadRequest,
   { postIds = [] }: { postIds?: string[] } = {},
 ): Promise<void> => {
+  // Delete for-brands before seeding the parent so nested-docs never re-saves a stale
+  // mediumImpact child that has no hero.media (left over from a previous broken seed run).
+  const staleForBrands = await payload.find({
+    collection: 'pages',
+    where: { slug: { equals: 'for-brands' } },
+    limit: 1,
+    overrideAccess: true,
+    req,
+  })
+  if (staleForBrands.docs.length > 0) {
+    await payload.delete({
+      collection: 'pages',
+      id: staleForBrands.docs[0]!.id,
+      req,
+      overrideAccess: true,
+    })
+  }
+
   // seedWhoItsFor first — parent page must exist before seedForBrands sets parent FK
   // seedForBrands before seedAudiencePages — so audience loop finds for-brands and skips stub
   // (avoids stale FK in seedHome when seedForBrands deletes+recreates the page)
