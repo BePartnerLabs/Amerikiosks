@@ -6,8 +6,8 @@ import { upsertPage } from './utils'
 const projects = [
   {
     slug: 'fan-stand',
-    title: 'Fan Stand',
-    titleEs: 'Fan Stand',
+    title: 'Game-day retail built around fan intent.',
+    titleEs: 'Retail de día de juego construido alrededor de la intención del fanático.',
     category: 'FAN STAND',
     categoryEs: 'ESTADIO',
     description:
@@ -19,8 +19,8 @@ const projects = [
   },
   {
     slug: 'airport-retail',
-    title: 'Airport Retail',
-    titleEs: 'Retail en Aeropuerto',
+    title: 'Travel moments with a branded point of sale.',
+    titleEs: 'Momentos de viaje con un punto de venta de marca.',
     category: 'AIRPORT RETAIL',
     categoryEs: 'RETAIL AEROPUERTO',
     description:
