@@ -11,6 +11,7 @@ import { FormatsGridServer } from '@/blocks/FormatsGrid/Server'
 import { InsightsShowcaseBlock } from '@/blocks/InsightsShowcase/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { ProcessStepsBlock } from '@/blocks/ProcessSteps/Component'
+import { ProjectsShowcaseBlock } from '@/blocks/ProjectsShowcase/Component'
 import { TrustStripServer } from '@/blocks/TrustStrip/Server'
 import type { Page } from '@/payload-types'
 
@@ -23,6 +24,7 @@ const blockComponents = {
   mediaBlock: MediaBlock,
   cardGrid: CardGridBlock,
   insightsShowcase: InsightsShowcaseBlock,
+  projectsShowcase: ProjectsShowcaseBlock,
   trustStrip: TrustStripServer,
   formatsGrid: FormatsGridServer,
   processSteps: ProcessStepsBlock,

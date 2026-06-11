@@ -3,6 +3,35 @@ import type { Payload, PayloadRequest } from 'payload'
 import { uploadMedia } from '../uploadMedia'
 import { upsertPage } from './utils'
 
+const projects = [
+  {
+    slug: 'fan-stand',
+    title: 'Fan Stand',
+    titleEs: 'Fan Stand',
+    category: 'FAN STAND',
+    categoryEs: 'ESTADIO',
+    description:
+      'A branded vending experience placed where fans are already browsing, waiting, and ready to buy.',
+    descriptionEs:
+      'Una experiencia de venta de marca colocada donde los fanáticos ya están navegando, esperando y listos para comprar.',
+    asset: 'machine-full-size.jpg',
+    tag: 'brand',
+  },
+  {
+    slug: 'airport-retail',
+    title: 'Airport Retail',
+    titleEs: 'Retail en Aeropuerto',
+    category: 'AIRPORT RETAIL',
+    categoryEs: 'RETAIL AEROPUERTO',
+    description:
+      'A premium automated format for reaching high-intent audiences in dwell-time environments.',
+    descriptionEs:
+      'Un formato automatizado premium para llegar a audiencias de alta intención en entornos de espera.',
+    asset: 'machine-campaign.jpg',
+    tag: 'brand',
+  },
+]
+
 const machines = [
   {
     slug: 'full-size-branded-machine',
@@ -223,6 +252,69 @@ export const seedForBrands = async (payload: Payload, req: PayloadRequest): Prom
     payload.logger.info(`  Created FAQ: ${faq.question}`)
   }
 
+  // ── Projects ───────────────────────────────────────────────────────────────
+  for (const p of projects) {
+    const image = await uploadMedia(
+      payload,
+      req,
+      path.join(process.cwd(), 'public', 'seed-assets', p.asset),
+      p.title,
+    )
+
+    const existing = await payload.find({
+      collection: 'projects',
+      where: { slug: { equals: p.slug } },
+      limit: 1,
+      req,
+    })
+
+    let projectId: number
+
+    if (existing.totalDocs > 0) {
+      projectId = existing.docs[0]?.id as number
+      await payload.update({
+        collection: 'projects',
+        id: projectId,
+        locale: 'en',
+        data: {
+          title: p.title,
+          category: p.category,
+          description: p.description,
+          image: image.id,
+          tags: [{ label: p.tag }],
+          _status: 'published' as const,
+        },
+        req: { ...req, locale: 'en' } as PayloadRequest,
+      })
+      payload.logger.info(`  Updated project: ${p.title}`)
+    } else {
+      const created = await payload.create({
+        collection: 'projects',
+        locale: 'en',
+        data: {
+          title: p.title,
+          slug: p.slug,
+          category: p.category,
+          description: p.description,
+          image: image.id,
+          tags: [{ label: p.tag }],
+          _status: 'published' as const,
+        },
+        req: { ...req, locale: 'en' } as PayloadRequest,
+      })
+      projectId = created.id as number
+      payload.logger.info(`  Created project: ${p.title}`)
+    }
+
+    await payload.update({
+      collection: 'projects',
+      id: projectId,
+      locale: 'es',
+      data: { title: p.titleEs, category: p.categoryEs, description: p.descriptionEs },
+      req: { ...req, locale: 'es' } as PayloadRequest,
+    })
+  }
+
   // ── Hero image ─────────────────────────────────────────────────────────────
   const heroImage = await uploadMedia(
     payload,
@@ -298,10 +390,14 @@ export const seedForBrands = async (payload: Payload, req: PayloadRequest): Prom
       },
       layout: [
         {
-          blockType: 'insightsShowcase',
+          blockType: 'projectsShowcase',
           blockName: 'Real Brand Moments',
           eyebrow: 'REAL BRAND MOMENTS',
           heading: 'Real brand moments, built to sell.',
+          body: richText(
+            'See how placement, product mix, and operations turn high-traffic spaces into memorable retail moments.',
+          ),
+          filterTag: 'brand',
         },
         {
           blockType: 'cardGrid',
@@ -478,9 +574,14 @@ export const seedForBrands = async (payload: Payload, req: PayloadRequest): Prom
       },
       layout: [
         {
-          blockType: 'insightsShowcase',
+          blockType: 'projectsShowcase',
+          blockName: 'Real Brand Moments',
           eyebrow: 'MOMENTOS REALES DE MARCA',
           heading: 'Momentos reales de marca, construidos para vender.',
+          body: richText(
+            'Mira cómo la ubicación, la combinación de productos y las operaciones convierten espacios de alto tráfico en momentos de venta memorables.',
+          ),
+          filterTag: 'brand',
         },
         {
           blockType: 'cardGrid',

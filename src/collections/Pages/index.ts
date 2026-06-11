@@ -21,6 +21,7 @@ import { FormatsGrid } from '../../blocks/FormatsGrid/config'
 import { InsightsShowcase } from '../../blocks/InsightsShowcase/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { ProcessSteps } from '../../blocks/ProcessSteps/config'
+import { ProjectsShowcase } from '../../blocks/ProjectsShowcase/config'
 import { TrustStrip } from '../../blocks/TrustStrip/config'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
@@ -88,6 +89,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 TrustStrip,
                 AudienceShowcase,
                 InsightsShowcase,
+                ProjectsShowcase,
                 FormatsGrid,
                 ProcessSteps,
                 FAQWithForm,

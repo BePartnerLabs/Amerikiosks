@@ -11,6 +11,7 @@ import { Machines } from './collections/Machines'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Partners } from './collections/Partners'
+import { Projects } from './collections/Projects'
 import { Users } from './collections/Users'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
@@ -71,7 +72,7 @@ export default buildConfig({
     },
     push: false,
   }),
-  collections: [Pages, Insights, Media, Categories, Users, Partners, Machines, FAQItems],
+  collections: [Pages, Insights, Media, Categories, Users, Partners, Machines, FAQItems, Projects],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer, Settings],
   localization: {

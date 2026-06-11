@@ -75,6 +75,7 @@ export interface Config {
     partners: Partner;
     machines: Machine;
     faqItems: FaqItem;
+    projects: Project;
     exports: Export;
     imports: Import;
     redirects: Redirect;
@@ -102,6 +103,7 @@ export interface Config {
     partners: PartnersSelect<false> | PartnersSelect<true>;
     machines: MachinesSelect<false> | MachinesSelect<true>;
     faqItems: FaqItemsSelect<false> | FaqItemsSelect<true>;
+    projects: ProjectsSelect<false> | ProjectsSelect<true>;
     exports: ExportsSelect<false> | ExportsSelect<true>;
     imports: ImportsSelect<false> | ImportsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
@@ -239,6 +241,7 @@ export interface Page {
         | TrustStripBlock
         | AudienceShowcaseBlock
         | InsightsShowcaseBlock
+        | ProjectsShowcaseBlock
         | FormatsGridBlock
         | ProcessStepsBlock
         | FAQWithFormBlock
@@ -976,6 +979,42 @@ export interface InsightsShowcaseBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProjectsShowcaseBlock".
+ */
+export interface ProjectsShowcaseBlock {
+  /**
+   * Small label above heading, e.g. "REAL BRAND MOMENTS"
+   */
+  eyebrow?: string | null;
+  heading: string;
+  /**
+   * Supporting text shown below the heading
+   */
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Fetch projects where tags.label matches this value, e.g. "brand", "agency"
+   */
+  filterTag: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'projectsShowcase';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "FormatsGridBlock".
  */
 export interface FormatsGridBlock {
@@ -1172,6 +1211,55 @@ export interface FaqItem {
     | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects".
+ */
+export interface Project {
+  id: number;
+  title: string;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  /**
+   * Eyebrow label shown on cards, e.g. "FAN STAND"
+   */
+  category?: string | null;
+  /**
+   * Short text shown on the card
+   */
+  description?: string | null;
+  image: number | Media;
+  /**
+   * Used to filter projects in blocks, e.g. "brand"
+   */
+  tags?:
+    | {
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1471,6 +1559,10 @@ export interface PayloadLockedDocument {
         value: number | FaqItem;
       } | null)
     | ({
+        relationTo: 'projects';
+        value: number | Project;
+      } | null)
+    | ({
         relationTo: 'redirects';
         value: number | Redirect;
       } | null)
@@ -1579,6 +1671,7 @@ export interface PagesSelect<T extends boolean = true> {
         trustStrip?: T | TrustStripBlockSelect<T>;
         audienceShowcase?: T | AudienceShowcaseBlockSelect<T>;
         insightsShowcase?: T | InsightsShowcaseBlockSelect<T>;
+        projectsShowcase?: T | ProjectsShowcaseBlockSelect<T>;
         formatsGrid?: T | FormatsGridBlockSelect<T>;
         processSteps?: T | ProcessStepsBlockSelect<T>;
         faqWithForm?: T | FAQWithFormBlockSelect<T>;
@@ -1766,6 +1859,18 @@ export interface AudienceShowcaseBlockSelect<T extends boolean = true> {
 export interface InsightsShowcaseBlockSelect<T extends boolean = true> {
   eyebrow?: T;
   heading?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProjectsShowcaseBlock_select".
+ */
+export interface ProjectsShowcaseBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  body?: T;
+  filterTag?: T;
   id?: T;
   blockName?: T;
 }
@@ -2063,6 +2168,28 @@ export interface FaqItemsSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects_select".
+ */
+export interface ProjectsSelect<T extends boolean = true> {
+  title?: T;
+  generateSlug?: T;
+  slug?: T;
+  category?: T;
+  description?: T;
+  image?: T;
+  tags?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
+  body?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2653,6 +2780,7 @@ export interface TaskCreateCollectionExport {
       | 'partners'
       | 'machines'
       | 'faqItems'
+      | 'projects'
       | 'exports'
       | 'imports';
     drafts?: ('yes' | 'no') | null;
