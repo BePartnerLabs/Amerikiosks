@@ -9,11 +9,13 @@ import {
 } from '@payloadcms/next/rsc'
 import {
   CollectionField as CollectionField_cdf7e044479f899a31f804427d568b36,
+  ExportListMenuItem as ExportListMenuItem_cdf7e044479f899a31f804427d568b36,
   ExportPreview as ExportPreview_cdf7e044479f899a31f804427d568b36,
   ExportSaveButton as ExportSaveButton_cdf7e044479f899a31f804427d568b36,
   FieldsToExport as FieldsToExport_cdf7e044479f899a31f804427d568b36,
   FormatField as FormatField_cdf7e044479f899a31f804427d568b36,
   ImportExportProvider as ImportExportProvider_cdf7e044479f899a31f804427d568b36,
+  ImportListMenuItem as ImportListMenuItem_cdf7e044479f899a31f804427d568b36,
   ImportPreview as ImportPreview_cdf7e044479f899a31f804427d568b36,
   ImportSaveButton as ImportSaveButton_cdf7e044479f899a31f804427d568b36,
   LimitField as LimitField_cdf7e044479f899a31f804427d568b36,
@@ -95,6 +97,10 @@ export const importMap = {
   '@payloadcms/plugin-seo/client#PreviewComponent':
     PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
   '@payloadcms/next/client#SlugField': SlugField_2b8867833a34864a02ddf429b0728a40,
+  '@payloadcms/plugin-import-export/rsc#ExportListMenuItem':
+    ExportListMenuItem_cdf7e044479f899a31f804427d568b36,
+  '@payloadcms/plugin-import-export/rsc#ImportListMenuItem':
+    ImportListMenuItem_cdf7e044479f899a31f804427d568b36,
   '@payloadcms/richtext-lexical/client#HorizontalRuleFeatureClient':
     HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   '@payloadcms/richtext-lexical/client#BlocksFeatureClient':

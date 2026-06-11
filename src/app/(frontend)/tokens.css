@@ -22,6 +22,7 @@
   --brand-color-palette-steel-50: hsla(206, 54%, 97%, 1); /* card background */
   --brand-color-palette-coral-600: hsla(347, 76%, 48%, 1); /* #D41A3A */
   --brand-color-palette-white: hsla(0, 0%, 100%, 1); /* #FFFFFF */
+  --md-primitives-color-blue-100: hsla(221, 100%, 96%, 1); /* #ECF2FF */
 
   /* 02 Semantic — Border */
   --md-semantic-border-width-default: 1px;
@@ -104,6 +105,21 @@
   --ak-color-white: var(--brand-color-palette-white);
   --ak-card-shadow-subtle: 0 1px 4px hsla(0, 0%, 0%, 0.06);
 
+  /* Section backgrounds */
+  --ak-section-bg-blue: var(--md-primitives-color-blue-100);
+  --ak-section-bg-gradient-down: linear-gradient(
+    180deg,
+    var(--brand-color-palette-white) 0%,
+    var(--md-primitives-color-blue-100) 100%
+  );
+  --ak-section-bg-gradient-up: linear-gradient(
+    0deg,
+    var(--brand-color-palette-white) 0%,
+    var(--md-primitives-color-blue-100) 100%
+  );
+  --ak-cta-bg: var(--brand-color-palette-coral-600);
+  --ak-cta-btn-color: var(--brand-color-palette-navy-900);
+
   /* CardGrid — compact */
   --ak-card-grid-bg: var(--brand-color-palette-navy-900);
   --ak-card-bg: var(--brand-color-palette-navy-800);
@@ -119,4 +135,21 @@
   --bp-primary: var(--ak-accent);
   --bp-primary-fg: var(--ak-white);
   --bp-color-bg-elevated: var(--ak-white);
+
+  /* Motion */
+  --ak-transition-fast: 150ms ease;
+  --ak-transition-med: 200ms ease;
+  --ak-shadow-lift: 0 4px 16px hsla(213, 96%, 11%, 0.12);
+  --ak-shadow-lift-md: 0 8px 24px hsla(213, 96%, 11%, 0.16);
+}
+
+@keyframes ak-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

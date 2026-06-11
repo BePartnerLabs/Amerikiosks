@@ -1,3 +1,8 @@
+.ak-audience-showcase {
+  --_background: var(--audience-bg, var(--ak-section-bg-gradient-down));
+  background: var(--_background);
+}
+
 .ak-audience-showcase__inner {
   padding-block: var(--bp-space-16, 4rem);
 }
@@ -29,11 +34,35 @@
 
 .ak-audience-showcase__card-img {
   object-fit: cover;
-  transition: transform 0.35s ease;
 }
 
-.ak-audience-showcase__card:hover .ak-audience-showcase__card-img {
-  transform: scale(1.04);
+@media (prefers-reduced-motion: no-preference) {
+  .ak-audience-showcase__card {
+    transition: transform var(--ak-transition-fast);
+  }
+
+  .ak-audience-showcase__card:hover {
+    transform: translateY(-3px);
+  }
+
+  .ak-audience-showcase__card-img {
+    transition: transform 0.35s ease;
+  }
+
+  .ak-audience-showcase__card:hover .ak-audience-showcase__card-img {
+    transform: scale(1.04);
+  }
+
+  .ak-audience-showcase__card-cta {
+    transition:
+      opacity var(--ak-transition-fast),
+      border-color var(--ak-transition-fast);
+  }
+
+  .ak-audience-showcase__card:hover .ak-audience-showcase__card-cta {
+    opacity: 0.85;
+    border-color: color-mix(in srgb, var(--ak-white) 50%, transparent);
+  }
 }
 
 .ak-audience-showcase__card-overlay {

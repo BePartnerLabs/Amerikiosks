@@ -3,8 +3,10 @@
    ═══════════════════════════════════════════════════════════════ */
 
 .ak-cta {
-  background-color: var(--ak-dark-bg);
-  color: #fff;
+  --_background: var(--cta-bg, var(--ak-cta-bg));
+  --_color: var(--cta-color, var(--ak-white));
+  background-color: var(--_background);
+  color: var(--_color);
   position: relative;
   overflow: hidden;
 }
@@ -42,8 +44,9 @@
 .ak-cta__inner {
   padding-block: var(--bp-space-12, 3rem);
   display: flex;
+  flex-direction: row;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: var(--bp-space-8, 2rem);
   flex-wrap: wrap;
   position: relative;
@@ -51,7 +54,6 @@
 }
 
 .ak-cta__text {
-  flex: 1 1 0;
   min-width: 0;
 }
 
@@ -59,9 +61,8 @@
   margin: 0;
   font-family: var(--font-poppins, sans-serif);
   font-size: clamp(1.5rem, 2vw + 0.75rem, 2.25rem);
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.2;
-  color: #fff;
 }
 
 .ak-cta__actions {
@@ -69,6 +70,18 @@
   display: flex;
   gap: var(--bp-space-3, 0.75rem);
   flex-wrap: wrap;
+}
+
+.ak-cta__actions a,
+.ak-cta__actions button {
+  --_btn-color: var(--cta-btn-color, var(--ak-cta-btn-color));
+  --btn-background: var(--brand-color-palette-white) !important;
+  --btn-color: var(--_btn-color) !important;
+  background-color: var(--brand-color-palette-white) !important;
+  color: var(--_btn-color) !important;
+  transition:
+    background-color var(--ak-transition-fast),
+    color var(--ak-transition-fast);
 }
 
 @media (max-width: 64rem) {

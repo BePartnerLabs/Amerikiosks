@@ -1,13 +1,13 @@
 import type { DefaultTypedEditorState } from '@payloadcms/richtext-lexical'
 import type React from 'react'
 import RichText from '@/components/RichText'
-import type { Post } from '@/payload-types'
+import type { Insight } from '@/payload-types'
 import { Card } from '../../components/Card'
 import './styles.css'
 
 export type RelatedPostsProps = {
   className?: string
-  docs?: Post[]
+  docs?: Insight[]
   introContent?: DefaultTypedEditorState
 }
 
@@ -29,7 +29,7 @@ export const RelatedPosts: React.FC<RelatedPostsProps> = ({ docs, introContent }
             <Card
               key={doc.id}
               doc={doc}
-              relationTo="posts"
+              relationTo="insights"
               showCategories
             />
           )

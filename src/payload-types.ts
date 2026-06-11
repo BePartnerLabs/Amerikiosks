@@ -68,7 +68,7 @@ export interface Config {
   blocks: {};
   collections: {
     pages: Page;
-    posts: Post;
+    insights: Insight;
     media: Media;
     categories: Category;
     users: User;
@@ -93,7 +93,7 @@ export interface Config {
   };
   collectionsSelect: {
     pages: PagesSelect<false> | PagesSelect<true>;
-    posts: PostsSelect<false> | PostsSelect<true>;
+    insights: InsightsSelect<false> | InsightsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
@@ -196,8 +196,8 @@ export interface Page {
                   value: number | Page;
                 } | null)
               | ({
-                  relationTo: 'posts';
-                  value: number | Post;
+                  relationTo: 'insights';
+                  value: number | Insight;
                 } | null);
             url?: string | null;
             label: string;
@@ -238,6 +238,7 @@ export interface Page {
         | CardGridBlock
         | TrustStripBlock
         | AudienceShowcaseBlock
+        | InsightsShowcaseBlock
       )[]
     | null;
   meta?: {
@@ -260,9 +261,9 @@ export interface Page {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "posts".
+ * via the `definition` "insights".
  */
-export interface Post {
+export interface Insight {
   id: number;
   title: string;
   heroImage?: (number | null) | Media;
@@ -281,7 +282,7 @@ export interface Post {
     };
     [k: string]: unknown;
   };
-  relatedPosts?: (number | Post)[] | null;
+  relatedPosts?: (number | Insight)[] | null;
   categories?: (number | Category)[] | null;
   meta?: {
     title?: string | null;
@@ -291,6 +292,10 @@ export interface Post {
     image?: (number | null) | Media;
     description?: string | null;
   };
+  /**
+   * Show this insight in the Insights Showcase block on the home page.
+   */
+  featured?: boolean | null;
   publishedAt?: string | null;
   authors?: (number | User)[] | null;
   populatedAuthors?:
@@ -508,8 +513,8 @@ export interface CallToActionBlock {
                 value: number | Page;
               } | null)
             | ({
-                relationTo: 'posts';
-                value: number | Post;
+                relationTo: 'insights';
+                value: number | Insight;
               } | null);
           url?: string | null;
           label: string;
@@ -558,8 +563,8 @@ export interface ContentBlock {
                 value: number | Page;
               } | null)
             | ({
-                relationTo: 'posts';
-                value: number | Post;
+                relationTo: 'insights';
+                value: number | Insight;
               } | null);
           url?: string | null;
           label: string;
@@ -606,13 +611,13 @@ export interface ArchiveBlock {
     [k: string]: unknown;
   } | null;
   populateBy?: ('collection' | 'selection') | null;
-  relationTo?: 'posts' | null;
+  relationTo?: 'insights' | null;
   categories?: (number | Category)[] | null;
   limit?: number | null;
   selectedDocs?:
     | {
-        relationTo: 'posts';
-        value: number | Post;
+        relationTo: 'insights';
+        value: number | Insight;
       }[]
     | null;
   id?: string | null;
@@ -945,6 +950,20 @@ export interface AudienceShowcaseBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "InsightsShowcaseBlock".
+ */
+export interface InsightsShowcaseBlock {
+  /**
+   * Small label above heading, e.g. "INSIGHTS"
+   */
+  eyebrow?: string | null;
+  heading: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'insightsShowcase';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "partners".
  */
 export interface Partner {
@@ -1051,8 +1070,8 @@ export interface Redirect {
           value: number | Page;
         } | null)
       | ({
-          relationTo: 'posts';
-          value: number | Post;
+          relationTo: 'insights';
+          value: number | Insight;
         } | null);
     url?: string | null;
   };
@@ -1087,8 +1106,8 @@ export interface Search {
   title?: string | null;
   priority?: number | null;
   doc: {
-    relationTo: 'posts';
-    value: number | Post;
+    relationTo: 'insights';
+    value: number | Insight;
   };
   slug?: string | null;
   meta?: {
@@ -1228,8 +1247,8 @@ export interface PayloadLockedDocument {
         value: number | Page;
       } | null)
     | ({
-        relationTo: 'posts';
-        value: number | Post;
+        relationTo: 'insights';
+        value: number | Insight;
       } | null)
     | ({
         relationTo: 'media';
@@ -1356,6 +1375,7 @@ export interface PagesSelect<T extends boolean = true> {
         cardGrid?: T | CardGridBlockSelect<T>;
         trustStrip?: T | TrustStripBlockSelect<T>;
         audienceShowcase?: T | AudienceShowcaseBlockSelect<T>;
+        insightsShowcase?: T | InsightsShowcaseBlockSelect<T>;
       };
   meta?:
     | T
@@ -1526,9 +1546,19 @@ export interface AudienceShowcaseBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "posts_select".
+ * via the `definition` "InsightsShowcaseBlock_select".
  */
-export interface PostsSelect<T extends boolean = true> {
+export interface InsightsShowcaseBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "insights_select".
+ */
+export interface InsightsSelect<T extends boolean = true> {
   title?: T;
   heroImage?: T;
   content?: T;
@@ -1541,6 +1571,7 @@ export interface PostsSelect<T extends boolean = true> {
         image?: T;
         description?: T;
       };
+  featured?: T;
   publishedAt?: T;
   authors?: T;
   populatedAuthors?:
@@ -2054,8 +2085,8 @@ export interface Header {
                 value: number | Page;
               } | null)
             | ({
-                relationTo: 'posts';
-                value: number | Post;
+                relationTo: 'insights';
+                value: number | Insight;
               } | null);
           url?: string | null;
           label: string;
@@ -2084,8 +2115,8 @@ export interface Header {
                         value: number | Page;
                       } | null)
                     | ({
-                        relationTo: 'posts';
-                        value: number | Post;
+                        relationTo: 'insights';
+                        value: number | Insight;
                       } | null);
                   url?: string | null;
                 };
@@ -2127,8 +2158,8 @@ export interface Footer {
                       value: number | Page;
                     } | null)
                   | ({
-                      relationTo: 'posts';
-                      value: number | Post;
+                      relationTo: 'insights';
+                      value: number | Insight;
                     } | null);
                 url?: string | null;
                 label: string;
@@ -2283,7 +2314,7 @@ export interface TaskCreateCollectionExport {
     id: string;
     name: string;
     batchSize?: number | null;
-    collectionSlug: 'pages' | 'posts' | 'media' | 'categories' | 'users' | 'partners' | 'exports' | 'imports';
+    collectionSlug: 'pages' | 'insights' | 'media' | 'categories' | 'users' | 'partners' | 'exports' | 'imports';
     drafts?: ('yes' | 'no') | null;
     exportCollection: string;
     fields?: string[] | null;
@@ -2338,8 +2369,8 @@ export interface TaskSchedulePublish {
           value: number | Page;
         } | null)
       | ({
-          relationTo: 'posts';
-          value: number | Post;
+          relationTo: 'insights';
+          value: number | Insight;
         } | null);
     global?: string | null;
     user?: (number | null) | User;

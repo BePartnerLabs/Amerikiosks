@@ -1055,7 +1055,7 @@
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": false,
-          "default": "'posts'"
+          "default": "'insights'"
         },
         "limit": {
           "name": "limit",
@@ -2260,6 +2260,181 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.pages_blocks_insights_showcase": {
+      "name": "pages_blocks_insights_showcase",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_path": {
+          "name": "_path",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "block_name": {
+          "name": "block_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "pages_blocks_insights_showcase_order_idx": {
+          "name": "pages_blocks_insights_showcase_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "pages_blocks_insights_showcase_parent_id_idx": {
+          "name": "pages_blocks_insights_showcase_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "pages_blocks_insights_showcase_path_idx": {
+          "name": "pages_blocks_insights_showcase_path_idx",
+          "columns": [
+            {
+              "expression": "_path",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "pages_blocks_insights_showcase_parent_id_fk": {
+          "name": "pages_blocks_insights_showcase_parent_id_fk",
+          "tableFrom": "pages_blocks_insights_showcase",
+          "tableTo": "pages",
+          "columnsFrom": ["_parent_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.pages_blocks_insights_showcase_locales": {
+      "name": "pages_blocks_insights_showcase_locales",
+      "schema": "",
+      "columns": {
+        "eyebrow": {
+          "name": "eyebrow",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "heading": {
+          "name": "heading",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "_locale": {
+          "name": "_locale",
+          "type": "_locales",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "pages_blocks_insights_showcase_locales_locale_parent_id_uniq": {
+          "name": "pages_blocks_insights_showcase_locales_locale_parent_id_uniq",
+          "columns": [
+            {
+              "expression": "_locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "pages_blocks_insights_showcase_locales_parent_id_fk": {
+          "name": "pages_blocks_insights_showcase_locales_parent_id_fk",
+          "tableFrom": "pages_blocks_insights_showcase_locales",
+          "tableTo": "pages_blocks_insights_showcase",
+          "columnsFrom": ["_parent_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.pages": {
       "name": "pages",
       "schema": "",
@@ -2620,8 +2795,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "posts_id": {
-          "name": "posts_id",
+        "insights_id": {
+          "name": "insights_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -2694,11 +2869,11 @@
           "method": "btree",
           "with": {}
         },
-        "pages_rels_posts_id_idx": {
-          "name": "pages_rels_posts_id_idx",
+        "pages_rels_insights_id_idx": {
+          "name": "pages_rels_insights_id_idx",
           "columns": [
             {
-              "expression": "posts_id",
+              "expression": "insights_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -2744,11 +2919,11 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "pages_rels_posts_fk": {
-          "name": "pages_rels_posts_fk",
+        "pages_rels_insights_fk": {
+          "name": "pages_rels_insights_fk",
           "tableFrom": "pages_rels",
-          "tableTo": "posts",
-          "columnsFrom": ["posts_id"],
+          "tableTo": "insights",
+          "columnsFrom": ["insights_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -3864,7 +4039,7 @@
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": false,
-          "default": "'posts'"
+          "default": "'insights'"
         },
         "limit": {
           "name": "limit",
@@ -5111,6 +5286,187 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public._pages_v_blocks_insights_showcase": {
+      "name": "_pages_v_blocks_insights_showcase",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_path": {
+          "name": "_path",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "_uuid": {
+          "name": "_uuid",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "block_name": {
+          "name": "block_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "_pages_v_blocks_insights_showcase_order_idx": {
+          "name": "_pages_v_blocks_insights_showcase_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_pages_v_blocks_insights_showcase_parent_id_idx": {
+          "name": "_pages_v_blocks_insights_showcase_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_pages_v_blocks_insights_showcase_path_idx": {
+          "name": "_pages_v_blocks_insights_showcase_path_idx",
+          "columns": [
+            {
+              "expression": "_path",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "_pages_v_blocks_insights_showcase_parent_id_fk": {
+          "name": "_pages_v_blocks_insights_showcase_parent_id_fk",
+          "tableFrom": "_pages_v_blocks_insights_showcase",
+          "tableTo": "_pages_v",
+          "columnsFrom": ["_parent_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public._pages_v_blocks_insights_showcase_locales": {
+      "name": "_pages_v_blocks_insights_showcase_locales",
+      "schema": "",
+      "columns": {
+        "eyebrow": {
+          "name": "eyebrow",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "heading": {
+          "name": "heading",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "_locale": {
+          "name": "_locale",
+          "type": "_locales",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "_pages_v_blocks_insights_showcase_locales_locale_parent_id_u": {
+          "name": "_pages_v_blocks_insights_showcase_locales_locale_parent_id_u",
+          "columns": [
+            {
+              "expression": "_locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "_pages_v_blocks_insights_showcase_locales_parent_id_fk": {
+          "name": "_pages_v_blocks_insights_showcase_locales_parent_id_fk",
+          "tableFrom": "_pages_v_blocks_insights_showcase_locales",
+          "tableTo": "_pages_v_blocks_insights_showcase",
+          "columnsFrom": ["_parent_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public._pages_v": {
       "name": "_pages_v",
       "schema": "",
@@ -5628,8 +5984,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "posts_id": {
-          "name": "posts_id",
+        "insights_id": {
+          "name": "insights_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -5702,11 +6058,11 @@
           "method": "btree",
           "with": {}
         },
-        "_pages_v_rels_posts_id_idx": {
-          "name": "_pages_v_rels_posts_id_idx",
+        "_pages_v_rels_insights_id_idx": {
+          "name": "_pages_v_rels_insights_id_idx",
           "columns": [
             {
-              "expression": "posts_id",
+              "expression": "insights_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -5752,11 +6108,11 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "_pages_v_rels_posts_fk": {
-          "name": "_pages_v_rels_posts_fk",
+        "_pages_v_rels_insights_fk": {
+          "name": "_pages_v_rels_insights_fk",
           "tableFrom": "_pages_v_rels",
-          "tableTo": "posts",
-          "columnsFrom": ["posts_id"],
+          "tableTo": "insights",
+          "columnsFrom": ["insights_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -5777,8 +6133,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.posts_populated_authors": {
-      "name": "posts_populated_authors",
+    "public.insights_populated_authors": {
+      "name": "insights_populated_authors",
       "schema": "",
       "columns": {
         "_order": {
@@ -5807,8 +6163,8 @@
         }
       },
       "indexes": {
-        "posts_populated_authors_order_idx": {
-          "name": "posts_populated_authors_order_idx",
+        "insights_populated_authors_order_idx": {
+          "name": "insights_populated_authors_order_idx",
           "columns": [
             {
               "expression": "_order",
@@ -5822,8 +6178,8 @@
           "method": "btree",
           "with": {}
         },
-        "posts_populated_authors_parent_id_idx": {
-          "name": "posts_populated_authors_parent_id_idx",
+        "insights_populated_authors_parent_id_idx": {
+          "name": "insights_populated_authors_parent_id_idx",
           "columns": [
             {
               "expression": "_parent_id",
@@ -5839,10 +6195,10 @@
         }
       },
       "foreignKeys": {
-        "posts_populated_authors_parent_id_fk": {
-          "name": "posts_populated_authors_parent_id_fk",
-          "tableFrom": "posts_populated_authors",
-          "tableTo": "posts",
+        "insights_populated_authors_parent_id_fk": {
+          "name": "insights_populated_authors_parent_id_fk",
+          "tableFrom": "insights_populated_authors",
+          "tableTo": "insights",
           "columnsFrom": ["_parent_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
@@ -5855,8 +6211,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.posts": {
-      "name": "posts",
+    "public.insights": {
+      "name": "insights",
       "schema": "",
       "columns": {
         "id": {
@@ -5870,6 +6226,13 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": false
+        },
+        "featured": {
+          "name": "featured",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
         },
         "published_at": {
           "name": "published_at",
@@ -5893,7 +6256,7 @@
         },
         "_status": {
           "name": "_status",
-          "type": "enum_posts_status",
+          "type": "enum_insights_status",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": false,
@@ -5901,8 +6264,8 @@
         }
       },
       "indexes": {
-        "posts_hero_image_idx": {
-          "name": "posts_hero_image_idx",
+        "insights_hero_image_idx": {
+          "name": "insights_hero_image_idx",
           "columns": [
             {
               "expression": "hero_image_id",
@@ -5916,8 +6279,8 @@
           "method": "btree",
           "with": {}
         },
-        "posts_updated_at_idx": {
-          "name": "posts_updated_at_idx",
+        "insights_updated_at_idx": {
+          "name": "insights_updated_at_idx",
           "columns": [
             {
               "expression": "updated_at",
@@ -5931,8 +6294,8 @@
           "method": "btree",
           "with": {}
         },
-        "posts_created_at_idx": {
-          "name": "posts_created_at_idx",
+        "insights_created_at_idx": {
+          "name": "insights_created_at_idx",
           "columns": [
             {
               "expression": "created_at",
@@ -5946,8 +6309,8 @@
           "method": "btree",
           "with": {}
         },
-        "posts__status_idx": {
-          "name": "posts__status_idx",
+        "insights__status_idx": {
+          "name": "insights__status_idx",
           "columns": [
             {
               "expression": "_status",
@@ -5963,9 +6326,9 @@
         }
       },
       "foreignKeys": {
-        "posts_hero_image_id_media_id_fk": {
-          "name": "posts_hero_image_id_media_id_fk",
-          "tableFrom": "posts",
+        "insights_hero_image_id_media_id_fk": {
+          "name": "insights_hero_image_id_media_id_fk",
+          "tableFrom": "insights",
           "tableTo": "media",
           "columnsFrom": ["hero_image_id"],
           "columnsTo": ["id"],
@@ -5979,8 +6342,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.posts_locales": {
-      "name": "posts_locales",
+    "public.insights_locales": {
+      "name": "insights_locales",
       "schema": "",
       "columns": {
         "title": {
@@ -6047,8 +6410,8 @@
         }
       },
       "indexes": {
-        "posts_meta_meta_image_idx": {
-          "name": "posts_meta_meta_image_idx",
+        "insights_meta_meta_image_idx": {
+          "name": "insights_meta_meta_image_idx",
           "columns": [
             {
               "expression": "meta_image_id",
@@ -6068,8 +6431,8 @@
           "method": "btree",
           "with": {}
         },
-        "posts_slug_idx": {
-          "name": "posts_slug_idx",
+        "insights_slug_idx": {
+          "name": "insights_slug_idx",
           "columns": [
             {
               "expression": "slug",
@@ -6089,8 +6452,8 @@
           "method": "btree",
           "with": {}
         },
-        "posts_locales_locale_parent_id_unique": {
-          "name": "posts_locales_locale_parent_id_unique",
+        "insights_locales_locale_parent_id_unique": {
+          "name": "insights_locales_locale_parent_id_unique",
           "columns": [
             {
               "expression": "_locale",
@@ -6112,19 +6475,19 @@
         }
       },
       "foreignKeys": {
-        "posts_locales_meta_image_id_media_id_fk": {
-          "name": "posts_locales_meta_image_id_media_id_fk",
-          "tableFrom": "posts_locales",
+        "insights_locales_meta_image_id_media_id_fk": {
+          "name": "insights_locales_meta_image_id_media_id_fk",
+          "tableFrom": "insights_locales",
           "tableTo": "media",
           "columnsFrom": ["meta_image_id"],
           "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
-        "posts_locales_parent_id_fk": {
-          "name": "posts_locales_parent_id_fk",
-          "tableFrom": "posts_locales",
-          "tableTo": "posts",
+        "insights_locales_parent_id_fk": {
+          "name": "insights_locales_parent_id_fk",
+          "tableFrom": "insights_locales",
+          "tableTo": "insights",
           "columnsFrom": ["_parent_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
@@ -6137,8 +6500,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.posts_rels": {
-      "name": "posts_rels",
+    "public.insights_rels": {
+      "name": "insights_rels",
       "schema": "",
       "columns": {
         "id": {
@@ -6165,8 +6528,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "posts_id": {
-          "name": "posts_id",
+        "insights_id": {
+          "name": "insights_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -6185,8 +6548,8 @@
         }
       },
       "indexes": {
-        "posts_rels_order_idx": {
-          "name": "posts_rels_order_idx",
+        "insights_rels_order_idx": {
+          "name": "insights_rels_order_idx",
           "columns": [
             {
               "expression": "order",
@@ -6200,8 +6563,8 @@
           "method": "btree",
           "with": {}
         },
-        "posts_rels_parent_idx": {
-          "name": "posts_rels_parent_idx",
+        "insights_rels_parent_idx": {
+          "name": "insights_rels_parent_idx",
           "columns": [
             {
               "expression": "parent_id",
@@ -6215,8 +6578,8 @@
           "method": "btree",
           "with": {}
         },
-        "posts_rels_path_idx": {
-          "name": "posts_rels_path_idx",
+        "insights_rels_path_idx": {
+          "name": "insights_rels_path_idx",
           "columns": [
             {
               "expression": "path",
@@ -6230,11 +6593,11 @@
           "method": "btree",
           "with": {}
         },
-        "posts_rels_posts_id_idx": {
-          "name": "posts_rels_posts_id_idx",
+        "insights_rels_insights_id_idx": {
+          "name": "insights_rels_insights_id_idx",
           "columns": [
             {
-              "expression": "posts_id",
+              "expression": "insights_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -6245,8 +6608,8 @@
           "method": "btree",
           "with": {}
         },
-        "posts_rels_categories_id_idx": {
-          "name": "posts_rels_categories_id_idx",
+        "insights_rels_categories_id_idx": {
+          "name": "insights_rels_categories_id_idx",
           "columns": [
             {
               "expression": "categories_id",
@@ -6260,8 +6623,8 @@
           "method": "btree",
           "with": {}
         },
-        "posts_rels_users_id_idx": {
-          "name": "posts_rels_users_id_idx",
+        "insights_rels_users_id_idx": {
+          "name": "insights_rels_users_id_idx",
           "columns": [
             {
               "expression": "users_id",
@@ -6277,36 +6640,36 @@
         }
       },
       "foreignKeys": {
-        "posts_rels_parent_fk": {
-          "name": "posts_rels_parent_fk",
-          "tableFrom": "posts_rels",
-          "tableTo": "posts",
+        "insights_rels_parent_fk": {
+          "name": "insights_rels_parent_fk",
+          "tableFrom": "insights_rels",
+          "tableTo": "insights",
           "columnsFrom": ["parent_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "posts_rels_posts_fk": {
-          "name": "posts_rels_posts_fk",
-          "tableFrom": "posts_rels",
-          "tableTo": "posts",
-          "columnsFrom": ["posts_id"],
+        "insights_rels_insights_fk": {
+          "name": "insights_rels_insights_fk",
+          "tableFrom": "insights_rels",
+          "tableTo": "insights",
+          "columnsFrom": ["insights_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "posts_rels_categories_fk": {
-          "name": "posts_rels_categories_fk",
-          "tableFrom": "posts_rels",
+        "insights_rels_categories_fk": {
+          "name": "insights_rels_categories_fk",
+          "tableFrom": "insights_rels",
           "tableTo": "categories",
           "columnsFrom": ["categories_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "posts_rels_users_fk": {
-          "name": "posts_rels_users_fk",
-          "tableFrom": "posts_rels",
+        "insights_rels_users_fk": {
+          "name": "insights_rels_users_fk",
+          "tableFrom": "insights_rels",
           "tableTo": "users",
           "columnsFrom": ["users_id"],
           "columnsTo": ["id"],
@@ -6320,8 +6683,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public._posts_v_version_populated_authors": {
-      "name": "_posts_v_version_populated_authors",
+    "public._insights_v_version_populated_authors": {
+      "name": "_insights_v_version_populated_authors",
       "schema": "",
       "columns": {
         "_order": {
@@ -6356,8 +6719,8 @@
         }
       },
       "indexes": {
-        "_posts_v_version_populated_authors_order_idx": {
-          "name": "_posts_v_version_populated_authors_order_idx",
+        "_insights_v_version_populated_authors_order_idx": {
+          "name": "_insights_v_version_populated_authors_order_idx",
           "columns": [
             {
               "expression": "_order",
@@ -6371,8 +6734,8 @@
           "method": "btree",
           "with": {}
         },
-        "_posts_v_version_populated_authors_parent_id_idx": {
-          "name": "_posts_v_version_populated_authors_parent_id_idx",
+        "_insights_v_version_populated_authors_parent_id_idx": {
+          "name": "_insights_v_version_populated_authors_parent_id_idx",
           "columns": [
             {
               "expression": "_parent_id",
@@ -6388,10 +6751,10 @@
         }
       },
       "foreignKeys": {
-        "_posts_v_version_populated_authors_parent_id_fk": {
-          "name": "_posts_v_version_populated_authors_parent_id_fk",
-          "tableFrom": "_posts_v_version_populated_authors",
-          "tableTo": "_posts_v",
+        "_insights_v_version_populated_authors_parent_id_fk": {
+          "name": "_insights_v_version_populated_authors_parent_id_fk",
+          "tableFrom": "_insights_v_version_populated_authors",
+          "tableTo": "_insights_v",
           "columnsFrom": ["_parent_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
@@ -6404,8 +6767,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public._posts_v": {
-      "name": "_posts_v",
+    "public._insights_v": {
+      "name": "_insights_v",
       "schema": "",
       "columns": {
         "id": {
@@ -6425,6 +6788,13 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": false
+        },
+        "version_featured": {
+          "name": "version_featured",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
         },
         "version_published_at": {
           "name": "version_published_at",
@@ -6446,7 +6816,7 @@
         },
         "version__status": {
           "name": "version__status",
-          "type": "enum__posts_v_version_status",
+          "type": "enum__insights_v_version_status",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": false,
@@ -6474,7 +6844,7 @@
         },
         "published_locale": {
           "name": "published_locale",
-          "type": "enum__posts_v_published_locale",
+          "type": "enum__insights_v_published_locale",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": false
@@ -6493,8 +6863,8 @@
         }
       },
       "indexes": {
-        "_posts_v_parent_idx": {
-          "name": "_posts_v_parent_idx",
+        "_insights_v_parent_idx": {
+          "name": "_insights_v_parent_idx",
           "columns": [
             {
               "expression": "parent_id",
@@ -6508,8 +6878,8 @@
           "method": "btree",
           "with": {}
         },
-        "_posts_v_version_version_hero_image_idx": {
-          "name": "_posts_v_version_version_hero_image_idx",
+        "_insights_v_version_version_hero_image_idx": {
+          "name": "_insights_v_version_version_hero_image_idx",
           "columns": [
             {
               "expression": "version_hero_image_id",
@@ -6523,8 +6893,8 @@
           "method": "btree",
           "with": {}
         },
-        "_posts_v_version_version_updated_at_idx": {
-          "name": "_posts_v_version_version_updated_at_idx",
+        "_insights_v_version_version_updated_at_idx": {
+          "name": "_insights_v_version_version_updated_at_idx",
           "columns": [
             {
               "expression": "version_updated_at",
@@ -6538,8 +6908,8 @@
           "method": "btree",
           "with": {}
         },
-        "_posts_v_version_version_created_at_idx": {
-          "name": "_posts_v_version_version_created_at_idx",
+        "_insights_v_version_version_created_at_idx": {
+          "name": "_insights_v_version_version_created_at_idx",
           "columns": [
             {
               "expression": "version_created_at",
@@ -6553,8 +6923,8 @@
           "method": "btree",
           "with": {}
         },
-        "_posts_v_version_version__status_idx": {
-          "name": "_posts_v_version_version__status_idx",
+        "_insights_v_version_version__status_idx": {
+          "name": "_insights_v_version_version__status_idx",
           "columns": [
             {
               "expression": "version__status",
@@ -6568,8 +6938,8 @@
           "method": "btree",
           "with": {}
         },
-        "_posts_v_created_at_idx": {
-          "name": "_posts_v_created_at_idx",
+        "_insights_v_created_at_idx": {
+          "name": "_insights_v_created_at_idx",
           "columns": [
             {
               "expression": "created_at",
@@ -6583,8 +6953,8 @@
           "method": "btree",
           "with": {}
         },
-        "_posts_v_updated_at_idx": {
-          "name": "_posts_v_updated_at_idx",
+        "_insights_v_updated_at_idx": {
+          "name": "_insights_v_updated_at_idx",
           "columns": [
             {
               "expression": "updated_at",
@@ -6598,8 +6968,8 @@
           "method": "btree",
           "with": {}
         },
-        "_posts_v_snapshot_idx": {
-          "name": "_posts_v_snapshot_idx",
+        "_insights_v_snapshot_idx": {
+          "name": "_insights_v_snapshot_idx",
           "columns": [
             {
               "expression": "snapshot",
@@ -6613,8 +6983,8 @@
           "method": "btree",
           "with": {}
         },
-        "_posts_v_published_locale_idx": {
-          "name": "_posts_v_published_locale_idx",
+        "_insights_v_published_locale_idx": {
+          "name": "_insights_v_published_locale_idx",
           "columns": [
             {
               "expression": "published_locale",
@@ -6628,8 +6998,8 @@
           "method": "btree",
           "with": {}
         },
-        "_posts_v_latest_idx": {
-          "name": "_posts_v_latest_idx",
+        "_insights_v_latest_idx": {
+          "name": "_insights_v_latest_idx",
           "columns": [
             {
               "expression": "latest",
@@ -6643,8 +7013,8 @@
           "method": "btree",
           "with": {}
         },
-        "_posts_v_autosave_idx": {
-          "name": "_posts_v_autosave_idx",
+        "_insights_v_autosave_idx": {
+          "name": "_insights_v_autosave_idx",
           "columns": [
             {
               "expression": "autosave",
@@ -6660,18 +7030,18 @@
         }
       },
       "foreignKeys": {
-        "_posts_v_parent_id_posts_id_fk": {
-          "name": "_posts_v_parent_id_posts_id_fk",
-          "tableFrom": "_posts_v",
-          "tableTo": "posts",
+        "_insights_v_parent_id_insights_id_fk": {
+          "name": "_insights_v_parent_id_insights_id_fk",
+          "tableFrom": "_insights_v",
+          "tableTo": "insights",
           "columnsFrom": ["parent_id"],
           "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
-        "_posts_v_version_hero_image_id_media_id_fk": {
-          "name": "_posts_v_version_hero_image_id_media_id_fk",
-          "tableFrom": "_posts_v",
+        "_insights_v_version_hero_image_id_media_id_fk": {
+          "name": "_insights_v_version_hero_image_id_media_id_fk",
+          "tableFrom": "_insights_v",
           "tableTo": "media",
           "columnsFrom": ["version_hero_image_id"],
           "columnsTo": ["id"],
@@ -6685,8 +7055,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public._posts_v_locales": {
-      "name": "_posts_v_locales",
+    "public._insights_v_locales": {
+      "name": "_insights_v_locales",
       "schema": "",
       "columns": {
         "version_title": {
@@ -6753,8 +7123,8 @@
         }
       },
       "indexes": {
-        "_posts_v_version_meta_version_meta_image_idx": {
-          "name": "_posts_v_version_meta_version_meta_image_idx",
+        "_insights_v_version_meta_version_meta_image_idx": {
+          "name": "_insights_v_version_meta_version_meta_image_idx",
           "columns": [
             {
               "expression": "version_meta_image_id",
@@ -6774,8 +7144,8 @@
           "method": "btree",
           "with": {}
         },
-        "_posts_v_version_version_slug_idx": {
-          "name": "_posts_v_version_version_slug_idx",
+        "_insights_v_version_version_slug_idx": {
+          "name": "_insights_v_version_version_slug_idx",
           "columns": [
             {
               "expression": "version_slug",
@@ -6795,8 +7165,8 @@
           "method": "btree",
           "with": {}
         },
-        "_posts_v_locales_locale_parent_id_unique": {
-          "name": "_posts_v_locales_locale_parent_id_unique",
+        "_insights_v_locales_locale_parent_id_unique": {
+          "name": "_insights_v_locales_locale_parent_id_unique",
           "columns": [
             {
               "expression": "_locale",
@@ -6818,19 +7188,19 @@
         }
       },
       "foreignKeys": {
-        "_posts_v_locales_version_meta_image_id_media_id_fk": {
-          "name": "_posts_v_locales_version_meta_image_id_media_id_fk",
-          "tableFrom": "_posts_v_locales",
+        "_insights_v_locales_version_meta_image_id_media_id_fk": {
+          "name": "_insights_v_locales_version_meta_image_id_media_id_fk",
+          "tableFrom": "_insights_v_locales",
           "tableTo": "media",
           "columnsFrom": ["version_meta_image_id"],
           "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
-        "_posts_v_locales_parent_id_fk": {
-          "name": "_posts_v_locales_parent_id_fk",
-          "tableFrom": "_posts_v_locales",
-          "tableTo": "_posts_v",
+        "_insights_v_locales_parent_id_fk": {
+          "name": "_insights_v_locales_parent_id_fk",
+          "tableFrom": "_insights_v_locales",
+          "tableTo": "_insights_v",
           "columnsFrom": ["_parent_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
@@ -6843,8 +7213,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public._posts_v_rels": {
-      "name": "_posts_v_rels",
+    "public._insights_v_rels": {
+      "name": "_insights_v_rels",
       "schema": "",
       "columns": {
         "id": {
@@ -6871,8 +7241,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "posts_id": {
-          "name": "posts_id",
+        "insights_id": {
+          "name": "insights_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -6891,8 +7261,8 @@
         }
       },
       "indexes": {
-        "_posts_v_rels_order_idx": {
-          "name": "_posts_v_rels_order_idx",
+        "_insights_v_rels_order_idx": {
+          "name": "_insights_v_rels_order_idx",
           "columns": [
             {
               "expression": "order",
@@ -6906,8 +7276,8 @@
           "method": "btree",
           "with": {}
         },
-        "_posts_v_rels_parent_idx": {
-          "name": "_posts_v_rels_parent_idx",
+        "_insights_v_rels_parent_idx": {
+          "name": "_insights_v_rels_parent_idx",
           "columns": [
             {
               "expression": "parent_id",
@@ -6921,8 +7291,8 @@
           "method": "btree",
           "with": {}
         },
-        "_posts_v_rels_path_idx": {
-          "name": "_posts_v_rels_path_idx",
+        "_insights_v_rels_path_idx": {
+          "name": "_insights_v_rels_path_idx",
           "columns": [
             {
               "expression": "path",
@@ -6936,11 +7306,11 @@
           "method": "btree",
           "with": {}
         },
-        "_posts_v_rels_posts_id_idx": {
-          "name": "_posts_v_rels_posts_id_idx",
+        "_insights_v_rels_insights_id_idx": {
+          "name": "_insights_v_rels_insights_id_idx",
           "columns": [
             {
-              "expression": "posts_id",
+              "expression": "insights_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -6951,8 +7321,8 @@
           "method": "btree",
           "with": {}
         },
-        "_posts_v_rels_categories_id_idx": {
-          "name": "_posts_v_rels_categories_id_idx",
+        "_insights_v_rels_categories_id_idx": {
+          "name": "_insights_v_rels_categories_id_idx",
           "columns": [
             {
               "expression": "categories_id",
@@ -6966,8 +7336,8 @@
           "method": "btree",
           "with": {}
         },
-        "_posts_v_rels_users_id_idx": {
-          "name": "_posts_v_rels_users_id_idx",
+        "_insights_v_rels_users_id_idx": {
+          "name": "_insights_v_rels_users_id_idx",
           "columns": [
             {
               "expression": "users_id",
@@ -6983,36 +7353,36 @@
         }
       },
       "foreignKeys": {
-        "_posts_v_rels_parent_fk": {
-          "name": "_posts_v_rels_parent_fk",
-          "tableFrom": "_posts_v_rels",
-          "tableTo": "_posts_v",
+        "_insights_v_rels_parent_fk": {
+          "name": "_insights_v_rels_parent_fk",
+          "tableFrom": "_insights_v_rels",
+          "tableTo": "_insights_v",
           "columnsFrom": ["parent_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "_posts_v_rels_posts_fk": {
-          "name": "_posts_v_rels_posts_fk",
-          "tableFrom": "_posts_v_rels",
-          "tableTo": "posts",
-          "columnsFrom": ["posts_id"],
+        "_insights_v_rels_insights_fk": {
+          "name": "_insights_v_rels_insights_fk",
+          "tableFrom": "_insights_v_rels",
+          "tableTo": "insights",
+          "columnsFrom": ["insights_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "_posts_v_rels_categories_fk": {
-          "name": "_posts_v_rels_categories_fk",
-          "tableFrom": "_posts_v_rels",
+        "_insights_v_rels_categories_fk": {
+          "name": "_insights_v_rels_categories_fk",
+          "tableFrom": "_insights_v_rels",
           "tableTo": "categories",
           "columnsFrom": ["categories_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "_posts_v_rels_users_fk": {
-          "name": "_posts_v_rels_users_fk",
-          "tableFrom": "_posts_v_rels",
+        "_insights_v_rels_users_fk": {
+          "name": "_insights_v_rels_users_fk",
+          "tableFrom": "_insights_v_rels",
           "tableTo": "users",
           "columnsFrom": ["users_id"],
           "columnsTo": ["id"],
@@ -8284,7 +8654,8 @@
           "name": "collection_slug",
           "type": "varchar",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": "'pages'"
         },
         "where": {
           "name": "where",
@@ -8505,7 +8876,8 @@
           "name": "collection_slug",
           "type": "varchar",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": "'pages'"
         },
         "import_mode": {
           "name": "import_mode",
@@ -8815,8 +9187,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "posts_id": {
-          "name": "posts_id",
+        "insights_id": {
+          "name": "insights_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -8883,11 +9255,11 @@
           "method": "btree",
           "with": {}
         },
-        "redirects_rels_posts_id_idx": {
-          "name": "redirects_rels_posts_id_idx",
+        "redirects_rels_insights_id_idx": {
+          "name": "redirects_rels_insights_id_idx",
           "columns": [
             {
-              "expression": "posts_id",
+              "expression": "insights_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -8918,11 +9290,11 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "redirects_rels_posts_fk": {
-          "name": "redirects_rels_posts_fk",
+        "redirects_rels_insights_fk": {
+          "name": "redirects_rels_insights_fk",
           "tableFrom": "redirects_rels",
-          "tableTo": "posts",
-          "columnsFrom": ["posts_id"],
+          "tableTo": "insights",
+          "columnsFrom": ["insights_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -11623,8 +11995,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "posts_id": {
-          "name": "posts_id",
+        "insights_id": {
+          "name": "insights_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -11676,11 +12048,11 @@
           "method": "btree",
           "with": {}
         },
-        "search_rels_posts_id_idx": {
-          "name": "search_rels_posts_id_idx",
+        "search_rels_insights_id_idx": {
+          "name": "search_rels_insights_id_idx",
           "columns": [
             {
-              "expression": "posts_id",
+              "expression": "insights_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -11702,11 +12074,11 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "search_rels_posts_fk": {
-          "name": "search_rels_posts_fk",
+        "search_rels_insights_fk": {
+          "name": "search_rels_insights_fk",
           "tableFrom": "search_rels",
-          "tableTo": "posts",
-          "columnsFrom": ["posts_id"],
+          "tableTo": "insights",
+          "columnsFrom": ["insights_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -12429,8 +12801,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "posts_id": {
-          "name": "posts_id",
+        "insights_id": {
+          "name": "insights_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -12551,11 +12923,11 @@
           "method": "btree",
           "with": {}
         },
-        "payload_locked_documents_rels_posts_id_idx": {
-          "name": "payload_locked_documents_rels_posts_id_idx",
+        "payload_locked_documents_rels_insights_id_idx": {
+          "name": "payload_locked_documents_rels_insights_id_idx",
           "columns": [
             {
-              "expression": "posts_id",
+              "expression": "insights_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -12721,11 +13093,11 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "payload_locked_documents_rels_posts_fk": {
-          "name": "payload_locked_documents_rels_posts_fk",
+        "payload_locked_documents_rels_insights_fk": {
+          "name": "payload_locked_documents_rels_insights_fk",
           "tableFrom": "payload_locked_documents_rels",
-          "tableTo": "posts",
-          "columnsFrom": ["posts_id"],
+          "tableTo": "insights",
+          "columnsFrom": ["insights_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -13624,8 +13996,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "posts_id": {
-          "name": "posts_id",
+        "insights_id": {
+          "name": "insights_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -13692,11 +14064,11 @@
           "method": "btree",
           "with": {}
         },
-        "header_rels_posts_id_idx": {
-          "name": "header_rels_posts_id_idx",
+        "header_rels_insights_id_idx": {
+          "name": "header_rels_insights_id_idx",
           "columns": [
             {
-              "expression": "posts_id",
+              "expression": "insights_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -13727,11 +14099,11 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "header_rels_posts_fk": {
-          "name": "header_rels_posts_fk",
+        "header_rels_insights_fk": {
+          "name": "header_rels_insights_fk",
           "tableFrom": "header_rels",
-          "tableTo": "posts",
-          "columnsFrom": ["posts_id"],
+          "tableTo": "insights",
+          "columnsFrom": ["insights_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -14072,8 +14444,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "posts_id": {
-          "name": "posts_id",
+        "insights_id": {
+          "name": "insights_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -14140,11 +14512,11 @@
           "method": "btree",
           "with": {}
         },
-        "footer_rels_posts_id_idx": {
-          "name": "footer_rels_posts_id_idx",
+        "footer_rels_insights_id_idx": {
+          "name": "footer_rels_insights_id_idx",
           "columns": [
             {
-              "expression": "posts_id",
+              "expression": "insights_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -14175,11 +14547,11 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "footer_rels_posts_fk": {
-          "name": "footer_rels_posts_fk",
+        "footer_rels_insights_fk": {
+          "name": "footer_rels_insights_fk",
           "tableFrom": "footer_rels",
-          "tableTo": "posts",
-          "columnsFrom": ["posts_id"],
+          "tableTo": "insights",
+          "columnsFrom": ["insights_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -14285,7 +14657,7 @@
     "public.enum_pages_blocks_archive_relation_to": {
       "name": "enum_pages_blocks_archive_relation_to",
       "schema": "public",
-      "values": ["posts"]
+      "values": ["insights"]
     },
     "public.enum_pages_blocks_card_grid_items_link_type": {
       "name": "enum_pages_blocks_card_grid_items_link_type",
@@ -14355,7 +14727,7 @@
     "public.enum__pages_v_blocks_archive_relation_to": {
       "name": "enum__pages_v_blocks_archive_relation_to",
       "schema": "public",
-      "values": ["posts"]
+      "values": ["insights"]
     },
     "public.enum__pages_v_blocks_card_grid_items_link_type": {
       "name": "enum__pages_v_blocks_card_grid_items_link_type",
@@ -14387,18 +14759,18 @@
       "schema": "public",
       "values": ["en", "es"]
     },
-    "public.enum_posts_status": {
-      "name": "enum_posts_status",
+    "public.enum_insights_status": {
+      "name": "enum_insights_status",
       "schema": "public",
       "values": ["draft", "published"]
     },
-    "public.enum__posts_v_version_status": {
-      "name": "enum__posts_v_version_status",
+    "public.enum__insights_v_version_status": {
+      "name": "enum__insights_v_version_status",
       "schema": "public",
       "values": ["draft", "published"]
     },
-    "public.enum__posts_v_published_locale": {
-      "name": "enum__posts_v_published_locale",
+    "public.enum__insights_v_published_locale": {
+      "name": "enum__insights_v_published_locale",
       "schema": "public",
       "values": ["en", "es"]
     },
@@ -14488,6 +14860,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "4194b894-fc92-494c-bfa5-f9991b668827",
+  "id": "000e20b5-8836-46f9-990e-9a3609b21464",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }

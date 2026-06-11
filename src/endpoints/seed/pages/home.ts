@@ -475,76 +475,17 @@ export const seedHome = async (
   }
 
   const insightsBlock = {
-    blockType: 'archive' as const,
-    blockName: 'Insights — Home',
-    populateBy: 'selection' as const,
-    selectedDocs: postIds
-      .slice(0, 4)
-      .map((id) => ({ relationTo: 'posts' as const, value: Number(id) })),
-    introContent: {
-      root: {
-        type: 'root' as const,
-        children: [
-          {
-            type: 'heading',
-            children: [
-              {
-                type: 'text',
-                detail: 0,
-                format: 0,
-                mode: 'normal',
-                style: '',
-                text: 'What brands need to know before showing up in the right place.',
-                version: 1,
-              },
-            ],
-            direction: 'ltr' as const,
-            format: '' as const,
-            indent: 0,
-            tag: 'h2',
-            version: 1,
-          },
-        ],
-        direction: 'ltr' as const,
-        format: '' as const,
-        indent: 0,
-        version: 1,
-      },
-    },
+    blockType: 'insightsShowcase' as const,
+    blockName: 'Insights Showcase — Home',
+    eyebrow: 'INSIGHTS',
+    heading: 'What brands need to know before showing up in the right place.',
   }
 
   const insightsBlockEs = {
-    ...insightsBlock,
-    introContent: {
-      root: {
-        type: 'root' as const,
-        children: [
-          {
-            type: 'heading',
-            children: [
-              {
-                type: 'text',
-                detail: 0,
-                format: 0,
-                mode: 'normal',
-                style: '',
-                text: 'Lo que las marcas deben saber antes de aparecer en el lugar correcto.',
-                version: 1,
-              },
-            ],
-            direction: 'ltr' as const,
-            format: '' as const,
-            indent: 0,
-            tag: 'h2',
-            version: 1,
-          },
-        ],
-        direction: 'ltr' as const,
-        format: '' as const,
-        indent: 0,
-        version: 1,
-      },
-    },
+    blockType: 'insightsShowcase' as const,
+    blockName: 'Insights Showcase — Home',
+    eyebrow: 'INSIGHTS',
+    heading: 'Lo que las marcas deben saber antes de aparecer en el lugar correcto.',
   }
 
   const ctaBlock = {

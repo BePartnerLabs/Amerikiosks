@@ -2,17 +2,17 @@
 import Link from 'next/link'
 import type React from 'react'
 import { Media } from '@/components/Media'
-import type { Post } from '@/payload-types'
+import type { Insight } from '@/payload-types'
 import useClickableCard from '@/utilities/useClickableCard'
 import './styles.css'
 
-export type CardPostData = Pick<Post, 'slug' | 'categories' | 'meta' | 'title'>
+export type CardPostData = Pick<Insight, 'slug' | 'categories' | 'meta' | 'title'>
 
 export const Card: React.FC<{
   className?: string
   doc?: CardPostData
   featured?: boolean
-  relationTo?: 'posts'
+  relationTo?: 'insights'
   showCategories?: boolean
   title?: string
 }> = (props) => {
