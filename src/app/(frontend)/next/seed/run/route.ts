@@ -16,7 +16,7 @@ import { seedWhereItWorks } from '@/endpoints/seed/pages/where-it-works'
 import { seedWhyAmerikiosks } from '@/endpoints/seed/pages/why-amerikiosks'
 import { seedPartners } from '@/endpoints/seed/partners'
 
-export const maxDuration = 120
+export const maxDuration = 300
 
 const parts: Record<
   string,
@@ -71,6 +71,7 @@ export async function POST(req: Request): Promise<Response> {
       'image-post1',
       'image-post2',
       'image-post3',
+      'image-post4',
       'partner-cvs',
       'partner-hilton',
       'partner-holiday-inn',
