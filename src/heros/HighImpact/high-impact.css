@@ -101,6 +101,28 @@
   border-radius: var(--ak-radius);
 }
 
+/* ─── Scroll parallax (text drifts up as page scrolls) ─────── */
+@keyframes ak-hero-text-parallax {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-20%);
+    opacity: 0;
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .ak-hero-home__content {
+      animation: ak-hero-text-parallax linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0px 60vh;
+    }
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .ak-hero-home__content > * {
     animation: ak-fade-up 500ms ease-out both;
