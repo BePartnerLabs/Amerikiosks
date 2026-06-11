@@ -7,7 +7,7 @@ import { seed } from '@/endpoints/seed'
 import { seedFooter } from '@/endpoints/seed/footer'
 import { seedHeader } from '@/endpoints/seed/header'
 import { seedPosts } from '@/endpoints/seed/insights'
-import { seedAudiencePages } from '@/endpoints/seed/pages/audience'
+import { seedAudiencePages, seedWhoItsFor } from '@/endpoints/seed/pages/audience'
 import { seedCaseStudies } from '@/endpoints/seed/pages/case-studies'
 import { seedContact } from '@/endpoints/seed/pages/contact'
 import { seedForBrands } from '@/endpoints/seed/pages/for-brands'
@@ -27,11 +27,13 @@ const parts: Record<
   ) => Promise<void>
 > = {
   audience: async (payload, req) => {
-    await seedAudiencePages(payload, req)
+    const whoItsForId = await seedWhoItsFor(payload, req)
+    await seedAudiencePages(payload, req, whoItsForId)
   },
   contact: seedContact,
   home: async (payload, req) => {
-    const { pageIds, mediaIds } = await seedAudiencePages(payload, req)
+    const whoItsForId = await seedWhoItsFor(payload, req)
+    const { pageIds, mediaIds } = await seedAudiencePages(payload, req, whoItsForId)
     const postIds = await seedPosts(payload, req)
     await seedHome(payload, req, pageIds, postIds, mediaIds)
   },

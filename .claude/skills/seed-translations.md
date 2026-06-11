@@ -158,6 +158,29 @@ const ctaBlockEs = {
 
 Do NOT omit `links` from an ES block that has them — Payload will fail required-field validation on the existing EN link rows.
 
+## Hero `links` array — same ID injection rule applies
+
+The hero `links` field (from `linkGroup()`) has the same Drizzle DELETE+INSERT problem as layout block links. If the ES hero passes new link objects without the EN row IDs, Payload deletes the EN rows and inserts new ones — leaving the EN locale with empty `label` and `url`.
+
+`upsertPage` handles this automatically for hero links too: it re-fetches `rawDoc.hero.links` after the EN save, then injects the EN row IDs into the ES hero links before the ES update.
+
+**What this means for you:** always pass the ES hero with translated links — `upsertPage` stamps the IDs:
+
+```ts
+// ES hero — provide translated label/url, upsertPage injects EN row IDs
+hero: {
+  type: 'mediumImpact',
+  media: heroImage.id,
+  richText: { /* ES richText */ },
+  links: [
+    { link: { label: 'Iniciar un programa de marca', type: 'custom', url: '/contact', appearance: 'default' } },
+    { link: { label: 'Ver casos de éxito',           type: 'custom', url: '/insights', appearance: 'outline' } },
+  ],
+},
+```
+
+**Never omit hero links in ES when EN hero has links** — Payload validates required fields (`url`, `label`) for every locale on update, and if you pass `links: []` or omit `links`, the EN link rows lose their localized values.
+
 ## Common mistakes
 
 | Mistake | Fix |
@@ -168,4 +191,5 @@ Do NOT omit `links` from an ES block that has them — Payload will fail require
 | Translating slugs in ES items | Slugs are not localized in this project — use the same EN slug key |
 | Omitting `links` from ES CTA block | Always include ES `links` — `upsertPage` syncs the row IDs automatically |
 | Omitting `hero` from ES when EN hero has links | Payload validates hero link `url`+`label` for every locale on update — always pass ES hero with translated links |
+| Hero buttons empty in EN after seeding | ES hero links were passed without EN row IDs — Drizzle deleted EN rows. `upsertPage` now injects IDs automatically; always pass ES hero links so it has something to merge |
 | Updating a page whose hero type differs from stub | Delete the stub first (see "Deleting stub pages" section), then upsertPage creates fresh |

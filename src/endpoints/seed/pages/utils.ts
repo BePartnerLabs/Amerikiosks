@@ -44,9 +44,9 @@ export const upsertPage = async (
           req: { ...req, locale: 'en' } as PayloadRequest,
         })
 
-  const { title: esTitle, slug: esSlug, layout: _esLayoutInput, ...esExtra } = es
+  const { title: esTitle, slug: esSlug, layout: _esLayoutInput, hero: esHeroInput, ...esExtra } = es
 
-  // Re-fetch with depth:0 to get raw block UUIDs for the ES update.
+  // Re-fetch with depth:0 to get raw row UUIDs for the ES update (layout blocks + hero links).
   const rawDoc = await payload.findByID({
     collection: 'pages',
     id: doc.id,
@@ -54,6 +54,19 @@ export const upsertPage = async (
     locale: 'en',
   })
   const enLayout = (rawDoc.layout ?? []) as PageLayoutBlock[]
+
+  // Hero links — inject EN row IDs so Drizzle doesn't DELETE+INSERT and wipe EN locale values.
+  // link.label and link.url are localized, so we carry the ES translations but stamp the EN IDs.
+  const enHeroLinks = ((rawDoc.hero as Record<string, unknown>)?.links ?? []) as Array<
+    Record<string, unknown>
+  >
+  const esHero = esHeroInput as Record<string, unknown> | undefined
+  const esHeroLinks = (esHero?.links ?? []) as Array<Record<string, unknown>>
+  const mergedHeroLinks =
+    esHeroLinks.length > 0
+      ? esHeroLinks.map((esLink, j) => ({ ...esLink, id: enHeroLinks[j]?.id ?? esLink.id }))
+      : esHeroLinks
+  const mergedHero = esHero !== undefined ? { ...esHero, links: mergedHeroLinks } : undefined
   const esLayout = (_esLayoutInput ?? []).map((block, i: number) => {
     const enBlock = enLayout[i] as unknown as Record<string, unknown> | undefined
     const blockId = enBlock?.id ?? (block as unknown as Record<string, unknown>).id
@@ -144,9 +157,10 @@ export const upsertPage = async (
       slug: esSlug,
       _status: 'published' as const,
       ...esExtra,
+      ...(mergedHero !== undefined ? { hero: mergedHero as Record<string, unknown> } : {}),
       // layout is not localized — only pass it when ES blocks need localized field updates.
       // Never pass layout: [] here as it would wipe the EN layout (shared across locales).
-      ...(esLayout.length > 0 ? { layout: esLayout as any } : {}),
+      ...(esLayout.length > 0 ? { layout: esLayout as Record<string, unknown>[] } : {}),
     },
     req: { ...req, locale: 'es' } as PayloadRequest,
   })

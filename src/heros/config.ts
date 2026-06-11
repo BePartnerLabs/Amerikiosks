@@ -82,16 +82,6 @@ export const hero: Field = {
       required: false,
     },
     {
-      name: 'breadcrumb',
-      type: 'text',
-      label: 'Breadcrumb',
-      localized: true,
-      admin: {
-        condition: (_, { type } = {}) => ['mediumImpact', 'lowImpact'].includes(type),
-        description: 'e.g. "Home / Who it\'s for / For brands"',
-      },
-    },
-    {
       name: 'tags',
       type: 'array',
       label: 'Tags',

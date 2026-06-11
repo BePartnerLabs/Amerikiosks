@@ -1,5 +1,5 @@
 import type { Payload, PayloadRequest } from 'payload'
-import { seedAudiencePages } from './audience'
+import { seedAudiencePages, seedWhoItsFor } from './audience'
 import { seedCaseStudies } from './case-studies'
 import { seedContact } from './contact'
 import { seedForBrands } from './for-brands'
@@ -13,8 +13,12 @@ export const seedPages = async (
   req: PayloadRequest,
   { postIds = [] }: { postIds?: string[] } = {},
 ): Promise<void> => {
+  // seedWhoItsFor first — parent page must exist before seedForBrands sets parent FK
+  // seedForBrands before seedAudiencePages — so audience loop finds for-brands and skips stub
+  // (avoids stale FK in seedHome when seedForBrands deletes+recreates the page)
+  const whoItsForId = await seedWhoItsFor(payload, req)
   await seedForBrands(payload, req)
-  const { pageIds, mediaIds } = await seedAudiencePages(payload, req)
+  const { pageIds, mediaIds } = await seedAudiencePages(payload, req, whoItsForId)
   await seedHome(payload, req, pageIds, postIds, mediaIds)
   await seedSolutions(payload, req)
   await seedWhereItWorks(payload, req)

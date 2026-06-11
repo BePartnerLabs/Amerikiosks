@@ -45,21 +45,56 @@ const audiencePages = [
 export type AudienceSeedResult = {
   pageIds: Record<string, string>
   mediaIds: Record<string, number>
+  whoItsForId: number
+}
+
+// Idempotent: creates or updates the "Who it's for" parent page.
+// Called before seedForBrands so the parent ID is available as a FK.
+export const seedWhoItsFor = async (payload: Payload, req: PayloadRequest): Promise<number> => {
+  payload.logger.info("— Seeding Who it's for parent page...")
+  const doc = await upsertPage(
+    payload,
+    req,
+    {
+      title: "Who it's for",
+      slug: 'who-its-for',
+      hero: { type: 'lowImpact' as const, media: null as never, richText: null },
+      layout: [],
+      _status: 'published' as const,
+      meta: {
+        title: "Who it's for — Amerikiosks",
+        description: 'Find the right Amerikiosks solution for your role.',
+      },
+    },
+    {
+      title: 'Para quién',
+      slug: 'who-its-for',
+      hero: { type: 'lowImpact' as const, links: [] },
+      meta: {
+        title: 'Para quién — Amerikiosks',
+        description: 'Encuentra la solución Amerikiosks adecuada para tu rol.',
+      },
+    },
+  )
+  return doc.id as number
 }
 
 export const seedAudiencePages = async (
   payload: Payload,
   req: PayloadRequest,
+  whoItsForId: number,
 ): Promise<AudienceSeedResult> => {
   payload.logger.info('— Seeding audience sub-pages...')
 
   const pageIds: Record<string, string> = {}
   const mediaIds: Record<string, number> = {}
 
+  pageIds['who-its-for'] = String(whoItsForId)
+
   for (const page of audiencePages) {
     // If the page already exists (fully seeded by its own seed function), just
     // collect its ID — don't overwrite a richer hero with this stub.
-    // Always upload media (idempotent) so mediaIds is always populated
+    // Always upload media (idempotent) so mediaIds is always populated.
     const heroImage = await uploadMedia(
       payload,
       req,
@@ -78,7 +113,7 @@ export const seedAudiencePages = async (
     })
 
     if (existing.totalDocs > 0) {
-      pageIds[page.slug] = String(existing.docs[0]!.id)
+      pageIds[page.slug] = String(existing.docs[0]?.id)
       payload.logger.info(`  Audience page exists, skipping stub: ${page.slug}`)
       continue
     }
@@ -89,6 +124,7 @@ export const seedAudiencePages = async (
       {
         title: page.title,
         slug: page.slug,
+        parent: whoItsForId,
         hero: { type: 'lowImpact' as const, media: heroImage.id, richText: null },
         layout: [],
         meta: {
@@ -111,5 +147,5 @@ export const seedAudiencePages = async (
     pageIds[page.slug] = String(result.id)
   }
 
-  return { pageIds, mediaIds }
+  return { pageIds, mediaIds, whoItsForId }
 }

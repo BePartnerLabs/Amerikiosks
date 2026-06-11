@@ -117,6 +117,16 @@ img {
   --btn-background: color-mix(in srgb, var(--bp-primary) 85%, black);
 }
 
+.bp-btn--outline {
+  --btn-background: transparent;
+  --btn-color: var(--bp-primary-fg);
+  --btn-border: 1px solid currentColor;
+}
+
+.bp-btn--outline:hover {
+  --btn-background: color-mix(in srgb, currentColor 10%, transparent);
+}
+
 /* ─── Section scroll reveal ────────────────────────────────── */
 /* opacity-only — no translateY to avoid gaps between full-bleed sections */
 @keyframes ak-section-reveal {
@@ -141,4 +151,9 @@ img {
       animation-range: entry 0% cover 20%;
     }
   }
+}
+
+/* ── Page-specific hero background overrides ─────────────────────── */
+[data-slug="for-brands"] .ak-hero-interior {
+  --hero-interior-bg: var(--ak-surface-inverse-raised);
 }

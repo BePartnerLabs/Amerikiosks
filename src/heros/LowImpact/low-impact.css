@@ -1,27 +1,29 @@
 .ak-hero-page {
-  --_bg-color: var(--bg-color, var(--ak-dark-bg));
+  --_bg-color: var(--hero-page-bg, var(--ak-surface-inverse));
+  --_color: var(--hero-page-color, var(--ak-white));
   background-color: var(--_bg-color);
-  color: #fff;
+  color: var(--_color);
 }
 
 .ak-hero-page__inner {
-  padding-block: var(--bp-space-10, 2.5rem);
+  padding-block: var(--bp-space-10);
   display: flex;
   flex-direction: column;
   gap: var(--bp-space-5, 1.25rem);
 }
 
 .ak-hero-page__breadcrumb {
+  --_breadcrumb-color: var(--hero-page-breadcrumb-color, var(--ak-dark-fg-subtle));
   margin: 0;
-  font-size: var(--bp-text-sm, 0.875rem);
-  color: var(--ak-dark-fg-subtle);
+  font-size: var(--bp-text-sm);
+  color: var(--_breadcrumb-color);
   letter-spacing: 0.02em;
 }
 
 .ak-hero-page__heading-row {
   display: flex;
   align-items: flex-start;
-  gap: var(--bp-space-4, 1rem);
+  gap: var(--bp-space-4);
 }
 
 .ak-hero-page__accent {
@@ -34,37 +36,41 @@
 
 .ak-hero-page__heading-row h1,
 .ak-hero-page__heading-row h2 {
+  --_heading-color: var(--hero-page-heading-color, var(--ak-white));
   margin: 0;
-  font-family: var(--font-poppins, sans-serif);
-  font-size: clamp(1.75rem, 3vw + 1rem, 3rem);
-  font-weight: 800;
-  line-height: 1.1;
-  color: #fff;
+  font-family: var(--ak-title-1-font-family, sans-serif);
+  font-size: clamp(1.75rem, 3vw + 1rem, var(--ak-title-1-font-size, 3rem));
+  font-weight: var(--ak-title-1-font-weight, 600);
+  line-height: var(--ak-title-1-line-height, 1.1);
+  color: var(--_heading-color);
 }
 
 .ak-hero-page__subtitle {
+  --_subtitle-color: var(--hero-page-subtitle-color, var(--ak-dark-fg-muted));
   margin: 0;
-  font-size: var(--bp-text-base, 1rem);
+  font-size: var(--bp-text-base);
   line-height: 1.65;
-  color: var(--ak-dark-fg-muted);
+  color: var(--_subtitle-color);
   max-width: 56ch;
 }
 
 .ak-hero-page__tags {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--bp-space-2, 0.5rem);
+  gap: var(--bp-space-2);
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
 .ak-hero-page__tag {
+  --_tag-color: var(--hero-page-tag-color, var(--ak-dark-fg-muted));
+  --_tag-border-color: var(--hero-page-tag-border-color, var(--ak-dark-border));
   display: inline-block;
-  padding: var(--bp-space-1, 0.25rem) var(--bp-space-3, 0.75rem);
-  font-size: var(--bp-text-xs, 0.75rem);
+  padding: var(--bp-space-1) var(--bp-space-3);
+  font-size: var(--bp-text-xs);
   font-weight: 500;
-  color: var(--ak-dark-fg-muted);
-  border: 1px solid var(--ak-dark-border);
-  border-radius: var(--bp-radius-full, 9999px);
+  color: var(--_tag-color);
+  border: var(--md-semantic-border-width-default) solid var(--_tag-border-color);
+  border-radius: var(--bp-radius-full);
 }

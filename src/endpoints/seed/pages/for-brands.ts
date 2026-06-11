@@ -93,6 +93,16 @@ const richText = (text: string) => ({
 export const seedForBrands = async (payload: Payload, req: PayloadRequest): Promise<void> => {
   payload.logger.info('— Seeding For Brands page (machines, FAQs, page)...')
 
+  // seedWhoItsFor always runs before this fn — guaranteed to exist; fall back gracefully for standalone runs
+  const whoItsForResult = await payload.find({
+    collection: 'pages',
+    where: { slug: { equals: 'who-its-for' } },
+    limit: 1,
+    depth: 0,
+    req,
+  })
+  const whoItsForId = whoItsForResult.totalDocs > 0 ? whoItsForResult.docs[0]?.id : undefined
+
   // Delete any existing for-brands page so upsertPage creates fresh (avoids
   // validation errors when the stub was previously created with a different hero type)
   const existingPage = await payload.find({
@@ -104,7 +114,7 @@ export const seedForBrands = async (payload: Payload, req: PayloadRequest): Prom
   if (existingPage.totalDocs > 0) {
     await payload.delete({
       collection: 'pages',
-      id: existingPage.docs[0]!.id,
+      id: existingPage.docs[0]?.id as number,
       overrideAccess: true,
       req,
     })
@@ -134,7 +144,7 @@ export const seedForBrands = async (payload: Payload, req: PayloadRequest): Prom
     if (existing.totalDocs > 0) {
       const updated = await payload.update({
         collection: 'machines',
-        id: existing.docs[0]!.id,
+        id: existing.docs[0]?.id as number,
         locale: 'en',
         data: { name: m.name, tagline: m.tagline, image: image.id, tags: [{ label: m.tag }] },
         req: { ...req, locale: 'en' } as PayloadRequest,
@@ -228,6 +238,7 @@ export const seedForBrands = async (payload: Payload, req: PayloadRequest): Prom
     {
       title: 'For Brands',
       slug: 'for-brands',
+      ...(whoItsForId !== undefined ? { parent: whoItsForId } : {}),
       hero: {
         type: 'mediumImpact',
         media: heroImage.id,
@@ -278,6 +289,11 @@ export const seedForBrands = async (payload: Payload, req: PayloadRequest): Prom
               appearance: 'outline',
             },
           },
+        ],
+        tags: [
+          { label: 'Brand-controlled' },
+          { label: 'Fully managed' },
+          { label: 'Built to learn' },
         ],
       },
       layout: [
