@@ -158,6 +158,10 @@ img {
   --projects-showcase-card-img-ratio: 424 / 180;
 }
 
+[data-slug^="for-"] {
+  background: linear-gradient(180deg, #ffffff 0%, #ecf2ff 100%);
+}
+
 [data-slug^="for-"] .ak-formats-grid {
   --formats-grid-background: linear-gradient(180deg, #ecf2ff 0%, #ffffff 100%);
 }
