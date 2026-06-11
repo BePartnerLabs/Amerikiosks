@@ -49,7 +49,7 @@ jobs:
         env:
           CI: true
           PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
-          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
   deploy:
     name: Deploy to Vercel (${{ github.event_name == 'release' && 'production' || 'preview' }})
