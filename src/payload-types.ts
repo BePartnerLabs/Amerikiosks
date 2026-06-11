@@ -245,6 +245,7 @@ export interface Page {
         | InsightsShowcaseBlock
         | FormatsGridBlock
         | ProcessStepsBlock
+        | FAQWithFormBlock
       )[]
     | null;
   meta?: {
@@ -1092,6 +1093,34 @@ export interface ProcessStepsBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FAQWithFormBlock".
+ */
+export interface FAQWithFormBlock {
+  heading: string;
+  subheading?: string | null;
+  /**
+   * Pull FAQItems matching these tags, sorted by weight descending.
+   */
+  filterTags: {
+    tag: string;
+    id?: string | null;
+  }[];
+  form: {
+    /**
+     * Heading shown above the form, e.g. "Start a brand program"
+     */
+    heading: string;
+    /**
+     * Odoo API URL for form submission, e.g. https://odoo.example.com/api/leads
+     */
+    odooEndpoint?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'faqWithForm';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "partners".
  */
 export interface Partner {
@@ -1552,6 +1581,7 @@ export interface PagesSelect<T extends boolean = true> {
         insightsShowcase?: T | InsightsShowcaseBlockSelect<T>;
         formatsGrid?: T | FormatsGridBlockSelect<T>;
         processSteps?: T | ProcessStepsBlockSelect<T>;
+        faqWithForm?: T | FAQWithFormBlockSelect<T>;
       };
   meta?:
     | T
@@ -1782,6 +1812,28 @@ export interface ProcessStepsBlockSelect<T extends boolean = true> {
               appearance?: T;
             };
         id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FAQWithFormBlock_select".
+ */
+export interface FAQWithFormBlockSelect<T extends boolean = true> {
+  heading?: T;
+  subheading?: T;
+  filterTags?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
+  form?:
+    | T
+    | {
+        heading?: T;
+        odooEndpoint?: T;
       };
   id?: T;
   blockName?: T;

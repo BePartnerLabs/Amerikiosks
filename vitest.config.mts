@@ -9,5 +9,10 @@ export default defineConfig({
     setupFiles: ['./vitest.setup.ts'],
     include: ['tests/int/**/*.int.spec.ts', 'tests/unit/**/*.test.tsx', 'tests/unit/**/*.test.ts'],
     css: false,
+    server: {
+      deps: {
+        inline: [/@payloadcms/],
+      },
+    },
   },
 })

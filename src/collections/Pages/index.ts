@@ -15,6 +15,7 @@ import { AudienceShowcase } from '../../blocks/AudienceShowcase/config'
 import { CallToAction } from '../../blocks/CallToAction/config'
 import { CardGrid } from '../../blocks/CardGrid/config'
 import { Content } from '../../blocks/Content/config'
+import { FAQWithForm } from '../../blocks/FAQWithForm/config'
 import { FormBlock } from '../../blocks/Form/config'
 import { FormatsGrid } from '../../blocks/FormatsGrid/config'
 import { InsightsShowcase } from '../../blocks/InsightsShowcase/config'
@@ -89,6 +90,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 InsightsShowcase,
                 FormatsGrid,
                 ProcessSteps,
+                FAQWithForm,
               ],
               admin: {
                 initCollapsed: true,

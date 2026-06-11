@@ -5,6 +5,7 @@ import { AudienceShowcaseServer } from '@/blocks/AudienceShowcase/Server'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { CardGridBlock } from '@/blocks/CardGrid/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
+import { FAQWithFormServer } from '@/blocks/FAQWithForm/Server'
 import { FormBlock } from '@/blocks/Form/Component'
 import { FormatsGridServer } from '@/blocks/FormatsGrid/Server'
 import { InsightsShowcaseBlock } from '@/blocks/InsightsShowcase/Component'
@@ -25,6 +26,7 @@ const blockComponents = {
   trustStrip: TrustStripServer,
   formatsGrid: FormatsGridServer,
   processSteps: ProcessStepsBlock,
+  faqWithForm: FAQWithFormServer,
 }
 
 export const RenderBlocks: React.FC<{
