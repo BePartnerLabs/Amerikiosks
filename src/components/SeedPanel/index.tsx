@@ -8,6 +8,7 @@ const PARTS = [
   { key: 'case-studies', label: 'Case Studies' },
   { key: 'why-amerikiosks', label: 'Why Amerikiosks' },
   { key: 'contact', label: 'Contact' },
+  { key: 'for-brands', label: 'For Brands' },
   { key: 'header', label: 'Header' },
   { key: 'footer', label: 'Footer' },
 ]
