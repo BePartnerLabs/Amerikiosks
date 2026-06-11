@@ -9,6 +9,7 @@ import { FormBlock } from '@/blocks/Form/Component'
 import { FormatsGridServer } from '@/blocks/FormatsGrid/Server'
 import { InsightsShowcaseBlock } from '@/blocks/InsightsShowcase/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
+import { ProcessStepsBlock } from '@/blocks/ProcessSteps/Component'
 import { TrustStripServer } from '@/blocks/TrustStrip/Server'
 import type { Page } from '@/payload-types'
 
@@ -23,6 +24,7 @@ const blockComponents = {
   insightsShowcase: InsightsShowcaseBlock,
   trustStrip: TrustStripServer,
   formatsGrid: FormatsGridServer,
+  processSteps: ProcessStepsBlock,
 }
 
 export const RenderBlocks: React.FC<{

@@ -1,0 +1,68 @@
+import {
+  FixedToolbarFeature,
+  InlineToolbarFeature,
+  lexicalEditor,
+} from '@payloadcms/richtext-lexical'
+import type { Block } from 'payload'
+import { linkGroup } from '@/fields/linkGroup'
+
+export const ProcessSteps: Block = {
+  slug: 'processSteps',
+  interfaceName: 'ProcessStepsBlock',
+  imageURL: '/block-previews/process-steps.png',
+  imageAltText: 'Process Steps block — numbered step sequence',
+  labels: { singular: 'Process Steps', plural: 'Process Steps' },
+  fields: [
+    {
+      name: 'eyebrow',
+      type: 'text',
+      localized: true,
+      admin: { description: 'Small label above heading, e.g. "HOW IT WORKS"' },
+    },
+    {
+      name: 'heading',
+      type: 'text',
+      required: true,
+      localized: true,
+    },
+    {
+      name: 'subheading',
+      type: 'text',
+      localized: true,
+    },
+    {
+      name: 'steps',
+      type: 'array',
+      required: true,
+      minRows: 2,
+      maxRows: 8,
+      fields: [
+        {
+          name: 'title',
+          type: 'text',
+          required: true,
+          localized: true,
+        },
+        {
+          name: 'body',
+          type: 'richText',
+          localized: true,
+          editor: lexicalEditor({
+            features: ({ rootFeatures }) => [
+              ...rootFeatures,
+              FixedToolbarFeature(),
+              InlineToolbarFeature(),
+            ],
+          }),
+        },
+      ],
+    },
+    linkGroup({
+      overrides: {
+        name: 'cta',
+        label: 'CTA Button (optional)',
+        maxRows: 1,
+      },
+    }),
+  ],
+}

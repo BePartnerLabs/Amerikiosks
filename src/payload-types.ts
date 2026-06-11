@@ -244,6 +244,7 @@ export interface Page {
         | AudienceShowcaseBlock
         | InsightsShowcaseBlock
         | FormatsGridBlock
+        | ProcessStepsBlock
       )[]
     | null;
   meta?: {
@@ -1033,6 +1034,64 @@ export interface Machine {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProcessStepsBlock".
+ */
+export interface ProcessStepsBlock {
+  /**
+   * Small label above heading, e.g. "HOW IT WORKS"
+   */
+  eyebrow?: string | null;
+  heading: string;
+  subheading?: string | null;
+  steps: {
+    title: string;
+    body?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    id?: string | null;
+  }[];
+  cta?:
+    | {
+        link: {
+          type?: ('reference' | 'custom') | null;
+          newTab?: boolean | null;
+          reference?:
+            | ({
+                relationTo: 'pages';
+                value: number | Page;
+              } | null)
+            | ({
+                relationTo: 'insights';
+                value: number | Insight;
+              } | null);
+          url?: string | null;
+          label: string;
+          /**
+           * Choose how the link should be rendered.
+           */
+          appearance?: ('default' | 'outline') | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'processSteps';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "partners".
  */
 export interface Partner {
@@ -1492,6 +1551,7 @@ export interface PagesSelect<T extends boolean = true> {
         audienceShowcase?: T | AudienceShowcaseBlockSelect<T>;
         insightsShowcase?: T | InsightsShowcaseBlockSelect<T>;
         formatsGrid?: T | FormatsGridBlockSelect<T>;
+        processSteps?: T | ProcessStepsBlockSelect<T>;
       };
   meta?:
     | T
@@ -1688,6 +1748,39 @@ export interface FormatsGridBlockSelect<T extends boolean = true> {
     | T
     | {
         machine?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProcessStepsBlock_select".
+ */
+export interface ProcessStepsBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  subheading?: T;
+  steps?:
+    | T
+    | {
+        title?: T;
+        body?: T;
+        id?: T;
+      };
+  cta?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+              appearance?: T;
+            };
         id?: T;
       };
   id?: T;
