@@ -130,14 +130,14 @@ img {
 
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    .ak-card-grid,
-    .ak-audience-showcase,
-    .ak-insights-showcase,
-    .ak-cta,
-    .ak-content,
-    .ak-media-block {
-      animation: ak-section-reveal 600ms ease-out both;
-      animation-timeline: view();
+    .ak-card-grid__inner,
+    .ak-audience-showcase__inner,
+    .ak-insights-showcase__inner,
+    .ak-cta__inner,
+    .ak-content__columns,
+    .ak-media-block__media {
+      animation: ak-fade-up 600ms ease-out both;
+      animation-timeline: view(block);
       animation-range: entry 0% cover 20%;
     }
   }
