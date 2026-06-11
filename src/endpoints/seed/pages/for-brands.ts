@@ -460,7 +460,114 @@ export const seedForBrands = async (payload: Payload, req: PayloadRequest): Prom
           },
         ],
       },
-      layout: [],
+      layout: [
+        {
+          blockType: 'insightsShowcase',
+          eyebrow: 'MOMENTOS REALES DE MARCA',
+          heading: 'Momentos reales de marca, construidos para vender.',
+        },
+        {
+          blockType: 'cardGrid',
+          variant: 'pillar' as const,
+          eyebrow: 'PARA MARCAS',
+          heading: 'Un programa. Cuatro decisiones que controla tu equipo.',
+          subheading:
+            'Amerikiosks le da a los equipos de marca control sobre dónde aparece la experiencia, cómo se ve, cómo opera y qué se puede aprender antes de escalar.',
+          items: [
+            {
+              eyebrow: 'UBICACIÓN',
+              title: 'Ubícate con intención',
+              body: richText(
+                'Aparece en contextos premium donde la atención, la necesidad y la relevancia de marca ya se encuentran.',
+              ),
+            },
+            {
+              eyebrow: 'EXPRESIÓN',
+              title: 'Controla la experiencia',
+              body: richText(
+                'Wraps, contenido en pantalla, surtido, estrategia de precios y expresión de campaña se mantienen on-brand.',
+              ),
+            },
+            {
+              eyebrow: 'OPERACIONES',
+              title: 'Lanza sin sobrecarga',
+              body: richText(
+                'Instalación, reabastecimiento, coordinación con el venue, servicio y soporte pasan por un solo partner.',
+              ),
+            },
+            {
+              eyebrow: 'APRENDIZAJE',
+              title: 'Aprende antes de escalar',
+              body: richText(
+                'Usa señales de ventas, inventario, ubicación y producto para entender qué merece escala.',
+              ),
+            },
+          ],
+        },
+        {
+          blockType: 'formatsGrid',
+          eyebrow: 'FORMATOS',
+          heading: 'Formatos construidos para tu momento de marca.',
+          filterTags: machines.map((m) => ({ tag: m.tag })),
+        },
+        {
+          blockType: 'processSteps',
+          eyebrow: 'CÓMO FUNCIONA',
+          heading: 'De la primera oportunidad a la operación diaria.',
+          subheading:
+            'Obtienes presencia de retail físico sin construir una operación retail. Amerikiosks planifica, lanza, opera y optimiza el programa con tu equipo.',
+          steps: [
+            {
+              title: 'Define el momento',
+              body: richText(
+                'Definimos tu categoría, audiencia, ajuste al venue, objetivo de campaña y el consumidor que tu marca debe conquistar.',
+              ),
+            },
+            {
+              title: 'Encuentra el contexto',
+              body: richText(
+                'Identificamos venues de alta intención que se ajusten a tu audiencia, producto y comportamiento retail deseado.',
+              ),
+            },
+            {
+              title: 'Diseña la experiencia',
+              body: richText(
+                'El formato de máquina, wrap, contenido en pantalla, surtido, flujo de pago y plan de inventario se integran.',
+              ),
+            },
+            {
+              title: 'Lanza con un solo partner',
+              body: richText(
+                'Amerikiosks coordina la instalación, configuración del venue, flujos de reabastecimiento y soporte en el lanzamiento.',
+              ),
+            },
+            {
+              title: 'Opera y optimiza',
+              body: richText(
+                'Monitoreamos ventas, inventario y rendimiento por ubicación para refinar decisiones de surtido y campaña.',
+              ),
+            },
+          ],
+          cta: [
+            {
+              link: {
+                label: 'Iniciar un programa de marca',
+                type: 'custom',
+                url: '/contact',
+                appearance: 'default',
+              },
+            },
+          ],
+        },
+        {
+          blockType: 'faqWithForm',
+          heading: 'Respuestas antes de que tu marca aparezca.',
+          subheading:
+            'Un formulario enfocado y un FAQ práctico ayudan a calificar el programa correcto sin convertir la página en un flujo de contacto genérico.',
+          filterTags: [{ tag: 'brands' }],
+          form: { heading: 'Iniciar un programa de marca' },
+        },
+      ],
       meta: {
         title: 'Para Marcas — Amerikiosks',
         description:

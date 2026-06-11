@@ -100,7 +100,7 @@ export const seedAudiencePages = async (
       {
         title: page.titleEs,
         slug: page.slug,
-        layout: [],
+        hero: { type: 'lowImpact' as const, links: [] },
         meta: {
           title: `${page.titleEs} — Amerikiosks`,
           description: page.descriptionEs,
