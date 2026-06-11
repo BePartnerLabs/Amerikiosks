@@ -39,7 +39,6 @@ const base: FAQWithFormBlockType & { resolvedFaqs: FaqItem[] } = {
   filterTags: [{ tag: 'brands', id: 'ft1' }],
   form: {
     heading: 'Start a brand program',
-    odooEndpoint: 'https://odoo.example.com/api/leads',
   },
   resolvedFaqs: [
     makeFaqItem('faq-1', 'Do we control pricing?'),

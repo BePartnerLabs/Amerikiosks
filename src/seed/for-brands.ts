@@ -343,7 +343,6 @@ async function seed() {
           filterTags: [{ tag: 'brands' }],
           form: {
             heading: 'Start a brand program',
-            odooEndpoint: process.env.ODOO_ENDPOINT ?? '',
           },
         },
       ],

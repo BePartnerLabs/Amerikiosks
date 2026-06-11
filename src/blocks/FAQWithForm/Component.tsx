@@ -62,10 +62,7 @@ export const FAQWithFormBlock: React.FC<Props> = ({
             </div>
 
             <div className="ak-faq-form__form-side">
-              <BrandForm
-                heading={form?.heading ?? ''}
-                odooEndpoint={form?.odooEndpoint}
-              />
+              <BrandForm heading={form?.heading ?? ''} />
             </div>
           </div>
         </div>

@@ -36,14 +36,6 @@ export const FAQWithForm: Block = {
           localized: true,
           admin: { description: 'Heading shown above the form, e.g. "Start a brand program"' },
         },
-        {
-          name: 'odooEndpoint',
-          type: 'text',
-          admin: {
-            description:
-              'Odoo API URL for form submission, e.g. https://odoo.example.com/api/leads',
-          },
-        },
       ],
     },
   ],

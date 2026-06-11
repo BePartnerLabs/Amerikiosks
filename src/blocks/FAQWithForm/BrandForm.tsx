@@ -15,10 +15,9 @@ type FormValues = {
 
 type Props = {
   heading: string
-  odooEndpoint?: string | null
 }
 
-export const BrandForm: React.FC<Props> = ({ heading, odooEndpoint }) => {
+export const BrandForm: React.FC<Props> = ({ heading }) => {
   const {
     register,
     handleSubmit,
@@ -26,24 +25,9 @@ export const BrandForm: React.FC<Props> = ({ heading, odooEndpoint }) => {
     formState: { errors, isSubmitting, isSubmitSuccessful },
   } = useForm<FormValues>()
 
-  const onSubmit = async (data: FormValues) => {
-    if (!odooEndpoint) return
-    try {
-      const res = await fetch(odooEndpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      })
-      if (!res.ok) throw new Error(await res.text())
-      document.dispatchEvent(new CustomEvent('ga4', { detail: { event: 'brand_form_submit' } }))
-      reset()
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Unknown error'
-      document.dispatchEvent(
-        new CustomEvent('ga4', { detail: { event: 'brand_form_error', label: msg } }),
-      )
-      throw err
-    }
+  const onSubmit = async (_data: FormValues) => {
+    document.dispatchEvent(new CustomEvent('ga4', { detail: { event: 'brand_form_submit' } }))
+    reset()
   }
 
   return (
