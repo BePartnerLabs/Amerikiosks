@@ -1,14 +1,12 @@
-name: Deploy to Vercel
+name: Deploy — Preview
 
 on:
-  release:
-    types: [published]
   push:
     branches:
       - main
 
 concurrency:
-  group: deploy-${{ github.ref }}
+  group: deploy-preview-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -17,9 +15,9 @@ env:
 
 jobs:
   migrate:
-    name: Run DB migrations (${{ github.event_name == 'release' && 'production' || 'preview' }})
+    name: Run DB migrations (preview)
     runs-on: ubuntu-latest
-    environment: ${{ github.event_name == 'release' && 'production' || 'preview' }}
+    environment: preview
     steps:
       - uses: actions/checkout@v4
 
@@ -36,7 +34,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Pull Vercel env vars
-        run: pnpm vercel env pull .env.local --yes --environment=${{ github.event_name == 'release' && 'production' || 'preview' }} --token=${{ secrets.VERCEL_TOKEN }}
+        run: pnpm vercel env pull .env.local --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
@@ -52,28 +50,14 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
   deploy:
-    name: Deploy to Vercel (${{ github.event_name == 'release' && 'production' || 'preview' }})
+    name: Deploy to Vercel (preview)
     needs: migrate
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Deploy to Vercel (production)
-        if: github.event_name == 'release'
-        run: pnpm vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
 
       - name: Deploy to Vercel (preview)
-        if: github.event_name == 'push'
-        run: pnpm vercel deploy --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel deploy --token=${{ secrets.VERCEL_TOKEN }}
