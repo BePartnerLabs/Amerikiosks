@@ -1,0 +1,35 @@
+.ak-faq-page {
+  padding-block: var(--bp-space-16, 4rem);
+}
+
+.ak-faq-page__inner {
+  max-width: 48rem;
+  margin-inline: auto;
+}
+
+.ak-faq-page__heading {
+  font-size: var(--bp-font-size-4xl, 2.25rem);
+  font-weight: var(--bp-font-weight-bold, 700);
+  margin-bottom: var(--bp-space-8, 2rem);
+}
+
+.ak-faq-page__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bp-space-2, 0.5rem);
+  margin-bottom: var(--bp-space-8, 2rem);
+}
+
+.ak-faq-page__filter-btn[aria-pressed="true"] {
+  --btn-background: var(--ak-color-primary);
+  --btn-color: var(--bp-color-text-inverse);
+}
+
+.ak-faq-page__accordion {
+  margin-top: var(--bp-space-4, 1rem);
+}
+
+.ak-faq-page__empty {
+  color: var(--bp-color-text-muted);
+  padding: var(--bp-space-4, 1rem) 0;
+}
