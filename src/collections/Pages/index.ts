@@ -16,6 +16,7 @@ import { CallToAction } from '../../blocks/CallToAction/config'
 import { CardGrid } from '../../blocks/CardGrid/config'
 import { Content } from '../../blocks/Content/config'
 import { FormBlock } from '../../blocks/Form/config'
+import { FormatsGrid } from '../../blocks/FormatsGrid/config'
 import { InsightsShowcase } from '../../blocks/InsightsShowcase/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { TrustStrip } from '../../blocks/TrustStrip/config'
@@ -85,6 +86,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 TrustStrip,
                 AudienceShowcase,
                 InsightsShowcase,
+                FormatsGrid,
               ],
               admin: {
                 initCollapsed: true,

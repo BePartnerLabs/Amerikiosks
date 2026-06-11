@@ -243,6 +243,7 @@ export interface Page {
         | TrustStripBlock
         | AudienceShowcaseBlock
         | InsightsShowcaseBlock
+        | FormatsGridBlock
       )[]
     | null;
   meta?: {
@@ -968,18 +969,36 @@ export interface InsightsShowcaseBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "partners".
+ * via the `definition` "FormatsGridBlock".
  */
-export interface Partner {
-  id: number;
-  name: string;
-  logo: number | Media;
+export interface FormatsGridBlock {
   /**
-   * Lower number appears first. Use 1, 2, 3… to control display order.
+   * Small label above heading, e.g. "FORMATS"
    */
-  order?: number | null;
-  updatedAt: string;
-  createdAt: string;
+  eyebrow?: string | null;
+  heading: string;
+  subheading?: string | null;
+  /**
+   * Show machines matching these tags. Leave empty to show all. Ignored if items are set.
+   */
+  filterTags?:
+    | {
+        tag: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Explicit machine picks. Overrides filterTags.
+   */
+  items?:
+    | {
+        machine: number | Machine;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'formatsGrid';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1011,6 +1030,21 @@ export interface Machine {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partners".
+ */
+export interface Partner {
+  id: number;
+  name: string;
+  logo: number | Media;
+  /**
+   * Lower number appears first. Use 1, 2, 3… to control display order.
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1457,6 +1491,7 @@ export interface PagesSelect<T extends boolean = true> {
         trustStrip?: T | TrustStripBlockSelect<T>;
         audienceShowcase?: T | AudienceShowcaseBlockSelect<T>;
         insightsShowcase?: T | InsightsShowcaseBlockSelect<T>;
+        formatsGrid?: T | FormatsGridBlockSelect<T>;
       };
   meta?:
     | T
@@ -1632,6 +1667,29 @@ export interface AudienceShowcaseBlockSelect<T extends boolean = true> {
 export interface InsightsShowcaseBlockSelect<T extends boolean = true> {
   eyebrow?: T;
   heading?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FormatsGridBlock_select".
+ */
+export interface FormatsGridBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  subheading?: T;
+  filterTags?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
+  items?:
+    | T
+    | {
+        machine?: T;
+        id?: T;
+      };
   id?: T;
   blockName?: T;
 }

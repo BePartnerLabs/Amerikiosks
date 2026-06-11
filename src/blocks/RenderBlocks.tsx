@@ -6,6 +6,7 @@ import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { CardGridBlock } from '@/blocks/CardGrid/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
 import { FormBlock } from '@/blocks/Form/Component'
+import { FormatsGridServer } from '@/blocks/FormatsGrid/Server'
 import { InsightsShowcaseBlock } from '@/blocks/InsightsShowcase/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { TrustStripServer } from '@/blocks/TrustStrip/Server'
@@ -21,6 +22,7 @@ const blockComponents = {
   cardGrid: CardGridBlock,
   insightsShowcase: InsightsShowcaseBlock,
   trustStrip: TrustStripServer,
+  formatsGrid: FormatsGridServer,
 }
 
 export const RenderBlocks: React.FC<{
