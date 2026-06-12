@@ -49,10 +49,7 @@ export const RenderBlocks: React.FC<{
 
             if (Block) {
               return (
-                <div
-                  className=""
-                  key={block.id ?? `${blockType}-${block.blockName ?? 'block'}`}
-                >
+                <div key={block.id ?? `${blockType}-${block.blockName ?? 'block'}`}>
                   <Block {...block} />
                 </div>
               )

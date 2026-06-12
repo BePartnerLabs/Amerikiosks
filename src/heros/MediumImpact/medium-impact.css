@@ -1,5 +1,5 @@
 .ak-hero-interior {
-  --_bg-color: var(--hero-interior-bg, var(--ak-surface-inverse));
+  --_bg-color: var(--hero-interior-bg, var(--ak-surface-inverse-raised));
   --_color: var(--hero-interior-color, var(--ak-white));
   background-color: var(--_bg-color);
   color: var(--_color);
