@@ -1,5 +1,4 @@
 import config from '@payload-config'
-import { del, list } from '@vercel/blob'
 import { headers } from 'next/headers'
 import { createLocalReq, getPayload } from 'payload'
 
@@ -100,16 +99,6 @@ export async function POST(req: Request): Promise<Response> {
         // record may be referenced by pages; blob will be cleaned below
       }
     }
-    // 2. Delete any orphaned blobs (DB was reset but blobs remain)
-    const blobToken = process.env.BLOB_READ_WRITE_TOKEN
-    if (blobToken) {
-      const { blobs } = await list({ token: blobToken, limit: 1000 })
-      const toDelete = blobs
-        .filter((b) => seedStems.some((stem) => b.pathname.includes(stem)))
-        .map((b) => b.url)
-      if (toDelete.length > 0) await del(toDelete, { token: blobToken })
-    }
-
     if (part) {
       const fn = parts[part]
       if (!fn) return new Response(`Unknown part: ${part}`, { status: 400 })
