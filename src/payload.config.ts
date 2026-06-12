@@ -5,10 +5,13 @@ import { buildConfig, type PayloadRequest } from 'payload'
 import sharp from 'sharp'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { Categories } from './collections/Categories'
+import { FAQItems } from './collections/FAQItems'
 import { Insights } from './collections/Insights'
+import { Machines } from './collections/Machines'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Partners } from './collections/Partners'
+import { Projects } from './collections/Projects'
 import { Users } from './collections/Users'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
@@ -69,7 +72,7 @@ export default buildConfig({
     },
     push: false,
   }),
-  collections: [Pages, Insights, Media, Categories, Users, Partners],
+  collections: [Pages, Insights, Media, Categories, Users, Partners, Machines, FAQItems, Projects],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer, Settings],
   localization: {

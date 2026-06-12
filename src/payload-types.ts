@@ -73,6 +73,9 @@ export interface Config {
     categories: Category;
     users: User;
     partners: Partner;
+    machines: Machine;
+    faqItems: FaqItem;
+    projects: Project;
     exports: Export;
     imports: Import;
     redirects: Redirect;
@@ -98,6 +101,9 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     partners: PartnersSelect<false> | PartnersSelect<true>;
+    machines: MachinesSelect<false> | MachinesSelect<true>;
+    faqItems: FaqItemsSelect<false> | FaqItemsSelect<true>;
+    projects: ProjectsSelect<false> | ProjectsSelect<true>;
     exports: ExportsSelect<false> | ExportsSelect<true>;
     imports: ImportsSelect<false> | ImportsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
@@ -217,10 +223,6 @@ export interface Page {
      * Optional. MP4 recommended. Plays muted + looped over the poster image.
      */
     backgroundVideo?: (number | null) | Media;
-    /**
-     * e.g. "Home / Who it's for / For brands"
-     */
-    breadcrumb?: string | null;
     tags?:
       | {
           label: string;
@@ -239,6 +241,10 @@ export interface Page {
         | TrustStripBlock
         | AudienceShowcaseBlock
         | InsightsShowcaseBlock
+        | ProjectsShowcaseBlock
+        | FormatsGridBlock
+        | ProcessStepsBlock
+        | FAQWithFormBlock
       )[]
     | null;
   meta?: {
@@ -255,6 +261,15 @@ export interface Page {
    */
   generateSlug?: boolean | null;
   slug: string;
+  parent?: (number | null) | Page;
+  breadcrumbs?:
+    | {
+        doc?: (number | null) | Page;
+        url?: string | null;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -964,6 +979,188 @@ export interface InsightsShowcaseBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProjectsShowcaseBlock".
+ */
+export interface ProjectsShowcaseBlock {
+  /**
+   * Small label above heading, e.g. "REAL BRAND MOMENTS"
+   */
+  eyebrow?: string | null;
+  heading: string;
+  /**
+   * Supporting text shown below the heading
+   */
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Fetch projects where tags.label matches this value, e.g. "brand", "agency"
+   */
+  filterTag: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'projectsShowcase';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FormatsGridBlock".
+ */
+export interface FormatsGridBlock {
+  /**
+   * Small label above heading, e.g. "FORMATS"
+   */
+  eyebrow?: string | null;
+  heading: string;
+  subheading?: string | null;
+  /**
+   * Show machines matching these tags. Leave empty to show all. Ignored if items are set.
+   */
+  filterTags?:
+    | {
+        tag: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Explicit machine picks. Overrides filterTags.
+   */
+  items?:
+    | {
+        machine: number | Machine;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'formatsGrid';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "machines".
+ */
+export interface Machine {
+  id: number;
+  name: string;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  /**
+   * Short label shown on cards, e.g. "Full-size branded machine"
+   */
+  tagline?: string | null;
+  image: number | Media;
+  /**
+   * e.g. full-size, compact, campaign, premium — used for block-level filtering
+   */
+  tags?:
+    | {
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  layout?: unknown[] | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProcessStepsBlock".
+ */
+export interface ProcessStepsBlock {
+  /**
+   * Small label above heading, e.g. "HOW IT WORKS"
+   */
+  eyebrow?: string | null;
+  heading: string;
+  subheading?: string | null;
+  steps: {
+    title: string;
+    body?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    id?: string | null;
+  }[];
+  cta?:
+    | {
+        link: {
+          type?: ('reference' | 'custom') | null;
+          newTab?: boolean | null;
+          reference?:
+            | ({
+                relationTo: 'pages';
+                value: number | Page;
+              } | null)
+            | ({
+                relationTo: 'insights';
+                value: number | Insight;
+              } | null);
+          url?: string | null;
+          label: string;
+          /**
+           * Choose how the link should be rendered.
+           */
+          appearance?: ('default' | 'outline') | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'processSteps';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FAQWithFormBlock".
+ */
+export interface FAQWithFormBlock {
+  heading: string;
+  subheading?: string | null;
+  /**
+   * Pull FAQItems matching these tags, sorted by weight descending.
+   */
+  filterTags: {
+    tag: string;
+    id?: string | null;
+  }[];
+  form: {
+    /**
+     * Heading shown above the form, e.g. "Start a brand program"
+     */
+    heading: string;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'faqWithForm';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "partners".
  */
 export interface Partner {
@@ -976,6 +1173,93 @@ export interface Partner {
   order?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faqItems".
+ */
+export interface FaqItem {
+  id: number;
+  question: string;
+  answer: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Higher weight appears first. Use multiples of 10 (10, 20, 30…) so items can be inserted between existing ones.
+   */
+  weight?: number | null;
+  /**
+   * e.g. brands, venues, replenishment, branding, pricing
+   */
+  tags?:
+    | {
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects".
+ */
+export interface Project {
+  id: number;
+  title: string;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  /**
+   * Eyebrow label shown on cards, e.g. "FAN STAND"
+   */
+  category?: string | null;
+  /**
+   * Short text shown on the card
+   */
+  description?: string | null;
+  image: number | Media;
+  /**
+   * Used to filter projects in blocks, e.g. "brand"
+   */
+  tags?:
+    | {
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1267,6 +1551,18 @@ export interface PayloadLockedDocument {
         value: number | Partner;
       } | null)
     | ({
+        relationTo: 'machines';
+        value: number | Machine;
+      } | null)
+    | ({
+        relationTo: 'faqItems';
+        value: number | FaqItem;
+      } | null)
+    | ({
+        relationTo: 'projects';
+        value: number | Project;
+      } | null)
+    | ({
         relationTo: 'redirects';
         value: number | Redirect;
       } | null)
@@ -1356,7 +1652,6 @@ export interface PagesSelect<T extends boolean = true> {
             };
         media?: T;
         backgroundVideo?: T;
-        breadcrumb?: T;
         tags?:
           | T
           | {
@@ -1376,6 +1671,10 @@ export interface PagesSelect<T extends boolean = true> {
         trustStrip?: T | TrustStripBlockSelect<T>;
         audienceShowcase?: T | AudienceShowcaseBlockSelect<T>;
         insightsShowcase?: T | InsightsShowcaseBlockSelect<T>;
+        projectsShowcase?: T | ProjectsShowcaseBlockSelect<T>;
+        formatsGrid?: T | FormatsGridBlockSelect<T>;
+        processSteps?: T | ProcessStepsBlockSelect<T>;
+        faqWithForm?: T | FAQWithFormBlockSelect<T>;
       };
   meta?:
     | T
@@ -1387,6 +1686,15 @@ export interface PagesSelect<T extends boolean = true> {
   publishedAt?: T;
   generateSlug?: T;
   slug?: T;
+  parent?: T;
+  breadcrumbs?:
+    | T
+    | {
+        doc?: T;
+        url?: T;
+        label?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -1551,6 +1859,95 @@ export interface AudienceShowcaseBlockSelect<T extends boolean = true> {
 export interface InsightsShowcaseBlockSelect<T extends boolean = true> {
   eyebrow?: T;
   heading?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProjectsShowcaseBlock_select".
+ */
+export interface ProjectsShowcaseBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  body?: T;
+  filterTag?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FormatsGridBlock_select".
+ */
+export interface FormatsGridBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  subheading?: T;
+  filterTags?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
+  items?:
+    | T
+    | {
+        machine?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProcessStepsBlock_select".
+ */
+export interface ProcessStepsBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  subheading?: T;
+  steps?:
+    | T
+    | {
+        title?: T;
+        body?: T;
+        id?: T;
+      };
+  cta?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+              appearance?: T;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FAQWithFormBlock_select".
+ */
+export interface FAQWithFormBlockSelect<T extends boolean = true> {
+  heading?: T;
+  subheading?: T;
+  filterTags?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
+  form?:
+    | T
+    | {
+        heading?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -1733,6 +2130,66 @@ export interface PartnersSelect<T extends boolean = true> {
   order?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "machines_select".
+ */
+export interface MachinesSelect<T extends boolean = true> {
+  name?: T;
+  generateSlug?: T;
+  slug?: T;
+  tagline?: T;
+  image?: T;
+  tags?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
+  layout?: T | {};
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faqItems_select".
+ */
+export interface FaqItemsSelect<T extends boolean = true> {
+  question?: T;
+  answer?: T;
+  weight?: T;
+  tags?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects_select".
+ */
+export interface ProjectsSelect<T extends boolean = true> {
+  title?: T;
+  generateSlug?: T;
+  slug?: T;
+  category?: T;
+  description?: T;
+  image?: T;
+  tags?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
+  body?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2314,7 +2771,18 @@ export interface TaskCreateCollectionExport {
     id: string;
     name: string;
     batchSize?: number | null;
-    collectionSlug: 'pages' | 'insights' | 'media' | 'categories' | 'users' | 'partners' | 'exports' | 'imports';
+    collectionSlug:
+      | 'pages'
+      | 'insights'
+      | 'media'
+      | 'categories'
+      | 'users'
+      | 'partners'
+      | 'machines'
+      | 'faqItems'
+      | 'projects'
+      | 'exports'
+      | 'imports';
     drafts?: ('yes' | 'no') | null;
     exportCollection: string;
     fields?: string[] | null;

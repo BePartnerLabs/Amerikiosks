@@ -15,9 +15,13 @@ import { AudienceShowcase } from '../../blocks/AudienceShowcase/config'
 import { CallToAction } from '../../blocks/CallToAction/config'
 import { CardGrid } from '../../blocks/CardGrid/config'
 import { Content } from '../../blocks/Content/config'
+import { FAQWithForm } from '../../blocks/FAQWithForm/config'
 import { FormBlock } from '../../blocks/Form/config'
+import { FormatsGrid } from '../../blocks/FormatsGrid/config'
 import { InsightsShowcase } from '../../blocks/InsightsShowcase/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
+import { ProcessSteps } from '../../blocks/ProcessSteps/config'
+import { ProjectsShowcase } from '../../blocks/ProjectsShowcase/config'
 import { TrustStrip } from '../../blocks/TrustStrip/config'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
@@ -85,6 +89,10 @@ export const Pages: CollectionConfig<'pages'> = {
                 TrustStrip,
                 AudienceShowcase,
                 InsightsShowcase,
+                ProjectsShowcase,
+                FormatsGrid,
+                ProcessSteps,
+                FAQWithForm,
               ],
               admin: {
                 initCollapsed: true,

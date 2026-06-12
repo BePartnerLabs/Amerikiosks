@@ -68,7 +68,13 @@ export const hero: Field = {
           'For highImpact: used as video poster and img fallback. For mediumImpact: right-column image.',
       },
       relationTo: 'media',
-      required: true,
+      required: false,
+      validate: (value: unknown, { siblingData }: { siblingData?: Record<string, unknown> }) => {
+        if (['highImpact', 'mediumImpact'].includes(siblingData?.type as string) && !value) {
+          return 'Background image is required for High Impact and Medium Impact heroes.'
+        }
+        return true
+      },
     },
     {
       name: 'backgroundVideo',
@@ -80,16 +86,6 @@ export const hero: Field = {
       },
       relationTo: 'media',
       required: false,
-    },
-    {
-      name: 'breadcrumb',
-      type: 'text',
-      label: 'Breadcrumb',
-      localized: true,
-      admin: {
-        condition: (_, { type } = {}) => ['mediumImpact', 'lowImpact'].includes(type),
-        description: 'e.g. "Home / Who it\'s for / For brands"',
-      },
     },
     {
       name: 'tags',

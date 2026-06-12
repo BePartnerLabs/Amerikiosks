@@ -20,9 +20,13 @@ const baseHero: HeroProps = {
   links: [],
   media: null,
   backgroundVideo: null,
-  breadcrumb: 'Home / Case Studies',
   tags: [{ label: 'Retail' }, { label: 'Venues' }],
 }
+
+const breadcrumbs: Page['breadcrumbs'] = [
+  { label: 'Home', url: '/', id: '1' },
+  { label: 'Case Studies', url: '/case-studies', id: '2' },
+]
 
 describe('LowImpactHero', () => {
   afterEach(cleanup)
@@ -32,8 +36,13 @@ describe('LowImpactHero', () => {
     expect(screen.getByRole('region')).toBeInTheDocument()
   })
 
-  it('renders breadcrumb text', () => {
-    render(<LowImpactHero {...baseHero} />)
+  it('renders breadcrumb text from breadcrumbs prop', () => {
+    render(
+      <LowImpactHero
+        {...baseHero}
+        breadcrumbs={breadcrumbs}
+      />,
+    )
     expect(screen.getByText('Home / Case Studies')).toBeInTheDocument()
   })
 
@@ -58,18 +67,18 @@ describe('LowImpactHero', () => {
     expect(screen.queryByText('Retail')).toBeNull()
   })
 
-  it('does not render breadcrumb when absent', () => {
-    render(
-      <LowImpactHero
-        {...baseHero}
-        breadcrumb={null}
-      />,
-    )
+  it('does not render breadcrumb when breadcrumbs is absent', () => {
+    render(<LowImpactHero {...baseHero} />)
     expect(screen.queryByText('Home / Case Studies')).toBeNull()
   })
 
-  it('renders BreadcrumbList JSON-LD script when breadcrumb present', () => {
-    const { container } = render(<LowImpactHero {...baseHero} />)
+  it('renders BreadcrumbList JSON-LD script when breadcrumbs present', () => {
+    const { container } = render(
+      <LowImpactHero
+        {...baseHero}
+        breadcrumbs={breadcrumbs}
+      />,
+    )
     const script = container.querySelector('script[type="application/ld+json"]')
     expect(script).not.toBeNull()
     const data = JSON.parse((script as Element).innerHTML)
@@ -79,13 +88,8 @@ describe('LowImpactHero', () => {
     expect(data.itemListElement[1].name).toBe('Case Studies')
   })
 
-  it('does not render JSON-LD when breadcrumb is absent', () => {
-    const { container } = render(
-      <LowImpactHero
-        {...baseHero}
-        breadcrumb={null}
-      />,
-    )
+  it('does not render JSON-LD when breadcrumbs is absent', () => {
+    const { container } = render(<LowImpactHero {...baseHero} />)
     const script = container.querySelector('script[type="application/ld+json"]')
     expect(script).toBeNull()
   })

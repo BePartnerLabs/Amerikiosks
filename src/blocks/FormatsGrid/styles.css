@@ -1,0 +1,58 @@
+.ak-formats-grid {
+  --_background: var(--formats-grid-background, var(--bp-color-bg-elevated));
+  background: var(--_background);
+}
+
+.ak-formats-grid__inner {
+  padding-block: var(--bp-space-16, 4rem);
+}
+
+.ak-formats-grid__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--bp-space-4, 1rem);
+  margin-top: var(--bp-space-10, 2.5rem);
+}
+
+.ak-formats-grid__card {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+}
+
+.ak-formats-grid__card-image {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.ak-formats-grid__img {
+  object-fit: contain;
+}
+
+.ak-formats-grid__card-body {
+  padding: var(--bp-space-3, 0.75rem) 0;
+}
+
+.ak-formats-grid__card-name {
+  font-weight: var(--bp-font-weight-semibold, 600);
+  color: var(--bp-color-text);
+}
+
+.ak-formats-grid__card-tagline {
+  font-size: var(--bp-font-size-sm, 0.875rem);
+  color: var(--bp-color-text-muted);
+  margin-top: var(--bp-space-1, 0.25rem);
+}
+
+@media (max-width: 1023px) {
+  .ak-formats-grid__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 639px) {
+  .ak-formats-grid__grid {
+    grid-template-columns: 1fr;
+  }
+}

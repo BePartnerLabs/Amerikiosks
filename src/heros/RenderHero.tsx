@@ -10,7 +10,9 @@ const heroes = {
   mediumImpact: MediumImpactHero,
 }
 
-export const RenderHero: React.FC<Page['hero']> = (props) => {
+type Props = Page['hero'] & { breadcrumbs?: Page['breadcrumbs'] }
+
+export const RenderHero: React.FC<Props> = ({ breadcrumbs, ...props }) => {
   const { type } = props || {}
 
   if (!type || type === 'none') return null
@@ -19,5 +21,10 @@ export const RenderHero: React.FC<Page['hero']> = (props) => {
 
   if (!HeroToRender) return null
 
-  return <HeroToRender {...props} />
+  return (
+    <HeroToRender
+      {...props}
+      breadcrumbs={breadcrumbs}
+    />
+  )
 }

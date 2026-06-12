@@ -44,9 +44,9 @@ export const upsertPage = async (
           req: { ...req, locale: 'en' } as PayloadRequest,
         })
 
-  const { title: esTitle, slug: esSlug, ...esExtra } = es
+  const { title: esTitle, slug: esSlug, layout: _esLayoutInput, hero: esHeroInput, ...esExtra } = es
 
-  // Re-fetch with depth:0 to get raw block UUIDs for the ES update.
+  // Re-fetch with depth:0 to get raw row UUIDs for the ES update (layout blocks + hero links).
   const rawDoc = await payload.findByID({
     collection: 'pages',
     id: doc.id,
@@ -54,7 +54,20 @@ export const upsertPage = async (
     locale: 'en',
   })
   const enLayout = (rawDoc.layout ?? []) as PageLayoutBlock[]
-  const esLayout = (esExtra.layout ?? []).map((block, i: number) => {
+
+  // Hero links — inject EN row IDs so Drizzle doesn't DELETE+INSERT and wipe EN locale values.
+  // link.label and link.url are localized, so we carry the ES translations but stamp the EN IDs.
+  const enHeroLinks = ((rawDoc.hero as Record<string, unknown>)?.links ?? []) as Array<
+    Record<string, unknown>
+  >
+  const esHero = esHeroInput as Record<string, unknown> | undefined
+  const esHeroLinks = (esHero?.links ?? []) as Array<Record<string, unknown>>
+  const mergedHeroLinks =
+    esHeroLinks.length > 0
+      ? esHeroLinks.map((esLink, j) => ({ ...esLink, id: enHeroLinks[j]?.id ?? esLink.id }))
+      : esHeroLinks
+  const mergedHero = esHero !== undefined ? { ...esHero, links: mergedHeroLinks } : undefined
+  const esLayout = (_esLayoutInput ?? []).map((block, i: number) => {
     const enBlock = enLayout[i] as unknown as Record<string, unknown> | undefined
     const blockId = enBlock?.id ?? (block as unknown as Record<string, unknown>).id
     // For array fields Payload's Drizzle adapter does DELETE+INSERT (not UPDATE) during locale
@@ -64,6 +77,8 @@ export const upsertPage = async (
     const {
       items: esItems,
       links: esLinks,
+      steps: esSteps,
+      cta: esCta,
       ...blockRest
     } = block as unknown as Record<string, unknown>
 
@@ -103,11 +118,33 @@ export const upsertPage = async (
           })
         : undefined
 
+    // steps — inject EN row IDs so Drizzle updates in-place (title, body are localized)
+    const enSteps = (enBlock?.steps ?? []) as Array<Record<string, unknown>>
+    const mergedSteps =
+      Array.isArray(esSteps) && esSteps.length > 0
+        ? (esSteps as Array<Record<string, unknown>>).map((esStep, j) => ({
+            ...esStep,
+            id: enSteps[j]?.id,
+          }))
+        : undefined
+
+    // cta — inject EN row IDs (link.label + link.url are localized)
+    const enCta = (enBlock?.cta ?? []) as Array<Record<string, unknown>>
+    const mergedCta =
+      Array.isArray(esCta) && esCta.length > 0
+        ? (esCta as Array<Record<string, unknown>>).map((ctaItem, j) => ({
+            ...ctaItem,
+            id: enCta[j]?.id,
+          }))
+        : undefined
+
     return {
       ...blockRest,
       id: blockId,
       ...(mergedLinks !== undefined ? { links: mergedLinks } : {}),
       ...(mergedItems !== undefined ? { items: mergedItems } : {}),
+      ...(mergedSteps !== undefined ? { steps: mergedSteps } : {}),
+      ...(mergedCta !== undefined ? { cta: mergedCta } : {}),
     }
   })
 
@@ -118,10 +155,12 @@ export const upsertPage = async (
     data: {
       title: esTitle,
       slug: esSlug,
-      layout: [],
       _status: 'published' as const,
       ...esExtra,
-      ...(esLayout.length > 0 ? { layout: esLayout as any } : {}),
+      ...(mergedHero !== undefined ? { hero: mergedHero as Record<string, unknown> } : {}),
+      // layout is not localized — only pass it when ES blocks need localized field updates.
+      // Never pass layout: [] here as it would wipe the EN layout (shared across locales).
+      ...(esLayout.length > 0 ? { layout: esLayout as Record<string, unknown>[] } : {}),
     },
     req: { ...req, locale: 'es' } as PayloadRequest,
   })

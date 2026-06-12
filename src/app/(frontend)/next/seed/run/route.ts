@@ -7,9 +7,10 @@ import { seed } from '@/endpoints/seed'
 import { seedFooter } from '@/endpoints/seed/footer'
 import { seedHeader } from '@/endpoints/seed/header'
 import { seedPosts } from '@/endpoints/seed/insights'
-import { seedAudiencePages } from '@/endpoints/seed/pages/audience'
+import { seedAudiencePages, seedWhoItsFor } from '@/endpoints/seed/pages/audience'
 import { seedCaseStudies } from '@/endpoints/seed/pages/case-studies'
 import { seedContact } from '@/endpoints/seed/pages/contact'
+import { seedForBrands } from '@/endpoints/seed/pages/for-brands'
 import { seedHome } from '@/endpoints/seed/pages/home'
 import { seedSolutions } from '@/endpoints/seed/pages/solutions'
 import { seedWhereItWorks } from '@/endpoints/seed/pages/where-it-works'
@@ -26,11 +27,13 @@ const parts: Record<
   ) => Promise<void>
 > = {
   audience: async (payload, req) => {
-    await seedAudiencePages(payload, req)
+    const whoItsForId = await seedWhoItsFor(payload, req)
+    await seedAudiencePages(payload, req, whoItsForId)
   },
   contact: seedContact,
   home: async (payload, req) => {
-    const { pageIds, mediaIds } = await seedAudiencePages(payload, req)
+    const whoItsForId = await seedWhoItsFor(payload, req)
+    const { pageIds, mediaIds } = await seedAudiencePages(payload, req, whoItsForId)
     const postIds = await seedPosts(payload, req)
     await seedHome(payload, req, pageIds, postIds, mediaIds)
   },
@@ -44,6 +47,7 @@ const parts: Record<
   header: seedHeader,
   footer: seedFooter,
   partners: seedPartners,
+  'for-brands': seedForBrands,
 }
 
 export async function POST(req: Request): Promise<Response> {
@@ -78,6 +82,10 @@ export async function POST(req: Request): Promise<Response> {
       'partner-kroger',
       'partner-mia',
       'partner-royal-caribbean',
+      'machine-full-size',
+      'machine-campaign',
+      'machine-compact',
+      'machine-premium',
     ]
     // 1. Delete existing seed media records via Payload (adapter removes blobs too)
     const { docs: seedMedia } = await payload.find({

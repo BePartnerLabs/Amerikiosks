@@ -117,6 +117,16 @@ img {
   --btn-background: color-mix(in srgb, var(--bp-primary) 85%, black);
 }
 
+.bp-btn--outline {
+  --btn-background: transparent;
+  --btn-color: var(--bp-primary-fg);
+  --btn-border: 1px solid currentColor;
+}
+
+.bp-btn--outline:hover {
+  --btn-background: color-mix(in srgb, currentColor 10%, transparent);
+}
+
 /* ─── Section scroll reveal ────────────────────────────────── */
 /* opacity-only — no translateY to avoid gaps between full-bleed sections */
 @keyframes ak-section-reveal {
@@ -141,4 +151,17 @@ img {
       animation-range: entry 0% cover 20%;
     }
   }
+}
+
+/* ─── Page-level token overrides ───────────────────────────── */
+[data-slug^="for-"] .ak-projects-showcase__card-img {
+  --projects-showcase-card-img-ratio: 424 / 180;
+}
+
+[data-slug^="for-"] .ak-process-steps {
+  --process-steps-background: linear-gradient(180deg, #ffffff 0%, #ecf2ff 100%);
+}
+
+[data-slug^="for-"] .ak-formats-grid {
+  --formats-grid-background: linear-gradient(180deg, #ecf2ff 0%, #ffffff 100%);
 }
