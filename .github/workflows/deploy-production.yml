@@ -59,4 +59,17 @@ jobs:
         run: npm install -g vercel@latest
 
       - name: Deploy to Vercel (production)
-        run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
+        id: deploy
+        run: |
+          DEPLOY_URL=$(vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }})
+          echo "deploy_url=$DEPLOY_URL" >> $GITHUB_OUTPUT
+
+      - name: Write job summary
+        run: |
+          echo "## 🚀 Production Deploy" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| | |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Release** | [${{ github.event.release.tag_name }}](${{ github.event.release.html_url }}) |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Deploy URL** | ${{ steps.deploy.outputs.deploy_url }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Commit** | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
