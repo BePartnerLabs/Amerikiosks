@@ -2,7 +2,7 @@ import config from '@payload-config'
 import { getPayload } from 'payload'
 import type React from 'react'
 import type { TrustStripBlock as TrustStripBlockProps } from '@/payload-types'
-import { TrustStripBlock } from './Component'
+import { TrustStripBlock, type TrustStripPartner } from './Component'
 
 export const TrustStripServer: React.FC<TrustStripBlockProps> = async (props) => {
   const { limit } = props
@@ -18,7 +18,7 @@ export const TrustStripServer: React.FC<TrustStripBlockProps> = async (props) =>
   return (
     <TrustStripBlock
       {...props}
-      partners={result.docs as any}
+      partners={result.docs as TrustStripPartner[]}
     />
   )
 }

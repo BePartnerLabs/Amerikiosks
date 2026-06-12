@@ -5,18 +5,18 @@ import type { Media, TrustStripBlock as TrustStripBlockProps } from '@/payload-t
 import { toSnakeCase } from '@/utilities/toSnakeCase'
 import { TrustStripCarousel } from './Carousel'
 
-type Partner = {
-  id: string
+export type TrustStripPartner = {
+  id: string | number
   name: string
-  logo: Pick<Media, 'url'> & Partial<Media>
+  logo: number | (Pick<Media, 'url'> & Partial<Media>)
   order?: number | null
 }
 
 type Props = TrustStripBlockProps & {
-  partners: Partner[]
+  partners: TrustStripPartner[]
 }
 
-const buildJsonLd = (heading: string, partners: Partner[]) => ({
+const buildJsonLd = (heading: string, partners: TrustStripPartner[]) => ({
   '@context': 'https://schema.org',
   '@type': 'ItemList',
   name: heading,
@@ -40,7 +40,7 @@ export const TrustStripBlock: React.FC<Props> = ({
   const carouselPartners = partners.map((p) => ({
     id: p.id,
     name: p.name,
-    logoUrl: p.logo.url ?? '',
+    logoUrl: typeof p.logo === 'object' ? (p.logo.url ?? '') : '',
   }))
 
   return (
@@ -52,6 +52,7 @@ export const TrustStripBlock: React.FC<Props> = ({
     >
       <script
         type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD is server-generated structured data, not user input
         dangerouslySetInnerHTML={{ __html: JSON.stringify(buildJsonLd(heading, partners)) }}
       />
       <SectionHeader

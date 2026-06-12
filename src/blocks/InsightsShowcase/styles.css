@@ -135,7 +135,8 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  /* Featured image zoom */
+  /* Featured image zoom — lower specificity than cards img rule above, intentional */
+  /* biome-ignore lint/style/noDescendingSpecificity: transition on featured img is scoped to animation context */
   .ak-insights-showcase__featured-img-wrap img {
     transition: transform var(--ak-transition-med);
   }

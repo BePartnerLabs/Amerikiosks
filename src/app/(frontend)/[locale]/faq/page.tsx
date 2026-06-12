@@ -46,9 +46,9 @@ export default async function FaqPage() {
 
   return (
     <main className="ak-faq-page">
-      {/* biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD script — static server-side data, no user input */}
       <script
         type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD is server-generated structured data, not user input
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <div className="bp-content-grid">

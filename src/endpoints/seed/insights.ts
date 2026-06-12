@@ -124,7 +124,7 @@ export const seedPosts = async (payload: Payload, req: PayloadRequest): Promise<
       existing.docs.length > 0
         ? await payload.update({
             collection: 'insights',
-            id: existing.docs[0]!.id,
+            id: existing.docs[0]?.id,
             locale: 'en',
             data: enData,
             req: { ...req, locale: 'en' } as PayloadRequest,

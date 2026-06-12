@@ -8,8 +8,8 @@
  *   3. Public slots use shorthand alias (-bg, -fg) instead of CSS property name
  */
 
-import { readFileSync } from 'fs'
-import { basename } from 'path'
+import { readFileSync } from 'node:fs'
+import { basename } from 'node:path'
 
 const BANNED_SHORTHAND = /--[\w-]+-(?:bg|fg|clr|col)\b/
 const HARDCODED_COLOR =

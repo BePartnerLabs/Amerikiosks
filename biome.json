@@ -18,7 +18,9 @@
       "!src/payload-types.ts",
       "!src/payload-generated-schema.ts",
       "!src/app/**/globals.css",
-      "!node_modules"
+      "!node_modules",
+      "!src/migrations",
+      "!src/app/(payload)/admin/importMap.js"
     ]
   },
   "formatter": {

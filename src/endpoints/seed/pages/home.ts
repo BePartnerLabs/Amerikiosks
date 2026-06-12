@@ -8,7 +8,7 @@ export const seedHome = async (
   payload: Payload,
   req: PayloadRequest,
   audiencePageIds: Record<string, string> = {},
-  postIds: string[] = [],
+  _postIds: string[] = [],
   audienceMediaIds: Record<string, number> = {},
 ): Promise<void> => {
   payload.logger.info('— Seeding home page...')

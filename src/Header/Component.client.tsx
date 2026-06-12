@@ -2,7 +2,6 @@
 
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { usePathname as _usePathname } from 'next/navigation'
 import type React from 'react'
 import { useEffect, useRef } from 'react'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'

@@ -143,10 +143,10 @@
 .ak-cta__actions a,
 .ak-cta__actions button {
   --_btn-color: var(--cta-btn-color, var(--ak-cta-btn-color));
-  --btn-background: var(--brand-color-palette-white) !important;
-  --btn-color: var(--_btn-color) !important;
-  background-color: var(--brand-color-palette-white) !important;
-  color: var(--_btn-color) !important;
+  --btn-background: var(--brand-color-palette-white);
+  --btn-color: var(--_btn-color);
+  background-color: var(--brand-color-palette-white);
+  color: var(--_btn-color);
   transition:
     background-color var(--ak-transition-fast),
     color var(--ak-transition-fast);

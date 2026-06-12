@@ -8,7 +8,7 @@ import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import RichText from '@/components/RichText'
 import { routing } from '@/i18n/routing'
-import type { Media, Project } from '@/payload-types'
+import type { Media } from '@/payload-types'
 import PageClient from './page.client'
 
 export async function generateStaticParams() {
