@@ -6,7 +6,7 @@ import { searchPlugin } from '@payloadcms/plugin-search'
 import { seoPlugin } from '@payloadcms/plugin-seo'
 import type { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
-import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+import { s3Storage } from '@payloadcms/storage-s3'
 import type { Plugin } from 'payload'
 import { revalidateRedirects } from '@/hooks/revalidateRedirects'
 import type { Insight, Page } from '@/payload-types'
@@ -33,14 +33,21 @@ export const plugins: Plugin[] = [
       { slug: 'categories' },
     ],
   }),
-  // Only use Vercel Blob in prod/preview. Locally, Payload falls back to
-  // the staticDir in Media.ts (/public/media) when no token is set.
-  ...(process.env.BLOB_READ_WRITE_TOKEN?.startsWith('vercel_blob_rw_')
+  // Use Cloudflare R2 (S3-compatible) when credentials are set.
+  // Locally, Payload falls back to the staticDir in Media.ts (/public/media).
+  ...(process.env.S3_BUCKET && process.env.S3_ACCESS_KEY_ID && process.env.S3_SECRET_ACCESS_KEY
     ? [
-        vercelBlobStorage({
-          token: process.env.BLOB_READ_WRITE_TOKEN,
-          addRandomSuffix: false,
+        s3Storage({
           collections: { media: true },
+          bucket: process.env.S3_BUCKET,
+          config: {
+            endpoint: process.env.S3_ENDPOINT,
+            region: 'auto',
+            credentials: {
+              accessKeyId: process.env.S3_ACCESS_KEY_ID,
+              secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+            },
+          },
         }),
       ]
     : []),
