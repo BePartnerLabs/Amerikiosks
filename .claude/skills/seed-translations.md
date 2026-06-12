@@ -55,10 +55,65 @@ Fields without `localized: true` (e.g. `page`, `image`) are shared across locale
 
 ```
 src/endpoints/seed/pages/
-  home.ts          # calls upsertPage(payload, req, enPage, esPage)
-  audience.ts      # returns { pageIds, mediaIds } consumed by home.ts
-  utils.ts         # upsertPage — handles EN save → re-fetch → ES save with item IDs
+  home.ts           # calls upsertPage(payload, req, enPage, esPage)
+  audience.ts       # returns { pageIds, mediaIds } consumed by home.ts
+  solutions.ts
+  where-it-works.ts
+  case-studies.ts
+  why-amerikiosks.ts
+  contact.ts
+  for-brands.ts     # seeds Machines + FAQItems + page (hero with links, formatsGrid, processSteps, faqWithForm)
+  utils.ts          # upsertPage — handles EN save → re-fetch → ES save with item IDs
+src/endpoints/seed/
+  header.ts         # seeds Header global
+  footer.ts         # seeds Footer global
+  insights.ts       # seeds Posts
+  partners.ts       # seeds Partners
+  uploadMedia.ts    # reads from public/seed-assets/, upserts by filename stem
 ```
+
+## Seeding Machines and collection records
+
+When a page depends on records in another collection (e.g. Machines, FAQItems), seed those first, then build the page layout referencing their IDs or rely on tag-based queries at render time.
+
+```ts
+// for each machine: uploadMedia → payload.find (by slug) → payload.update or payload.create
+// update EN locale, then update ES locale separately
+const machineId = created.id as number
+await payload.update({
+  collection: 'machines',
+  id: machineId,
+  locale: 'es',
+  data: { name: m.nameEs, tagline: m.taglineEs },
+  req: { ...req, locale: 'es' } as PayloadRequest,
+})
+```
+
+Machine images live in `public/seed-assets/` (e.g. `machine-full-size.jpg`) and are uploaded via `uploadMedia()`.
+
+## Deleting stub pages before upsertPage
+
+Some pages are pre-created as stubs by `seedAudiencePages` (with `lowImpact` hero and no links). If `seedForBrands` (or similar) wants to create the page with a different hero type, delete the stub first to avoid ValidationError on hero link fields:
+
+```ts
+const existingPage = await payload.find({
+  collection: 'pages',
+  where: { slug: { equals: 'for-brands' } },
+  limit: 1,
+  req,
+})
+if (existingPage.totalDocs > 0) {
+  await payload.delete({
+    collection: 'pages',
+    id: existingPage.docs[0]!.id,
+    overrideAccess: true,
+    req,
+  })
+}
+// now upsertPage will create fresh
+```
+
+**When this is needed:** any time the target page exists with a different `hero.type` than what the seed wants to set, or when the stub has `links: []` but the seed sets links (Payload validates required fields on update even for the existing locale).
 
 ## Delegating to an agent
 
@@ -103,6 +158,29 @@ const ctaBlockEs = {
 
 Do NOT omit `links` from an ES block that has them — Payload will fail required-field validation on the existing EN link rows.
 
+## Hero `links` array — same ID injection rule applies
+
+The hero `links` field (from `linkGroup()`) has the same Drizzle DELETE+INSERT problem as layout block links. If the ES hero passes new link objects without the EN row IDs, Payload deletes the EN rows and inserts new ones — leaving the EN locale with empty `label` and `url`.
+
+`upsertPage` handles this automatically for hero links too: it re-fetches `rawDoc.hero.links` after the EN save, then injects the EN row IDs into the ES hero links before the ES update.
+
+**What this means for you:** always pass the ES hero with translated links — `upsertPage` stamps the IDs:
+
+```ts
+// ES hero — provide translated label/url, upsertPage injects EN row IDs
+hero: {
+  type: 'mediumImpact',
+  media: heroImage.id,
+  richText: { /* ES richText */ },
+  links: [
+    { link: { label: 'Iniciar un programa de marca', type: 'custom', url: '/contact', appearance: 'default' } },
+    { link: { label: 'Ver casos de éxito',           type: 'custom', url: '/insights', appearance: 'outline' } },
+  ],
+},
+```
+
+**Never omit hero links in ES when EN hero has links** — Payload validates required fields (`url`, `label`) for every locale on update, and if you pass `links: []` or omit `links`, the EN link rows lose their localized values.
+
 ## Common mistakes
 
 | Mistake | Fix |
@@ -112,3 +190,6 @@ Do NOT omit `links` from an ES block that has them — Payload will fail require
 | Omitting `image` from ES items | `image` is not localized but must be present in ES items too |
 | Translating slugs in ES items | Slugs are not localized in this project — use the same EN slug key |
 | Omitting `links` from ES CTA block | Always include ES `links` — `upsertPage` syncs the row IDs automatically |
+| Omitting `hero` from ES when EN hero has links | Payload validates hero link `url`+`label` for every locale on update — always pass ES hero with translated links |
+| Hero buttons empty in EN after seeding | ES hero links were passed without EN row IDs — Drizzle deleted EN rows. `upsertPage` now injects IDs automatically; always pass ES hero links so it has something to merge |
+| Updating a page whose hero type differs from stub | Delete the stub first (see "Deleting stub pages" section), then upsertPage creates fresh |

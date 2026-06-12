@@ -11,4 +11,4 @@ permissions:
 
 jobs:
   release:
-    uses: BePartnerLabs/centralized-workflows/.github/workflows/release-drafter.yml@main
+    uses: BePartnerLabs/centralized-workflows/.github/workflows/release-drafter.yml@v1

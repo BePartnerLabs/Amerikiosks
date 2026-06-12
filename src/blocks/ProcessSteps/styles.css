@@ -1,0 +1,53 @@
+.ak-process-steps {
+  --_background: var(--process-steps-background, var(--ak-section-bg-blue));
+  background: var(--_background);
+}
+
+.ak-process-steps__inner {
+  padding-block: var(--bp-space-16, 4rem);
+}
+
+.ak-process-steps__list {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--bp-space-4, 1rem);
+  list-style: none;
+  padding: 0;
+  margin: var(--bp-space-10, 2.5rem) 0 0;
+}
+
+.ak-process-steps__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bp-space-3, 0.75rem);
+}
+
+.ak-process-steps__number {
+  font-size: var(--bp-font-size-2xl, 1.5rem);
+  font-weight: var(--bp-font-weight-bold, 700);
+  color: var(--bp-primary);
+  line-height: 1;
+}
+
+.ak-process-steps__title {
+  font-weight: var(--bp-font-weight-semibold, 600);
+  color: var(--bp-color-text);
+}
+
+.ak-process-steps__cta {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--bp-space-10, 2.5rem);
+}
+
+@media (max-width: 1023px) {
+  .ak-process-steps__list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 639px) {
+  .ak-process-steps__list {
+    grid-template-columns: 1fr;
+  }
+}

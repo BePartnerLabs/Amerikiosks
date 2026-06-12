@@ -91,9 +91,20 @@
   --ak-brand-card-bg: var(--brand-color-palette-steel-50);
   --ak-brand-card-border: var(--brand-color-palette-steel-100);
 
-  /* Dark card overlay */
+  /* Inverse surface tokens (semantic — light-dark() safe) */
   --ak-dark-background: var(--brand-color-palette-navy-950);
   --ak-dark-foreground: var(--brand-color-palette-white);
+  --ak-surface-inverse: var(--brand-color-palette-navy-950);
+  --ak-surface-inverse-raised: var(--brand-color-palette-navy-900);
+  --ak-text-on-inverse: var(--brand-color-palette-white);
+  --ak-text-on-inverse-subtle: hsla(213, 60%, 75%, 1);
+  --ak-text-on-inverse-muted: hsla(213, 40%, 60%, 1);
+  --ak-border-on-inverse: hsla(213, 40%, 30%, 1);
+  /* Aliases for existing references (to be migrated) */
+  --ak-dark-bg: var(--ak-surface-inverse);
+  --ak-dark-fg-subtle: var(--ak-text-on-inverse-subtle);
+  --ak-dark-fg-muted: var(--ak-text-on-inverse-muted);
+  --ak-dark-border: var(--ak-border-on-inverse);
   --ak-card-overlay: var(--md-semantic-surface-background-overlay-default, hsla(0, 0%, 0%, 0.6));
   --ak-card-shadow-md: 0 2px 12px hsla(0, 0%, 0%, 0.15);
 
@@ -135,6 +146,13 @@
   --bp-primary: var(--ak-accent);
   --bp-primary-fg: var(--ak-white);
   --bp-color-bg-elevated: var(--ak-white);
+
+  /* Title-1 typography (Figma: md/semantic/type/text/title/title-1) */
+  --ak-title-1-font-family: var(--brand-font-family);
+  --ak-title-1-font-weight: 600;
+  --ak-title-1-font-size: 3rem; /* 48px */
+  --ak-title-1-line-height: 1.271; /* 61/48 */
+  --ak-title-1-letter-spacing: -0.01em;
 
   /* Motion */
   --ak-transition-fast: 150ms ease;

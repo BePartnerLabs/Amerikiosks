@@ -63,10 +63,13 @@ export default async function Page({ params: paramsPromise }: Args) {
     return <PayloadRedirects url={url} />
   }
 
-  const { hero, layout } = page
+  const { hero, layout, breadcrumbs } = page
 
   return (
-    <article className="">
+    <article
+      className=""
+      data-slug={decodedSlug}
+    >
       <PageClient />
       {/* Allows redirects for valid pages too */}
       <PayloadRedirects
@@ -76,7 +79,10 @@ export default async function Page({ params: paramsPromise }: Args) {
 
       {draft && <LivePreviewListener />}
 
-      <RenderHero {...hero} />
+      <RenderHero
+        {...hero}
+        breadcrumbs={breadcrumbs}
+      />
       {layout && <RenderBlocks blocks={layout} />}
     </article>
   )

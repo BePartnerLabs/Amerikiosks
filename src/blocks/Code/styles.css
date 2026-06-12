@@ -9,8 +9,8 @@
 }
 
 .ak-code__pre {
-  --_background: var(--code-background, var(--ak-dark-bg));
-  --_color: var(--code-color, var(--ak-dark-fg));
+  --_background: var(--code-background, var(--ak-surface-inverse));
+  --_color: var(--code-color, var(--ak-text-on-inverse));
   overflow-x: auto;
   padding: var(--bp-space-6, 1.5rem);
   font-size: var(--bp-text-sm, 0.875rem);
