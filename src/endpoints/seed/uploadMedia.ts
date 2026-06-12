@@ -47,33 +47,10 @@ export const uploadMedia = async (
 
   const data = await readSeedAsset(name)
 
-  try {
-    return (await payload.create({
-      collection: 'media',
-      data: { alt },
-      file: { data, mimetype, name, size: data.length },
-      req,
-    })) as Media
-  } catch (err: unknown) {
-    // Vercel Blob rejects re-uploads when the blob store already has the file
-    // (e.g. shared store across envs, or DB was wiped without clearing Blob).
-    // Delete all variants then retry.
-    const msg = err instanceof Error ? err.message : String(err)
-    if (!msg.includes('already exists')) throw err
-
-    const { del, list } = await import('@vercel/blob')
-    const token = process.env.BLOB_READ_WRITE_TOKEN
-    const basename = name.replace(/\.[^.]+$/, '')
-    const { blobs } = await list({ prefix: basename, token })
-    if (blobs.length > 0) {
-      await Promise.all(blobs.map((b) => del(b.url, { token })))
-    }
-
-    return (await payload.create({
-      collection: 'media',
-      data: { alt },
-      file: { data, mimetype, name, size: data.length },
-      req,
-    })) as Media
-  }
+  return (await payload.create({
+    collection: 'media',
+    data: { alt },
+    file: { data, mimetype, name, size: data.length },
+    req,
+  })) as Media
 }
