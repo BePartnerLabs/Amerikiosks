@@ -45,7 +45,7 @@ async function seed() {
       limit: 1,
     })
     if (existing.totalDocs > 0) {
-      machineIds[m.slug] = existing.docs[0]!.id as number
+      machineIds[m.slug] = existing.docs[0]?.id as number
       console.log(`Machine exists: ${m.name}`)
       continue
     }

@@ -1,7 +1,5 @@
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
-
-import { CMSLink } from '@/components/Link'
 import './not-found.css'
 
 export default async function NotFound() {

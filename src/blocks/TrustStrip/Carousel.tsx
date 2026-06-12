@@ -5,7 +5,7 @@ import { useRef } from 'react'
 import { TrustStripTracker } from './Tracker'
 
 type CarouselPartner = {
-  id: string
+  id: string | number
   name: string
   logoUrl: string
 }

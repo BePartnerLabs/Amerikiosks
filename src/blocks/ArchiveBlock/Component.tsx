@@ -15,7 +15,6 @@ export const ArchiveBlock: React.FC<ArchiveBlockProps & { id?: string }> = async
     populateBy,
     selectedDocs,
     blockName,
-    blockType,
   } = props
 
   const limit = limitFromProps || 4

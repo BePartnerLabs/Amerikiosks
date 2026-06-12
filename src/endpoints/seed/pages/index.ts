@@ -25,7 +25,7 @@ export const seedPages = async (
   if (staleForBrands.docs.length > 0) {
     await payload.delete({
       collection: 'pages',
-      id: staleForBrands.docs[0]!.id,
+      id: staleForBrands.docs[0]?.id,
       req,
       overrideAccess: true,
     })
