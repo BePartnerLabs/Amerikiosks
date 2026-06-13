@@ -595,6 +595,117 @@ export const seedForVenues = async (payload: Payload, req: PayloadRequest): Prom
           },
         ],
       },
+      layout: [
+        {
+          blockType: 'projectsShowcase',
+          eyebrow: 'MOMENTOS REALES DE VENUE',
+          heading: 'Momentos reales de venue, construidos para generar.',
+          body: richText(
+            'Descubre cómo la ubicación estratégica y la operación integral convierten espacios de alto tráfico en ingresos pasivos mensuales.',
+          ),
+          filterTag: 'venue',
+        },
+        {
+          blockType: 'cardGrid',
+          variant: 'pillar',
+          eyebrow: 'PARA VENUES',
+          heading: 'Un programa. Cero carga operativa para tu equipo.',
+          subheading:
+            'Amerikiosks instala, opera y mantiene la experiencia — tu equipo solo recibe el reporte de ingresos.',
+          items: [
+            {
+              eyebrow: 'ESPACIO',
+              title: 'Aprovecha tu espacio',
+              body: richText(
+                'Convierte metros cuadrados sin uso en un activo que genera ingresos recurrentes mensuales.',
+              ),
+            },
+            {
+              eyebrow: 'INSTALACIÓN',
+              title: 'Cero obra civil',
+              body: richText(
+                'Instalación turnkey: sin construcción, sin permisos adicionales, sin interrupciones a tu operación diaria.',
+              ),
+            },
+            {
+              eyebrow: 'OPERACIONES',
+              title: 'Cero carga para tu personal',
+              body: richText(
+                'Reabastecimiento, mantenimiento, soporte y monitoreo corren por Amerikiosks — tu equipo no opera nada.',
+              ),
+            },
+            {
+              eyebrow: 'INGRESOS',
+              title: 'Ingresos mensuales transparentes',
+              body: richText(
+                'Recibes tu comisión mensual con reportes claros de ventas y performance por ubicación.',
+              ),
+            },
+          ],
+        },
+        {
+          blockType: 'formatsGrid',
+          eyebrow: 'PROGRAMAS',
+          heading: 'Programas diseñados para tu tipo de espacio.',
+          filterTags: machines.map((m) => ({ tag: m.tag })),
+        },
+        {
+          blockType: 'processSteps',
+          eyebrow: 'CÓMO FUNCIONA',
+          heading: 'De la primera conversación al primer reporte de ingresos.',
+          subheading:
+            'No necesitas operar nada. Amerikiosks evalúa, instala, opera y reporta — tu equipo solo aprueba la ubicación.',
+          steps: [
+            {
+              title: 'Evaluar el espacio',
+              body: richText(
+                'Analizamos tráfico, distribución y oportunidades dentro de tu venue para identificar las mejores ubicaciones.',
+              ),
+            },
+            {
+              title: 'Definir el modelo',
+              body: richText(
+                'Acordamos el modelo de partnership (full-service, consignación o servicios) según tu preferencia operativa.',
+              ),
+            },
+            {
+              title: 'Instalar sin fricción',
+              body: richText(
+                'Coordinamos instalación turnkey sin obra civil ni interrupciones a tu operación.',
+              ),
+            },
+            {
+              title: 'Operar de extremo a extremo',
+              body: richText(
+                'Reabastecimiento, mantenimiento y soporte corren por nuestra cuenta.',
+              ),
+            },
+            {
+              title: 'Recibir tus ingresos',
+              body: richText('Reporte mensual claro de ventas, performance y tu comisión.'),
+            },
+          ],
+          cta: [
+            {
+              link: {
+                label: 'Iniciar un programa de venue',
+                type: 'custom',
+                url: '/contact',
+                appearance: 'default',
+              },
+            },
+          ],
+        },
+        {
+          blockType: 'faqWithForm',
+          eyebrow: 'INICIAR UN PROGRAMA',
+          heading: 'Respuestas antes de que tu venue genere.',
+          subheading:
+            'Un formulario enfocado y un FAQ práctico ayudan a calificar el partnership correcto sin convertir la página en un flujo de contacto genérico.',
+          filterTags: [{ tag: 'venues' }],
+          form: venueFormId,
+        },
+      ],
       meta: {
         title: 'Para Venues — Amerikiosks',
         description:

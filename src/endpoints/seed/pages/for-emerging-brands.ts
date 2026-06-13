@@ -591,6 +591,119 @@ export const seedForEmergingBrands = async (
           },
         ],
       },
+      layout: [
+        {
+          blockType: 'projectsShowcase',
+          eyebrow: 'MOMENTOS REALES DE LANZAMIENTO',
+          heading: 'Momentos reales de lanzamiento, construidos para validar.',
+          body: richText(
+            'Descubre cómo las marcas emergentes prueban presencia retail física en venues premium antes de comprometerse con un rollout completo.',
+          ),
+          filterTag: 'emerging',
+        },
+        {
+          blockType: 'cardGrid',
+          variant: 'pillar',
+          eyebrow: 'PARA MARCAS EMERGENTES',
+          heading: 'Un piloto. Cuatro decisiones antes de escalar.',
+          subheading:
+            'Amerikiosks te da acceso a distribución física premium con el mínimo compromiso posible — decides qué escalar con datos reales.',
+          items: [
+            {
+              eyebrow: 'ENTRADA',
+              title: 'Bajo costo de entrada',
+              body: richText(
+                'Accede a venues premium sin la inversión que requiere abrir una tienda comercial.',
+              ),
+            },
+            {
+              eyebrow: 'MODELO',
+              title: 'Flexibilidad de modelo',
+              body: richText(
+                'Elige consignación, full-service o servicios según tu etapa y capital disponible.',
+              ),
+            },
+            {
+              eyebrow: 'OPERACIONES',
+              title: 'Cero infraestructura propia',
+              body: richText(
+                'Amerikiosks opera instalación, inventario y mantenimiento — tú te enfocas en el producto.',
+              ),
+            },
+            {
+              eyebrow: 'DATOS',
+              title: 'Decide con datos reales',
+              body: richText(
+                'Usa los resultados de ventas por ubicación para decidir dónde y cómo escalar.',
+              ),
+            },
+          ],
+        },
+        {
+          blockType: 'formatsGrid',
+          eyebrow: 'RUTAS DE LANZAMIENTO',
+          heading: 'Rutas de lanzamiento según tu etapa.',
+          filterTags: machines.map((m) => ({ tag: m.tag })),
+        },
+        {
+          blockType: 'processSteps',
+          eyebrow: 'CÓMO FUNCIONA',
+          heading: 'De founder a presencia validada.',
+          subheading:
+            'Sin abrir una tienda, sin inventario innecesariamente inmovilizado — Amerikiosks te da el canal físico y los datos para decidir el siguiente paso.',
+          steps: [
+            {
+              title: 'Aplicar al programa',
+              body: richText(
+                'Cuéntanos sobre tu marca, producto y objetivos de distribución física.',
+              ),
+            },
+            {
+              title: 'Elegir el modelo',
+              body: richText(
+                'Seleccionamos juntos el modelo (consignación, full-service o servicios) según tu etapa.',
+              ),
+            },
+            {
+              title: 'Lanzar tu piloto',
+              body: richText(
+                'Tu producto entra en un venue premium seleccionado, con instalación y operaciones a cargo de Amerikiosks.',
+              ),
+            },
+            {
+              title: 'Recibir datos reales',
+              body: richText(
+                'Ventas, inventario y comportamiento de compra por ubicación, sin necesitar tu propio equipo.',
+              ),
+            },
+            {
+              title: 'Decidir cómo escalar',
+              body: richText(
+                'Usa los resultados del piloto para decidir nuevas ubicaciones o ajustar el modelo.',
+              ),
+            },
+          ],
+          cta: [
+            {
+              link: {
+                label: 'Aplicar al programa founder',
+                type: 'custom',
+                url: '/contact',
+                appearance: 'default',
+              },
+            },
+          ],
+        },
+        {
+          blockType: 'faqWithForm',
+          eyebrow: 'APLICAR AL PROGRAMA',
+          heading: 'Respuestas antes de que tu marca lance.',
+          subheading:
+            'Un formulario enfocado y un FAQ práctico para calificar el modelo correcto para la etapa de tu marca.',
+          filterTags: [{ tag: 'emerging-brands' }],
+          form: emergingFormId,
+        },
+      ],
       meta: {
         title: 'Para Marcas Emergentes — Amerikiosks',
         description:
