@@ -163,6 +163,7 @@ export const FormBlock: React.FC<
                 form={formID}
                 type="submit"
                 variant="default"
+                className="bp-btn bp-btn--dark ak-form__submit"
               >
                 {submitButtonLabel}
               </Button>

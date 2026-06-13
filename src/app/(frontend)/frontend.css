@@ -95,12 +95,16 @@ img {
 .bp-btn {
   --_background: var(--btn-background, var(--bp-primary));
   --_color: var(--btn-color, var(--bp-primary-fg));
-  --_border-radius: var(--btn-border-radius, var(--ak-radius));
-  --_padding: var(--btn-padding, var(--bp-space-3) var(--bp-space-6));
+  --_border-radius: var(--btn-border-radius, var(--ak-btn-radius));
+  --_padding: var(--btn-padding, var(--ak-btn-padding));
+  --_height: var(--btn-height, var(--ak-btn-height));
+  --_gap: var(--btn-gap, var(--ak-btn-gap));
   --_border: var(--btn-border, none);
 
   display: inline-flex;
   align-items: center;
+  gap: var(--_gap);
+  height: var(--_height);
   padding: var(--_padding);
   border-radius: var(--_border-radius);
   font-size: var(--bp-text-sm);
