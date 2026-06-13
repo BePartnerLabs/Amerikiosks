@@ -32,7 +32,7 @@ export const seedPartners = async (payload: Payload, req: PayloadRequest): Promi
     if (existing.docs.length > 0) {
       await payload.update({
         collection: 'partners',
-        id: existing.docs[0]!.id,
+        id: existing.docs[0]?.id,
         data: { logo: logo.id, order: partner.order },
         req,
       })

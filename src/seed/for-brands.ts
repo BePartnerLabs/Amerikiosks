@@ -145,7 +145,7 @@ async function seed() {
     limit: 1,
   })
   if (existingBrandForm.totalDocs > 0) {
-    brandFormId = existingBrandForm.docs[0]!.id as number
+    brandFormId = existingBrandForm.docs[0]?.id as number
   } else {
     const created = await payload.create({ collection: 'forms', data: brandProgramForm })
     brandFormId = created.id as number

@@ -83,7 +83,7 @@
 }
 
 .ak-faq-form__textarea {
-  height: auto !important;
+  height: auto;
   padding: var(--bp-space-3, 0.75rem);
   resize: vertical;
 }

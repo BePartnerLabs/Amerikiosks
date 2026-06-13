@@ -2,8 +2,8 @@ import type { Payload, PayloadRequest } from 'payload'
 import { seedAudiencePages, seedWhoItsFor } from './audience'
 import { seedCaseStudies } from './case-studies'
 import { seedContact } from './contact'
-import { seedForBrands } from './for-brands'
 import { seedForAgencies } from './for-agencies'
+import { seedForBrands } from './for-brands'
 import { seedForEmergingBrands } from './for-emerging-brands'
 import { seedForVenues } from './for-venues'
 import { seedHome } from './home'
@@ -43,7 +43,12 @@ export const seedPages = async (
       req,
     })
     if (stale.docs.length > 0) {
-      await payload.delete({ collection: 'pages', id: stale.docs[0]?.id, req, overrideAccess: true })
+      await payload.delete({
+        collection: 'pages',
+        id: stale.docs[0]?.id,
+        req,
+        overrideAccess: true,
+      })
     }
   }
 
