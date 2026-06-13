@@ -584,6 +584,117 @@ export const seedForAgencies = async (payload: Payload, req: PayloadRequest): Pr
           },
         ],
       },
+      layout: [
+        {
+          blockType: 'projectsShowcase',
+          eyebrow: 'ACTIVACIONES REALES',
+          heading: 'Activaciones reales, construidas para ser notadas.',
+          body: richText(
+            'Descubre cómo los briefings se convierten en momentos de retail físico en venues premium donde tu audiencia ya está.',
+          ),
+          filterTag: 'agency',
+        },
+        {
+          blockType: 'cardGrid',
+          variant: 'pillar',
+          eyebrow: 'PARA AGENCIAS',
+          heading: 'Una activación. Cuatro variables que controla tu equipo.',
+          subheading:
+            'Amerikiosks ejecuta la logística; tu equipo controla la estrategia creativa y de medios.',
+          items: [
+            {
+              eyebrow: 'UBICACIÓN',
+              title: 'Elige el venue',
+              body: richText(
+                'Selecciona entre espacios premium de alto tráfico que encajan con el target de la campaña.',
+              ),
+            },
+            {
+              eyebrow: 'CREATIVIDAD',
+              title: 'Controla la expresión',
+              body: richText(
+                'Wraps, pantallas, surtido y mensajes de campaña ejecutados según tu dirección creativa.',
+              ),
+            },
+            {
+              eyebrow: 'LOGÍSTICA',
+              title: 'Cero operación interna',
+              body: richText('Instalación, montaje, desmontaje y soporte corren por Amerikiosks.'),
+            },
+            {
+              eyebrow: 'MEDICIÓN',
+              title: 'Datos para reportar',
+              body: richText(
+                'Accede a métricas de interacción y performance para incluir en el reporte de campaña al cliente.',
+              ),
+            },
+          ],
+        },
+        {
+          blockType: 'formatsGrid',
+          eyebrow: 'FORMATOS',
+          heading: 'Formatos listos para tu próxima activación.',
+          filterTags: machines.map((m) => ({ tag: m.tag })),
+        },
+        {
+          blockType: 'processSteps',
+          eyebrow: 'CÓMO FUNCIONA',
+          heading: 'De la idea de campaña a la activación en vivo.',
+          subheading:
+            'Tu equipo define la estrategia creativa; Amerikiosks ejecuta la logística física de extremo a extremo.',
+          steps: [
+            {
+              title: 'Definir el brief',
+              body: richText(
+                'Objetivo de campaña, audiencia objetivo, timing y presupuesto de activación.',
+              ),
+            },
+            {
+              title: 'Seleccionar el venue',
+              body: richText(
+                'Identificamos espacios premium alineados con el target y el momento de campaña.',
+              ),
+            },
+            {
+              title: 'Diseñar la activación',
+              body: richText(
+                'Wrap, pantallas, surtido y mensajes de campaña producidos según tu dirección creativa.',
+              ),
+            },
+            {
+              title: 'Instalar y lanzar',
+              body: richText(
+                'Coordinamos montaje, instalación y lanzamiento sin que tu equipo gestione la logística.',
+              ),
+            },
+            {
+              title: 'Medir y reportar',
+              body: richText(
+                'Entregamos datos de interacción y performance para tu reporte de campaña al cliente.',
+              ),
+            },
+          ],
+          cta: [
+            {
+              link: {
+                label: 'Cotizar una activación',
+                type: 'custom',
+                url: '/contact',
+                appearance: 'default',
+              },
+            },
+          ],
+        },
+        {
+          blockType: 'faqWithForm',
+          eyebrow: 'COTIZAR UNA ACTIVACIÓN',
+          heading: 'Respuestas antes de que tu campaña salga en vivo.',
+          subheading:
+            'Un formulario enfocado y un FAQ práctico para calificar el formato de activación correcto para tu campaña.',
+          filterTags: [{ tag: 'agencies' }],
+          form: agencyFormId,
+        },
+      ],
       meta: {
         title: 'Para Agencias — Amerikiosks',
         description:

@@ -16,36 +16,28 @@ export const seedPages = async (
   req: PayloadRequest,
   { postIds = [] }: { postIds?: string[] } = {},
 ): Promise<void> => {
-  // Delete for-brands before seeding the parent so nested-docs never re-saves a stale
-  // mediumImpact child that has no hero.media (left over from a previous broken seed run).
-  const staleForBrands = await payload.find({
+  // Delete ALL children of who-its-for before touching the parent so Nested Docs never
+  // re-saves a stale mediumImpact child that has no hero.media.
+  const whoItsForParent = await payload.find({
     collection: 'pages',
-    where: { slug: { equals: 'for-brands' } },
+    where: { slug: { equals: 'who-its-for' } },
     limit: 1,
     overrideAccess: true,
     req,
   })
-  if (staleForBrands.docs.length > 0) {
-    await payload.delete({
+  if (whoItsForParent.docs.length > 0) {
+    const parentId = whoItsForParent.docs[0]?.id
+    const children = await payload.find({
       collection: 'pages',
-      id: staleForBrands.docs[0]?.id,
-      req,
-      overrideAccess: true,
-    })
-  }
-
-  for (const slug of ['for-venues', 'for-agencies', 'for-emerging-brands']) {
-    const stale = await payload.find({
-      collection: 'pages',
-      where: { slug: { equals: slug } },
-      limit: 1,
+      where: { parent: { equals: parentId } },
+      limit: 100,
       overrideAccess: true,
       req,
     })
-    if (stale.docs.length > 0) {
+    for (const child of children.docs) {
       await payload.delete({
         collection: 'pages',
-        id: stale.docs[0]?.id,
+        id: child.id,
         req,
         overrideAccess: true,
       })
