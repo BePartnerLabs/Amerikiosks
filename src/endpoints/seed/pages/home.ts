@@ -13,6 +13,68 @@ export const seedHome = async (
 ): Promise<void> => {
   payload.logger.info('— Seeding home page...')
 
+  const audienceSlugs = ['for-brands', 'for-venues', 'for-agencies', 'for-emerging-brands'] as const
+  const audienceResolved = Object.fromEntries(
+    await Promise.all(
+      audienceSlugs.map(async (slug) => {
+        const page = await payload.find({
+          collection: 'pages',
+          where: { slug: { equals: slug } },
+          limit: 1,
+          depth: 0,
+          req,
+        })
+
+        const first = page.docs[0]
+        const pageId = first?.id
+        const hero = first?.hero as { media?: number | { id: number } | null } | undefined
+        const heroMedia = hero?.media
+        const heroMediaId =
+          typeof heroMedia === 'object' && heroMedia !== null
+            ? heroMedia.id
+            : typeof heroMedia === 'number'
+              ? heroMedia
+              : undefined
+
+        let imageId: number | undefined
+
+        if (Number.isFinite(heroMediaId)) {
+          try {
+            await payload.findByID({
+              collection: 'media',
+              id: Number(heroMediaId),
+              depth: 0,
+              req,
+            })
+            imageId = Number(heroMediaId)
+          } catch {
+            // Stale media FK on page hero - use the media uploaded during audience seeding.
+            imageId = audienceMediaIds[slug]
+          }
+        } else {
+          imageId = audienceMediaIds[slug]
+        }
+
+        const resolvedPageId = pageId ? Number(pageId) : Number(audiencePageIds[slug])
+        if (!Number.isFinite(resolvedPageId)) {
+          throw new Error(`Missing audience page id for slug: ${slug}`)
+        }
+
+        if (!Number.isFinite(imageId)) {
+          throw new Error(`Missing audience image id for slug: ${slug}`)
+        }
+
+        return [
+          slug,
+          {
+            pageId: resolvedPageId,
+            imageId,
+          },
+        ] as const
+      }),
+    ),
+  ) as Record<(typeof audienceSlugs)[number], { pageId: number; imageId: number }>
+
   const [heroImage, heroVideo] = await Promise.all([
     uploadMedia(
       payload,
@@ -252,23 +314,23 @@ export const seedHome = async (
       'Amerikiosks helps partners create branded retail experiences that are placed with intention and operated end to end.',
     items: [
       {
-        page: Number(audiencePageIds['for-brands']),
-        image: audienceMediaIds['for-brands'],
+        page: audienceResolved['for-brands'].pageId,
+        image: audienceResolved['for-brands'].imageId,
         cta: 'Explore brand programs',
       },
       {
-        page: Number(audiencePageIds['for-venues']),
-        image: audienceMediaIds['for-venues'],
+        page: audienceResolved['for-venues'].pageId,
+        image: audienceResolved['for-venues'].imageId,
         cta: 'Explore venue revenue',
       },
       {
-        page: Number(audiencePageIds['for-agencies']),
-        image: audienceMediaIds['for-agencies'],
+        page: audienceResolved['for-agencies'].pageId,
+        image: audienceResolved['for-agencies'].imageId,
         cta: 'Explore activations',
       },
       {
-        page: Number(audiencePageIds['for-emerging-brands']),
-        image: audienceMediaIds['for-emerging-brands'],
+        page: audienceResolved['for-emerging-brands'].pageId,
+        image: audienceResolved['for-emerging-brands'].imageId,
         cta: 'Explore launch paths',
       },
     ],
@@ -282,23 +344,23 @@ export const seedHome = async (
       'Amerikiosks ayuda a los partners a crear experiencias de retail de marca colocadas con intención y operadas de principio a fin.',
     items: [
       {
-        page: Number(audiencePageIds['for-brands']),
-        image: audienceMediaIds['for-brands'],
+        page: audienceResolved['for-brands'].pageId,
+        image: audienceResolved['for-brands'].imageId,
         cta: 'Explorar programas de marca',
       },
       {
-        page: Number(audiencePageIds['for-venues']),
-        image: audienceMediaIds['for-venues'],
+        page: audienceResolved['for-venues'].pageId,
+        image: audienceResolved['for-venues'].imageId,
         cta: 'Explorar ingresos por venue',
       },
       {
-        page: Number(audiencePageIds['for-agencies']),
-        image: audienceMediaIds['for-agencies'],
+        page: audienceResolved['for-agencies'].pageId,
+        image: audienceResolved['for-agencies'].imageId,
         cta: 'Explorar activaciones',
       },
       {
-        page: Number(audiencePageIds['for-emerging-brands']),
-        image: audienceMediaIds['for-emerging-brands'],
+        page: audienceResolved['for-emerging-brands'].pageId,
+        image: audienceResolved['for-emerging-brands'].imageId,
         cta: 'Explorar rutas de lanzamiento',
       },
     ],
@@ -343,7 +405,11 @@ export const seedHome = async (
         body: richText(
           'Meet fans and guests while anticipation is high and discovery feels part of the event.',
         ),
-        link: { type: 'custom' as const, label: 'Explore event venues', url: '/where-it-works' },
+        link: {
+          type: 'custom' as const,
+          label: 'Explore event venues',
+          url: '/where-it-works',
+        },
       },
       {
         icon: 'hotel',
@@ -351,7 +417,11 @@ export const seedHome = async (
         body: richText(
           'Curate useful branded moments for hotels, resorts, casinos, and destination guests.',
         ),
-        link: { type: 'custom' as const, label: 'Explore hospitality', url: '/where-it-works' },
+        link: {
+          type: 'custom' as const,
+          label: 'Explore hospitality',
+          url: '/where-it-works',
+        },
       },
       {
         icon: 'shopping_bag',
@@ -359,7 +429,11 @@ export const seedHome = async (
         body: richText(
           'Create convenient retail touchpoints in daily spaces without opening a full store.',
         ),
-        link: { type: 'custom' as const, label: 'Explore campus retail', url: '/where-it-works' },
+        link: {
+          type: 'custom' as const,
+          label: 'Explore campus retail',
+          url: '/where-it-works',
+        },
       },
     ],
   }
@@ -399,7 +473,11 @@ export const seedHome = async (
         body: richText(
           'Crea momentos de marca útiles en hoteles, resorts, casinos y destinos turísticos.',
         ),
-        link: { type: 'custom' as const, label: 'Explorar hospitalidad', url: '/where-it-works' },
+        link: {
+          type: 'custom' as const,
+          label: 'Explorar hospitalidad',
+          url: '/where-it-works',
+        },
       },
       {
         icon: 'shopping_bag',
@@ -407,7 +485,11 @@ export const seedHome = async (
         body: richText(
           'Crea puntos de contacto de retail convenientes en espacios cotidianos sin abrir una tienda completa.',
         ),
-        link: { type: 'custom' as const, label: 'Explorar campus retail', url: '/where-it-works' },
+        link: {
+          type: 'custom' as const,
+          label: 'Explorar campus retail',
+          url: '/where-it-works',
+        },
       },
     ],
   }
@@ -420,7 +502,11 @@ export const seedHome = async (
     heading: 'Built to feel premium.\nOperated to stay that way.',
     subheading:
       'From the first opportunity to daily operation, Amerikiosks turns a location, campaign, or brand goal into a managed retail experience.',
-    link: { type: 'custom' as const, label: 'Learn More', url: '/why-amerikiosks' },
+    link: {
+      type: 'custom' as const,
+      label: 'Learn More',
+      url: '/why-amerikiosks',
+    },
     items: [
       {
         eyebrow: 'STRATEGY',
@@ -455,7 +541,11 @@ export const seedHome = async (
     heading: 'Diseñado para sentirse premium.\nOperado para mantenerse así.',
     subheading:
       'Desde la primera oportunidad hasta la operación diaria, Amerikiosks convierte una ubicación, campaña o meta de marca en una experiencia de retail gestionada.',
-    link: { type: 'custom' as const, label: 'Saber más', url: '/why-amerikiosks' },
+    link: {
+      type: 'custom' as const,
+      label: 'Saber más',
+      url: '/why-amerikiosks',
+    },
     items: [
       {
         eyebrow: 'ESTRATEGIA',
@@ -629,7 +719,15 @@ function richText(text: string) {
         {
           type: 'paragraph',
           children: [
-            { type: 'text', detail: 0, format: 0, mode: 'normal', style: '', text, version: 1 },
+            {
+              type: 'text',
+              detail: 0,
+              format: 0,
+              mode: 'normal',
+              style: '',
+              text,
+              version: 1,
+            },
           ],
           direction: 'ltr' as const,
           format: '' as const,

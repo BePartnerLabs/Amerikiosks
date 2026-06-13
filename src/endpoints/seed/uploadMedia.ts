@@ -44,19 +44,7 @@ export const uploadMedia = async (
     req,
   })
   if (existing.docs.length > 0) {
-    const url = (existing.docs[0] as Media).url
-    if (url) {
-      try {
-        const res = await fetch(url, { method: 'HEAD' })
-        if (res.ok) return existing.docs[0] as Media
-      } catch {
-        // URL unreachable — fall through to re-upload
-      }
-    }
-    // Delete without req so it commits immediately outside the current transaction.
-    // If req is passed, the delete and the subsequent create share a transaction and
-    // Payload's filename-dedup query still sees the deleted record, causing a "-1" suffix.
-    await payload.delete({ collection: 'media', id: existing.docs[0]?.id })
+    return existing.docs[0] as Media
   }
 
   const data = await readSeedAsset(name)
