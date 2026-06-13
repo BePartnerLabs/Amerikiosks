@@ -5,10 +5,13 @@ export const Width: React.FC<{
   className?: string
   width?: number | string
 }> = ({ children, className, width }) => {
+  const numWidth = typeof width === 'string' ? parseInt(width, 10) : width
+  const gridColumn = numWidth && numWidth <= 50 ? 'span 1' : 'span 2'
+
   return (
     <div
-      className={className}
-      style={{ maxWidth: width ? `${width}%` : undefined }}
+      className={['ak-form__field', className].filter(Boolean).join(' ')}
+      style={{ gridColumn }}
     >
       {children}
     </div>

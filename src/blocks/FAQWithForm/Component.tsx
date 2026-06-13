@@ -1,21 +1,22 @@
+import type { Form as FormType } from '@payloadcms/plugin-form-builder/types'
 import type React from 'react'
+import { FormBlock } from '@/blocks/Form/Component'
 import RichText from '@/components/RichText'
 import { SectionHeader } from '@/components/SectionHeader'
 import type { FAQWithFormBlock as FAQWithFormBlockProps, FaqItem } from '@/payload-types'
 import { toSnakeCase } from '@/utilities/toSnakeCase'
-import { BrandForm } from './BrandForm'
 import './styles.css'
 
-type Props = FAQWithFormBlockProps & { resolvedFaqs?: FaqItem[] }
+type Props = FAQWithFormBlockProps & { resolvedFaqs?: FaqItem[]; resolvedForm?: FormType | null }
 
 export const FAQWithFormBlock: React.FC<Props> = ({
   eyebrow,
   heading,
   subheading,
-  form,
   blockName,
   blockType,
   resolvedFaqs = [],
+  resolvedForm,
 }) => {
   if (!heading) return null
 
@@ -64,11 +65,12 @@ export const FAQWithFormBlock: React.FC<Props> = ({
             </div>
 
             <div className="ak-faq-form__form-side">
-              <BrandForm
-                heading={form?.heading ?? ''}
-                subheading={form?.subheading ?? undefined}
-                disclaimer={form?.disclaimer ?? undefined}
-              />
+              {resolvedForm && (
+                <FormBlock
+                  form={resolvedForm}
+                  enableIntro={false}
+                />
+              )}
             </div>
           </div>
         </div>

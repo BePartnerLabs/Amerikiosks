@@ -1,11 +1,17 @@
+import type { Form as FormType } from '@payloadcms/plugin-form-builder/types'
 import { cleanup, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { FAQWithFormBlock } from '@/blocks/FAQWithForm/Component'
 import type { FAQWithFormBlock as FAQWithFormBlockType, FaqItem } from '@/payload-types'
 
 vi.mock('@/components/RichText', () => ({ default: () => null }))
-vi.mock('@/blocks/FAQWithForm/BrandForm', () => ({
-  BrandForm: ({ heading }: { heading: string }) => <div>{heading}</div>,
+vi.mock('@/blocks/Form/Component', () => ({
+  FormBlock: ({ form }: { form: FormType }) => (
+    <div data-testid="form-block">{form.submitButtonLabel}</div>
+  ),
+}))
+vi.mock('@/components/SectionHeader', () => ({
+  SectionHeader: ({ heading }: { heading: string }) => <h2>{heading}</h2>,
 }))
 
 const makeFaqItem = (id: string, question: string): FaqItem =>
@@ -31,19 +37,26 @@ const makeFaqItem = (id: string, question: string): FaqItem =>
     createdAt: '',
   }) as unknown as FaqItem
 
-const base: FAQWithFormBlockType & { resolvedFaqs: FaqItem[] } = {
+const resolvedForm = {
+  id: 'form-1',
+  title: 'Brand Program Form',
+  submitButtonLabel: 'Submit Brand Program Request',
+  confirmationType: 'message',
+  fields: [],
+} as unknown as FormType
+
+const base: FAQWithFormBlockType & { resolvedFaqs: FaqItem[]; resolvedForm: FormType } = {
   blockType: 'faqWithForm',
   blockName: 'Start A Program',
   id: 'fwf-1',
   heading: 'Answers before your brand shows up.',
   filterTags: [{ tag: 'brands', id: 'ft1' }],
-  form: {
-    heading: 'Start a brand program',
-  },
+  form: 1,
   resolvedFaqs: [
     makeFaqItem('faq-1', 'Do we control pricing?'),
     makeFaqItem('faq-2', 'Who handles replenishment?'),
   ],
+  resolvedForm,
 }
 
 describe('FAQWithFormBlock', () => {
@@ -67,9 +80,20 @@ describe('FAQWithFormBlock', () => {
     expect(screen.getByText('Who handles replenishment?')).toBeInTheDocument()
   })
 
-  it('renders form heading', () => {
+  it('renders FormBlock when resolvedForm is provided', () => {
     render(<FAQWithFormBlock {...base} />)
-    expect(screen.getByText('Start a brand program')).toBeInTheDocument()
+    expect(screen.getByTestId('form-block')).toBeInTheDocument()
+    expect(screen.getByText('Submit Brand Program Request')).toBeInTheDocument()
+  })
+
+  it('renders nothing for form panel when resolvedForm is absent', () => {
+    const { container } = render(
+      <FAQWithFormBlock
+        {...base}
+        resolvedForm={undefined as unknown as FormType}
+      />,
+    )
+    expect(container.querySelector('[data-testid="form-block"]')).toBeNull()
   })
 
   it('renders GA4 attributes on block root', () => {

@@ -13,15 +13,17 @@
 }
 
 .ak-form__card {
+  --_border-color: var(--ak-color-border);
+  --_bg: var(--ak-color-surface);
   padding: var(--bp-space-6, 1.5rem);
-  border: 1px solid var(--ak-color-border);
+  border: 1px solid var(--_border-color);
   border-radius: var(--bp-radius-lg, 0.75rem);
-  background-color: var(--ak-color-surface);
+  background-color: var(--_bg);
 }
 
 .ak-form__fields {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: var(--bp-space-6, 1.5rem);
 }
 
@@ -31,6 +33,16 @@
   gap: var(--bp-space-2, 0.5rem);
 }
 
+@media (max-width: 640px) {
+  .ak-form__fields {
+    grid-template-columns: 1fr;
+  }
+
+  .ak-form__field {
+    grid-column: span 1 !important;
+  }
+}
+
 .ak-form__checkbox-row {
   display: flex;
   align-items: center;
@@ -38,9 +50,10 @@
 }
 
 .ak-form__error {
+  --_error-color: var(--ak-accent);
   margin-top: var(--bp-space-2, 0.5rem);
   font-size: var(--bp-text-sm, 0.875rem);
-  color: var(--ak-accent);
+  color: var(--_error-color);
 }
 
 .ak-form__status {
@@ -50,12 +63,14 @@
 }
 
 .ak-form__status--error {
-  color: var(--ak-accent);
-  background-color: color-mix(in srgb, var(--ak-accent) 8%, transparent);
+  --_accent: var(--ak-accent);
+  color: var(--_accent);
+  background-color: color-mix(in srgb, var(--_accent) 8%, transparent);
 }
 
 .ak-form__loading {
-  color: var(--ak-color-muted);
+  --_muted: var(--ak-color-muted);
+  color: var(--_muted);
   font-size: var(--bp-text-sm, 0.875rem);
 }
 
