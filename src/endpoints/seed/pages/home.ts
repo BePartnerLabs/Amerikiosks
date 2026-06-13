@@ -46,7 +46,7 @@ export const seedHome = async (
                 format: 0,
                 mode: 'normal',
                 style: '',
-                text: 'We don't make vending machines. We connect your brand with people, ',
+                text: "We don't make vending machines. We connect your brand with people, ",
                 version: 1,
               },
               {
@@ -181,7 +181,9 @@ export const seedHome = async (
     items: [
       {
         title: 'Premium placement',
-        body: richText('Airports, hotels, stadiums: where your customer already is, and your competitor can't reach.'),
+        body: richText(
+          "Airports, hotels, stadiums: where your customer already is, and your competitor can't reach.",
+        ),
       },
       {
         title: 'Turnkey operations',
@@ -189,11 +191,13 @@ export const seedHome = async (
       },
       {
         title: 'Custom brand builds',
-        body: richText('360° branding of the physical unit + active screens. Not a machine — your brand in the space.'),
+        body: richText(
+          '360° branding of the physical unit + active screens. Not a machine — your brand in the space.',
+        ),
       },
       {
         title: 'Smarter revenue',
-        body: richText('This isn't an expense. It's presence that pays for itself.'),
+        body: richText("This isn't an expense. It's presence that pays for itself."),
       },
     ],
   }
@@ -204,7 +208,9 @@ export const seedHome = async (
     items: [
       {
         title: 'Ubicación premium',
-        body: richText('Aeropuertos, hoteles, estadios: donde tu cliente ya está, y tu competidor no puede llegar.'),
+        body: richText(
+          'Aeropuertos, hoteles, estadios: donde tu cliente ya está, y tu competidor no puede llegar.',
+        ),
       },
       {
         title: 'Operación llave en mano',
@@ -212,7 +218,9 @@ export const seedHome = async (
       },
       {
         title: 'Marca a medida',
-        body: richText('Branding 360° de la unidad física + pantallas activas. No es una máquina, es tu marca en el espacio.'),
+        body: richText(
+          'Branding 360° de la unidad física + pantallas activas. No es una máquina, es tu marca en el espacio.',
+        ),
       },
       {
         title: 'Ingresos más inteligentes',
