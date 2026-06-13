@@ -3,6 +3,9 @@ import { seedAudiencePages, seedWhoItsFor } from './audience'
 import { seedCaseStudies } from './case-studies'
 import { seedContact } from './contact'
 import { seedForBrands } from './for-brands'
+import { seedForAgencies } from './for-agencies'
+import { seedForEmergingBrands } from './for-emerging-brands'
+import { seedForVenues } from './for-venues'
 import { seedHome } from './home'
 import { seedSolutions } from './solutions'
 import { seedWhereItWorks } from './where-it-works'
@@ -31,11 +34,27 @@ export const seedPages = async (
     })
   }
 
+  for (const slug of ['for-venues', 'for-agencies', 'for-emerging-brands']) {
+    const stale = await payload.find({
+      collection: 'pages',
+      where: { slug: { equals: slug } },
+      limit: 1,
+      overrideAccess: true,
+      req,
+    })
+    if (stale.docs.length > 0) {
+      await payload.delete({ collection: 'pages', id: stale.docs[0]?.id, req, overrideAccess: true })
+    }
+  }
+
   // seedWhoItsFor first — parent page must exist before seedForBrands sets parent FK
   // seedForBrands before seedAudiencePages — so audience loop finds for-brands and skips stub
   // (avoids stale FK in seedHome when seedForBrands deletes+recreates the page)
   const whoItsForId = await seedWhoItsFor(payload, req)
   await seedForBrands(payload, req)
+  await seedForVenues(payload, req)
+  await seedForAgencies(payload, req)
+  await seedForEmergingBrands(payload, req)
   const { pageIds, mediaIds } = await seedAudiencePages(payload, req, whoItsForId)
   await seedHome(payload, req, pageIds, postIds, mediaIds)
   await seedSolutions(payload, req)
