@@ -1,6 +1,17 @@
+import {
+  BlocksFeature,
+  FixedToolbarFeature,
+  HeadingFeature,
+  HorizontalRuleFeature,
+  InlineToolbarFeature,
+  lexicalEditor,
+} from '@payloadcms/richtext-lexical'
 import type { CollectionConfig } from 'payload'
 import { slugField } from 'payload'
-import { defaultLexical } from '@/fields/defaultLexical'
+import { Banner } from '@/blocks/Banner/config'
+import { CallToAction } from '@/blocks/CallToAction/config'
+import { Content } from '@/blocks/Content/config'
+import { MediaBlock } from '@/blocks/MediaBlock/config'
 import { anyone } from '../../access/anyone'
 import { authenticated } from '../../access/authenticated'
 
@@ -61,8 +72,17 @@ export const Projects: CollectionConfig = {
     {
       name: 'body',
       type: 'richText',
-      editor: defaultLexical,
       localized: true,
+      editor: lexicalEditor({
+        features: ({ rootFeatures }) => [
+          ...rootFeatures,
+          HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4'] }),
+          BlocksFeature({ blocks: [Banner, MediaBlock, CallToAction, Content] }),
+          FixedToolbarFeature(),
+          InlineToolbarFeature(),
+          HorizontalRuleFeature(),
+        ],
+      }),
     },
   ],
 }
