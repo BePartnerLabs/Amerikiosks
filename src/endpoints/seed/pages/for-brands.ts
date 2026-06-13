@@ -1,5 +1,6 @@
 import path from 'node:path'
 import type { Payload, PayloadRequest } from 'payload'
+import { brandProgramForm } from '../brand-program-form'
 import { uploadMedia } from '../uploadMedia'
 import { upsertPage } from './utils'
 
@@ -315,6 +316,27 @@ export const seedForBrands = async (payload: Payload, req: PayloadRequest): Prom
     })
   }
 
+  // ── Brand Program Form ────────────────────────────────────────────────────
+  let brandFormId: number
+  const existingForm = await payload.find({
+    collection: 'forms',
+    where: { title: { equals: brandProgramForm.title } },
+    limit: 1,
+    req,
+  })
+  if (existingForm.totalDocs > 0) {
+    brandFormId = existingForm.docs[0]!.id as number
+    payload.logger.info('  Brand Program Form exists, skipping creation')
+  } else {
+    const created = await payload.create({
+      collection: 'forms',
+      data: brandProgramForm,
+      req,
+    })
+    brandFormId = created.id as number
+    payload.logger.info('  Created Brand Program Form')
+  }
+
   // ── Hero image ─────────────────────────────────────────────────────────────
   const heroImage = await uploadMedia(
     payload,
@@ -503,13 +525,7 @@ export const seedForBrands = async (payload: Payload, req: PayloadRequest): Prom
           subheading:
             'A focused form and practical FAQ help qualify the right program without turning the page into a generic contact flow.',
           filterTags: [{ tag: 'brands' }],
-          form: {
-            heading: 'Start a brand program',
-            subheading:
-              'Tell us what you want to launch, where your brand should show up, and what you want to learn or achieve.',
-            disclaimer:
-              'No staffing required. Amerikiosks handles placement, setup, replenishment, support, and daily operations.',
-          },
+          form: brandFormId,
         },
       ],
       _status: 'published',
@@ -690,13 +706,7 @@ export const seedForBrands = async (payload: Payload, req: PayloadRequest): Prom
           subheading:
             'Un formulario enfocado y un FAQ práctico ayudan a calificar el programa correcto sin convertir la página en un flujo de contacto genérico.',
           filterTags: [{ tag: 'brands' }],
-          form: {
-            heading: 'Iniciar un programa de marca',
-            subheading:
-              'Dinos qué quieres lanzar, dónde debería aparecer tu marca y qué quieres aprender o lograr.',
-            disclaimer:
-              'Sin personal requerido. Amerikiosks se encarga de la colocación, configuración, reposición, soporte y operaciones diarias.',
-          },
+          form: brandFormId,
         },
       ],
       meta: {

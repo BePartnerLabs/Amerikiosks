@@ -95,12 +95,16 @@ img {
 .bp-btn {
   --_background: var(--btn-background, var(--bp-primary));
   --_color: var(--btn-color, var(--bp-primary-fg));
-  --_border-radius: var(--btn-border-radius, var(--ak-radius));
-  --_padding: var(--btn-padding, var(--bp-space-3) var(--bp-space-6));
+  --_border-radius: var(--btn-border-radius, var(--ak-btn-radius));
+  --_padding: var(--btn-padding, var(--ak-btn-padding));
+  --_height: var(--btn-height, var(--ak-btn-height));
+  --_gap: var(--btn-gap, var(--ak-btn-gap));
   --_border: var(--btn-border, none);
 
   display: inline-flex;
   align-items: center;
+  gap: var(--_gap);
+  height: var(--_height);
   padding: var(--_padding);
   border-radius: var(--_border-radius);
   font-size: var(--bp-text-sm);
@@ -118,22 +122,31 @@ img {
 }
 
 .bp-btn--outline {
-  --btn-background: transparent;
-  --btn-color: var(--bp-primary-fg);
-  --btn-border: 1px solid currentColor;
+  --_color: var(--outline-color, var(--ak-cta-btn-color));
+  --_background: var(--outline-background, transparent);
+  --_border: var(--outline-border, 1px solid currentColor);
+  --btn-color: var(--_color);
+  --btn-background: var(--_background);
+  --btn-border: var(--_border);
 }
 
 .bp-btn--outline:hover {
-  --btn-background: color-mix(in srgb, currentColor 10%, transparent);
+  --outline-background: color-mix(in srgb, currentColor 10%, transparent);
 }
 
 .bp-btn--dark {
-  --btn-background: var(--bp-color-text, #181715);
-  --btn-color: #ffffff;
+  --_background: var(--dark-background, var(--ak-color-dark, var(--bp-color-text, #181715)));
+  --_color: var(--dark-color, #ffffff);
+  --btn-background: var(--_background);
+  --btn-color: var(--_color);
 }
 
 .bp-btn--dark:hover {
-  --btn-background: color-mix(in srgb, var(--bp-color-text, #181715) 85%, black);
+  --dark-background: color-mix(
+    in srgb,
+    var(--ak-color-dark, var(--bp-color-text, #181715)) 85%,
+    black
+  );
 }
 
 /* ─── Section scroll reveal ────────────────────────────────── */

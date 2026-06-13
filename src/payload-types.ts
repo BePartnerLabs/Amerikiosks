@@ -1153,20 +1153,10 @@ export interface FAQWithFormBlock {
     tag: string;
     id?: string | null;
   }[];
-  form: {
-    /**
-     * Heading shown above the form, e.g. "Start a brand program"
-     */
-    heading: string;
-    /**
-     * Short description below the form heading
-     */
-    subheading?: string | null;
-    /**
-     * Small text next to the submit button
-     */
-    disclaimer?: string | null;
-  };
+  /**
+   * Payload form to render in the form panel (use Forms collection)
+   */
+  form: number | Form;
   id?: string | null;
   blockName?: string | null;
   blockType: 'faqWithForm';
@@ -1956,13 +1946,7 @@ export interface FAQWithFormBlockSelect<T extends boolean = true> {
         tag?: T;
         id?: T;
       };
-  form?:
-    | T
-    | {
-        heading?: T;
-        subheading?: T;
-        disclaimer?: T;
-      };
+  form?: T;
   id?: T;
   blockName?: T;
 }

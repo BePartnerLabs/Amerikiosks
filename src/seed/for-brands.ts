@@ -1,5 +1,6 @@
 import config from '@payload-config'
 import { getPayload } from 'payload'
+import { brandProgramForm } from '@/endpoints/seed/brand-program-form'
 
 async function seed() {
   const payload = await getPayload({ config })
@@ -134,6 +135,21 @@ async function seed() {
       },
     })
     console.log(`Created FAQ: ${faq.question}`)
+  }
+
+  // ── Brand Program Form ────────────────────────────────────────────────────
+  let brandFormId: number
+  const existingBrandForm = await payload.find({
+    collection: 'forms',
+    where: { title: { equals: brandProgramForm.title } },
+    limit: 1,
+  })
+  if (existingBrandForm.totalDocs > 0) {
+    brandFormId = existingBrandForm.docs[0]!.id as number
+  } else {
+    const created = await payload.create({ collection: 'forms', data: brandProgramForm })
+    brandFormId = created.id as number
+    console.log('Created Brand Program Form')
   }
 
   // ── For Brands page ───────────────────────────────────────────────────────
@@ -341,9 +357,7 @@ async function seed() {
           subheading:
             'A focused form and practical FAQ help qualify the right program without turning the page into a generic contact flow.',
           filterTags: [{ tag: 'brands' }],
-          form: {
-            heading: 'Start a brand program',
-          },
+          form: brandFormId,
         },
       ],
       _status: 'published',

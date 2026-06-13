@@ -13,22 +13,65 @@
 }
 
 .ak-form__card {
+  --_border-color: var(--ak-color-border);
+  --_background: var(--ak-color-surface);
   padding: var(--bp-space-6, 1.5rem);
-  border: 1px solid var(--ak-color-border);
+  border: 1px solid var(--_border-color);
   border-radius: var(--bp-radius-lg, 0.75rem);
-  background-color: var(--ak-color-surface);
+  background-color: var(--_background);
 }
 
 .ak-form__fields {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: var(--bp-space-6, 1.5rem);
+  margin-bottom: var(--bp-space-6, 1.5rem);
 }
 
 .ak-form__field {
   display: flex;
   flex-direction: column;
   gap: var(--bp-space-2, 0.5rem);
+}
+
+@media (max-width: 640px) {
+  .ak-form__fields {
+    grid-template-columns: 1fr;
+  }
+
+  .ak-form__field {
+    grid-column: span 1 !important;
+  }
+}
+
+.ak-form__field label {
+  --_color: var(--form-label-color, var(--ak-color-heading));
+  --_font-family: var(--form-label-font-family, var(--ak-font-base));
+  --_font-size: var(--form-label-font-size, var(--bp-text-xs));
+  --_font-weight: var(--form-label-font-weight, 700);
+  --_line-height: var(--form-label-line-height, 1.125rem);
+  color: var(--_color);
+  font-family: var(--_font-family);
+  font-size: var(--_font-size);
+  font-weight: var(--_font-weight);
+  line-height: var(--_line-height);
+}
+
+.ak-form__field [data-slot="input"],
+.ak-form__field [data-slot="textarea"],
+.ak-form__field [data-slot="select-trigger"] {
+  --_background: var(--form-input-background, var(--ak-input-background));
+  --_border-color: var(--form-input-border-color, var(--ak-input-border));
+  --_border-radius: var(--form-input-radius, var(--ak-input-radius));
+  background-color: var(--_background);
+  border: 1px solid var(--_border-color);
+  border-radius: var(--_border-radius);
+}
+
+.ak-form__field [data-slot="input"],
+.ak-form__field [data-slot="select-trigger"] {
+  --_height: var(--form-input-height, var(--ak-input-height));
+  height: var(--_height);
 }
 
 .ak-form__checkbox-row {
@@ -38,9 +81,10 @@
 }
 
 .ak-form__error {
+  --_color: var(--ak-accent);
   margin-top: var(--bp-space-2, 0.5rem);
   font-size: var(--bp-text-sm, 0.875rem);
-  color: var(--ak-accent);
+  color: var(--_color);
 }
 
 .ak-form__status {
@@ -50,13 +94,21 @@
 }
 
 .ak-form__status--error {
-  color: var(--ak-accent);
-  background-color: color-mix(in srgb, var(--ak-accent) 8%, transparent);
+  --_color: var(--ak-accent);
+  --_background: color-mix(in srgb, var(--ak-accent) 8%, transparent);
+  color: var(--_color);
+  background-color: var(--_background);
 }
 
 .ak-form__loading {
-  color: var(--ak-color-muted);
+  --_color: var(--ak-color-muted);
+  color: var(--_color);
   font-size: var(--bp-text-sm, 0.875rem);
+}
+
+.ak-form__submit {
+  --_shadow: var(--form-submit-shadow, var(--ak-surface-shadow-lg));
+  box-shadow: var(--_shadow);
 }
 
 .ak-form__message-block {

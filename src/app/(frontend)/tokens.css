@@ -77,6 +77,12 @@
   /* Radius */
   --ak-radius: var(--md-btn-shape-border-radius);
 
+  /* Button tokens — Figma spec */
+  --ak-btn-height: 3.125rem; /* 50px */
+  --ak-btn-padding: 0.5625rem 1.125rem; /* 9px 18px */
+  --ak-btn-radius: 0.4375rem; /* 7px */
+  --ak-btn-gap: var(--bp-space-2); /* 8px */
+
   /* Colors */
   --ak-white: var(--brand-color-palette-white);
   --ak-accent: var(--brand-color-palette-coral-600);
@@ -109,6 +115,7 @@
   --ak-card-shadow-md: 0 2px 12px hsla(0, 0%, 0%, 0.15);
 
   /* Surface / border / text */
+  --ak-color-dark: var(--brand-color-palette-navy-900);
   --ak-color-surface: var(--brand-color-palette-white);
   --ak-color-heading: var(--brand-color-palette-navy-900);
   --ak-color-border: var(--brand-color-palette-steel-100);
@@ -174,6 +181,8 @@
   /* Input tokens */
   --ak-input-background: hsla(200, 50%, 98%, 1);
   --ak-input-border: hsla(196, 17%, 54%, 0.28);
+  --ak-input-height: 3.375rem; /* 54px — Figma spec */
+  --ak-input-radius: var(--bp-radius-sm); /* 6px — Figma spec */
 
   /* Text tokens */
   --ak-text-disclaimer: hsla(213, 96%, 11%, 0.68);
