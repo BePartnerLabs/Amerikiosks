@@ -118,22 +118,31 @@ img {
 }
 
 .bp-btn--outline {
-  --btn-background: transparent;
-  --btn-color: var(--bp-primary-fg);
-  --btn-border: 1px solid currentColor;
+  --_color: var(--outline-color, var(--ak-cta-btn-color));
+  --_background: var(--outline-background, transparent);
+  --_border: var(--outline-border, 1px solid currentColor);
+  --btn-color: var(--_color);
+  --btn-background: var(--_background);
+  --btn-border: var(--_border);
 }
 
 .bp-btn--outline:hover {
-  --btn-background: color-mix(in srgb, currentColor 10%, transparent);
+  --outline-background: color-mix(in srgb, currentColor 10%, transparent);
 }
 
 .bp-btn--dark {
-  --btn-background: var(--bp-color-text, #181715);
-  --btn-color: #ffffff;
+  --_background: var(--dark-background, var(--ak-color-dark, var(--bp-color-text, #181715)));
+  --_color: var(--dark-color, #ffffff);
+  --btn-background: var(--_background);
+  --btn-color: var(--_color);
 }
 
 .bp-btn--dark:hover {
-  --btn-background: color-mix(in srgb, var(--bp-color-text, #181715) 85%, black);
+  --dark-background: color-mix(
+    in srgb,
+    var(--ak-color-dark, var(--bp-color-text, #181715)) 85%,
+    black
+  );
 }
 
 /* ─── Section scroll reveal ────────────────────────────────── */

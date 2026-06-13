@@ -14,11 +14,11 @@
 
 .ak-form__card {
   --_border-color: var(--ak-color-border);
-  --_bg: var(--ak-color-surface);
+  --_background: var(--ak-color-surface);
   padding: var(--bp-space-6, 1.5rem);
   border: 1px solid var(--_border-color);
   border-radius: var(--bp-radius-lg, 0.75rem);
-  background-color: var(--_bg);
+  background-color: var(--_background);
 }
 
 .ak-form__fields {
@@ -50,10 +50,10 @@
 }
 
 .ak-form__error {
-  --_error-color: var(--ak-accent);
+  --_color: var(--ak-accent);
   margin-top: var(--bp-space-2, 0.5rem);
   font-size: var(--bp-text-sm, 0.875rem);
-  color: var(--_error-color);
+  color: var(--_color);
 }
 
 .ak-form__status {
@@ -63,14 +63,15 @@
 }
 
 .ak-form__status--error {
-  --_accent: var(--ak-accent);
-  color: var(--_accent);
-  background-color: color-mix(in srgb, var(--_accent) 8%, transparent);
+  --_color: var(--ak-accent);
+  --_background: color-mix(in srgb, var(--ak-accent) 8%, transparent);
+  color: var(--_color);
+  background-color: var(--_background);
 }
 
 .ak-form__loading {
-  --_muted: var(--ak-color-muted);
-  color: var(--_muted);
+  --_color: var(--ak-color-muted);
+  color: var(--_color);
   font-size: var(--bp-text-sm, 0.875rem);
 }
 
