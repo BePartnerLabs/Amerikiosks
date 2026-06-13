@@ -58,7 +58,11 @@ export const seedWhoItsFor = async (payload: Payload, req: PayloadRequest): Prom
     {
       title: "Who it's for",
       slug: 'who-its-for',
-      hero: { type: 'lowImpact' as const, media: null as never, richText: null },
+      hero: {
+        type: 'lowImpact' as const,
+        media: null as never,
+        richText: null,
+      },
       layout: [],
       _status: 'published' as const,
       meta: {
@@ -88,6 +92,7 @@ export const seedAudiencePages = async (
 
   const pageIds: Record<string, string> = {}
   const mediaIds: Record<string, number> = {}
+  const mediaIdByAsset: Record<string, number> = {}
 
   pageIds['who-its-for'] = String(whoItsForId)
 
@@ -95,14 +100,21 @@ export const seedAudiencePages = async (
     // If the page already exists (fully seeded by its own seed function), just
     // collect its ID — don't overwrite a richer hero with this stub.
     // Always upload media (idempotent) so mediaIds is always populated.
-    const heroImage = await uploadMedia(
-      payload,
-      req,
-      path.join(process.cwd(), `src/endpoints/seed/assets/${page.heroAsset}`),
-      page.heroAlt,
-    )
+    let heroImageId = mediaIdByAsset[page.heroAsset]
 
-    mediaIds[page.slug] = heroImage.id as number
+    if (!heroImageId) {
+      const heroImage = await uploadMedia(
+        payload,
+        req,
+        path.join(process.cwd(), `src/endpoints/seed/assets/${page.heroAsset}`),
+        page.heroAlt,
+      )
+
+      heroImageId = heroImage.id as number
+      mediaIdByAsset[page.heroAsset] = heroImageId
+    }
+
+    mediaIds[page.slug] = heroImageId
 
     const existing = await payload.find({
       collection: 'pages',
@@ -125,12 +137,16 @@ export const seedAudiencePages = async (
         title: page.title,
         slug: page.slug,
         parent: whoItsForId,
-        hero: { type: 'lowImpact' as const, media: heroImage.id, richText: null },
+        hero: {
+          type: 'lowImpact' as const,
+          media: heroImageId,
+          richText: null,
+        },
         layout: [],
         meta: {
           title: `${page.title} — Amerikiosks`,
           description: page.description,
-          image: heroImage.id,
+          image: heroImageId,
         },
       },
       {
@@ -140,7 +156,7 @@ export const seedAudiencePages = async (
         meta: {
           title: `${page.titleEs} — Amerikiosks`,
           description: page.descriptionEs,
-          image: heroImage.id,
+          image: heroImageId,
         },
       },
     )
