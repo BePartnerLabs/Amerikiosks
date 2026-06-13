@@ -1,7 +1,7 @@
 import path from 'node:path'
 import type { Payload, PayloadRequest } from 'payload'
-import { venueProgramForm } from '../venue-program-form'
 import { uploadMedia } from '../uploadMedia'
+import { venueProgramForm } from '../venue-program-form'
 import { upsertPage } from './utils'
 
 const projects = [
@@ -11,8 +11,10 @@ const projects = [
     titleEs: 'Ingresos pasivos en el lobby, sin levantar un dedo.',
     category: 'HOTEL / HOSPITALITY',
     categoryEs: 'HOTEL / HOSPITALIDAD',
-    description: 'A premium retail experience that improves venue perception and generates monthly revenue without operational load on your team.',
-    descriptionEs: 'Una experiencia de retail premium que mejora la percepción del venue y genera revenue mensual sin carga operativa para tu equipo.',
+    description:
+      'A premium retail experience that improves venue perception and generates monthly revenue without operational load on your team.',
+    descriptionEs:
+      'Una experiencia de retail premium que mejora la percepción del venue y genera revenue mensual sin carga operativa para tu equipo.',
     asset: 'project-fan-stand.jpg',
     tag: 'venue',
   },
@@ -22,8 +24,10 @@ const projects = [
     titleEs: 'Espacio de espera convertido en punto de venta.',
     category: 'AIRPORT / TRANSIT',
     categoryEs: 'AEROPUERTO / TRÁNSITO',
-    description: 'End-to-end operated kiosks in high-traffic zones, where the traveler is already ready to buy.',
-    descriptionEs: 'Kiosks operados de extremo a extremo en zonas de alto tráfico, donde el viajero ya está listo para comprar.',
+    description:
+      'End-to-end operated kiosks in high-traffic zones, where the traveler is already ready to buy.',
+    descriptionEs:
+      'Kiosks operados de extremo a extremo en zonas de alto tráfico, donde el viajero ya está listo para comprar.',
     asset: 'project-airport-retail.png',
     tag: 'venue',
   },
@@ -72,32 +76,40 @@ const faqs = [
   {
     question: 'What initial investment do we need to make?',
     questionEs: '¿Qué inversión inicial necesitamos hacer?',
-    answer: 'None. Installation, initial inventory, and equipment run on Amerikiosks under the full-service model. You only provide the space.',
-    answerEs: 'Ninguna. La instalación, el inventario inicial y el equipo corren por cuenta de Amerikiosks bajo el modelo full-service. Solo aportas el espacio.',
+    answer:
+      'None. Installation, initial inventory, and equipment run on Amerikiosks under the full-service model. You only provide the space.',
+    answerEs:
+      'Ninguna. La instalación, el inventario inicial y el equipo corren por cuenta de Amerikiosks bajo el modelo full-service. Solo aportas el espacio.',
     weight: 40,
     tags: ['venues'],
   },
   {
     question: 'Who operates and maintains the machine?',
     questionEs: '¿Quién opera y mantiene la máquina?',
-    answer: 'Amerikiosks. Replenishment, maintenance, technical support, and monitoring are our responsibility — your team does not need to intervene.',
-    answerEs: 'Amerikiosks. Reabastecimiento, mantenimiento, soporte técnico y monitoreo son responsabilidad nuestra — tu equipo no necesita intervenir.',
+    answer:
+      'Amerikiosks. Replenishment, maintenance, technical support, and monitoring are our responsibility — your team does not need to intervene.',
+    answerEs:
+      'Amerikiosks. Reabastecimiento, mantenimiento, soporte técnico y monitoreo son responsabilidad nuestra — tu equipo no necesita intervenir.',
     weight: 30,
     tags: ['venues'],
   },
   {
     question: 'How and when do we receive revenue?',
     questionEs: '¿Cómo y cuándo recibimos los ingresos?',
-    answer: 'You receive your monthly commission according to the agreed model, along with a sales and performance report per location.',
-    answerEs: 'Recibes tu comisión mensual según el modelo acordado, junto con un reporte de ventas y performance por ubicación.',
+    answer:
+      'You receive your monthly commission according to the agreed model, along with a sales and performance report per location.',
+    answerEs:
+      'Recibes tu comisión mensual según el modelo acordado, junto con un reporte de ventas y performance por ubicación.',
     weight: 20,
     tags: ['venues'],
   },
   {
     question: 'What happens if the machine fails or needs maintenance?',
     questionEs: '¿Qué pasa si la máquina falla o necesita mantenimiento?',
-    answer: 'Our support team monitors remotely and coordinates maintenance without your staff having to manage it.',
-    answerEs: 'Nuestro equipo de soporte monitorea remotamente y coordina mantenimiento sin que tu personal tenga que gestionarlo.',
+    answer:
+      'Our support team monitors remotely and coordinates maintenance without your staff having to manage it.',
+    answerEs:
+      'Nuestro equipo de soporte monitorea remotamente y coordina mantenimiento sin que tu personal tenga que gestionarlo.',
     weight: 10,
     tags: ['venues'],
   },
@@ -215,7 +227,7 @@ export const seedForVenues = async (payload: Payload, req: PayloadRequest): Prom
     }
     let faqId: number
     if (existing.totalDocs > 0) {
-      faqId = existing.docs[0]!.id as number
+      faqId = existing.docs[0]?.id as number
       await payload.update({
         collection: 'faqItems',
         id: faqId,
@@ -273,7 +285,14 @@ export const seedForVenues = async (payload: Payload, req: PayloadRequest): Prom
         collection: 'projects',
         id: projectId,
         locale: 'en',
-        data: { title: p.title, category: p.category, description: p.description, image: image.id, tags: [{ label: p.tag }], _status: 'published' as const },
+        data: {
+          title: p.title,
+          category: p.category,
+          description: p.description,
+          image: image.id,
+          tags: [{ label: p.tag }],
+          _status: 'published' as const,
+        },
         req: { ...req, locale: 'en' } as PayloadRequest,
       })
       payload.logger.info(`  Updated project: ${p.title}`)
@@ -281,7 +300,15 @@ export const seedForVenues = async (payload: Payload, req: PayloadRequest): Prom
       const created = await payload.create({
         collection: 'projects',
         locale: 'en',
-        data: { title: p.title, slug: p.slug, category: p.category, description: p.description, image: image.id, tags: [{ label: p.tag }], _status: 'published' as const },
+        data: {
+          title: p.title,
+          slug: p.slug,
+          category: p.category,
+          description: p.description,
+          image: image.id,
+          tags: [{ label: p.tag }],
+          _status: 'published' as const,
+        },
         req: { ...req, locale: 'en' } as PayloadRequest,
       })
       projectId = created.id as number
@@ -304,7 +331,7 @@ export const seedForVenues = async (payload: Payload, req: PayloadRequest): Prom
     req,
   })
   if (existingForm.totalDocs > 0) {
-    venueFormId = existingForm.docs[0]!.id as number
+    venueFormId = existingForm.docs[0]?.id as number
     payload.logger.info('  Venue Program Form exists, skipping creation')
   } else {
     const created = await payload.create({ collection: 'forms', data: venueProgramForm, req })
@@ -331,16 +358,55 @@ export const seedForVenues = async (payload: Payload, req: PayloadRequest): Prom
         media: heroImage.id,
         richText: {
           root: {
-            type: 'root', version: 1, direction: null, format: '' as const, indent: 0,
+            type: 'root',
+            version: 1,
+            direction: null,
+            format: '' as const,
+            indent: 0,
             children: [
-              { type: 'heading', tag: 'h1', version: 1, children: [{ type: 'text', version: 1, text: 'For venues ready to monetize without the effort.' }] },
-              { type: 'paragraph', version: 1, children: [{ type: 'text', version: 1, text: 'Turn underutilized space into monthly passive income — turnkey installation, no staff, no civil works, no management on your part.' }] },
+              {
+                type: 'heading',
+                tag: 'h1',
+                version: 1,
+                children: [
+                  {
+                    type: 'text',
+                    version: 1,
+                    text: 'For venues ready to monetize without the effort.',
+                  },
+                ],
+              },
+              {
+                type: 'paragraph',
+                version: 1,
+                children: [
+                  {
+                    type: 'text',
+                    version: 1,
+                    text: 'Turn underutilized space into monthly passive income — turnkey installation, no staff, no civil works, no management on your part.',
+                  },
+                ],
+              },
             ],
           },
         },
         links: [
-          { link: { label: 'Start a venue program', type: 'custom', url: '/contact', appearance: 'default' } },
-          { link: { label: 'See case studies', type: 'custom', url: '/insights', appearance: 'outline' } },
+          {
+            link: {
+              label: 'Start a venue program',
+              type: 'custom',
+              url: '/contact',
+              appearance: 'default',
+            },
+          },
+          {
+            link: {
+              label: 'See case studies',
+              type: 'custom',
+              url: '/insights',
+              appearance: 'outline',
+            },
+          },
         ],
         tags: [
           { label: 'No upfront investment' },
@@ -354,7 +420,9 @@ export const seedForVenues = async (payload: Payload, req: PayloadRequest): Prom
           blockName: 'Real Venue Moments',
           eyebrow: 'REAL VENUE MOMENTS',
           heading: 'Real venue moments, built to earn.',
-          body: richText('See how placement and end-to-end operations turn high-traffic spaces into passive monthly revenue.'),
+          body: richText(
+            'See how placement and end-to-end operations turn high-traffic spaces into passive monthly revenue.',
+          ),
           filterTag: 'venue',
         },
         {
@@ -363,12 +431,37 @@ export const seedForVenues = async (payload: Payload, req: PayloadRequest): Prom
           variant: 'pillar',
           eyebrow: 'FOR VENUES',
           heading: 'One program. Zero operational load for your team.',
-          subheading: 'Amerikiosks installs, operates, and maintains the experience — your team only receives the revenue report.',
+          subheading:
+            'Amerikiosks installs, operates, and maintains the experience — your team only receives the revenue report.',
           items: [
-            { eyebrow: 'SPACE', title: 'Leverage your space', body: richText('Convert unused square meters into an asset that generates recurring monthly income.') },
-            { eyebrow: 'INSTALLATION', title: 'Zero civil works', body: richText('Turnkey installation: no construction, no additional permits, no interruptions to your daily operation.') },
-            { eyebrow: 'OPERATIONS', title: 'Zero load for your staff', body: richText('Replenishment, maintenance, support, and monitoring run on Amerikiosks — your team operates nothing.') },
-            { eyebrow: 'REVENUE', title: 'Transparent monthly revenue', body: richText('You receive your monthly commission with clear sales and performance reporting per location.') },
+            {
+              eyebrow: 'SPACE',
+              title: 'Leverage your space',
+              body: richText(
+                'Convert unused square meters into an asset that generates recurring monthly income.',
+              ),
+            },
+            {
+              eyebrow: 'INSTALLATION',
+              title: 'Zero civil works',
+              body: richText(
+                'Turnkey installation: no construction, no additional permits, no interruptions to your daily operation.',
+              ),
+            },
+            {
+              eyebrow: 'OPERATIONS',
+              title: 'Zero load for your staff',
+              body: richText(
+                'Replenishment, maintenance, support, and monitoring run on Amerikiosks — your team operates nothing.',
+              ),
+            },
+            {
+              eyebrow: 'REVENUE',
+              title: 'Transparent monthly revenue',
+              body: richText(
+                'You receive your monthly commission with clear sales and performance reporting per location.',
+              ),
+            },
           ],
         },
         {
@@ -383,22 +476,54 @@ export const seedForVenues = async (payload: Payload, req: PayloadRequest): Prom
           blockName: 'How It Works',
           eyebrow: 'HOW IT WORKS',
           heading: 'From first conversation to first revenue report.',
-          subheading: "You don't need to operate anything. Amerikiosks evaluates, installs, operates, and reports — your team only approves the location.",
+          subheading:
+            "You don't need to operate anything. Amerikiosks evaluates, installs, operates, and reports — your team only approves the location.",
           steps: [
-            { title: 'Evaluate the space', body: richText('We analyze traffic, layout, and opportunities within your venue to identify the best locations.') },
-            { title: 'Define the model', body: richText('We agree on the partnership model (full-service, consignment, or services) according to your operational preference.') },
-            { title: 'Install without friction', body: richText('We coordinate turnkey installation with no civil works or interruptions to your operation.') },
-            { title: 'Operate end-to-end', body: richText('Replenishment, maintenance, and support run on our account.') },
-            { title: 'Receive your revenue', body: richText('Monthly clear reporting of sales, performance, and your commission.') },
+            {
+              title: 'Evaluate the space',
+              body: richText(
+                'We analyze traffic, layout, and opportunities within your venue to identify the best locations.',
+              ),
+            },
+            {
+              title: 'Define the model',
+              body: richText(
+                'We agree on the partnership model (full-service, consignment, or services) according to your operational preference.',
+              ),
+            },
+            {
+              title: 'Install without friction',
+              body: richText(
+                'We coordinate turnkey installation with no civil works or interruptions to your operation.',
+              ),
+            },
+            {
+              title: 'Operate end-to-end',
+              body: richText('Replenishment, maintenance, and support run on our account.'),
+            },
+            {
+              title: 'Receive your revenue',
+              body: richText('Monthly clear reporting of sales, performance, and your commission.'),
+            },
           ],
-          cta: [{ link: { label: 'Start a venue program', type: 'custom', url: '/contact', appearance: 'default' } }],
+          cta: [
+            {
+              link: {
+                label: 'Start a venue program',
+                type: 'custom',
+                url: '/contact',
+                appearance: 'default',
+              },
+            },
+          ],
         },
         {
           blockType: 'faqWithForm',
           blockName: 'Start A Venue Program',
           eyebrow: 'START A PROGRAM',
           heading: 'Answers before your venue earns.',
-          subheading: 'A focused form and practical FAQ help qualify the right partnership without turning the page into a generic contact flow.',
+          subheading:
+            'A focused form and practical FAQ help qualify the right partnership without turning the page into a generic contact flow.',
           filterTags: [{ tag: 'venues' }],
           form: venueFormId,
         },
@@ -406,7 +531,8 @@ export const seedForVenues = async (payload: Payload, req: PayloadRequest): Prom
       _status: 'published',
       meta: {
         title: 'For Venues — Amerikiosks',
-        description: 'Turn underutilized venue space into monthly passive income with a fully managed kiosk program. No staff. No investment.',
+        description:
+          'Turn underutilized venue space into monthly passive income with a fully managed kiosk program. No staff. No investment.',
         image: heroImage.id,
       },
     },
@@ -418,21 +544,61 @@ export const seedForVenues = async (payload: Payload, req: PayloadRequest): Prom
         media: heroImage.id,
         richText: {
           root: {
-            type: 'root', version: 1, direction: null, format: '' as const, indent: 0,
+            type: 'root',
+            version: 1,
+            direction: null,
+            format: '' as const,
+            indent: 0,
             children: [
-              { type: 'heading', tag: 'h1', version: 1, children: [{ type: 'text', version: 1, text: 'Para venues listos para monetizar sin esfuerzo.' }] },
-              { type: 'paragraph', version: 1, children: [{ type: 'text', version: 1, text: 'Convierte espacio subutilizado en ingresos pasivos mensuales — instalación turnkey, sin staff, sin obra civil, sin gestión de tu parte.' }] },
+              {
+                type: 'heading',
+                tag: 'h1',
+                version: 1,
+                children: [
+                  {
+                    type: 'text',
+                    version: 1,
+                    text: 'Para venues listos para monetizar sin esfuerzo.',
+                  },
+                ],
+              },
+              {
+                type: 'paragraph',
+                version: 1,
+                children: [
+                  {
+                    type: 'text',
+                    version: 1,
+                    text: 'Convierte espacio subutilizado en ingresos pasivos mensuales — instalación turnkey, sin staff, sin obra civil, sin gestión de tu parte.',
+                  },
+                ],
+              },
             ],
           },
         },
         links: [
-          { link: { label: 'Iniciar un programa de venue', type: 'custom', url: '/contact', appearance: 'default' } },
-          { link: { label: 'Ver casos de éxito', type: 'custom', url: '/insights', appearance: 'outline' } },
+          {
+            link: {
+              label: 'Iniciar un programa de venue',
+              type: 'custom',
+              url: '/contact',
+              appearance: 'default',
+            },
+          },
+          {
+            link: {
+              label: 'Ver casos de éxito',
+              type: 'custom',
+              url: '/insights',
+              appearance: 'outline',
+            },
+          },
         ],
       },
       meta: {
         title: 'Para Venues — Amerikiosks',
-        description: 'Convierte espacio subutilizado en ingresos pasivos mensuales con un programa de kiosks completamente gestionado.',
+        description:
+          'Convierte espacio subutilizado en ingresos pasivos mensuales con un programa de kiosks completamente gestionado.',
         image: heroImage.id,
       },
     },
