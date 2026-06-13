@@ -43,7 +43,18 @@ export const uploadMedia = async (
     limit: 1,
     req,
   })
-  if (existing.docs.length > 0) return existing.docs[0] as Media
+  if (existing.docs.length > 0) {
+    const url = (existing.docs[0] as Media).url
+    if (url) {
+      try {
+        const res = await fetch(url, { method: 'HEAD' })
+        if (res.ok) return existing.docs[0] as Media
+      } catch {
+        // URL unreachable — fall through to re-upload
+      }
+    }
+    await payload.delete({ collection: 'media', id: existing.docs[0]!.id, req })
+  }
 
   const data = await readSeedAsset(name)
 
