@@ -144,19 +144,15 @@ export const FormBlock: React.FC<
                     `${field.blockType}-field-${index}`
                   if (Field) {
                     return (
-                      <div
-                        className="ak-form__field"
+                      <Field
                         key={fieldKey}
-                      >
-                        <Field
-                          form={formFromProps}
-                          {...field}
-                          {...formMethods}
-                          control={control}
-                          errors={errors}
-                          register={register}
-                        />
-                      </div>
+                        form={formFromProps}
+                        {...field}
+                        {...formMethods}
+                        control={control}
+                        errors={errors}
+                        register={register}
+                      />
                     )
                   }
                   return null
@@ -167,6 +163,7 @@ export const FormBlock: React.FC<
                 form={formID}
                 type="submit"
                 variant="default"
+                className="bp-btn bp-btn--dark ak-form__submit"
               >
                 {submitButtonLabel}
               </Button>

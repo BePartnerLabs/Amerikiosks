@@ -5,6 +5,7 @@ import { seedHeader } from './header'
 import { seedPosts } from './insights'
 import { seedPages } from './pages'
 import { seedPartners } from './partners'
+import { seedSettings } from './settings'
 
 export const seed = async ({
   payload,
@@ -20,6 +21,7 @@ export const seed = async ({
   await seedHeader(payload, req)
   await seedFooter(payload, req)
   await seedPartners(payload, req)
+  await seedSettings(payload, req)
 
   payload.logger.info('Seeded database successfully!')
 }

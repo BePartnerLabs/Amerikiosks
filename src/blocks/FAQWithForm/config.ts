@@ -33,28 +33,10 @@ export const FAQWithForm: Block = {
     },
     {
       name: 'form',
-      type: 'group',
-      fields: [
-        {
-          name: 'heading',
-          type: 'text',
-          required: true,
-          localized: true,
-          admin: { description: 'Heading shown above the form, e.g. "Start a brand program"' },
-        },
-        {
-          name: 'subheading',
-          type: 'text',
-          localized: true,
-          admin: { description: 'Short description below the form heading' },
-        },
-        {
-          name: 'disclaimer',
-          type: 'text',
-          localized: true,
-          admin: { description: 'Small text next to the submit button' },
-        },
-      ],
+      type: 'relationship',
+      relationTo: 'forms',
+      required: true,
+      admin: { description: 'Payload form to render in the form panel (use Forms collection)' },
     },
   ],
 }

@@ -1,0 +1,135 @@
+import type { RequiredDataFromCollectionSlug } from 'payload'
+
+export const brandProgramForm: RequiredDataFromCollectionSlug<'forms'> = {
+  title: 'Brand Program Form',
+  confirmationType: 'message',
+  confirmationMessage: {
+    root: {
+      type: 'root',
+      children: [
+        {
+          type: 'heading',
+          children: [
+            {
+              type: 'text',
+              detail: 0,
+              format: 0,
+              mode: 'normal',
+              style: '',
+              text: "Thank you! We'll be in touch shortly.",
+              version: 1,
+            },
+          ],
+          direction: 'ltr',
+          format: '',
+          indent: 0,
+          tag: 'h2',
+          version: 1,
+        },
+      ],
+      direction: 'ltr',
+      format: '',
+      indent: 0,
+      version: 1,
+    },
+  },
+  emails: [
+    {
+      emailFrom: '"Amerikiosks" <noreply@amerikiosks.com>',
+      emailTo: 'brands@amerikiosks.com',
+      subject: 'New Brand Program Request',
+      message: {
+        root: {
+          type: 'root',
+          children: [
+            {
+              type: 'paragraph',
+              children: [
+                {
+                  type: 'text',
+                  detail: 0,
+                  format: 0,
+                  mode: 'normal',
+                  style: '',
+                  text: 'A new brand program request has been submitted.',
+                  version: 1,
+                },
+              ],
+              direction: 'ltr',
+              format: '',
+              indent: 0,
+              textFormat: 0,
+              version: 1,
+            },
+          ],
+          direction: 'ltr',
+          format: '',
+          indent: 0,
+          version: 1,
+        },
+      },
+    },
+  ],
+  fields: [
+    {
+      name: 'brand-name',
+      blockName: 'brand-name',
+      blockType: 'text',
+      label: 'Brand name',
+      required: true,
+      width: 50,
+    },
+    {
+      name: 'work-email',
+      blockName: 'work-email',
+      blockType: 'email',
+      label: 'Work email',
+      required: true,
+      width: 50,
+    },
+    {
+      name: 'product-category',
+      blockName: 'product-category',
+      blockType: 'text',
+      label: 'Product category',
+      required: false,
+      width: 50,
+    },
+    {
+      name: 'target-venues',
+      blockName: 'target-venues',
+      blockType: 'text',
+      label: 'Target venues',
+      required: false,
+      width: 50,
+    },
+    {
+      name: 'desired-timeline',
+      blockName: 'desired-timeline',
+      blockType: 'text',
+      label: 'Desired timeline',
+      required: false,
+      width: 50,
+    },
+    {
+      name: 'placement-goal',
+      blockName: 'placement-goal',
+      blockType: 'text',
+      label: 'Placement goal',
+      required: false,
+      width: 50,
+    },
+    {
+      name: 'message',
+      blockName: 'message',
+      blockType: 'textarea',
+      label: 'Message / notes',
+      required: false,
+      width: 100,
+    },
+  ],
+  redirect: undefined,
+  submitButtonLabel: 'Submit Brand Program Request',
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+}

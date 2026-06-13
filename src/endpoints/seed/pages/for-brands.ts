@@ -1,5 +1,6 @@
 import path from 'node:path'
 import type { Payload, PayloadRequest } from 'payload'
+import { brandProgramForm } from '../brand-program-form'
 import { uploadMedia } from '../uploadMedia'
 import { upsertPage } from './utils'
 
@@ -74,29 +75,41 @@ const machines = [
 const faqs = [
   {
     question: 'Do we control pricing?',
+    questionEs: '¿Controlamos el precio?',
     answer:
       'Pricing can be defined with your team based on product strategy, venue context, and commercial goals. You set the price; Amerikiosks handles execution.',
+    answerEs:
+      'El precio lo define tu equipo, según estrategia de producto, contexto del venue y objetivos comerciales. Tú fijas el precio; Amerikiosks se encarga de la ejecución.',
     weight: 40,
     tags: ['brands'],
   },
   {
     question: 'Who handles replenishment?',
+    questionEs: '¿Quién se encarga del reabastecimiento?',
     answer:
       'Amerikiosks manages replenishment workflows, inventory monitoring, and operational coordination. Your team focuses on the brand; we handle the operations.',
+    answerEs:
+      'Amerikiosks gestiona el reabastecimiento, el monitoreo de inventario y la coordinación operativa. Tu equipo se enfoca en la marca; nosotros operamos.',
     weight: 30,
     tags: ['brands', 'replenishment'],
   },
   {
     question: 'Can the machine be fully branded?',
+    questionEs: '¿La máquina puede tener branding 360°?',
     answer:
       'Yes. Wraps, screen content, product presentation, and campaign messaging can be tailored to your brand system — from color palette to campaign visual language.',
+    answerEs:
+      'Sí. Wraps, contenido en pantalla, presentación de producto y mensajes de campaña se adaptan a tu sistema de marca — desde la paleta de colores hasta el lenguaje visual de campaña.',
     weight: 20,
     tags: ['brands', 'branding'],
   },
   {
     question: 'Can we test locations before committing to a rollout?',
+    questionEs: '¿Podemos probar ubicaciones antes de comprometernos a un rollout?',
     answer:
       'Yes. Programs can test venues, assortments, pricing, and campaign messages before scaling. We use sales and inventory data to inform rollout decisions.',
+    answerEs:
+      'Sí. Los programas pueden probar venues, surtido, precios y mensajes de campaña antes de escalar. Usamos datos de ventas e inventario para tomar decisiones de rollout.',
     weight: 10,
     tags: ['brands'],
   },
@@ -215,41 +228,64 @@ export const seedForBrands = async (payload: Payload, req: PayloadRequest): Prom
     const existing = await payload.find({
       collection: 'faqItems',
       where: { question: { equals: faq.question } },
-      limit: 1,
+      locale: 'en',
+      limit: 100,
       req,
     })
 
-    if (existing.totalDocs > 0) {
-      payload.logger.info(`  FAQ exists: ${faq.question}`)
-      continue
+    // Remove duplicates — keep only the first occurrence
+    if (existing.totalDocs > 1) {
+      for (const dup of existing.docs.slice(1)) {
+        await payload.delete({ collection: 'faqItems', id: dup.id as number, req })
+        payload.logger.info(`  Deleted duplicate FAQ: ${faq.question} (id ${dup.id})`)
+      }
+      existing.docs = existing.docs.slice(0, 1)
+      existing.totalDocs = 1
     }
 
-    await payload.create({
-      collection: 'faqItems',
-      data: {
-        question: faq.question,
-        answer: {
-          root: {
-            type: 'root',
-            version: 1,
-            direction: null,
-            format: '' as const,
-            indent: 0,
-            children: [
-              {
-                type: 'paragraph',
-                version: 1,
-                children: [{ type: 'text', version: 1, text: faq.answer }],
-              },
-            ],
-          },
+    let faqId: number
+
+    if (existing.totalDocs > 0) {
+      faqId = existing.docs[0]!.id as number
+      await payload.update({
+        collection: 'faqItems',
+        id: faqId,
+        locale: 'en',
+        data: {
+          question: faq.question,
+          answer: richText(faq.answer),
+          weight: faq.weight,
+          tags: faq.tags.map((label) => ({ label })),
         },
-        weight: faq.weight,
-        tags: faq.tags.map((label) => ({ label })),
+        req: { ...req, locale: 'en' } as PayloadRequest,
+      })
+      payload.logger.info(`  Updated FAQ: ${faq.question}`)
+    } else {
+      const created = await payload.create({
+        collection: 'faqItems',
+        locale: 'en',
+        data: {
+          question: faq.question,
+          answer: richText(faq.answer),
+          weight: faq.weight,
+          tags: faq.tags.map((label) => ({ label })),
+        },
+        req: { ...req, locale: 'en' } as PayloadRequest,
+      })
+      faqId = created.id as number
+      payload.logger.info(`  Created FAQ: ${faq.question}`)
+    }
+
+    await payload.update({
+      collection: 'faqItems',
+      id: faqId,
+      locale: 'es',
+      data: {
+        question: faq.questionEs,
+        answer: richText(faq.answerEs),
       },
-      req,
+      req: { ...req, locale: 'es' } as PayloadRequest,
     })
-    payload.logger.info(`  Created FAQ: ${faq.question}`)
   }
 
   // ── Projects ───────────────────────────────────────────────────────────────
@@ -313,6 +349,27 @@ export const seedForBrands = async (payload: Payload, req: PayloadRequest): Prom
       data: { title: p.titleEs, category: p.categoryEs, description: p.descriptionEs },
       req: { ...req, locale: 'es' } as PayloadRequest,
     })
+  }
+
+  // ── Brand Program Form ────────────────────────────────────────────────────
+  let brandFormId: number
+  const existingForm = await payload.find({
+    collection: 'forms',
+    where: { title: { equals: brandProgramForm.title } },
+    limit: 1,
+    req,
+  })
+  if (existingForm.totalDocs > 0) {
+    brandFormId = existingForm.docs[0]!.id as number
+    payload.logger.info('  Brand Program Form exists, skipping creation')
+  } else {
+    const created = await payload.create({
+      collection: 'forms',
+      data: brandProgramForm,
+      req,
+    })
+    brandFormId = created.id as number
+    payload.logger.info('  Created Brand Program Form')
   }
 
   // ── Hero image ─────────────────────────────────────────────────────────────
@@ -503,13 +560,7 @@ export const seedForBrands = async (payload: Payload, req: PayloadRequest): Prom
           subheading:
             'A focused form and practical FAQ help qualify the right program without turning the page into a generic contact flow.',
           filterTags: [{ tag: 'brands' }],
-          form: {
-            heading: 'Start a brand program',
-            subheading:
-              'Tell us what you want to launch, where your brand should show up, and what you want to learn or achieve.',
-            disclaimer:
-              'No staffing required. Amerikiosks handles placement, setup, replenishment, support, and daily operations.',
-          },
+          form: brandFormId,
         },
       ],
       _status: 'published',
@@ -690,13 +741,7 @@ export const seedForBrands = async (payload: Payload, req: PayloadRequest): Prom
           subheading:
             'Un formulario enfocado y un FAQ práctico ayudan a calificar el programa correcto sin convertir la página en un flujo de contacto genérico.',
           filterTags: [{ tag: 'brands' }],
-          form: {
-            heading: 'Iniciar un programa de marca',
-            subheading:
-              'Dinos qué quieres lanzar, dónde debería aparecer tu marca y qué quieres aprender o lograr.',
-            disclaimer:
-              'Sin personal requerido. Amerikiosks se encarga de la colocación, configuración, reposición, soporte y operaciones diarias.',
-          },
+          form: brandFormId,
         },
       ],
       meta: {

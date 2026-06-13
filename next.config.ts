@@ -32,9 +32,18 @@ const nextConfig: NextConfig = {
           protocol: url.protocol.replace(':', '') as 'http' | 'https',
         }
       }),
-      // Cloudflare R2 CDN
+      // S3-compatible storage CDN (Cloudflare R2 in prod, MinIO locally)
       ...(process.env.S3_PUBLIC_URL
-        ? [{ hostname: new URL(process.env.S3_PUBLIC_URL).hostname, protocol: 'https' as const }]
+        ? (() => {
+            const u = new URL(process.env.S3_PUBLIC_URL!)
+            return [
+              {
+                hostname: u.hostname,
+                protocol: u.protocol.replace(':', '') as 'http' | 'https',
+                port: u.port || undefined,
+              },
+            ]
+          })()
         : []),
     ],
   },
