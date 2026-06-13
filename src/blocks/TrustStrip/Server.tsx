@@ -12,6 +12,7 @@ export const TrustStripServer: React.FC<TrustStripBlockProps> = async (props) =>
     collection: 'partners',
     sort: 'order',
     limit: limit && limit > 0 ? limit : 0,
+    depth: 1,
     overrideAccess: false,
   })
 

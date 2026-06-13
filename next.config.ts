@@ -32,6 +32,10 @@ const nextConfig: NextConfig = {
           protocol: url.protocol.replace(':', '') as 'http' | 'https',
         }
       }),
+      // Cloudflare R2 CDN
+      ...(process.env.S3_PUBLIC_URL
+        ? [{ hostname: new URL(process.env.S3_PUBLIC_URL).hostname, protocol: 'https' as const }]
+        : []),
     ],
   },
   webpack: (webpackConfig) => {
