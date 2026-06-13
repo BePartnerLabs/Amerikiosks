@@ -8,6 +8,12 @@ export const FAQWithForm: Block = {
   labels: { singular: 'FAQ With Form', plural: 'FAQ With Forms' },
   fields: [
     {
+      name: 'eyebrow',
+      type: 'text',
+      localized: true,
+      admin: { description: 'Small label above heading, e.g. "START A PROGRAM"' },
+    },
+    {
       name: 'heading',
       type: 'text',
       required: true,
@@ -35,6 +41,18 @@ export const FAQWithForm: Block = {
           required: true,
           localized: true,
           admin: { description: 'Heading shown above the form, e.g. "Start a brand program"' },
+        },
+        {
+          name: 'subheading',
+          type: 'text',
+          localized: true,
+          admin: { description: 'Short description below the form heading' },
+        },
+        {
+          name: 'disclaimer',
+          type: 'text',
+          localized: true,
+          admin: { description: 'Small text next to the submit button' },
         },
       ],
     },

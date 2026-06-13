@@ -1140,6 +1140,10 @@ export interface ProcessStepsBlock {
  * via the `definition` "FAQWithFormBlock".
  */
 export interface FAQWithFormBlock {
+  /**
+   * Small label above heading, e.g. "START A PROGRAM"
+   */
+  eyebrow?: string | null;
   heading: string;
   subheading?: string | null;
   /**
@@ -1154,6 +1158,14 @@ export interface FAQWithFormBlock {
      * Heading shown above the form, e.g. "Start a brand program"
      */
     heading: string;
+    /**
+     * Short description below the form heading
+     */
+    subheading?: string | null;
+    /**
+     * Small text next to the submit button
+     */
+    disclaimer?: string | null;
   };
   id?: string | null;
   blockName?: string | null;
@@ -1935,6 +1947,7 @@ export interface ProcessStepsBlockSelect<T extends boolean = true> {
  * via the `definition` "FAQWithFormBlock_select".
  */
 export interface FAQWithFormBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
   heading?: T;
   subheading?: T;
   filterTags?:
@@ -1947,6 +1960,8 @@ export interface FAQWithFormBlockSelect<T extends boolean = true> {
     | T
     | {
         heading?: T;
+        subheading?: T;
+        disclaimer?: T;
       };
   id?: T;
   blockName?: T;

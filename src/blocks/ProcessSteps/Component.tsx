@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type React from 'react'
+import RichText from '@/components/RichText'
 import { SectionHeader } from '@/components/SectionHeader'
 import type { ProcessStepsBlock as ProcessStepsBlockType } from '@/payload-types'
 import { toSnakeCase } from '@/utilities/toSnakeCase'
@@ -57,6 +58,13 @@ export const ProcessStepsBlock: React.FC<ProcessStepsBlockType> = ({
                   </span>
                   <div className="ak-process-steps__content">
                     <p className="ak-process-steps__title">{step.title}</p>
+                    {step.body && (
+                      <RichText
+                        data={step.body}
+                        enableGutter={false}
+                        className="ak-process-steps__body"
+                      />
+                    )}
                   </div>
                 </li>
               ))}
@@ -67,7 +75,7 @@ export const ProcessStepsBlock: React.FC<ProcessStepsBlockType> = ({
             <div className="ak-process-steps__cta">
               <Link
                 href={ctaLink.url ?? '#'}
-                className="bp-btn bp-btn--primary"
+                className="bp-btn bp-btn--outline"
                 data-ga-event="cta_click"
                 data-ga-label={ctaLink.label ?? ''}
               >

@@ -498,11 +498,18 @@ export const seedForBrands = async (payload: Payload, req: PayloadRequest): Prom
         {
           blockType: 'faqWithForm',
           blockName: 'Start A Program',
+          eyebrow: 'START A PROGRAM',
           heading: 'Answers before your brand shows up.',
           subheading:
             'A focused form and practical FAQ help qualify the right program without turning the page into a generic contact flow.',
           filterTags: [{ tag: 'brands' }],
-          form: { heading: 'Start a brand program' },
+          form: {
+            heading: 'Start a brand program',
+            subheading:
+              'Tell us what you want to launch, where your brand should show up, and what you want to learn or achieve.',
+            disclaimer:
+              'No staffing required. Amerikiosks handles placement, setup, replenishment, support, and daily operations.',
+          },
         },
       ],
       _status: 'published',
@@ -678,11 +685,18 @@ export const seedForBrands = async (payload: Payload, req: PayloadRequest): Prom
         },
         {
           blockType: 'faqWithForm',
+          eyebrow: 'INICIAR PROGRAMA',
           heading: 'Respuestas antes de que tu marca aparezca.',
           subheading:
             'Un formulario enfocado y un FAQ práctico ayudan a calificar el programa correcto sin convertir la página en un flujo de contacto genérico.',
           filterTags: [{ tag: 'brands' }],
-          form: { heading: 'Iniciar un programa de marca' },
+          form: {
+            heading: 'Iniciar un programa de marca',
+            subheading:
+              'Dinos qué quieres lanzar, dónde debería aparecer tu marca y qué quieres aprender o lograr.',
+            disclaimer:
+              'Sin personal requerido. Amerikiosks se encarga de la colocación, configuración, reposición, soporte y operaciones diarias.',
+          },
         },
       ],
       meta: {

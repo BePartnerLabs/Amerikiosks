@@ -15,9 +15,11 @@ type FormValues = {
 
 type Props = {
   heading: string
+  subheading?: string
+  disclaimer?: string
 }
 
-export const BrandForm: React.FC<Props> = ({ heading }) => {
+export const BrandForm: React.FC<Props> = ({ heading, subheading, disclaimer }) => {
   const {
     register,
     handleSubmit,
@@ -33,6 +35,7 @@ export const BrandForm: React.FC<Props> = ({ heading }) => {
   return (
     <div className="ak-faq-form__panel">
       <h3 className="ak-faq-form__form-heading">{heading}</h3>
+      {subheading && <p className="ak-faq-form__form-subheading">{subheading}</p>}
 
       {isSubmitSuccessful ? (
         <p
@@ -146,14 +149,17 @@ export const BrandForm: React.FC<Props> = ({ heading }) => {
             />
           </div>
 
-          <button
-            type="submit"
-            className="bp-btn bp-btn--primary ak-faq-form__submit"
-            disabled={isSubmitting}
-            aria-busy={isSubmitting}
-          >
-            {isSubmitting ? 'Sending…' : 'Submit Brand Program Request'}
-          </button>
+          <div className="ak-faq-form__submit-row">
+            <button
+              type="submit"
+              className="bp-btn bp-btn--dark ak-faq-form__submit-btn"
+              disabled={isSubmitting}
+              aria-busy={isSubmitting}
+            >
+              {isSubmitting ? 'Sending…' : 'Submit Brand Program Request'}
+            </button>
+            {disclaimer && <p className="ak-faq-form__disclaimer">{disclaimer}</p>}
+          </div>
         </form>
       )}
     </div>
