@@ -159,6 +159,24 @@
   --ak-transition-med: 200ms ease;
   --ak-shadow-lift: 0 4px 16px hsla(213, 96%, 11%, 0.12);
   --ak-shadow-lift-md: 0 8px 24px hsla(213, 96%, 11%, 0.16);
+
+  /* Surface card tokens */
+  --ak-surface-background: var(--brand-color-palette-white);
+  --ak-surface-border: hsla(196, 17%, 54%, 0.18);
+  --ak-surface-border-hover: hsla(196, 17%, 54%, 0.35);
+  --ak-surface-shadow-sm: 0px 10px 22px 0px hsla(213, 96%, 11%, 0.08);
+  --ak-surface-shadow-md: 0px 12px 26px 0px hsla(213, 96%, 11%, 0.09);
+  --ak-surface-shadow-lg: 0px 14px 28px 0px hsla(213, 96%, 11%, 0.1);
+  --ak-surface-shadow-sm-hover: 0px 14px 30px 0px hsla(213, 96%, 11%, 0.13);
+  --ak-surface-shadow-md-hover: 0px 18px 36px 0px hsla(213, 96%, 11%, 0.14);
+  --ak-surface-shadow-lg-hover: 0px 22px 40px 0px hsla(213, 96%, 11%, 0.15);
+
+  /* Input tokens */
+  --ak-input-background: hsla(200, 50%, 98%, 1);
+  --ak-input-border: hsla(196, 17%, 54%, 0.28);
+
+  /* Text tokens */
+  --ak-text-disclaimer: hsla(213, 96%, 11%, 0.68);
 }
 
 @keyframes ak-fade-up {

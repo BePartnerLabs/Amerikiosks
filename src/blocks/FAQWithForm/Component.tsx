@@ -9,6 +9,7 @@ import './styles.css'
 type Props = FAQWithFormBlockProps & { resolvedFaqs?: FaqItem[] }
 
 export const FAQWithFormBlock: React.FC<Props> = ({
+  eyebrow,
   heading,
   subheading,
   form,
@@ -28,6 +29,7 @@ export const FAQWithFormBlock: React.FC<Props> = ({
       <div className="bp-content-grid">
         <div className="breakout ak-faq-form__inner">
           <SectionHeader
+            eyebrow={eyebrow}
             heading={heading}
             subtitle={subheading}
             align="center"
@@ -62,7 +64,11 @@ export const FAQWithFormBlock: React.FC<Props> = ({
             </div>
 
             <div className="ak-faq-form__form-side">
-              <BrandForm heading={form?.heading ?? ''} />
+              <BrandForm
+                heading={form?.heading ?? ''}
+                subheading={form?.subheading ?? undefined}
+                disclaimer={form?.disclaimer ?? undefined}
+              />
             </div>
           </div>
         </div>

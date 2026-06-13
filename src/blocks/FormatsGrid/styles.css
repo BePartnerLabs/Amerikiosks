@@ -18,12 +18,28 @@
   display: flex;
   flex-direction: column;
   text-decoration: none;
+  background: var(--ak-surface-background);
+  border-radius: var(--bp-radius-lg, 0.75rem);
+  box-shadow: var(--ak-surface-shadow-lg);
+  border: 1px solid var(--ak-surface-border);
+  overflow: hidden;
+  transition:
+    transform 200ms var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1)),
+    box-shadow 200ms var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ak-formats-grid__card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--ak-surface-shadow-lg-hover);
+  }
 }
 
 .ak-formats-grid__card-image {
   position: relative;
   aspect-ratio: 4 / 3;
   overflow: hidden;
+  padding: var(--bp-space-4, 1rem);
 }
 
 .ak-formats-grid__img {
@@ -31,7 +47,7 @@
 }
 
 .ak-formats-grid__card-body {
-  padding: var(--bp-space-3, 0.75rem) 0;
+  padding: var(--bp-space-3, 0.75rem) var(--bp-space-4, 1rem) var(--bp-space-4, 1rem);
 }
 
 .ak-formats-grid__card-name {
