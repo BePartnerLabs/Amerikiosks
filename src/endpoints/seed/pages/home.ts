@@ -46,7 +46,7 @@ export const seedHome = async (
                 format: 0,
                 mode: 'normal',
                 style: '',
-                text: 'Automated retail that turns ',
+                text: 'We don't make vending machines. We connect your brand with people, ',
                 version: 1,
               },
               {
@@ -55,7 +55,7 @@ export const seedHome = async (
                 format: 2,
                 mode: 'normal',
                 style: '',
-                text: 'placement into presence',
+                text: 'exactly where it matters most',
                 version: 1,
               },
               {
@@ -83,7 +83,7 @@ export const seedHome = async (
                 format: 0,
                 mode: 'normal',
                 style: '',
-                text: 'We help brands and venues create premium retail experiences that meet people in high-traffic moments, from branded kiosks to full-service operations.',
+                text: 'Premium automated retail infrastructure for airports, hotels, and high-traffic venues — operating on its own, 24/7, without you lifting a finger.',
                 version: 1,
               },
             ],
@@ -117,7 +117,7 @@ export const seedHome = async (
                 format: 0,
                 mode: 'normal',
                 style: '',
-                text: 'Retail automatizado que convierte ',
+                text: 'No hacemos máquinas expendedoras. Conectamos tu marca con las personas, ',
                 version: 1,
               },
               {
@@ -126,7 +126,7 @@ export const seedHome = async (
                 format: 2,
                 mode: 'normal',
                 style: '',
-                text: 'presencia en resultado',
+                text: 'exactamente donde más importa',
                 version: 1,
               },
               {
@@ -154,7 +154,7 @@ export const seedHome = async (
                 format: 0,
                 mode: 'normal',
                 style: '',
-                text: 'Ayudamos a marcas y venues a crear experiencias de retail premium en los momentos de mayor tráfico, desde kiosks de marca hasta operaciones completas.',
+                text: 'Infraestructura de retail automatizado premium para aeropuertos, hoteles y venues de alto tráfico — operando sola, 24/7, sin que tengas que hacer nada.',
                 version: 1,
               },
             ],
@@ -181,19 +181,19 @@ export const seedHome = async (
     items: [
       {
         title: 'Premium placement',
-        body: richText('Show up in high-traffic places where intent already exists.'),
+        body: richText('Airports, hotels, stadiums: where your customer already is, and your competitor can't reach.'),
       },
       {
         title: 'Turnkey operations',
-        body: richText('Install, service, replenishment, and support under one partner.'),
+        body: richText('Install, inventory, maintenance, support. Without you lifting a finger.'),
       },
       {
         title: 'Custom brand builds',
-        body: richText('Custom wraps, assortments, and screens tailored to the moment.'),
+        body: richText('360° branding of the physical unit + active screens. Not a machine — your brand in the space.'),
       },
       {
         title: 'Smarter revenue',
-        body: richText('Turn underused space into a branded moment people remember.'),
+        body: richText('This isn't an expense. It's presence that pays for itself.'),
       },
     ],
   }
@@ -204,19 +204,19 @@ export const seedHome = async (
     items: [
       {
         title: 'Ubicación premium',
-        body: richText('Presente en lugares de alto tráfico donde la intención ya existe.'),
+        body: richText('Aeropuertos, hoteles, estadios: donde tu cliente ya está, y tu competidor no puede llegar.'),
       },
       {
         title: 'Operación llave en mano',
-        body: richText('Instalación, servicio, reposición y soporte bajo un solo partner.'),
+        body: richText('Instalación, inventario, mantenimiento, soporte. Sin que muevas un dedo.'),
       },
       {
         title: 'Marca a medida',
-        body: richText('Wraps, surtidos y pantallas personalizadas para cada momento.'),
+        body: richText('Branding 360° de la unidad física + pantallas activas. No es una máquina, es tu marca en el espacio.'),
       },
       {
         title: 'Ingresos más inteligentes',
-        body: richText('Convierte espacios subutilizados en momentos de marca memorables.'),
+        body: richText('Esto no es gasto. Es presencia que paga por sí misma.'),
       },
     ],
   }
@@ -297,16 +297,16 @@ export const seedHome = async (
   }
 
   const meta = {
-    title: 'Amerikiosks — Automated Retail Solutions',
+    title: 'Amerikiosks — Connection Infrastructure for Modern Brands',
     description:
-      'We help brands and venues create premium retail experiences that meet people in high-traffic moments, from branded kiosks to full-service operations.',
+      'Amerikiosks puts your brand exactly where your customers are, when they need you most, operating on its own, without you having to do anything.',
     image: heroImage.id,
   }
 
   const metaEs = {
-    title: 'Amerikiosks — Retail Automatizado',
+    title: 'Amerikiosks — Infraestructura de Conexión para Marcas Modernas',
     description:
-      'Ayudamos a marcas y venues a crear experiencias de retail premium en los momentos de mayor tráfico, desde kiosks de marca hasta operaciones completas.',
+      'Amerikiosks es la empresa que pone tu marca exactamente donde tus clientes están, cuando más te necesitan, operando sola, sin que tengas que hacer nada.',
     image: heroImage.id,
   }
 
@@ -548,7 +548,7 @@ export const seedHome = async (
                 format: 0,
                 mode: 'normal',
                 style: '',
-                text: 'Aparecer donde tu marca importa.',
+                text: 'Lo genérico murió. Tu marca, donde realmente importa.',
                 version: 1,
               },
             ],
