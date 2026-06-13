@@ -2642,13 +2642,50 @@ export interface Footer {
 export interface Setting {
   id: number;
   /**
-   * When enabled, robots.txt disallows all crawlers and a <meta name="robots" content="noindex"> tag is added site-wide. Turn off when the site is ready to go public.
+   * When enabled, robots.txt disallows all crawlers. Takes precedence over the rules below. Turn off when the site is ready to go public.
    */
   noIndex?: boolean | null;
+  /**
+   * Per-agent rules applied when "Block all crawlers" is off. Each entry maps one User-agent to allow/disallow paths.
+   */
+  robotsRules?:
+    | {
+        userAgent: string;
+        allow?:
+          | {
+              path: string;
+              id?: string | null;
+            }[]
+          | null;
+        disallow?:
+          | {
+              path: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
   /**
    * Your GA4 Measurement ID (e.g. G-XXXXXXXXXX). Leave empty to disable analytics.
    */
   googleAnalyticsId?: string | null;
+  /**
+   * When enabled, /llms.txt is publicly accessible and lists site content for AI agents.
+   */
+  llmsEnabled?: boolean | null;
+  /**
+   * Short description of the site shown at the top of llms.txt.
+   */
+  llmsSiteDescription?: string | null;
+  /**
+   * Include published pages in llms.txt.
+   */
+  llmsIncludePages?: boolean | null;
+  /**
+   * Include published insights (posts) in llms.txt.
+   */
+  llmsIncludeInsights?: boolean | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2746,7 +2783,29 @@ export interface FooterSelect<T extends boolean = true> {
  */
 export interface SettingsSelect<T extends boolean = true> {
   noIndex?: T;
+  robotsRules?:
+    | T
+    | {
+        userAgent?: T;
+        allow?:
+          | T
+          | {
+              path?: T;
+              id?: T;
+            };
+        disallow?:
+          | T
+          | {
+              path?: T;
+              id?: T;
+            };
+        id?: T;
+      };
   googleAnalyticsId?: T;
+  llmsEnabled?: T;
+  llmsSiteDescription?: T;
+  llmsIncludePages?: T;
+  llmsIncludeInsights?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
