@@ -9,7 +9,10 @@ import { seedPosts } from '@/endpoints/seed/insights'
 import { seedAudiencePages, seedWhoItsFor } from '@/endpoints/seed/pages/audience'
 import { seedCaseStudies } from '@/endpoints/seed/pages/case-studies'
 import { seedContact } from '@/endpoints/seed/pages/contact'
+import { seedForAgencies } from '@/endpoints/seed/pages/for-agencies'
 import { seedForBrands } from '@/endpoints/seed/pages/for-brands'
+import { seedForEmergingBrands } from '@/endpoints/seed/pages/for-emerging-brands'
+import { seedForVenues } from '@/endpoints/seed/pages/for-venues'
 import { seedHome } from '@/endpoints/seed/pages/home'
 import { seedSolutions } from '@/endpoints/seed/pages/solutions'
 import { seedWhereItWorks } from '@/endpoints/seed/pages/where-it-works'
@@ -47,6 +50,9 @@ const parts: Record<
   footer: seedFooter,
   partners: seedPartners,
   'for-brands': seedForBrands,
+  'for-venues': seedForVenues,
+  'for-agencies': seedForAgencies,
+  'for-emerging-brands': seedForEmergingBrands,
 }
 
 export async function POST(req: Request): Promise<Response> {

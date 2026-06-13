@@ -246,7 +246,7 @@ export const seedForBrands = async (payload: Payload, req: PayloadRequest): Prom
     let faqId: number
 
     if (existing.totalDocs > 0) {
-      faqId = existing.docs[0]!.id as number
+      faqId = existing.docs[0]?.id as number
       await payload.update({
         collection: 'faqItems',
         id: faqId,
@@ -360,7 +360,7 @@ export const seedForBrands = async (payload: Payload, req: PayloadRequest): Prom
     req,
   })
   if (existingForm.totalDocs > 0) {
-    brandFormId = existingForm.docs[0]!.id as number
+    brandFormId = existingForm.docs[0]?.id as number
     payload.logger.info('  Brand Program Form exists, skipping creation')
   } else {
     const created = await payload.create({

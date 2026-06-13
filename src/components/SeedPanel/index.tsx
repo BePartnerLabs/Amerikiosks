@@ -9,6 +9,9 @@ const PARTS = [
   { key: 'why-amerikiosks', label: 'Why Amerikiosks' },
   { key: 'contact', label: 'Contact' },
   { key: 'for-brands', label: 'For Brands' },
+  { key: 'for-venues', label: 'For Venues' },
+  { key: 'for-agencies', label: 'For Agencies' },
+  { key: 'for-emerging-brands', label: 'For Emerging Brands' },
   { key: 'header', label: 'Header' },
   { key: 'footer', label: 'Footer' },
 ]
