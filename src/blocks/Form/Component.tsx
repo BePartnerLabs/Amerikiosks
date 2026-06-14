@@ -52,7 +52,7 @@ export const FormBlock: React.FC<
   } = useMutation({
     mutationFn: (data: FormFieldBlock[]) => {
       const submissionData = Object.entries(data).map(([field, value]) => ({ field, value }))
-      return FormsRepository.submit({ form: formID!, submissionData })
+      return FormsRepository.submit({ form: formID ?? '', submissionData })
     },
     onSuccess: () => {
       if (confirmationType === 'redirect' && redirect?.url) {
