@@ -52,10 +52,27 @@ export type AudienceSeedResult = {
   whoItsForId: number
 }
 
-// Idempotent: creates or updates the "Who it's for" parent page.
-// Called before seedForBrands so the parent ID is available as a FK.
+// Idempotent: creates the "Who it's for" parent page only if it doesn't exist.
+// Skips on re-seed to avoid NestedDocs re-validating children (highImpact heroes
+// require media, but the ES update passes no media → ValidationError on children).
 export const seedWhoItsFor = async (payload: Payload, req: PayloadRequest): Promise<number> => {
   payload.logger.info("— Seeding Who it's for parent page...")
+
+  const existing = await payload.find({
+    collection: 'pages',
+    where: { slug: { equals: 'who-its-for' } },
+    limit: 1,
+    depth: 0,
+    locale: 'en',
+    req: { ...req, locale: 'en' } as PayloadRequest,
+  })
+
+  if (existing.totalDocs > 0) {
+    const id = existing.docs[0]?.id as number
+    payload.logger.info("  Who it's for already exists, skipping (id: " + id + ')')
+    return id
+  }
+
   const doc = await upsertPage(
     payload,
     req,
@@ -125,7 +142,8 @@ export const seedAudiencePages = async (
       where: { slug: { equals: page.slug } },
       limit: 1,
       depth: 0,
-      req,
+      locale: 'en',
+      req: { ...req, locale: 'en' } as PayloadRequest,
     })
 
     if (existing.totalDocs > 0) {

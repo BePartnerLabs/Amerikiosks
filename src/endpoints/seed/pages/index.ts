@@ -22,8 +22,9 @@ export const seedPages = async (
     collection: 'pages',
     where: { slug: { equals: 'who-its-for' } },
     limit: 1,
+    locale: 'en',
     overrideAccess: true,
-    req,
+    req: { ...req, locale: 'en' } as PayloadRequest,
   })
   if (whoItsForParent.docs.length > 0) {
     const parentId = whoItsForParent.docs[0]?.id
@@ -31,8 +32,9 @@ export const seedPages = async (
       collection: 'pages',
       where: { parent: { equals: parentId } },
       limit: 100,
+      locale: 'en',
       overrideAccess: true,
-      req,
+      req: { ...req, locale: 'en' } as PayloadRequest,
     })
     for (const child of children.docs) {
       await payload.delete({
