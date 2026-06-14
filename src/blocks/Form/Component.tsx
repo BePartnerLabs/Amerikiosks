@@ -1,13 +1,14 @@
 'use client'
 import type { FormFieldBlock, Form as FormType } from '@payloadcms/plugin-form-builder/types'
 import type { DefaultTypedEditorState } from '@payloadcms/richtext-lexical'
+import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import type React from 'react'
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import RichText from '@/components/RichText'
 import { Button } from '@/components/ui/button'
-import { getClientSideURL } from '@/utilities/getURL'
+import { FormsRepository } from '@/repositories'
 import { fields } from './fields'
 import './styles.css'
 
@@ -41,69 +42,30 @@ export const FormBlock: React.FC<
     register,
   } = formMethods
 
-  const [isLoading, setIsLoading] = useState(false)
-  const [hasSubmitted, setHasSubmitted] = useState<boolean>()
-  const [error, setError] = useState<{ message: string; status?: string } | undefined>()
   const router = useRouter()
 
-  const onSubmit = useCallback(
-    (data: FormFieldBlock[]) => {
-      let loadingTimerID: ReturnType<typeof setTimeout>
-      const submitForm = async () => {
-        setError(undefined)
-
-        const dataToSend = Object.entries(data).map(([name, value]) => ({
-          field: name,
-          value,
-        }))
-
-        loadingTimerID = setTimeout(() => {
-          setIsLoading(true)
-        }, 1000)
-
-        try {
-          const req = await fetch(`${getClientSideURL()}/api/form-submissions`, {
-            body: JSON.stringify({
-              form: formID,
-              submissionData: dataToSend,
-            }),
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            method: 'POST',
-          })
-
-          const res = await req.json()
-
-          clearTimeout(loadingTimerID)
-
-          if (req.status >= 400) {
-            setIsLoading(false)
-            setError({
-              message: res.errors?.[0]?.message || 'Internal Server Error',
-              status: res.status,
-            })
-            return
-          }
-
-          setIsLoading(false)
-          setHasSubmitted(true)
-
-          if (confirmationType === 'redirect' && redirect) {
-            const { url } = redirect
-            if (url) router.push(url)
-          }
-        } catch (err) {
-          console.warn(err)
-          setIsLoading(false)
-          setError({ message: 'Something went wrong.' })
-        }
-      }
-
-      void submitForm()
+  const {
+    mutate,
+    isPending: isLoading,
+    isSuccess: hasSubmitted,
+    error: mutationError,
+  } = useMutation({
+    mutationFn: (data: FormFieldBlock[]) => {
+      const submissionData = Object.entries(data).map(([field, value]) => ({ field, value }))
+      return FormsRepository.submit({ form: formID ?? '', submissionData })
     },
-    [router, formID, redirect, confirmationType],
-  )
+    onSuccess: () => {
+      if (confirmationType === 'redirect' && redirect?.url) {
+        router.push(redirect.url)
+      }
+    },
+  })
+
+  const error = mutationError
+    ? { message: (mutationError as Error).message || 'Something went wrong.' }
+    : undefined
+
+  const onSubmit = useCallback((data: FormFieldBlock[]) => mutate(data), [mutate])
 
   return (
     <div className="ak-form">
@@ -124,7 +86,7 @@ export const FormBlock: React.FC<
           )}
           {error && (
             <div className="ak-form__status ak-form__status--error">
-              {`${error.status || '500'}: ${error.message || ''}`}
+              {`500: ${error.message || ''}`}
             </div>
           )}
           {!hasSubmitted && (
