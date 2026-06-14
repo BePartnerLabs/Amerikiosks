@@ -1,46 +1,33 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
-import type { User } from '../payload-types'
-import { getClientSideURL } from './getURL'
+import { UsersRepository } from '@/repositories'
 
 export const getMeUser = async (args?: {
   nullUserRedirect?: string
   validUserRedirect?: string
 }): Promise<{
   token: string
-  user: User
+  user: Awaited<ReturnType<typeof UsersRepository.getMe>>['user']
 }> => {
   const { nullUserRedirect, validUserRedirect } = args || {}
   const cookieStore = await cookies()
   const token = cookieStore.get('payload-token')?.value
 
-  const meUserReq = await fetch(`${getClientSideURL()}/api/users/me`, {
-    headers: {
-      Authorization: `JWT ${token}`,
-    },
-  })
+  try {
+    const { user } = await UsersRepository.getMe(token ?? '')
 
-  const {
-    user,
-  }: {
-    user: User
-  } = await meUserReq.json()
+    if (validUserRedirect && user) redirect(validUserRedirect)
+    if (nullUserRedirect && !user) redirect(nullUserRedirect)
 
-  if (validUserRedirect && meUserReq.ok && user) {
-    redirect(validUserRedirect)
-  }
+    if (!token) throw new Error('Missing auth token')
 
-  if (nullUserRedirect && (!meUserReq.ok || !user)) {
-    redirect(nullUserRedirect)
-  }
+    return { token, user }
+  } catch (err) {
+    // redirect() throws internally — re-throw it
+    if ((err as { digest?: string }).digest?.startsWith('NEXT_REDIRECT')) throw err
 
-  if (!token) {
-    throw new Error('Missing auth token')
-  }
-
-  return {
-    token,
-    user,
+    if (nullUserRedirect) redirect(nullUserRedirect)
+    throw err
   }
 }
