@@ -6,6 +6,7 @@ import { upsertPage } from './utils'
 const audiencePages = [
   {
     slug: 'for-brands',
+    slugEs: 'para-marcas',
     title: 'For Brands',
     titleEs: 'Para Marcas',
     heroAsset: 'hero-for-brands.png',
@@ -15,6 +16,7 @@ const audiencePages = [
   },
   {
     slug: 'for-venues',
+    slugEs: 'para-venues',
     title: 'For Venues',
     titleEs: 'Para Venues',
     heroAsset: 'hero-for-venues.jpg',
@@ -24,6 +26,7 @@ const audiencePages = [
   },
   {
     slug: 'for-agencies',
+    slugEs: 'para-agencias',
     title: 'For Agencies',
     titleEs: 'Para Agencias',
     heroAsset: 'hero-for-agencies.png',
@@ -33,6 +36,7 @@ const audiencePages = [
   },
   {
     slug: 'for-emerging-brands',
+    slugEs: 'para-marcas-emergentes',
     title: 'For Emerging Brands',
     titleEs: 'Para Marcas Emergentes',
     heroAsset: 'hero-for-brands.png',
@@ -72,7 +76,7 @@ export const seedWhoItsFor = async (payload: Payload, req: PayloadRequest): Prom
     },
     {
       title: 'Para quién',
-      slug: 'who-its-for',
+      slug: 'para-quien',
       hero: { type: 'lowImpact' as const, links: [] },
       meta: {
         title: 'Para quién — Amerikiosks',
@@ -151,7 +155,7 @@ export const seedAudiencePages = async (
       },
       {
         title: page.titleEs,
-        slug: page.slug,
+        slug: page.slugEs,
         hero: { type: 'lowImpact' as const, links: [] },
         meta: {
           title: `${page.titleEs} — Amerikiosks`,

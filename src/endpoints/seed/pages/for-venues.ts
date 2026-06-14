@@ -538,7 +538,7 @@ export const seedForVenues = async (payload: Payload, req: PayloadRequest): Prom
     },
     {
       title: 'Para Venues',
-      slug: 'for-venues',
+      slug: 'para-venues',
       hero: {
         type: 'mediumImpact',
         media: heroImage.id,

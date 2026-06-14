@@ -573,7 +573,7 @@ export const seedForBrands = async (payload: Payload, req: PayloadRequest): Prom
     },
     {
       title: 'Para Marcas',
-      slug: 'for-brands',
+      slug: 'para-marcas',
       hero: {
         type: 'mediumImpact',
         media: heroImage.id,
