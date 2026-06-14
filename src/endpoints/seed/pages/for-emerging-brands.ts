@@ -534,7 +534,7 @@ export const seedForEmergingBrands = async (
     },
     {
       title: 'Para Marcas Emergentes',
-      slug: 'for-emerging-brands',
+      slug: 'para-marcas-emergentes',
       hero: {
         type: 'mediumImpact',
         media: heroImage.id,

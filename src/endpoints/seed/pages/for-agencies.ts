@@ -527,7 +527,7 @@ export const seedForAgencies = async (payload: Payload, req: PayloadRequest): Pr
     },
     {
       title: 'Para Agencias',
-      slug: 'for-agencies',
+      slug: 'para-agencias',
       hero: {
         type: 'mediumImpact',
         media: heroImage.id,
