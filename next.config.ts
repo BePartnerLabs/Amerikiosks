@@ -35,7 +35,8 @@ const nextConfig: NextConfig = {
       // S3-compatible storage CDN (Cloudflare R2 in prod, MinIO locally)
       ...(process.env.S3_PUBLIC_URL
         ? (() => {
-            const u = new URL(process.env.S3_PUBLIC_URL!)
+            const s3Url = process.env.S3_PUBLIC_URL as string
+            const u = new URL(s3Url)
             return [
               {
                 hostname: u.hostname,

@@ -21,7 +21,7 @@ describe('robots()', () => {
   it('blocks all when noIndex is true', async () => {
     mockGetPayload.mockResolvedValue({
       findGlobal: vi.fn().mockResolvedValue({ noIndex: true, robotsRules: [] }),
-    } as any)
+    } as unknown as Awaited<ReturnType<typeof getPayload>>)
     const robots = await importRobots()
     const result = await robots()
     expect(result).toEqual({ rules: [{ userAgent: '*', disallow: '/' }] })
@@ -30,7 +30,7 @@ describe('robots()', () => {
   it('allows all with sitemap when noIndex false and no rules', async () => {
     mockGetPayload.mockResolvedValue({
       findGlobal: vi.fn().mockResolvedValue({ noIndex: false, robotsRules: [] }),
-    } as any)
+    } as unknown as Awaited<ReturnType<typeof getPayload>>)
     const robots = await importRobots()
     const result = await robots()
     expect(result).toEqual({
@@ -48,7 +48,7 @@ describe('robots()', () => {
           { userAgent: 'GPTBot', allow: [], disallow: [{ path: '/' }] },
         ],
       }),
-    } as any)
+    } as unknown as Awaited<ReturnType<typeof getPayload>>)
     const robots = await importRobots()
     const result = await robots()
     expect(result).toEqual({

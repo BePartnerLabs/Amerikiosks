@@ -21,7 +21,7 @@ describe('GET /llms.txt', () => {
     mockGetPayload.mockResolvedValue({
       findGlobal: vi.fn().mockResolvedValue({ llmsEnabled: false }),
       find: vi.fn(),
-    } as any)
+    } as unknown as Awaited<ReturnType<typeof getPayload>>)
     const res = await callGET()
     expect(res.status).toBe(404)
   })
@@ -44,7 +44,7 @@ describe('GET /llms.txt', () => {
           },
         ],
       }),
-    } as any)
+    } as unknown as Awaited<ReturnType<typeof getPayload>>)
     const res = await callGET()
     expect(res.status).toBe(200)
     expect(res.headers.get('Content-Type')).toContain('text/plain')
@@ -67,7 +67,7 @@ describe('GET /llms.txt', () => {
       find: vi
         .fn()
         .mockResolvedValue({ docs: [{ title: 'Post One', slug: 'post-one', meta: {} }] }),
-    } as any)
+    } as unknown as Awaited<ReturnType<typeof getPayload>>)
     const res = await callGET()
     const body = await res.text()
     expect(body).toContain('## Insights')
