@@ -3,14 +3,19 @@ import type { CollectionAfterChangeHook, CollectionAfterDeleteHook } from 'paylo
 
 import type { Page } from '../../../payload-types'
 
+const localePath = (slug: string, locale: string) => {
+  const base = slug === 'home' ? '/' : `/${slug}`
+  return locale === 'en' ? base : `/${locale}${base}`
+}
+
 export const revalidatePage: CollectionAfterChangeHook<Page> = ({
   doc,
   previousDoc,
-  req: { payload, context },
+  req: { payload, context, locale },
 }) => {
   if (!context.disableRevalidate) {
     if (doc._status === 'published') {
-      const path = doc.slug === 'home' ? '/' : `/${doc.slug}`
+      const path = localePath(doc.slug as string, (locale as string) ?? 'en')
 
       payload.logger.info(`Revalidating page at path: ${path}`)
 
@@ -20,7 +25,7 @@ export const revalidatePage: CollectionAfterChangeHook<Page> = ({
 
     // If the page was previously published, we need to revalidate the old path
     if (previousDoc?._status === 'published' && doc._status !== 'published') {
-      const oldPath = previousDoc.slug === 'home' ? '/' : `/${previousDoc.slug}`
+      const oldPath = localePath(previousDoc.slug as string, (locale as string) ?? 'en')
 
       payload.logger.info(`Revalidating old page at path: ${oldPath}`)
 
@@ -31,9 +36,12 @@ export const revalidatePage: CollectionAfterChangeHook<Page> = ({
   return doc
 }
 
-export const revalidateDelete: CollectionAfterDeleteHook<Page> = ({ doc, req: { context } }) => {
+export const revalidateDelete: CollectionAfterDeleteHook<Page> = ({
+  doc,
+  req: { context, locale },
+}) => {
   if (!context.disableRevalidate) {
-    const path = doc?.slug === 'home' ? '/' : `/${doc?.slug}`
+    const path = localePath(doc?.slug as string, (locale as string) ?? 'en')
     revalidatePath(path)
     revalidateTag('pages-sitemap', 'max')
   }

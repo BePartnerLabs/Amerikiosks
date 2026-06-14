@@ -114,6 +114,26 @@ Antes de escribir cualquier componente visual, consulta el DS:
 3. Declara Level 2 overrides solo donde los defaults difieren
 4. Nunca uses `--ak-*` directamente en propiedades CSS de componentes DS
 
+## Repository Pattern
+
+All API calls (internal `/next/*` routes and external services) must follow the repository pattern:
+
+```
+fetch() / axios
+    ↓
+src/repositories/clients/ApiClient.ts   ← HTTP concern only
+    ↓
+src/repositories/<Domain>Repository.ts  ← business methods, error handling, fallbacks
+    ↓
+src/repositories/index.ts               ← named exports consumed by components
+```
+
+- `ApiClient` wraps `fetch`, builds URLs, throws on non-OK responses.
+- Repositories expose domain methods (`PagesRepository.translateSlug()`), catch errors, return safe fallbacks.
+- Components import from `@/repositories`, never call `fetch` directly.
+
+Reference: `https://www.giorgiosaud.io/notebook/repository-pattern.md`
+
 ## Spec Workflow
 
 Living specs live in `openspec/specs/[feature]/spec.md`. Read the relevant spec before touching a feature.
