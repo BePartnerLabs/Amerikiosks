@@ -14,38 +14,101 @@
 }
 
 .ak-machines-page__filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--bp-space-2, 0.5rem);
-  margin-bottom: var(--bp-space-8, 2rem);
+  position: sticky;
+  top: var(--bp-space-4, 1rem);
+  z-index: 10;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0 0 var(--bp-space-8, 2rem);
+  padding: var(--bp-space-2, 0.5rem);
+  border: 1px solid var(--ak-surface-border);
+  border-radius: var(--bp-radius-full, 9999px);
+  background: var(--ak-surface-background);
+  box-shadow: var(--ak-shadow-lift);
 }
 
-.ak-machines-page__filter-btn[aria-pressed="true"] {
-  --btn-background: var(--ak-color-primary);
-  --btn-color: var(--bp-color-text-inverse);
+.ak-machines-page__filters-track {
+  position: relative;
+  display: flex;
+  flex-wrap: nowrap;
+  min-width: 0;
+  gap: var(--bp-space-2, 0.5rem);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.ak-machines-page__filters-track::-webkit-scrollbar {
+  display: none;
+}
+
+.ak-machines-page__filter-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: var(--bp-radius-full, 9999px);
+  background: var(--bp-primary);
+  z-index: 0;
+  view-transition-name: ak-filter-indicator;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ak-machines-page__filter-indicator {
+    transition:
+      transform 280ms var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1)),
+      width 280ms var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1)),
+      height 280ms var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1));
+  }
+}
+
+.ak-machines-page__filter-chip {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  padding: var(--bp-space-2, 0.5rem) var(--bp-space-4, 1rem);
+  border-radius: var(--bp-radius-full, 9999px);
+  font-size: var(--bp-font-size-sm, 0.875rem);
+  font-weight: var(--bp-font-weight-medium, 500);
+  color: var(--bp-color-text-muted);
+  background: transparent;
+  transition:
+    color 200ms var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1)),
+    background-color 200ms var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+.ak-machines-page__filter-chip:hover {
+  color: var(--bp-color-text);
+  background: var(--ak-surface-border);
+}
+
+.ak-machines-page__filter-chip[aria-pressed="true"] {
+  color: var(--bp-color-text-inverse);
 }
 
 .ak-machines-page__grid {
-  column-count: 3;
-  column-gap: var(--bp-space-4, 1rem);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--bp-space-4, 1rem);
+  align-items: start;
 }
 
 @media (max-width: 1023px) {
   .ak-machines-page__grid {
-    column-count: 2;
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 639px) {
   .ak-machines-page__grid {
-    column-count: 1;
+    grid-template-columns: 1fr;
   }
 }
 
 .ak-machines-page__tile {
   display: block;
-  break-inside: avoid;
-  margin-bottom: var(--bp-space-4, 1rem);
   text-decoration: none;
   background: var(--ak-surface-background);
   border-radius: var(--bp-radius-lg, 0.75rem);
@@ -128,6 +191,36 @@
   font-size: var(--bp-font-size-sm, 0.875rem);
   color: var(--bp-color-text-muted);
   margin-top: var(--bp-space-1, 0.25rem);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(.ak-tile-vt),
+  ::view-transition-new(.ak-tile-vt) {
+    animation-duration: 320ms;
+    animation-timing-function: var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1));
+  }
+
+  ::view-transition-old(.ak-tile-vt) {
+    animation-name: ak-tile-vt-out;
+  }
+
+  ::view-transition-new(.ak-tile-vt) {
+    animation-name: ak-tile-vt-in;
+  }
+}
+
+@keyframes ak-tile-vt-out {
+  to {
+    opacity: 0;
+    transform: scale(0.92) translateY(8px);
+  }
+}
+
+@keyframes ak-tile-vt-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(8px);
+  }
 }
 
 .ak-machines-page__empty {

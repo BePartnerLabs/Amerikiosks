@@ -21,7 +21,13 @@ export const MachineTile: React.FC<Props> = ({ machine, index = 0 }) => {
       ref={ref}
       href={`/machines/${machine.slug}`}
       className={`bp-card bp-card--interactive ak-machines-page__tile${inView ? ' ak-machines-page__tile--in-view' : ''}`}
-      style={{ transitionDelay: `${delay}ms` }}
+      style={
+        {
+          transitionDelay: `${delay}ms`,
+          viewTransitionName: `ak-tile-${machine.id}`,
+          viewTransitionClass: 'ak-tile-vt',
+        } as React.CSSProperties
+      }
       data-ga-event="machine_tile_click"
       data-ga-label={machine.name}
     >

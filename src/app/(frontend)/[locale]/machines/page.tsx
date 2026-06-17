@@ -25,9 +25,14 @@ export default async function MachinesPage() {
 
   const machines = result.docs as Machine[]
 
-  const allTags = Array.from(
-    new Set(machines.flatMap((m) => (m.tags ?? []).map((t) => t.label)).filter(Boolean)),
-  ) as string[]
+  // Kiosk-format tags only — machines also carry audience-targeting tags
+  // (venue-*, agency-*, emerging-*) used by other pages, which aren't
+  // meaningful as filters on this listing.
+  const formatTagOrder = ['full-size', 'compact', 'campaign', 'premium']
+  const presentTags = new Set(
+    machines.flatMap((m) => (m.tags ?? []).map((t) => t.label)).filter(Boolean),
+  )
+  const allTags = formatTagOrder.filter((tag) => presentTags.has(tag))
 
   return (
     <main className="ak-machines-page">
