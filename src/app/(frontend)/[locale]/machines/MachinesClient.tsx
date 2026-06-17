@@ -61,10 +61,11 @@ export const MachinesClient: React.FC<Props> = ({ machines, allTags }) => {
       </fieldset>
 
       <div className="ak-machines-page__grid">
-        {filtered.map((machine) => (
+        {filtered.map((machine, index) => (
           <MachineTile
             key={machine.id}
             machine={machine}
+            index={index}
           />
         ))}
       </div>

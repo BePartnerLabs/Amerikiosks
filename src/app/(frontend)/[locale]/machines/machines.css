@@ -63,11 +63,38 @@
   transform: translateY(0);
 }
 
+/* Native CSS scroll-driven reveal where supported — replaces the JS-toggled
+   transition above with a true scroll-timeline animation. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .ak-machines-page__tile {
+      opacity: 1;
+      transform: none;
+      transition: none;
+      animation: ak-tile-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 30%;
+    }
+  }
+}
+
+@keyframes ak-tile-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ak-machines-page__tile {
     opacity: 1;
     transform: none;
     transition: none;
+    animation: none;
   }
 }
 
@@ -79,6 +106,13 @@
 
 .ak-machines-page__tile-img {
   object-fit: cover;
+  transition: transform 400ms var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ak-machines-page__tile:hover .ak-machines-page__tile-img {
+    transform: scale(1.05);
+  }
 }
 
 .ak-machines-page__tile-body {

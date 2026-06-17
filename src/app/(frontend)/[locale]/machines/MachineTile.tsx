@@ -7,18 +7,21 @@ import { useInView } from '@/utilities/useInView'
 
 type Props = {
   machine: Machine
+  index?: number
 }
 
-export const MachineTile: React.FC<Props> = ({ machine }) => {
+export const MachineTile: React.FC<Props> = ({ machine, index = 0 }) => {
   const { ref, inView } = useInView<HTMLAnchorElement>()
   const image = typeof machine.image === 'object' ? (machine.image as Media) : null
   const ratio = image?.width && image?.height ? image.width / image.height : 4 / 3
+  const delay = (index % 6) * 70
 
   return (
     <Link
       ref={ref}
       href={`/machines/${machine.slug}`}
       className={`bp-card bp-card--interactive ak-machines-page__tile${inView ? ' ak-machines-page__tile--in-view' : ''}`}
+      style={{ transitionDelay: `${delay}ms` }}
       data-ga-event="machine_tile_click"
       data-ga-label={machine.name}
     >
