@@ -1,0 +1,229 @@
+.ak-machines-page {
+  padding-block: var(--bp-space-16, 4rem);
+}
+
+.ak-machines-page__inner {
+  max-width: 72rem;
+  margin-inline: auto;
+}
+
+.ak-machines-page__heading {
+  font-size: var(--bp-font-size-4xl, 2.25rem);
+  font-weight: var(--bp-font-weight-bold, 700);
+  margin-bottom: var(--bp-space-8, 2rem);
+}
+
+.ak-machines-page__filters {
+  position: sticky;
+  top: var(--bp-space-4, 1rem);
+  z-index: 10;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0 0 var(--bp-space-8, 2rem);
+  padding: var(--bp-space-2, 0.5rem);
+  border: 1px solid var(--ak-surface-border);
+  border-radius: var(--bp-radius-full, 9999px);
+  background: var(--ak-surface-background);
+  box-shadow: var(--ak-shadow-lift);
+}
+
+.ak-machines-page__filters-track {
+  position: relative;
+  display: flex;
+  flex-wrap: nowrap;
+  min-width: 0;
+  gap: var(--bp-space-2, 0.5rem);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.ak-machines-page__filters-track::-webkit-scrollbar {
+  display: none;
+}
+
+.ak-machines-page__filter-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: var(--bp-radius-full, 9999px);
+  background: var(--bp-primary);
+  z-index: 0;
+  view-transition-name: ak-filter-indicator;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ak-machines-page__filter-indicator {
+    transition:
+      transform 280ms var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1)),
+      width 280ms var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1)),
+      height 280ms var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1));
+  }
+}
+
+.ak-machines-page__filter-chip {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  padding: var(--bp-space-2, 0.5rem) var(--bp-space-4, 1rem);
+  border-radius: var(--bp-radius-full, 9999px);
+  font-size: var(--bp-font-size-sm, 0.875rem);
+  font-weight: var(--bp-font-weight-medium, 500);
+  color: var(--bp-color-text-muted);
+  background: transparent;
+  transition:
+    color 200ms var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1)),
+    background-color 200ms var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+.ak-machines-page__filter-chip:hover {
+  color: var(--bp-color-text);
+  background: var(--ak-surface-border);
+}
+
+.ak-machines-page__filter-chip[aria-pressed="true"] {
+  color: var(--bp-color-text-inverse);
+}
+
+.ak-machines-page__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--bp-space-4, 1rem);
+  align-items: start;
+}
+
+@media (max-width: 1023px) {
+  .ak-machines-page__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 639px) {
+  .ak-machines-page__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ak-machines-page__tile {
+  display: block;
+  text-decoration: none;
+  background: var(--ak-surface-background);
+  border-radius: var(--bp-radius-lg, 0.75rem);
+  border: 1px solid var(--ak-surface-border);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 400ms var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1)),
+    transform 400ms var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+.ak-machines-page__tile--in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Native CSS scroll-driven reveal where supported — replaces the JS-toggled
+   transition above with a true scroll-timeline animation. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .ak-machines-page__tile {
+      opacity: 1;
+      transform: none;
+      transition: none;
+      animation: ak-tile-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 30%;
+    }
+  }
+}
+
+@keyframes ak-tile-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ak-machines-page__tile {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    animation: none;
+  }
+}
+
+.ak-machines-page__tile-image {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.ak-machines-page__tile-img {
+  object-fit: cover;
+  transition: transform 400ms var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ak-machines-page__tile:hover .ak-machines-page__tile-img {
+    transform: scale(1.05);
+  }
+}
+
+.ak-machines-page__tile-body {
+  padding: var(--bp-space-3, 0.75rem) var(--bp-space-4, 1rem) var(--bp-space-4, 1rem);
+}
+
+.ak-machines-page__tile-name {
+  font-weight: var(--bp-font-weight-semibold, 600);
+  color: var(--bp-color-text);
+}
+
+.ak-machines-page__tile-tagline {
+  font-size: var(--bp-font-size-sm, 0.875rem);
+  color: var(--bp-color-text-muted);
+  margin-top: var(--bp-space-1, 0.25rem);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(.ak-tile-vt),
+  ::view-transition-new(.ak-tile-vt) {
+    animation-duration: 320ms;
+    animation-timing-function: var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1));
+  }
+
+  ::view-transition-old(.ak-tile-vt) {
+    animation-name: ak-tile-vt-out;
+  }
+
+  ::view-transition-new(.ak-tile-vt) {
+    animation-name: ak-tile-vt-in;
+  }
+}
+
+@keyframes ak-tile-vt-out {
+  to {
+    opacity: 0;
+    transform: scale(0.92) translateY(8px);
+  }
+}
+
+@keyframes ak-tile-vt-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(8px);
+  }
+}
+
+.ak-machines-page__empty {
+  color: var(--bp-color-text-muted);
+  padding: var(--bp-space-4, 1rem) 0;
+}
