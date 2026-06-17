@@ -1072,6 +1072,44 @@ export interface Machine {
         id?: string | null;
       }[]
     | null;
+  gallery?:
+    | {
+        image: number | Media;
+        id?: string | null;
+      }[]
+    | null;
+  specs?:
+    | {
+        label: string;
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  features?:
+    | {
+        heading: string;
+        body?: string | null;
+        image: number | Media;
+        id?: string | null;
+      }[]
+    | null;
+  cta?: {
+    label?: string | null;
+    url?: string | null;
+  };
+  /**
+   * Show the full rotation-scrub hero instead of the default zoom+fade hero.
+   */
+  useRotationHero?: boolean | null;
+  /**
+   * Ordered turntable frames (e.g. 60-120 images, 0-360°). Required when "useRotationHero" is checked.
+   */
+  rotationFrames?:
+    | {
+        image: number | Media;
+        id?: string | null;
+      }[]
+    | null;
   layout?: unknown[] | null;
   updatedAt: string;
   createdAt: string;
@@ -2144,6 +2182,40 @@ export interface MachinesSelect<T extends boolean = true> {
     | T
     | {
         label?: T;
+        id?: T;
+      };
+  gallery?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
+  specs?:
+    | T
+    | {
+        label?: T;
+        value?: T;
+        id?: T;
+      };
+  features?:
+    | T
+    | {
+        heading?: T;
+        body?: T;
+        image?: T;
+        id?: T;
+      };
+  cta?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+      };
+  useRotationHero?: T;
+  rotationFrames?:
+    | T
+    | {
+        image?: T;
         id?: T;
       };
   layout?: T | {};

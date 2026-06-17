@@ -70,6 +70,7 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URL || '',
     },
+    schemaName: process.env.DATABASE_SCHEMA_NAME || undefined,
     push: false,
   }),
   collections: [Pages, Insights, Media, Categories, Users, Partners, Machines, FAQItems, Projects],
