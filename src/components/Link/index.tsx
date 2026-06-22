@@ -4,7 +4,7 @@ import type React from 'react'
 import type { Insight, Page } from '@/payload-types'
 
 type CMSLinkType = {
-  appearance?: 'inline' | 'default' | 'outline' | 'link' | 'ghost' | 'secondary' | null
+  appearance?: 'inline' | 'default' | 'outline' | 'link' | 'ghost' | null
   children?: React.ReactNode
   className?: string
   label?: string | null
@@ -22,7 +22,6 @@ type CMSLinkType = {
 const appearanceClass: Record<string, string> = {
   default: 'bp-btn bp-btn--primary',
   outline: 'bp-btn bp-btn--outline',
-  secondary: 'bp-btn bp-btn--secondary',
   ghost: 'bp-btn bp-btn--ghost',
 }
 

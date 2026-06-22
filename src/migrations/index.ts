@@ -8,6 +8,7 @@ import * as migration_20260613_023047 from './20260613_023047';
 import * as migration_20260613_155214 from './20260613_155214';
 import * as migration_20260613_165918 from './20260613_165918';
 import * as migration_20260617_010308_add_machines_fields from './20260617_010308_add_machines_fields';
+import * as migration_20260622_231416_add_ghost_link_appearance from './20260622_231416_add_ghost_link_appearance';
 
 export const migrations = [
   {
@@ -58,6 +59,11 @@ export const migrations = [
   {
     up: migration_20260617_010308_add_machines_fields.up,
     down: migration_20260617_010308_add_machines_fields.down,
-    name: '20260617_010308_add_machines_fields'
+    name: '20260617_010308_add_machines_fields',
+  },
+  {
+    up: migration_20260622_231416_add_ghost_link_appearance.up,
+    down: migration_20260622_231416_add_ghost_link_appearance.down,
+    name: '20260622_231416_add_ghost_link_appearance'
   },
 ];

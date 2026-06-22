@@ -23,10 +23,8 @@ const baseHero: HeroProps = {
   tags: [{ label: 'Retail' }, { label: 'Venues' }],
 }
 
-const breadcrumbs: Page['breadcrumbs'] = [
-  { label: 'Home', url: '/', id: '1' },
-  { label: 'Case Studies', url: '/case-studies', id: '2' },
-]
+// breadcrumbs prop only tracks the parent chain — Home is synthesized internally
+const breadcrumbs: Page['breadcrumbs'] = [{ label: 'Case Studies', url: '/case-studies', id: '2' }]
 
 describe('LowImpactHero', () => {
   afterEach(cleanup)
@@ -36,14 +34,15 @@ describe('LowImpactHero', () => {
     expect(screen.getByRole('region')).toBeInTheDocument()
   })
 
-  it('renders breadcrumb text from breadcrumbs prop', () => {
+  it('renders a Home icon link and the breadcrumb trail from breadcrumbs prop', () => {
     render(
       <LowImpactHero
         {...baseHero}
         breadcrumbs={breadcrumbs}
       />,
     )
-    expect(screen.getByText('Home / Case Studies')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Home' })).toHaveAttribute('href', '/')
+    expect(screen.getByText('/ Case Studies')).toBeInTheDocument()
   })
 
   it('renders richText content', () => {
@@ -69,7 +68,7 @@ describe('LowImpactHero', () => {
 
   it('does not render breadcrumb when breadcrumbs is absent', () => {
     render(<LowImpactHero {...baseHero} />)
-    expect(screen.queryByText('Home / Case Studies')).toBeNull()
+    expect(screen.queryByRole('link', { name: 'Home' })).toBeNull()
   })
 
   it('renders BreadcrumbList JSON-LD script when breadcrumbs present', () => {
