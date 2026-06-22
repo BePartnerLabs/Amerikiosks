@@ -1,4 +1,5 @@
 import { act, cleanup, render, screen } from '@testing-library/react'
+import type React from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { MachinesClient } from '@/app/(frontend)/[locale]/machines/MachinesClient'
 import type { Machine } from '@/payload-types'
@@ -9,6 +10,23 @@ let searchParamsValue = new URLSearchParams()
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ replace }),
   useSearchParams: () => searchParamsValue,
+}))
+
+vi.mock('@/i18n/routing', () => ({
+  Link: ({
+    href,
+    children,
+    ...rest
+  }: {
+    href: { pathname: string; params?: Record<string, string> }
+  } & React.ComponentPropsWithoutRef<'a'>) => (
+    <a
+      href={`/machines/${href.params?.slug}`}
+      {...rest}
+    >
+      {children}
+    </a>
+  ),
 }))
 
 vi.mock('@/utilities/useInView', () => ({

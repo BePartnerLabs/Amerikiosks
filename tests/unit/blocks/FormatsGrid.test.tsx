@@ -1,7 +1,25 @@
 import { cleanup, render, screen } from '@testing-library/react'
-import { afterEach, describe, expect, it } from 'vitest'
+import type React from 'react'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { FormatsGridBlock } from '@/blocks/FormatsGrid/Component'
 import type { FormatsGridBlock as FormatsGridBlockType, Machine, Media } from '@/payload-types'
+
+vi.mock('@/i18n/routing', () => ({
+  Link: ({
+    href,
+    children,
+    ...rest
+  }: {
+    href: { pathname: string; params?: Record<string, string> }
+  } & React.ComponentPropsWithoutRef<'a'>) => (
+    <a
+      href={`/machines/${href.params?.slug}`}
+      {...rest}
+    >
+      {children}
+    </a>
+  ),
+}))
 
 const makeMedia = (url: string): Media =>
   ({ id: url, url, alt: 'machine image', updatedAt: '', createdAt: '' }) as unknown as Media
