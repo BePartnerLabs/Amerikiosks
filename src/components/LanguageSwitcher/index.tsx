@@ -17,26 +17,44 @@ export const LanguageSwitcher: React.FC = () => {
   const router = useRouter()
   const [active, setActive] = useState<Locale>(locale)
 
+  // /machines and /machines/[slug] have their own pathnames mapping
+  // (-> /maquinas) and aren't CMS Pages, so they're handled separately
+  // from the generic translate-slug flow used by `/[slug]` pages.
+  const unprefixedPath =
+    typeof window !== 'undefined' ? window.location.pathname.replace(/^\/(en|es)/, '') || '/' : ''
+  const isMachinesListing = /^\/(machines|maquinas)\/?$/.test(unprefixedPath)
+  const isMachineDetail = /^\/(machines|maquinas)\/[^/]+\/?$/.test(unprefixedPath)
+  const machineSlug = isMachineDetail ? (params?.slug as string) : undefined
+
   const currentSlug = (params?.slug as string) ?? 'home'
   const targetLocale: Locale = active === 'en' ? 'es' : 'en'
+  const isMachinesRoute = isMachinesListing || isMachineDetail
 
   // Prefetch the translated slug for the opposite locale so the first toggle is instant
   const { data: translatedSlug } = useQuery({
     queryKey: ['translate-slug', currentSlug, locale, targetLocale],
     queryFn: () => PagesRepository.translateSlug(currentSlug, locale, targetLocale),
-    enabled: currentSlug !== 'home',
+    enabled: currentSlug !== 'home' && !isMachinesRoute,
     staleTime: Infinity,
   })
 
   const switchTo = (target: Locale) => {
     if (target === active) return
 
-    const targetSlug = target === targetLocale ? (translatedSlug ?? currentSlug) : currentSlug
-    const pathname = targetSlug === 'home' ? '/' : `/${targetSlug}`
-
     const update = () => {
       setActive(target)
-      router.replace(pathname, { locale: target })
+      if (isMachineDetail && machineSlug) {
+        router.replace(
+          { pathname: '/machines/[slug]', params: { slug: machineSlug } },
+          { locale: target },
+        )
+      } else if (isMachinesListing) {
+        router.replace({ pathname: '/machines' }, { locale: target })
+      } else {
+        const targetSlug = target === targetLocale ? (translatedSlug ?? currentSlug) : currentSlug
+        const pathname = targetSlug === 'home' ? '/' : `/${targetSlug}`
+        router.replace(pathname as Parameters<typeof router.replace>[0], { locale: target })
+      }
     }
 
     if ('startViewTransition' in document) {

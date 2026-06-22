@@ -1,7 +1,7 @@
 import Image from 'next/image'
-import Link from 'next/link'
 import type React from 'react'
 import { SectionHeader } from '@/components/SectionHeader'
+import { Link } from '@/i18n/routing'
 import type { FormatsGridBlock as FormatsGridBlockProps, Machine, Media } from '@/payload-types'
 import { toSnakeCase } from '@/utilities/toSnakeCase'
 import './styles.css'
@@ -42,7 +42,7 @@ export const FormatsGridBlock: React.FC<Props> = ({
                 return (
                   <Link
                     key={machine.id}
-                    href={`/machines/${machine.slug}`}
+                    href={{ pathname: '/machines/[slug]', params: { slug: machine.slug } }}
                     className="bp-card bp-card--interactive ak-formats-grid__card"
                     data-ga-event="machine_card_click"
                     data-ga-label={machine.name}

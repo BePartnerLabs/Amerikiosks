@@ -11,7 +11,7 @@ export default defineConfig({
     css: false,
     server: {
       deps: {
-        inline: [/@payloadcms/],
+        inline: [/@payloadcms/, /next-intl/],
       },
     },
   },

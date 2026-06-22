@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import Link from 'next/link'
+import { Link } from '@/i18n/routing'
 import type { Machine, Media } from '@/payload-types'
 import { useInView } from '@/utilities/useInView'
 
@@ -19,7 +19,7 @@ export const MachineTile: React.FC<Props> = ({ machine, index = 0 }) => {
   return (
     <Link
       ref={ref}
-      href={`/machines/${machine.slug}`}
+      href={{ pathname: '/machines/[slug]', params: { slug: machine.slug } }}
       className={`bp-card bp-card--interactive ak-machines-page__tile${inView ? ' ak-machines-page__tile--in-view' : ''}`}
       style={
         {
