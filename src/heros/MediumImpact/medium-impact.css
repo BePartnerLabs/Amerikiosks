@@ -22,6 +22,9 @@
 
 .ak-hero-interior__breadcrumb {
   --_color: var(--hero-interior-breadcrumb-color, var(--ak-white));
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bp-space-1, 0.25rem);
   margin: 0;
   font-family: var(--ak-title-1-font-family, sans-serif);
   font-size: 0.8125rem; /* 13px */
@@ -29,6 +32,21 @@
   line-height: 1.692; /* 22/13 */
   letter-spacing: 0;
   color: var(--_color);
+}
+
+.ak-hero-interior__breadcrumb-home {
+  display: inline-flex;
+  color: var(--_color);
+}
+
+.ak-hero-interior__breadcrumb-home:hover {
+  --_breadcrumb-hover-color: var(--hero-interior-breadcrumb-hover-color, var(--ak-white));
+  color: var(--_breadcrumb-hover-color);
+}
+
+.ak-hero-interior__breadcrumb-home .material-symbols-outlined {
+  font-size: 16px;
+  line-height: 1;
 }
 
 .ak-hero-interior__text h1,
@@ -41,8 +59,16 @@
   letter-spacing: var(--ak-title-1-letter-spacing, -0.01em);
 }
 
-.ak-hero-interior__text p {
-  --_color: var(--hero-interior-p-color, var(--ak-dark-fg-muted));
+.ak-hero-interior__text h1 em,
+.ak-hero-interior__text h2 em {
+  --_em-color: var(--hero-interior-accent-color, var(--ak-accent));
+  color: var(--_em-color);
+  font-style: normal;
+}
+
+/* :not() excludes the breadcrumb <p> — it's also a bare <p> but needs its own color (see __breadcrumb rule above) */
+.ak-hero-interior__text p:not(.ak-hero-interior__breadcrumb) {
+  --_color: var(--hero-interior-p-color, var(--ak-white));
   margin: 0;
   font-size: var(--bp-text-base, 1rem);
   line-height: 1.65;

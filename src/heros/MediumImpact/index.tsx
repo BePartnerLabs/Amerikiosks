@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import type React from 'react'
 import { CMSLink } from '@/components/Link'
 import { Media } from '@/components/Media'
@@ -32,7 +33,10 @@ export const MediumImpactHero: React.FC<Props> = ({
         }
       : null
 
-  const breadcrumbLabel = crumbs.map((c) => c.label ?? '').join(' / ')
+  const breadcrumbTrail = crumbs
+    .slice(1)
+    .map((c) => c.label ?? '')
+    .join(' / ')
 
   return (
     <section className="ak-hero-interior">
@@ -47,7 +51,23 @@ export const MediumImpactHero: React.FC<Props> = ({
         <div className="breakout ak-hero-interior__inner">
           {/* Text column */}
           <div className="ak-hero-interior__text">
-            {breadcrumbLabel && <p className="ak-hero-interior__breadcrumb">{breadcrumbLabel}</p>}
+            {crumbs.length > 0 && (
+              <p className="ak-hero-interior__breadcrumb">
+                <Link
+                  className="ak-hero-interior__breadcrumb-home"
+                  href={crumbs[0].url ?? '/'}
+                  aria-label="Home"
+                >
+                  <span
+                    className="material-symbols-outlined"
+                    aria-hidden="true"
+                  >
+                    home
+                  </span>
+                </Link>
+                {breadcrumbTrail && <span> / {breadcrumbTrail}</span>}
+              </p>
+            )}
 
             {richText && (
               <RichText
