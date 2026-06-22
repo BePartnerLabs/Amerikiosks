@@ -60,7 +60,12 @@ export const MediumImpactHero: React.FC<Props> = ({
               <ul className="ak-hero-interior__actions">
                 {links.map(({ link }, i) => (
                   <li key={link.url ?? link.label ?? i}>
-                    <CMSLink {...link} />
+                    <CMSLink
+                      {...link}
+                      className={
+                        link.appearance === 'outline' ? 'bp-btn--outline-solid' : undefined
+                      }
+                    />
                   </li>
                 ))}
               </ul>

@@ -1,4 +1,6 @@
+import Link from 'next/link'
 import type React from 'react'
+import { CMSLink } from '@/components/Link'
 import RichText from '@/components/RichText'
 import type { Page } from '@/payload-types'
 import './low-impact.css'
@@ -8,8 +10,15 @@ type LowImpactHeroType = Omit<Page['hero'], 'richText'> & {
   breadcrumbs?: Page['breadcrumbs']
 }
 
-export const LowImpactHero: React.FC<LowImpactHeroType> = ({ richText, breadcrumbs, tags }) => {
-  const crumbs = breadcrumbs ?? []
+export const LowImpactHero: React.FC<LowImpactHeroType> = ({
+  links,
+  richText,
+  breadcrumbs,
+  tags,
+}) => {
+  // Prepend synthetic Home root — the plugin only tracks parent chain, not the root page
+  const home = { label: 'Home', url: '/', id: 'home' }
+  const crumbs = breadcrumbs && breadcrumbs.length > 0 ? [home, ...breadcrumbs] : []
 
   const breadcrumbJsonLd =
     crumbs.length > 0
@@ -25,7 +34,10 @@ export const LowImpactHero: React.FC<LowImpactHeroType> = ({ richText, breadcrum
         }
       : null
 
-  const breadcrumbLabel = crumbs.map((c) => c.label ?? '').join(' / ')
+  const breadcrumbTrail = crumbs
+    .slice(1)
+    .map((c) => c.label ?? '')
+    .join(' / ')
 
   return (
     <section
@@ -41,7 +53,23 @@ export const LowImpactHero: React.FC<LowImpactHeroType> = ({ richText, breadcrum
       )}
       <div className="bp-content-grid">
         <div className="breakout ak-hero-page__inner">
-          {breadcrumbLabel && <p className="ak-hero-page__breadcrumb">{breadcrumbLabel}</p>}
+          {crumbs.length > 0 && (
+            <p className="ak-hero-page__breadcrumb">
+              <Link
+                className="ak-hero-page__breadcrumb-home"
+                href={crumbs[0].url ?? '/'}
+                aria-label="Home"
+              >
+                <span
+                  className="material-symbols-outlined"
+                  aria-hidden="true"
+                >
+                  home
+                </span>
+              </Link>
+              {breadcrumbTrail && <span> / {breadcrumbTrail}</span>}
+            </p>
+          )}
 
           {richText && (
             <div className="ak-hero-page__heading-row">
@@ -54,6 +82,19 @@ export const LowImpactHero: React.FC<LowImpactHeroType> = ({ richText, breadcrum
                 enableGutter={false}
               />
             </div>
+          )}
+
+          {Array.isArray(links) && links.length > 0 && (
+            <ul className="ak-hero-page__actions">
+              {links.map(({ link }, i) => (
+                <li key={link.url ?? link.label ?? i}>
+                  <CMSLink
+                    {...link}
+                    className={link.appearance === 'outline' ? 'bp-btn--outline-solid' : undefined}
+                  />
+                </li>
+              ))}
+            </ul>
           )}
 
           {Array.isArray(tags) && tags.length > 0 && (

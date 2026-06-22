@@ -4,6 +4,8 @@ import { defaultLexical } from '@/fields/defaultLexical'
 export const ProjectsShowcase: Block = {
   slug: 'projectsShowcase',
   interfaceName: 'ProjectsShowcaseBlock',
+  imageURL: '/block-previews/projects-showcase.png',
+  imageAltText: 'Projects Showcase — heading + project cards filtered by tag',
   labels: { singular: 'Projects Showcase', plural: 'Projects Showcases' },
   fields: [
     {

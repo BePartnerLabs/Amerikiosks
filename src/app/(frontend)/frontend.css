@@ -134,6 +134,42 @@ img {
   --outline-background: color-mix(in srgb, currentColor 10%, transparent);
 }
 
+/* Solid bordered outline button with full-invert hover — set --outline-solid-color per use site */
+/* .bp-btn--outline sets the private --_border/--_color vars directly from --outline-border/--outline-color,
+   bypassing the --btn-border/--btn-color channel entirely — so this modifier sets the real properties
+   directly (compound selector specificity guarantees it wins over .bp-btn--outline's declarations). */
+.bp-btn--outline.bp-btn--outline-solid {
+  --_outline-solid-color: var(--outline-solid-color, var(--ak-cta-btn-color));
+  background-color: transparent;
+  border: 2px solid var(--_outline-solid-color);
+  color: var(--_outline-solid-color);
+  font-weight: 600;
+  transition:
+    background-color var(--bp-duration-fast) var(--bp-ease),
+    color var(--bp-duration-fast) var(--bp-ease);
+}
+
+.bp-btn--outline.bp-btn--outline-solid:hover {
+  background-color: var(--_outline-solid-color);
+  color: var(--outline-solid-hover-color, var(--bp-color-text));
+}
+
+/* Borderless text link with trailing arrow — set --ghost-color / --ghost-arrow-color per use site */
+.bp-btn--ghost {
+  --_ghost-color: var(--ghost-color, var(--ak-cta-btn-color));
+  --btn-background: transparent;
+  --btn-border: none;
+  --btn-color: var(--_ghost-color);
+  padding-inline: 0;
+  gap: var(--bp-space-1, 0.25rem);
+  font-weight: 500;
+}
+
+.bp-btn--ghost::after {
+  content: "→";
+  color: var(--ghost-arrow-color, var(--ak-accent));
+}
+
 .bp-btn--dark {
   --_background: var(--dark-background, var(--ak-color-dark, var(--bp-color-text, #181715)));
   --_color: var(--dark-color, #ffffff);

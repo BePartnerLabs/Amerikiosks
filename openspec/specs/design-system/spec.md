@@ -194,6 +194,12 @@ Referencia: https://ds.bepartnerlabs.com/components/button/
 | `--btn-bg` | `var(--ak-accent)` | CTA en accent vs --bp-primary del DS |
 | `--btn-bg-hover` | `var(--ak-accent-hover)` | Hover oscurecido del accent |
 
+**Gotcha — `.bp-btn--outline` bypasses el canal público:** `.bp-btn--outline` asigna `--_border`/`--_color` (privados) directamente desde `--outline-border`/`--outline-color`, sin pasar por `--btn-border`/`--btn-color`. Cualquier modifier que quiera reestilizar un botón outline (ej. `.bp-btn--outline-solid`, usado en los heroes para fondo oscuro) debe declarar propiedades CSS reales (`border`, `color`, `background-color`) en un selector compuesto (`.bp-btn--outline.bp-btn--outline-solid`) para garantizar especificidad — setear solo `--btn-border`/`--btn-color` no tiene efecto.
+
+**Appearance `ghost`:** variante de link sin borde con flecha (`→`) en color accent — agregada en `src/fields/link.ts` (`LinkAppearances`) y `frontend.css` (`.bp-btn--ghost`). Heroes oscuros (`LowImpact`, `MediumImpact`) la sobreescriben a blanco vía `--hero-page-ghost-color`/`--hero-interior-ghost-color`.
+
+**Cambiar opciones de un campo `select` ya migrado:** Postgres respalda esos campos con un `enum` type. Agregar un valor nuevo (ej. `ghost`) requiere `pnpm payload migrate:create` (genera `ALTER TYPE ... ADD VALUE`) — el campo en código no alcanza, o el insert falla con `current transaction is aborted`.
+
 ---
 
 ## Cómo agregar un nuevo componente DS
