@@ -93,7 +93,12 @@ export const HighImpactHero: React.FC<Page['hero']> = ({
                     data-ga-event="hero_cta_click"
                     data-ga-section="hero_high_impact"
                   >
-                    <CMSLink {...link} />
+                    <CMSLink
+                      {...link}
+                      className={
+                        link?.appearance === 'outline' ? 'bp-btn--outline-solid' : undefined
+                      }
+                    />
                   </li>
                 ))}
               </ul>
