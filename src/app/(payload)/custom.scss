@@ -1,32 +1,32 @@
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined');
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined");
 
 // ─── Amerikiosks admin theme ──────────────────────────────────────────────────
 [data-theme="dark"],
 :root {
-  --theme-bg:              #011936;
-  --theme-input-bg:        #02213f;
+  --theme-bg: #011936;
+  --theme-input-bg: #02213f;
 
-  --theme-elevation-0:     #011936;
-  --theme-elevation-50:    #02213f;
-  --theme-elevation-100:   #042d54;
-  --theme-elevation-150:   #063568;
-  --theme-elevation-200:   #0a4080;
-  --theme-elevation-300:   #0d4d99;
-  --theme-elevation-500:   #6b9fd4;
-  --theme-elevation-800:   #c5ddf0;
-  --theme-elevation-900:   #e2eef8;
-  --theme-elevation-1000:  #ffffff;
+  --theme-elevation-0: #011936;
+  --theme-elevation-50: #02213f;
+  --theme-elevation-100: #042d54;
+  --theme-elevation-150: #063568;
+  --theme-elevation-200: #0a4080;
+  --theme-elevation-300: #0d4d99;
+  --theme-elevation-500: #6b9fd4;
+  --theme-elevation-800: #c5ddf0;
+  --theme-elevation-900: #e2eef8;
+  --theme-elevation-1000: #ffffff;
 
-  --theme-text:            #ffffff;
+  --theme-text: #ffffff;
 
   // Accent — brand red used for active states, focus rings, CTA buttons
-  --theme-success-500:     #22c55e;
-  --theme-warning-500:     #f59e0b;
-  --theme-error-500:       #ef4444;
+  --theme-success-500: #22c55e;
+  --theme-warning-500: #f59e0b;
+  --theme-error-500: #ef4444;
 
   // Brand tokens available inside the editor
-  --ak-accent:             hsla(347, 76%, 48%, 1); // coral-600
-  --ak-font-base:          "Poppins", sans-serif;
+  --ak-accent: hsla(347, 76%, 48%, 1); // coral-600
+  --ak-font-base: "Poppins", sans-serif;
 }
 
 // ─── Rich text editor preview ─────────────────────────────────────────────────
@@ -41,17 +41,30 @@
     font-style: normal;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--ak-font-base);
     font-weight: 800;
     line-height: 1.1;
     margin-block: 0.5rem 0.25rem;
   }
 
-  h1 { font-size: clamp(2rem, 4vw + 1rem, 3rem); }
-  h2 { font-size: 1.5rem; }
-  h3 { font-size: 1.375rem; }
-  h4 { font-size: 1.125rem; }
+  h1 {
+    font-size: clamp(2rem, 4vw + 1rem, 3rem);
+  }
+  h2 {
+    font-size: 1.5rem;
+  }
+  h3 {
+    font-size: 1.375rem;
+  }
+  h4 {
+    font-size: 1.125rem;
+  }
 
   p {
     margin-block: 1rem;
