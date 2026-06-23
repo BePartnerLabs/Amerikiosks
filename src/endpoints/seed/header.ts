@@ -1,7 +1,29 @@
 import type { Payload, PayloadRequest } from 'payload'
 
+const findPageId = async (
+  payload: Payload,
+  req: PayloadRequest,
+  slug: string,
+): Promise<number | undefined> => {
+  const { docs } = await payload.find({
+    collection: 'pages',
+    where: { slug: { equals: slug } },
+    limit: 1,
+    depth: 0,
+    req,
+  })
+  return docs[0]?.id as number | undefined
+}
+
 export const seedHeader = async (payload: Payload, req: PayloadRequest): Promise<void> => {
   payload.logger.info('— Seeding header...')
+
+  const [forBrandsId, forVenuesId, forAgenciesId, forEmergingBrandsId] = await Promise.all([
+    findPageId(payload, req, 'for-brands'),
+    findPageId(payload, req, 'for-venues'),
+    findPageId(payload, req, 'for-agencies'),
+    findPageId(payload, req, 'for-emerging-brands'),
+  ])
 
   // Step 1: write EN — Payload assigns IDs to array entries
   const enResult = await payload.updateGlobal({
@@ -26,25 +48,39 @@ export const seedHeader = async (payload: Payload, req: PayloadRequest): Promise
                 icon: 'storefront',
                 title: 'Brand Programs',
                 description: 'Launch a branded retail moment in high-value physical spaces.',
-                link: { type: 'custom', url: '/solutions/brand-programs' },
+                link: forBrandsId
+                  ? { type: 'reference', reference: { relationTo: 'pages', value: forBrandsId } }
+                  : { type: 'custom', url: '/for-brands' },
               },
               {
                 icon: 'handshake',
                 title: 'Venue Partnerships',
                 description: 'Turn underused square footage into curated revenue and guest value.',
-                link: { type: 'custom', url: '/solutions/venue-partnerships' },
+                link: forVenuesId
+                  ? { type: 'reference', reference: { relationTo: 'pages', value: forVenuesId } }
+                  : { type: 'custom', url: '/for-venues' },
               },
               {
                 icon: 'campaign',
                 title: 'Agency Activations',
                 description: 'Use automated retail as a physical media and experience layer.',
-                link: { type: 'custom', url: '/solutions/agency-activations' },
+                link: forAgenciesId
+                  ? {
+                      type: 'reference',
+                      reference: { relationTo: 'pages', value: forAgenciesId },
+                    }
+                  : { type: 'custom', url: '/for-agencies' },
               },
               {
                 icon: 'rocket_launch',
                 title: 'Emerging Brand Pilots',
                 description: 'Test real-world demand before scaling into more locations.',
-                link: { type: 'custom', url: '/solutions/emerging-brand-pilots' },
+                link: forEmergingBrandsId
+                  ? {
+                      type: 'reference',
+                      reference: { relationTo: 'pages', value: forEmergingBrandsId },
+                    }
+                  : { type: 'custom', url: '/for-emerging-brands' },
               },
             ],
           },
@@ -140,7 +176,9 @@ export const seedHeader = async (payload: Payload, req: PayloadRequest): Promise
                 title: 'Programas de Marca',
                 description:
                   'Lanza un momento de retail de marca en espacios físicos de alto valor.',
-                link: { type: 'custom', url: '/solutions/brand-programs' },
+                link: forBrandsId
+                  ? { type: 'reference', reference: { relationTo: 'pages', value: forBrandsId } }
+                  : { type: 'custom', url: '/para-marcas' },
               },
               {
                 id: navItems[0]?.megaMenu?.items?.[1]?.id,
@@ -148,7 +186,9 @@ export const seedHeader = async (payload: Payload, req: PayloadRequest): Promise
                 title: 'Partnerships con Venues',
                 description:
                   'Convierte metros cuadrados sin uso en ingresos y valor para el visitante.',
-                link: { type: 'custom', url: '/solutions/venue-partnerships' },
+                link: forVenuesId
+                  ? { type: 'reference', reference: { relationTo: 'pages', value: forVenuesId } }
+                  : { type: 'custom', url: '/para-venues' },
               },
               {
                 id: navItems[0]?.megaMenu?.items?.[2]?.id,
@@ -156,14 +196,24 @@ export const seedHeader = async (payload: Payload, req: PayloadRequest): Promise
                 title: 'Activaciones para Agencias',
                 description:
                   'Usa el retail automatizado como capa de medios físicos y experiencia.',
-                link: { type: 'custom', url: '/solutions/agency-activations' },
+                link: forAgenciesId
+                  ? {
+                      type: 'reference',
+                      reference: { relationTo: 'pages', value: forAgenciesId },
+                    }
+                  : { type: 'custom', url: '/para-agencias' },
               },
               {
                 id: navItems[0]?.megaMenu?.items?.[3]?.id,
                 icon: 'rocket_launch',
                 title: 'Pilotos de Marcas Emergentes',
                 description: 'Prueba la demanda real antes de escalar a más ubicaciones.',
-                link: { type: 'custom', url: '/solutions/emerging-brand-pilots' },
+                link: forEmergingBrandsId
+                  ? {
+                      type: 'reference',
+                      reference: { relationTo: 'pages', value: forEmergingBrandsId },
+                    }
+                  : { type: 'custom', url: '/para-marcas-emergentes' },
               },
             ],
           },

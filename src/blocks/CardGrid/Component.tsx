@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type React from 'react'
+import { Card } from '@/components/Card'
 import RichText from '@/components/RichText'
 import { SectionHeader } from '@/components/SectionHeader'
 import type { CardGridBlock as CardGridBlockProps, Page } from '@/payload-types'
@@ -70,59 +71,23 @@ export const CardGridBlock: React.FC<CardGridBlockProps> = ({
               {items.map((item, i) => {
                 const cardUrl = resolveUrl(item.link)
                 return (
-                  <div
+                  <Card
                     key={item.id ?? i}
-                    className={`ak-card-grid__card${cardUrl && variant === 'icon' ? ' ak-card-grid__card--linked' : ''}`}
-                    itemScope
-                    itemProp="itemListElement"
-                    itemType="https://schema.org/ListItem"
-                  >
-                    {item.icon && variant === 'icon' && (
-                      <span
-                        className="ak-card-grid__card-icon-wrap"
-                        aria-hidden="true"
-                      >
-                        <span className="ak-card-grid__card-icon material-symbols-outlined">
-                          {item.icon}
-                        </span>
-                      </span>
-                    )}
-                    {item.eyebrow && variant === 'pillar' && (
-                      <p className="ak-card-grid__card-eyebrow">{item.eyebrow}</p>
-                    )}
-                    {item.title && (
-                      <p
-                        className="ak-card-grid__card-title"
-                        itemProp="name"
-                      >
-                        {item.title}
-                      </p>
-                    )}
-                    {item.body && (
-                      <div className="ak-card-grid__card-body">
+                    variant={variant}
+                    media={item.media}
+                    icon={item.icon}
+                    eyebrow={item.eyebrow}
+                    title={item.title}
+                    body={
+                      item.body && (
                         <RichText
                           data={item.body}
                           enableGutter={false}
                         />
-                      </div>
-                    )}
-                    {cardUrl && item.link?.label && variant === 'icon' && (
-                      <Link
-                        href={cardUrl}
-                        className="ak-card-grid__card-link"
-                        data-ga-event="card_cta_click"
-                        data-ga-label={item.title}
-                      >
-                        {item.link.label}
-                        <span
-                          className="ak-card-grid__card-link-arrow material-symbols-outlined"
-                          aria-hidden="true"
-                        >
-                          arrow_forward_ios
-                        </span>
-                      </Link>
-                    )}
-                  </div>
+                      )
+                    }
+                    link={cardUrl ? { href: cardUrl, label: item.link?.label } : null}
+                  />
                 )
               })}
             </div>
