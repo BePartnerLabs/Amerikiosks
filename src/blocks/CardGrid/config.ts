@@ -84,6 +84,13 @@ export const CardGrid: Block = {
       localized: true,
       fields: [
         {
+          name: 'media',
+          type: 'upload',
+          relationTo: 'media',
+          label: 'Card Image',
+          admin: { description: 'Optional image shown at the top of the card.' },
+        },
+        {
           name: 'eyebrow',
           type: 'text',
           label: 'Card Eyebrow',

@@ -866,6 +866,10 @@ export interface CardGridBlock {
   items?:
     | {
         /**
+         * Optional image shown at the top of the card.
+         */
+        media?: (number | null) | Media;
+        /**
          * Small label above the card title. Used in pillar variant.
          */
         eyebrow?: string | null;
@@ -1843,6 +1847,7 @@ export interface CardGridBlockSelect<T extends boolean = true> {
   items?:
     | T
     | {
+        media?: T;
         eyebrow?: T;
         icon?: T;
         title?: T;

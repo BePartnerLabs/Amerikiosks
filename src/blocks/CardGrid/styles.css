@@ -19,6 +19,17 @@
   gap: var(--bp-space-4, 1rem);
 }
 
+.ak-card-grid__card-media {
+  position: relative;
+  margin: calc(var(--bp-space-6, 1.5rem) * -1) calc(var(--bp-space-6, 1.5rem) * -1) 0;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.ak-card-grid__card-img {
+  object-fit: cover;
+}
+
 .ak-card-grid__card {
   border-radius: 0 0 var(--bp-radius-lg, 0.75rem) var(--bp-radius-lg, 0.75rem);
   padding: var(--bp-space-6, 1.5rem);

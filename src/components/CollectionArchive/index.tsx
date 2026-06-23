@@ -16,6 +16,7 @@ export const CollectionArchive: React.FC<Props> = ({ posts }) => {
       {featured && (
         <div className="ak-collection-archive__featured">
           <Card
+            variant="post"
             doc={featured}
             relationTo="insights"
             featured
@@ -27,6 +28,7 @@ export const CollectionArchive: React.FC<Props> = ({ posts }) => {
           {rest.map((post, index) => (
             <Card
               key={String(index)}
+              variant="post"
               doc={post}
               relationTo="insights"
             />
