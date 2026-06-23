@@ -1,4 +1,5 @@
 import {
+  BlocksFeature,
   FixedToolbarFeature,
   HeadingFeature,
   InlineToolbarFeature,
@@ -6,6 +7,7 @@ import {
 } from '@payloadcms/richtext-lexical'
 import type { Block, Field } from 'payload'
 
+import { CardGrid } from '@/blocks/CardGrid/config'
 import { link } from '@/fields/link'
 
 const columnFields: Field[] = [
@@ -40,6 +42,7 @@ const columnFields: Field[] = [
         return [
           ...rootFeatures,
           HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4'] }),
+          BlocksFeature({ blocks: [CardGrid] }),
           FixedToolbarFeature(),
           InlineToolbarFeature(),
         ]
