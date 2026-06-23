@@ -16,29 +16,31 @@ export const ContentBlock: React.FC<ContentBlockProps> = (props) => {
 
   return (
     <div className="ak-content">
-      <div className="ak-content__columns">
-        {columns &&
-          columns.length > 0 &&
-          columns.map((col) => {
-            const { enableLink, link, richText, size } = col
-            const columnKey =
-              col.id ?? `${size ?? 'col'}-${link?.url ?? link?.label ?? 'content-column'}`
+      <div className="bp-content-grid">
+        <div className="ak-content__columns">
+          {columns &&
+            columns.length > 0 &&
+            columns.map((col) => {
+              const { enableLink, link, richText, size } = col
+              const columnKey =
+                col.id ?? `${size ?? 'col'}-${link?.url ?? link?.label ?? 'content-column'}`
 
-            return (
-              <div
-                className={`ak-content__col ${colSizeClass[size ?? 'full'] ?? ''}`}
-                key={columnKey}
-              >
-                {richText && (
-                  <RichText
-                    data={richText}
-                    enableGutter={false}
-                  />
-                )}
-                {enableLink && <CMSLink {...link} />}
-              </div>
-            )
-          })}
+              return (
+                <div
+                  className={`ak-content__col ${colSizeClass[size ?? 'full'] ?? ''}`}
+                  key={columnKey}
+                >
+                  {richText && (
+                    <RichText
+                      data={richText}
+                      enableGutter={false}
+                    />
+                  )}
+                  {enableLink && <CMSLink {...link} />}
+                </div>
+              )
+            })}
+        </div>
       </div>
     </div>
   )

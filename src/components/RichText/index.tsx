@@ -11,11 +11,13 @@ import {
 } from '@payloadcms/richtext-lexical/react'
 import { BannerBlock } from '@/blocks/Banner/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
+import { CardGridBlock } from '@/blocks/CardGrid/Component'
 import { CodeBlock, type CodeBlockProps } from '@/blocks/Code/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import type {
   BannerBlock as BannerBlockProps,
+  CardGridBlock as CardGridBlockProps,
   ContentBlock as ContentBlockProps,
   CallToActionBlock as CTABlockProps,
   MediaBlock as MediaBlockProps,
@@ -24,7 +26,12 @@ import type {
 type NodeTypes =
   | DefaultNodeTypes
   | SerializedBlockNode<
-      CTABlockProps | MediaBlockProps | BannerBlockProps | CodeBlockProps | ContentBlockProps
+      | CTABlockProps
+      | MediaBlockProps
+      | BannerBlockProps
+      | CodeBlockProps
+      | ContentBlockProps
+      | CardGridBlockProps
     >
 
 const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
@@ -69,6 +76,7 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
     ),
     cta: ({ node }) => <CallToActionBlock {...node.fields} />,
     content: ({ node }) => <ContentBlock {...node.fields} />,
+    cardGrid: ({ node }) => <CardGridBlock {...node.fields} />,
   },
 })
 
