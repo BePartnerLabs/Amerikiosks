@@ -5,6 +5,7 @@ const PARTS = [
   { key: 'home', label: 'Home' },
   { key: 'solutions', label: 'Solutions' },
   { key: 'where-it-works', label: 'Where It Works' },
+  { key: 'where-it-works-detail', label: 'Where It Works — Detail Pages' },
   { key: 'case-studies', label: 'Case Studies' },
   { key: 'why-amerikiosks', label: 'Why Amerikiosks' },
   { key: 'contact', label: 'Contact' },
