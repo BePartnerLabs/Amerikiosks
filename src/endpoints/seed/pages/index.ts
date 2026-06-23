@@ -9,6 +9,7 @@ import { seedForVenues } from './for-venues'
 import { seedHome } from './home'
 import { seedSolutions } from './solutions'
 import { seedWhereItWorks } from './where-it-works'
+import { seedWhereItWorksDetail } from './where-it-works-detail'
 import { seedWhyAmerikiosks } from './why-amerikiosks'
 
 export const seedPages = async (
@@ -58,6 +59,7 @@ export const seedPages = async (
   await seedHome(payload, req, pageIds, postIds, mediaIds)
   await seedSolutions(payload, req)
   await seedWhereItWorks(payload, req)
+  await seedWhereItWorksDetail(payload, req)
   await seedCaseStudies(payload, req)
   await seedWhyAmerikiosks(payload, req)
   await seedContact(payload, req)

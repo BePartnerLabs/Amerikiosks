@@ -16,6 +16,7 @@ import { seedForVenues } from '@/endpoints/seed/pages/for-venues'
 import { seedHome } from '@/endpoints/seed/pages/home'
 import { seedSolutions } from '@/endpoints/seed/pages/solutions'
 import { seedWhereItWorks } from '@/endpoints/seed/pages/where-it-works'
+import { seedWhereItWorksDetail } from '@/endpoints/seed/pages/where-it-works-detail'
 import { seedWhyAmerikiosks } from '@/endpoints/seed/pages/why-amerikiosks'
 import { seedPartners } from '@/endpoints/seed/partners'
 
@@ -44,6 +45,7 @@ const parts: Record<
   },
   solutions: seedSolutions,
   'where-it-works': seedWhereItWorks,
+  'where-it-works-detail': seedWhereItWorksDetail,
   'case-studies': seedCaseStudies,
   'why-amerikiosks': seedWhyAmerikiosks,
   header: seedHeader,
@@ -91,6 +93,8 @@ export async function POST(req: Request): Promise<Response> {
       'machine-campaign',
       'machine-compact',
       'machine-premium',
+      'project-fan-stand',
+      'project-airport-retail',
     ]
     // 1. Delete existing seed media records via Payload (adapter removes blobs too)
     const { docs: seedMedia } = await payload.find({

@@ -18,12 +18,38 @@ const findPageId = async (
 export const seedHeader = async (payload: Payload, req: PayloadRequest): Promise<void> => {
   payload.logger.info('— Seeding header...')
 
-  const [forBrandsId, forVenuesId, forAgenciesId, forEmergingBrandsId] = await Promise.all([
+  const [
+    forBrandsId,
+    forVenuesId,
+    forAgenciesId,
+    forEmergingBrandsId,
+    solutionsId,
+    whereItWorksId,
+    caseStudiesId,
+    whyAmerikiosksId,
+    travelAndTransitId,
+    entertainmentVenuesId,
+    hospitalityAndDestinationsId,
+    retailAndCampusesId,
+  ] = await Promise.all([
     findPageId(payload, req, 'for-brands'),
     findPageId(payload, req, 'for-venues'),
     findPageId(payload, req, 'for-agencies'),
     findPageId(payload, req, 'for-emerging-brands'),
+    findPageId(payload, req, 'solutions'),
+    findPageId(payload, req, 'where-it-works'),
+    findPageId(payload, req, 'case-studies'),
+    findPageId(payload, req, 'why-amerikiosks'),
+    findPageId(payload, req, 'travel-and-transit'),
+    findPageId(payload, req, 'entertainment-venues'),
+    findPageId(payload, req, 'hospitality-and-destinations'),
+    findPageId(payload, req, 'retail-and-campuses'),
   ])
+
+  const refOr = (id: number | undefined, fallbackUrl: string) =>
+    id
+      ? { type: 'reference' as const, reference: { relationTo: 'pages' as const, value: id } }
+      : { type: 'custom' as const, url: fallbackUrl }
 
   // Step 1: write EN — Payload assigns IDs to array entries
   const enResult = await payload.updateGlobal({
@@ -33,7 +59,7 @@ export const seedHeader = async (payload: Payload, req: PayloadRequest): Promise
       cta: { label: 'Start a Partnership', url: '/start-a-partnership' },
       navItems: [
         {
-          link: { type: 'custom', label: 'Solutions', url: '/solutions' },
+          link: { label: 'Solutions', ...refOr(solutionsId, '/solutions') },
           hasMegaMenu: true,
           megaMenu: {
             panelLabel: 'Solutions',
@@ -86,7 +112,7 @@ export const seedHeader = async (payload: Payload, req: PayloadRequest): Promise
           },
         },
         {
-          link: { type: 'custom', label: 'Where It Works', url: '/where-it-works' },
+          link: { label: 'Where It Works', ...refOr(whereItWorksId, '/where-it-works') },
           hasMegaMenu: true,
           megaMenu: {
             panelLabel: 'Where It Works',
@@ -101,35 +127,35 @@ export const seedHeader = async (payload: Payload, req: PayloadRequest): Promise
                 icon: 'flight_takeoff',
                 title: 'Travel and Transit',
                 description: 'Airports, transit hubs, and waiting moments with captive attention.',
-                link: { type: 'custom', url: '/where-it-works/travel-and-transit' },
+                link: refOr(travelAndTransitId, '/travel-and-transit'),
               },
               {
                 icon: 'theaters',
                 title: 'Entertainment Venues',
                 description: 'Arenas, theaters, stadiums, and live-event destinations.',
-                link: { type: 'custom', url: '/where-it-works/entertainment-venues' },
+                link: refOr(entertainmentVenuesId, '/entertainment-venues'),
               },
               {
                 icon: 'hotel',
                 title: 'Hospitality and Destinations',
                 description: 'Hotels, resorts, casinos, museums, and curated guest spaces.',
-                link: { type: 'custom', url: '/where-it-works/hospitality-and-destinations' },
+                link: refOr(hospitalityAndDestinationsId, '/hospitality-and-destinations'),
               },
               {
                 icon: 'local_mall',
                 title: 'Retail and Campuses',
                 description: 'Malls, universities, offices, and daily high-footfall environments.',
-                link: { type: 'custom', url: '/where-it-works/retail-and-campuses' },
+                link: refOr(retailAndCampusesId, '/retail-and-campuses'),
               },
             ],
           },
         },
         {
-          link: { type: 'custom', label: 'Case Studies', url: '/case-studies' },
+          link: { label: 'Case Studies', ...refOr(caseStudiesId, '/case-studies') },
           hasMegaMenu: false,
         },
         {
-          link: { type: 'custom', label: 'Why Amerikiosks', url: '/why-amerikiosks' },
+          link: { label: 'Why Amerikiosks', ...refOr(whyAmerikiosksId, '/why-amerikiosks') },
           hasMegaMenu: false,
         },
       ],
@@ -159,7 +185,7 @@ export const seedHeader = async (payload: Payload, req: PayloadRequest): Promise
       navItems: [
         {
           id: navItems[0]?.id,
-          link: { type: 'custom', label: 'Soluciones', url: '/solutions' },
+          link: { label: 'Soluciones', ...refOr(solutionsId, '/solutions') },
           hasMegaMenu: true,
           megaMenu: {
             panelLabel: 'Soluciones',
@@ -220,7 +246,7 @@ export const seedHeader = async (payload: Payload, req: PayloadRequest): Promise
         },
         {
           id: navItems[1]?.id,
-          link: { type: 'custom', label: 'Dónde Funciona', url: '/where-it-works' },
+          link: { label: 'Dónde Funciona', ...refOr(whereItWorksId, '/where-it-works') },
           hasMegaMenu: true,
           megaMenu: {
             panelLabel: 'Dónde Funciona',
@@ -237,40 +263,40 @@ export const seedHeader = async (payload: Payload, req: PayloadRequest): Promise
                 title: 'Viajes y Tránsito',
                 description:
                   'Aeropuertos, hubs de tránsito y momentos de espera con atención cautiva.',
-                link: { type: 'custom', url: '/where-it-works/travel-and-transit' },
+                link: refOr(travelAndTransitId, '/travel-and-transit'),
               },
               {
                 id: navItems[1]?.megaMenu?.items?.[1]?.id,
                 icon: 'theaters',
                 title: 'Venues de Entretenimiento',
                 description: 'Estadios, teatros, arenas y destinos de eventos en vivo.',
-                link: { type: 'custom', url: '/where-it-works/entertainment-venues' },
+                link: refOr(entertainmentVenuesId, '/entertainment-venues'),
               },
               {
                 id: navItems[1]?.megaMenu?.items?.[2]?.id,
                 icon: 'hotel',
                 title: 'Hospitalidad y Destinos',
                 description: 'Hoteles, resorts, casinos, museos y espacios curados para huéspedes.',
-                link: { type: 'custom', url: '/where-it-works/hospitality-and-destinations' },
+                link: refOr(hospitalityAndDestinationsId, '/hospitality-and-destinations'),
               },
               {
                 id: navItems[1]?.megaMenu?.items?.[3]?.id,
                 icon: 'local_mall',
                 title: 'Retail y Campus',
                 description: 'Malls, universidades, oficinas y entornos de alto tráfico diario.',
-                link: { type: 'custom', url: '/where-it-works/retail-and-campuses' },
+                link: refOr(retailAndCampusesId, '/retail-and-campuses'),
               },
             ],
           },
         },
         {
           id: navItems[2]?.id,
-          link: { type: 'custom', label: 'Casos de Éxito', url: '/case-studies' },
+          link: { label: 'Casos de Éxito', ...refOr(caseStudiesId, '/case-studies') },
           hasMegaMenu: false,
         },
         {
           id: navItems[3]?.id,
-          link: { type: 'custom', label: 'Por Qué Amerikiosks', url: '/why-amerikiosks' },
+          link: { label: 'Por Qué Amerikiosks', ...refOr(whyAmerikiosksId, '/why-amerikiosks') },
           hasMegaMenu: false,
         },
       ],
