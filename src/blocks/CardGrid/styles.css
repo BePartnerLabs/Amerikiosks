@@ -15,7 +15,7 @@
 
 .ak-card-grid__cards {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(15.625rem, 1fr));
   gap: var(--bp-space-4, 1rem);
 }
 
@@ -290,18 +290,8 @@
 
 /* ─── Responsive (container-based — adapts when embedded in a narrow
    richText column, not just on small viewports) ─────────────────── */
-@container card-grid (max-width: 64rem) {
-  .ak-card-grid__cards {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
 @container card-grid (max-width: 40rem) {
   .ak-card-grid--compact .ak-card-grid__inner {
-    grid-template-columns: 1fr;
-  }
-
-  .ak-card-grid__cards {
     grid-template-columns: 1fr;
   }
 

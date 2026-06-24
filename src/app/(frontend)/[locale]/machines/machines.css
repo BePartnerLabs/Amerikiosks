@@ -90,21 +90,9 @@
 
 .ak-machines-page__grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(15.625rem, 1fr));
   gap: var(--bp-space-4, 1rem);
   align-items: start;
-}
-
-@media (max-width: 1023px) {
-  .ak-machines-page__grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 639px) {
-  .ak-machines-page__grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 .ak-machines-page__tile {

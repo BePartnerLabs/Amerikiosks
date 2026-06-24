@@ -488,6 +488,8 @@ Create `src/blocks/AudienceShowcase/styles.css`:
 
 .ak-audience-showcase__inner {
   padding-block: var(--bp-space-16, 4rem);
+  container: audience / inline-size;
+
 }
 
 .ak-audience-showcase__header {

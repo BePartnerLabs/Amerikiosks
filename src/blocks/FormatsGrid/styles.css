@@ -9,7 +9,7 @@
 
 .ak-formats-grid__grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(15.625rem, 1fr));
   gap: var(--bp-space-4, 1rem);
   margin-top: var(--bp-space-10, 2.5rem);
 }
@@ -59,16 +59,4 @@
   font-size: var(--bp-font-size-sm, 0.875rem);
   color: var(--bp-color-text-muted);
   margin-top: var(--bp-space-1, 0.25rem);
-}
-
-@media (max-width: 1023px) {
-  .ak-formats-grid__grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 639px) {
-  .ak-formats-grid__grid {
-    grid-template-columns: 1fr;
-  }
 }

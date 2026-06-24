@@ -5,6 +5,7 @@
 
 .ak-audience-showcase__inner {
   padding-block: var(--bp-space-16, 4rem);
+  container: audience / inline-size;
 }
 
 .ak-audience-showcase__header {
@@ -14,7 +15,7 @@
 
 .ak-audience-showcase__grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(49cqi, 1fr));
   gap: var(--bp-space-4, 1rem);
 }
 
@@ -122,10 +123,6 @@
 }
 
 @media (max-width: 40rem) {
-  .ak-audience-showcase__grid {
-    grid-template-columns: 1fr;
-  }
-
   .ak-audience-showcase__card {
     height: 16rem;
   }
