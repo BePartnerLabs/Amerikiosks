@@ -91,7 +91,7 @@ export default function RichText(props: Props) {
   return (
     <ConvertRichText
       converters={jsxConverters}
-      className=""
+      className={`ak-rich-text ${className ?? ''}`}
       {...rest}
     />
   )

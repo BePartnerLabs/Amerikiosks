@@ -67,8 +67,13 @@
   margin: 0;
   font-family: var(--ak-font-base);
   font-size: clamp(2rem, 4vw + 1rem, 3rem);
-  font-weight: 800;
-  line-height: 1.1;
+  font-weight: 600;
+  line-height: 4.5rem;
+  text-wrap: balance;
+}
+
+.ak-rich-text {
+  display: contents;
 }
 
 .ak-hero-home__content h1 em,
@@ -83,6 +88,7 @@
   font-size: var(--bp-text-lg);
   line-height: 1.65;
   max-width: 52ch;
+  text-wrap: balance;
 }
 
 .ak-hero-home__actions {
@@ -118,6 +124,7 @@
     transform: translateY(0);
     opacity: 1;
   }
+
   to {
     transform: translateY(-20%);
     opacity: 0;

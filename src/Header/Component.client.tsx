@@ -39,7 +39,6 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
       <div
         id="header-sentinel"
         aria-hidden="true"
-        style={{ height: '1px' }}
       />
       <header
         ref={headerRef}

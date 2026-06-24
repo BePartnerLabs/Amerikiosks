@@ -14,7 +14,7 @@
   font-family: var(--ak-font-base);
   font-size: clamp(1.75rem, 3vw + 0.5rem, 2.5rem);
   font-weight: 500;
-  line-height: 1.15;
+  line-height: 3.5rem;
   color: var(--_color);
   white-space: pre-line;
   text-wrap: balance;
