@@ -65,7 +65,7 @@
 /* ─── Secondary cards (bp-card base) ─────────────────────────── */
 .ak-insights-showcase__cards {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(15.625rem, 1fr));
   gap: var(--bp-space-6, 1.5rem);
 }
 
@@ -176,20 +176,8 @@
 }
 
 /* ─── Responsive ──────────────────────────────────────────────── */
-@media (max-width: 64rem) {
-  .ak-insights-showcase__cards {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
 @media (max-width: 48rem) {
   .ak-insights-showcase__featured {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 40rem) {
-  .ak-insights-showcase__cards {
     grid-template-columns: 1fr;
   }
 }
