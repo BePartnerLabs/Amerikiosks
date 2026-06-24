@@ -92,12 +92,21 @@ export const upsertPage = async (
         : undefined
 
     const enItems = (enBlock?.items ?? []) as Array<Record<string, unknown>>
+    // Whether to inject the EN row id depends on how the block's `items` array is localized:
+    // - Subfield-localized (e.g. audienceShowcase: array shared, only label/description/cta
+    //   localized via a separate `_locales` table) — injecting the EN id does an in-place
+    //   UPDATE, preserving the EN values. Safe and necessary here.
+    // - Array-level localized (e.g. cardGrid: `localized: true` on the array itself — Payload
+    //   duplicates the whole row per locale in the SAME base table, sharing the `id` column
+    //   without `_locale` in the key). Injecting the EN id collides with the existing EN row
+    //   and throws "Value must be unique" on `id` (confirmed: seedForBrands → upsertPage).
+    //   These blocks' EN/ES items are independent by design — never inject id here.
+    const blockType = (block as unknown as Record<string, unknown>).blockType
+    const itemsArrayIsLocalized = blockType === 'cardGrid'
     const mergedItems =
       Array.isArray(esItems) && esItems.length > 0
         ? (esItems as Array<Record<string, unknown>>).map((esItem, j) => {
             const enItem = enItems[j] ?? {}
-            // Omit id — passing the EN row's id causes a uniqueness conflict because
-            // Drizzle does INSERT (not UPDATE) for array rows in locale updates.
             // Pass required non-localized fields (page, image) from EN so validation passes;
             // localized scalar fields (cta, label, description) come from the ES spec.
             const { id: _id, page: _esPage, image: _esImage, ...localizedFields } = esItem
@@ -111,6 +120,7 @@ export const upsertPage = async (
                 ? (enItem.image as { id: number }).id
                 : enItem.image
             return {
+              ...(itemsArrayIsLocalized ? {} : { id: enItem.id }),
               page: pageId,
               image: imageId,
               ...localizedFields,
