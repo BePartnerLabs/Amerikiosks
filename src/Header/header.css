@@ -49,11 +49,12 @@
 }
 
 .bp-header__logo {
+  --header-logo-color: var(--ak-white);
   flex-shrink: 0;
   display: flex;
   align-items: center;
   text-decoration: none;
-  color: var(--ak-white);
+  color: var(--header-logo-color);
 }
 
 .bp-header__actions {
@@ -123,7 +124,8 @@
 /* ─── Focus visible for desktop nav ────────────────────── */
 .bp-nav__megamenu-btn:focus-visible,
 .bp-nav__link:focus-visible {
-  outline: 2px solid var(--ak-accent);
+  --nav-focus-color: var(--ak-accent);
+  outline: 2px solid var(--nav-focus-color);
   outline-offset: 2px;
   border-radius: var(--ak-radius);
 }
