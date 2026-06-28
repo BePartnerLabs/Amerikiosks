@@ -29,4 +29,5 @@ jobs:
     with:
       cache-key: ${{ needs.setup.outputs.cache-key }}
       store-path: ${{ needs.setup.outputs.store-path }}
-      test-command: pnpm vitest run --config ./vitest.config.mts tests/unit
+      test-command: pnpm test:coverage
+      coverage: true

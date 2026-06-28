@@ -14,5 +14,18 @@ export default defineConfig({
         inline: [/@payloadcms/, /next-intl/],
       },
     },
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json-summary'],
+      reportsDirectory: './coverage',
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: [
+        'src/payload-types.ts',
+        'src/**/*.d.ts',
+        'src/migrations/**',
+        'src/seed/**',
+        'src/app/(payload)/**',
+      ],
+    },
   },
 })
