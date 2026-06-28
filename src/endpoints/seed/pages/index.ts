@@ -58,6 +58,37 @@ export const seedPages = async (
   const { pageIds, mediaIds } = await seedAudiencePages(payload, req, whoItsForId)
   await seedHome(payload, req, pageIds, postIds, mediaIds)
   await seedSolutions(payload, req)
+
+  // Delete ALL children of where-it-works before touching the parent so Nested Docs never
+  // re-saves a stale mediumImpact child that has no hero.media.
+  const whereItWorksParent = await payload.find({
+    collection: 'pages',
+    where: { slug: { equals: 'where-it-works' } },
+    limit: 1,
+    locale: 'en',
+    overrideAccess: true,
+    req: { ...req, locale: 'en' } as PayloadRequest,
+  })
+  if (whereItWorksParent.docs.length > 0) {
+    const parentId = whereItWorksParent.docs[0]?.id
+    const children = await payload.find({
+      collection: 'pages',
+      where: { parent: { equals: parentId } },
+      limit: 100,
+      locale: 'en',
+      overrideAccess: true,
+      req: { ...req, locale: 'en' } as PayloadRequest,
+    })
+    for (const child of children.docs) {
+      await payload.delete({
+        collection: 'pages',
+        id: child.id,
+        req,
+        overrideAccess: true,
+      })
+    }
+  }
+
   await seedWhereItWorks(payload, req)
   await seedWhereItWorksDetail(payload, req)
   await seedCaseStudies(payload, req)
