@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 El middleware de Next.js vive en `src/proxy.ts` (no `middleware.ts`) — Next.js lo detecta igual por la configuración en `next.config.ts`.
 
-Incluye protección por password para preview: si `PREVIEW_PASSWORD` está seteado en env, el sitio requiere autenticación. Acceso vía `?preview=<password>` en la URL o desde `/preview-login`.
+Actualmente maneja solo i18n (`next-intl`). El matcher excluye `/admin`, `/api`, `/next`, assets estáticos y archivos con extensión.
 
 ## Stack
 
@@ -40,8 +40,10 @@ src/
 ├── app/
 │   ├── (frontend)/      # Public-facing Next.js routes
 │   └── (payload)/       # Payload admin panel routes
-├── collections/         # Payload collection configs (Pages, Posts, Media, Categories, Users)
-├── globals/             # Header, Footer globals
+├── collections/         # Payload collection configs
+├── Header/              # Header global (Payload + React component)
+├── Footer/              # Footer global (Payload + React component)
+├── Settings/            # Settings global
 ├── blocks/              # Layout-builder blocks (Hero, Content, Media, CTA, Archive)
 ├── fields/              # Reusable field definitions
 ├── hooks/               # Payload lifecycle hooks
@@ -60,6 +62,8 @@ src/
 
 Payload and Next.js run in the same process. The frontend (`(frontend)` route group) fetches data directly via the Payload Local API — no HTTP roundtrip. The admin panel lives at `/admin` via the `(payload)` route group.
 
+**Local API vs Repository pattern:** Server Components use `getPayload()` + Local API directly — this is correct and intentional (no HTTP cost). The repository pattern applies only to external HTTP calls (`/next/*` routes, third-party APIs). Do not wrap Local API calls in repositories.
+
 **Key patterns from AGENTS.md (enforced):**
 
 - After any schema change run `generate:types` then `generate:importmap`.
@@ -73,18 +77,22 @@ Payload and Next.js run in the same process. The frontend (`(frontend)` route gr
 | Slug | Purpose |
 |------|---------|
 | `pages` | Layout-builder pages with draft/preview support |
-| `posts` | Blog/news with layout builder + draft/preview |
+| `insights` | Blog/news (formerly posts) with layout builder + draft/preview |
 | `media` | Uploads (images, files) with pre-configured sizes |
-| `categories` | Nested taxonomy for posts |
+| `categories` | Nested taxonomy for insights |
 | `users` | Auth-enabled, admin panel access |
+| `partners` | Partner companies |
+| `machines` | Kiosk machines catalog |
+| `faq-items` | FAQ entries |
+| `projects` | Case study/project pages |
 
 ## Environment
 
 Copy `.env.example` to `.env`. Requires `DATABASE_URL` (Postgres) and `PAYLOAD_SECRET`.
 
-## Docker
+## Local infrastructure
 
-`docker-compose up` spins up the full stack using the `.env` file.
+`podman-compose up -d` (o `docker-compose up -d`) levanta Postgres + MinIO usando el `.env` file. En desarrollo normal solo se necesita la DB y MinIO — el app corre con `pnpm dev`.
 
 ## Testing
 
