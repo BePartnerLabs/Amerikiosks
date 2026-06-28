@@ -67,10 +67,12 @@
 }
 
 .ak-faq-form__panel .bp-input {
+  --input-bg: var(--ak-input-background);
+  --input-border: var(--ak-input-border);
   height: 54px;
   border-radius: 6px;
-  background: var(--ak-input-background);
-  border: 1px solid var(--ak-input-border);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
   width: 100%;
   padding: 0 var(--bp-space-3, 0.75rem);
   font-size: var(--bp-text-base, 1rem);
@@ -126,10 +128,13 @@
 }
 
 .ak-faq-form__faq-side .bp-accordion__item {
-  background: var(--ak-surface-background);
-  border: 1px solid var(--ak-surface-border);
+  --accordion-bg: var(--ak-surface-background);
+  --accordion-border: var(--ak-surface-border);
+  --accordion-shadow: var(--ak-surface-shadow-sm);
+  background: var(--accordion-bg);
+  border: 1px solid var(--accordion-border);
   border-radius: 8px;
-  box-shadow: var(--ak-surface-shadow-sm);
+  box-shadow: var(--accordion-shadow);
   overflow: hidden;
   transition:
     box-shadow 200ms var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1)),
@@ -138,8 +143,10 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .ak-faq-form__faq-side .bp-accordion__item:hover {
-    box-shadow: var(--ak-surface-shadow-sm-hover);
-    border-color: var(--ak-surface-border-hover);
+    --accordion-shadow: var(--ak-surface-shadow-sm-hover);
+    --accordion-border: var(--ak-surface-border-hover);
+    box-shadow: var(--accordion-shadow);
+    border-color: var(--accordion-border);
   }
 }
 

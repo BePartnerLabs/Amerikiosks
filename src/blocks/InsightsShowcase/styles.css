@@ -72,7 +72,7 @@
 .ak-insights-showcase__cards .bp-card {
   --card-shadow: var(--ak-card-shadow);
   --card-border: 1px solid var(--ak-color-border);
-  --card-background: var(--ak-color-surface);
+  --card-bg: var(--ak-color-surface);
   --card-radius: var(--bp-radius-lg, 0.75rem);
   --card-padding: 0;
   display: flex;
@@ -153,8 +153,9 @@
   }
 
   .ak-insights-showcase__cards .bp-card:hover {
+    --card-shadow: var(--ak-shadow-lift);
     transform: translateY(-2px);
-    box-shadow: var(--ak-shadow-lift);
+    box-shadow: var(--card-shadow);
   }
 
   /* Link arrow slide */
