@@ -1,4 +1,5 @@
 import configPromise from '@payload-config'
+import type { DefaultTypedEditorState } from '@payloadcms/richtext-lexical'
 import type { Metadata } from 'next'
 import { draftMode } from 'next/headers'
 import Image from 'next/image'
@@ -88,7 +89,7 @@ export default async function ProjectPage({ params: paramsPromise }: Args) {
           {project.body && (
             <RichText
               // biome-ignore lint/suspicious/noExplicitAny: Payload richText type mismatch with lexical
-              data={project.body as any}
+              data={project.body as DefaultTypedEditorState}
               enableGutter={false}
             />
           )}
