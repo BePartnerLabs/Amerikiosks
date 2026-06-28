@@ -34,6 +34,11 @@
             "type": "command",
             "command": ".claude/hooks/unit-tests.sh",
             "statusMessage": "Running unit tests..."
+          },
+          {
+            "type": "command",
+            "command": "[ -f coverage/coverage-summary.json ] && node scripts/check-coverage.mjs || true",
+            "statusMessage": "Coverage: checking thresholds..."
           }
         ]
       }

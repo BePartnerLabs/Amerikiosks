@@ -57,6 +57,48 @@ In `docs/blocks/README.md`, each block has one row:
 | [Block Name](../src/blocks/BlockName/README.md) | Layout Block | X% | note |
 ```
 
+## CSS Variables — 3-level rule (enforced by pre-commit validator)
+
+When writing block CSS, follow the BPL DS variable contract. The validator (`scripts/validate-ds-tokens.mjs`) runs on every CSS edit and will block commits on violations.
+
+**Start from `_template.css`** — it has the correct patterns pre-filled.
+
+```css
+/* ✓ CORRECT — custom selector, --ak-* direct ok */
+.ak-myblock__title {
+  color: var(--ak-color-heading);
+}
+
+/* ✓ CORRECT — DS component override via Level 2 */
+.ak-myblock .bp-card {
+  --card-background: var(--ak-color-surface);
+  --card-shadow: var(--ak-card-shadow);
+}
+
+/* ✓ CORRECT — Level 2 in hover state */
+.ak-myblock .bp-card:hover {
+  --card-shadow: var(--ak-shadow-lift);
+}
+
+/* ✗ WRONG — --ak-* as direct CSS property inside .bp-* (Rule 4) */
+.ak-myblock .bp-card {
+  background: var(--ak-color-surface);
+}
+
+/* ✗ WRONG — hardcoded color (Rule 2) */
+.ak-myblock__title {
+  color: #181715;
+}
+```
+
+**Rules enforced:**
+| Rule | What it catches |
+|---|---|
+| 1 | `background-color`/`color` with `--ak-*` directly (not via `--_*`) |
+| 2 | Hardcoded color literals (`#hex`, `rgb()`, `hsl()`) |
+| 3 | Public slot shorthand names (`-bg`, `-fg` instead of `-background`, `-color`) |
+| 4 | Any CSS property with `var(--ak-*)` inside a `.bp-*` selector |
+
 ## Screenshot Tips
 
 - Use `https://amerikiosks.vercel.app` after seeding, or `http://localhost:3000` locally
