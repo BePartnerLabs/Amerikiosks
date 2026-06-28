@@ -1,0 +1,61 @@
+/* ═══════════════════════════════════════════════════════════════
+   [BlockName] block
+   ═══════════════════════════════════════════════════════════════ */
+
+/*
+ * CSS VARIABLE CONTRACT — 3 levels, never mix them up:
+ *
+ * Level 1  --bp-*        Base DS tokens. Never redeclare.
+ * Level 1.5 --ak-*       Brand tokens (declared in frontend.css :root). NEVER use
+ *                        directly in CSS property values inside .bp-* selectors.
+ * Level 2  --<component>-*  Override surface for DS components. Declare in the
+ *                        component selector when the DS default doesn't fit.
+ *                        Use --ak-* here to channel brand values in.
+ * Level 3  --_*          DS-private vars. Never override from outside.
+ *
+ * CORRECT pattern (DS component override):
+ *   .ak-myblock .bp-card {
+ *     --card-background: var(--ak-color-surface);   ← Level 2 = ok
+ *     --card-shadow: var(--ak-card-shadow);          ← Level 2 = ok
+ *   }
+ *
+ * WRONG patterns:
+ *   .ak-myblock .bp-card {
+ *     background: var(--ak-color-surface);  ← direct property = Rule 4 violation
+ *   }
+ *   .ak-myblock .bp-card {
+ *     --_bg: var(--ak-color-surface);       ← private var from outside = never
+ *   }
+ *
+ * Custom (non-DS) selectors can use --ak-* directly:
+ *   .ak-myblock__title {
+ *     color: var(--ak-color-heading);       ← fine, not a .bp-* selector
+ *   }
+ */
+
+/*
+ * Replace .ak-myblock with your real block selector, e.g. .ak-features-grid
+ *
+ * .ak-myblock {
+ *   Custom section-level styles here.
+ *   --ak-* vars are fine directly on custom selectors (not .bp-*).
+ * }
+ *
+ * .ak-myblock__inner {
+ *   padding-block: var(--bp-space-16, 4rem);
+ * }
+ *
+ * DS component overrides (Level 2):
+ * .ak-myblock .bp-card {
+ *   --card-background: var(--ak-color-surface);
+ *   --card-shadow: var(--ak-card-shadow);
+ *   --card-border: 1px solid var(--ak-color-border);
+ * }
+ *
+ * Responsive:
+ * @media (max-width: 48rem) {
+ *   .ak-myblock__inner {
+ *     padding-block: var(--bp-space-10, 2.5rem);
+ *   }
+ * }
+ */
