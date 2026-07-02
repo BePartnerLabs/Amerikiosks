@@ -71,7 +71,7 @@ When writing block CSS, follow the BPL DS variable contract. The validator (`scr
 
 /* ✓ CORRECT — DS component override via Level 2 */
 .ak-myblock .bp-card {
-  --card-bg: var(--ak-color-surface);
+  --card-background: var(--ak-color-surface);
   --card-shadow: var(--ak-card-shadow);
 }
 

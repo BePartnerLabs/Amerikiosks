@@ -15,7 +15,7 @@
  *
  * CORRECT pattern (DS component override):
  *   .ak-myblock .bp-card {
- *     --card-bg: var(--ak-color-surface);   ← Level 2 = ok
+ *     --card-background: var(--ak-color-surface);   ← Level 2 = ok
  *     --card-shadow: var(--ak-card-shadow);          ← Level 2 = ok
  *   }
  *
@@ -47,7 +47,7 @@
  *
  * DS component overrides (Level 2):
  * .ak-myblock .bp-card {
- *   --card-bg: var(--ak-color-surface);
+ *   --card-background: var(--ak-color-surface);
  *   --card-shadow: var(--ak-card-shadow);
  *   --card-border: 1px solid var(--ak-color-border);
  * }

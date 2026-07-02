@@ -72,7 +72,7 @@
 .ak-insights-showcase__cards .bp-card {
   --card-shadow: var(--ak-card-shadow);
   --card-border: 1px solid var(--ak-color-border);
-  --card-bg: var(--ak-color-surface);
+  --card-background: var(--ak-color-surface);
   --card-radius: var(--bp-radius-lg, 0.75rem);
   --card-padding: 0;
   display: flex;

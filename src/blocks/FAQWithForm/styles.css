@@ -67,11 +67,11 @@
 }
 
 .ak-faq-form__panel .bp-input {
-  --input-bg: var(--ak-input-background);
+  --input-background: var(--ak-input-background);
   --input-border: var(--ak-input-border);
   height: 54px;
   border-radius: 6px;
-  background: var(--input-bg);
+  background: var(--input-background);
   border: 1px solid var(--input-border);
   width: 100%;
   padding: 0 var(--bp-space-3, 0.75rem);
