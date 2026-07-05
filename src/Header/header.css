@@ -125,6 +125,7 @@
 .bp-nav__megamenu-btn:focus-visible,
 .bp-nav__link:focus-visible {
   --nav-focus-color: var(--ak-accent);
+
   --nav-focus-radius: var(--ak-radius);
   outline: 2px solid var(--nav-focus-color);
   outline-offset: 2px;
