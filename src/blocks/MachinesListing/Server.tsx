@@ -14,6 +14,9 @@ export const MachinesListingServer: React.FC<MachinesListingBlockProps> = async 
   const payload = await getPayload({ config })
   const locale = await getLocale()
 
+  // Fetch-all + client-side filter/paginate is a small-catalog choice (machines
+  // is a handful of docs). Don't copy this verbatim for higher-cardinality
+  // collections (e.g. insights, projects) — use server-side `where`/`page` there.
   const result = await payload.find({
     collection: 'machines',
     depth: 1,
