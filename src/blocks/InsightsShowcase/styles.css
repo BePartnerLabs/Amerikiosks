@@ -153,8 +153,9 @@
   }
 
   .ak-insights-showcase__cards .bp-card:hover {
-    transform: translateY(-2px);
     --card-shadow: var(--ak-shadow-lift);
+    transform: translateY(-2px);
+    box-shadow: var(--card-shadow);
   }
 
   /* Link arrow slide */

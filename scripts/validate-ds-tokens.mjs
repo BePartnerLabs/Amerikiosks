@@ -95,7 +95,9 @@ for (const file of files) {
       }
     }
 
-    // Rule 3 — public slot shorthand names (skip primitives file)
+    // Rule 3 — public slot shorthand names. DS v1.7.1 enforces Rule 1 consistently
+    // across all components (--card-background, --input-background, --accordion-background).
+    // No exemption needed for .bp-* context — flag abbreviations everywhere.
     if (!isPrimitivesFile && BANNED_SHORTHAND.test(line) && !PRIVATE_VAR_DECL.test(line)) {
       console.error(
         `[DS] Rule 3 — public slot should match CSS property (-bg → -background, -fg → -color): ${loc}`,

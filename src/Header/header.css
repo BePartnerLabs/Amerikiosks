@@ -125,9 +125,11 @@
 .bp-nav__megamenu-btn:focus-visible,
 .bp-nav__link:focus-visible {
   --nav-focus-color: var(--ak-accent);
+
+  --nav-focus-radius: var(--ak-radius);
   outline: 2px solid var(--nav-focus-color);
   outline-offset: 2px;
-  border-radius: var(--ak-radius);
+  border-radius: var(--nav-focus-radius);
 }
 
 /* Hide desktop nav + CTA on mobile */
