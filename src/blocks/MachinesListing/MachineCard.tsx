@@ -38,7 +38,7 @@ export const MachineCard: React.FC<Props> = ({ machine, index = 0 }) => {
       <div className="ak-machines-listing__card-body">
         <p className="ak-machines-listing__card-name">{machine.name}</p>
         {machine.tagline && <p className="ak-machines-listing__card-tagline">{machine.tagline}</p>}
-        <span className="bp-btn bp-btn--primary ak-machines-listing__card-button">Learn more</span>
+        <span className="bp-btn bp-btn--dark ak-machines-listing__card-button">Learn more</span>
       </div>
     </Link>
   )
