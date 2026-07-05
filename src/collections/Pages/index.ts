@@ -19,6 +19,7 @@ import { FAQWithForm } from '../../blocks/FAQWithForm/config'
 import { FormBlock } from '../../blocks/Form/config'
 import { FormatsGrid } from '../../blocks/FormatsGrid/config'
 import { InsightsShowcase } from '../../blocks/InsightsShowcase/config'
+import { MachinesListing } from '../../blocks/MachinesListing/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { ProcessSteps } from '../../blocks/ProcessSteps/config'
 import { ProjectsShowcase } from '../../blocks/ProjectsShowcase/config'
@@ -91,6 +92,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 InsightsShowcase,
                 ProjectsShowcase,
                 FormatsGrid,
+                MachinesListing,
                 ProcessSteps,
                 FAQWithForm,
               ],

@@ -243,6 +243,7 @@ export interface Page {
         | InsightsShowcaseBlock
         | ProjectsShowcaseBlock
         | FormatsGridBlock
+        | MachinesListingBlock
         | ProcessStepsBlock
         | FAQWithFormBlock
       )[]
@@ -1121,6 +1122,19 @@ export interface Machine {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MachinesListingBlock".
+ */
+export interface MachinesListingBlock {
+  /**
+   * How many machines to show per page.
+   */
+  itemsPerPage?: number | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'machinesListing';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "ProcessStepsBlock".
  */
 export interface ProcessStepsBlock {
@@ -1717,6 +1731,7 @@ export interface PagesSelect<T extends boolean = true> {
         insightsShowcase?: T | InsightsShowcaseBlockSelect<T>;
         projectsShowcase?: T | ProjectsShowcaseBlockSelect<T>;
         formatsGrid?: T | FormatsGridBlockSelect<T>;
+        machinesListing?: T | MachinesListingBlockSelect<T>;
         processSteps?: T | ProcessStepsBlockSelect<T>;
         faqWithForm?: T | FAQWithFormBlockSelect<T>;
       };
@@ -1939,6 +1954,15 @@ export interface FormatsGridBlockSelect<T extends boolean = true> {
         machine?: T;
         id?: T;
       };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MachinesListingBlock_select".
+ */
+export interface MachinesListingBlockSelect<T extends boolean = true> {
+  itemsPerPage?: T;
   id?: T;
   blockName?: T;
 }
