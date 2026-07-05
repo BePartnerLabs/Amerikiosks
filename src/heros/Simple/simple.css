@@ -1,0 +1,57 @@
+/* ═══════════════════════════════════════════════════════════════
+   Simple hero — centered eyebrow + title, no media/breadcrumbs
+   ═══════════════════════════════════════════════════════════════ */
+
+.ak-hero-simple {
+  --_background: var(--hero-simple-background, var(--bp-color-bg-elevated));
+  background: var(--_background);
+}
+
+.ak-hero-simple__inner {
+  padding-block: var(--bp-space-16, 4rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--bp-space-4, 1rem);
+  text-align: center;
+}
+
+.ak-hero-simple__heading p:first-child {
+  --_eyebrow-color: var(--ak-accent);
+
+  margin: 0 0 var(--bp-space-2, 0.5rem);
+  font-size: var(--bp-text-sm);
+  font-weight: var(--bp-font-weight-semibold, 600);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--_eyebrow-color);
+}
+
+.ak-hero-simple__heading h1 {
+  margin: 0;
+  font-family: var(--ak-title-1-font-family, sans-serif);
+  font-size: clamp(1.75rem, 3vw + 1rem, var(--ak-title-1-font-size, 3rem));
+  font-weight: var(--ak-title-1-font-weight, 600);
+  line-height: var(--ak-title-1-line-height, 1.1);
+  color: var(--bp-color-text);
+}
+
+.ak-hero-simple__tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--bp-space-2, 0.5rem);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ak-hero-simple__tag {
+  display: inline-block;
+  padding: var(--bp-space-1) var(--bp-space-3);
+  font-size: var(--bp-text-xs);
+  font-weight: 500;
+  color: var(--bp-color-text-muted);
+  border: var(--md-semantic-border-width-default) solid var(--ak-surface-border);
+  border-radius: var(--bp-radius-full);
+}

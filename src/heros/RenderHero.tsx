@@ -2,12 +2,14 @@ import type React from 'react'
 import { HighImpactHero } from '@/heros/HighImpact'
 import { LowImpactHero } from '@/heros/LowImpact'
 import { MediumImpactHero } from '@/heros/MediumImpact'
+import { SimpleHero } from '@/heros/Simple'
 import type { Page } from '@/payload-types'
 
 const heroes = {
   highImpact: HighImpactHero,
   lowImpact: LowImpactHero,
   mediumImpact: MediumImpactHero,
+  simple: SimpleHero,
 }
 
 type Props = Page['hero'] & { breadcrumbs?: Page['breadcrumbs'] }

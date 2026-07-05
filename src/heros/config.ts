@@ -34,6 +34,10 @@ export const hero: Field = {
           label: 'Low Impact',
           value: 'lowImpact',
         },
+        {
+          label: 'Simple',
+          value: 'simple',
+        },
       ],
       required: true,
     },
@@ -93,7 +97,7 @@ export const hero: Field = {
       type: 'array',
       label: 'Tags',
       admin: {
-        condition: (_, { type } = {}) => ['mediumImpact', 'lowImpact'].includes(type),
+        condition: (_, { type } = {}) => ['mediumImpact', 'lowImpact', 'simple'].includes(type),
       },
       fields: [
         {
