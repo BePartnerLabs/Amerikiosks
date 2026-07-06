@@ -1,5 +1,6 @@
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { importExportPlugin } from '@payloadcms/plugin-import-export'
+import { mcpPlugin } from '@payloadcms/plugin-mcp'
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
 import { redirectsPlugin } from '@payloadcms/plugin-redirects'
 import { searchPlugin } from '@payloadcms/plugin-search'
@@ -25,6 +26,18 @@ const generateURL: GenerateURL<Insight | Page> = ({ doc }) => {
 }
 
 export const plugins: Plugin[] = [
+  mcpPlugin({
+    collections: {
+      pages: { enabled: { find: true } },
+      insights: { enabled: { find: true } },
+      media: { enabled: { find: true } },
+      categories: { enabled: { find: true } },
+      partners: { enabled: { find: true } },
+      projects: { enabled: { find: true } },
+      faqItems: { enabled: { find: true } },
+      machines: { enabled: { find: true, create: true, update: true, delete: true } },
+    },
+  }),
   importExportPlugin({
     collections: [
       { slug: 'pages' },
