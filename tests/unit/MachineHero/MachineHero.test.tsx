@@ -24,7 +24,6 @@ const baseMachine = {
   tagline: 'Spin to win',
   image: { id: 'img1', url: '/turntable.jpg' },
   tags: [],
-  layout: [],
   updatedAt: '',
   createdAt: '',
 } as unknown as Machine

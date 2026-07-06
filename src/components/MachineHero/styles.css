@@ -1,16 +1,56 @@
 .ak-machine-hero {
+  display: flex;
+  flex-direction: column;
+}
+
+.ak-machine-hero__text {
+  padding-block: var(--bp-space-16, 4rem) var(--bp-space-10, 2.5rem);
+  text-align: center;
+  max-width: 40rem;
+  margin-inline: auto;
+}
+
+.ak-machine-hero__eyebrow {
+  --_eyebrow-color: var(--ak-accent);
+  font-size: var(--bp-font-size-sm, 0.875rem);
+  font-weight: var(--bp-font-weight-semibold, 600);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--_eyebrow-color);
+  margin: 0 0 var(--bp-space-2, 0.5rem);
+}
+
+.ak-machine-hero__heading {
+  font-size: var(--bp-font-size-4xl, 2.25rem);
+  font-weight: var(--bp-font-weight-bold, 700);
+  margin: 0 0 var(--bp-space-3, 0.75rem);
+}
+
+.ak-machine-hero__subtitle {
+  color: var(--bp-color-text-muted);
+  margin: 0 0 var(--bp-space-6, 1.5rem);
+}
+
+.ak-machine-hero__actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--bp-space-3, 0.75rem);
+  flex-wrap: wrap;
+}
+
+.ak-machine-hero__image-pin-wrapper {
   position: relative;
   height: 300vh;
 }
 
 @media (max-width: 639px) {
-  .ak-machine-hero {
+  .ak-machine-hero__image-pin-wrapper {
     height: 180vh;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ak-machine-hero {
+  .ak-machine-hero__image-pin-wrapper {
     height: auto;
   }
 
@@ -61,24 +101,4 @@
   50% {
     opacity: 1;
   }
-}
-
-.ak-machine-hero__text {
-  position: relative;
-  z-index: 1;
-  text-align: center;
-  color: var(--bp-color-text-inverse);
-  text-shadow: 0 2px 12px var(--ak-card-overlay);
-}
-
-.ak-machine-hero__eyebrow {
-  font-size: var(--bp-font-size-sm, 0.875rem);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-bottom: var(--bp-space-2, 0.5rem);
-}
-
-.ak-machine-hero__heading {
-  font-size: var(--bp-font-size-5xl, 3rem);
-  font-weight: var(--bp-font-weight-bold, 700);
 }
