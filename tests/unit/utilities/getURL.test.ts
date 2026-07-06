@@ -25,7 +25,29 @@ describe('getServerSideURL', () => {
 })
 
 describe('getClientSideURL', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs()
+    vi.resetModules()
+  })
+
   it('returns the current window origin when running in a DOM environment', () => {
     expect(getClientSideURL()).toBe(window.location.origin)
+  })
+
+  it('falls back to VERCEL_PROJECT_PRODUCTION_URL when canUseDOM is false', async () => {
+    vi.doMock('@/utilities/canUseDOM', () => ({ default: false }))
+    vi.stubEnv('VERCEL_PROJECT_PRODUCTION_URL', 'amerikiosks.vercel.app')
+
+    const { getClientSideURL: getClientSideURLNonDOM } = await import('@/utilities/getURL')
+    expect(getClientSideURLNonDOM()).toBe('https://amerikiosks.vercel.app')
+  })
+
+  it('falls back to NEXT_PUBLIC_SERVER_URL when canUseDOM is false and no Vercel URL is set', async () => {
+    vi.doMock('@/utilities/canUseDOM', () => ({ default: false }))
+    vi.stubEnv('VERCEL_PROJECT_PRODUCTION_URL', '')
+    vi.stubEnv('NEXT_PUBLIC_SERVER_URL', 'https://amerikiosks.com')
+
+    const { getClientSideURL: getClientSideURLNonDOM } = await import('@/utilities/getURL')
+    expect(getClientSideURLNonDOM()).toBe('https://amerikiosks.com')
   })
 })
