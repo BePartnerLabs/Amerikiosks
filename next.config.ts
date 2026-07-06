@@ -59,6 +59,12 @@ const nextConfig: NextConfig = {
   },
   reactStrictMode: true,
   redirects,
+  // sharp loads native platform binaries via dlopen — Next's output-file-tracing
+  // can miss those files when it bundles the module itself, causing
+  // "Failed to load external module sharp-...: cannot open shared object file"
+  // at runtime on Vercel even though the build succeeds. Marking it external
+  // keeps it resolved normally from node_modules instead of traced/bundled.
+  serverExternalPackages: ['sharp'],
   turbopack: {
     root: path.resolve(dirname),
   },
