@@ -115,6 +115,11 @@ export const seedMachines = async (payload: Payload, req: PayloadRequest): Promi
           ],
         },
       ],
+      meta: {
+        title: 'Machines — Amerikiosks',
+        description:
+          'Browse Amerikiosks kiosk formats — full-size, compact, campaign, and premium — and find the right model for your space.',
+      },
     },
     {
       title: 'Máquinas',
@@ -146,6 +151,11 @@ export const seedMachines = async (payload: Payload, req: PayloadRequest): Promi
           ],
         },
       ],
+      meta: {
+        title: 'Máquinas — Amerikiosks',
+        description:
+          'Explora los formatos de kiosco de Amerikiosks — full-size, compact, campaign y premium — y encuentra el modelo ideal para tu espacio.',
+      },
     },
   )
 }
