@@ -897,7 +897,7 @@ Create `src/blocks/MachinesListing/styles.css` (ported from `machines.css`, rena
 
 .ak-machines-listing__filter-indicator {
   position: absolute;
-  top: 0;
+  top: 8px;
   left: 0;
   border-radius: var(--bp-radius-full, 9999px);
   background: var(--ak-accent);
