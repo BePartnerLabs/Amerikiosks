@@ -65,6 +65,13 @@ const nextConfig: NextConfig = {
   // at runtime on Vercel even though the build succeeds. Marking it external
   // keeps it resolved normally from node_modules instead of traced/bundled.
   serverExternalPackages: ['sharp'],
+  // Confirmed via Vercel runtime logs: the file (e.g. libvips-cpp.so.8.18.3)
+  // IS present in node_modules after install, but output-file-tracing doesn't
+  // copy it into the deployed function bundle — marking it external alone
+  // doesn't fix a missing-file problem. Force-include it explicitly.
+  outputFileTracingIncludes: {
+    '/**': ['./node_modules/sharp/**', './node_modules/@img/**'],
+  },
   turbopack: {
     root: path.resolve(dirname),
   },
