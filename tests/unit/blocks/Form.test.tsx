@@ -1,0 +1,150 @@
+import { cleanup, render, screen } from '@testing-library/react'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+
+const push = vi.fn()
+const mutate = vi.fn()
+let mutationState: {
+  isPending: boolean
+  isSuccess: boolean
+  error: Error | null
+} = { isPending: false, isSuccess: false, error: null }
+
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push }),
+}))
+
+vi.mock('@tanstack/react-query', () => ({
+  useMutation: ({ mutationFn: _mutationFn }: { mutationFn: unknown }) => ({
+    mutate,
+    isPending: mutationState.isPending,
+    isSuccess: mutationState.isSuccess,
+    error: mutationState.error,
+  }),
+}))
+
+vi.mock('@/components/RichText', () => ({
+  default: ({ data }: { data: unknown }) => (
+    <div data-testid="richtext">{JSON.stringify(data)}</div>
+  ),
+}))
+
+vi.mock('@/components/ui/button', () => ({
+  Button: ({ children, ...rest }: React.ComponentPropsWithoutRef<'button'>) => (
+    <button {...rest}>{children}</button>
+  ),
+}))
+
+vi.mock('@/blocks/Form/fields', () => ({
+  fields: {
+    text: ({ name }: { name: string }) => (
+      <input
+        name={name}
+        aria-label={name}
+      />
+    ),
+  },
+}))
+
+import { FormBlock } from '@/blocks/Form/Component'
+
+const baseForm = {
+  id: 'form-1',
+  submitButtonLabel: 'Send it',
+  confirmationType: 'message' as const,
+  confirmationMessage: {
+    root: {
+      type: 'root',
+      children: [],
+      direction: null,
+      format: '' as const,
+      indent: 0,
+      version: 1,
+    },
+  },
+  fields: [{ blockType: 'text', name: 'email' }],
+}
+
+describe('FormBlock', () => {
+  afterEach(() => {
+    cleanup()
+    mutate.mockClear()
+    push.mockClear()
+    mutationState = { isPending: false, isSuccess: false, error: null }
+  })
+
+  it('renders a field for each configured form field', () => {
+    render(
+      <FormBlock
+        enableIntro={false}
+        form={baseForm as never}
+      />,
+    )
+    expect(screen.getByLabelText('email')).toBeInTheDocument()
+  })
+
+  it('renders the submit button with the configured label', () => {
+    render(
+      <FormBlock
+        enableIntro={false}
+        form={baseForm as never}
+      />,
+    )
+    expect(screen.getByRole('button', { name: 'Send it' })).toBeInTheDocument()
+  })
+
+  it('renders the intro content when enableIntro is true and not yet submitted', () => {
+    render(
+      <FormBlock
+        enableIntro={true}
+        introContent={baseForm.confirmationMessage as never}
+        form={baseForm as never}
+      />,
+    )
+    expect(screen.getByTestId('richtext')).toBeInTheDocument()
+  })
+
+  it('does not render intro content when enableIntro is false', () => {
+    render(
+      <FormBlock
+        enableIntro={false}
+        introContent={baseForm.confirmationMessage as never}
+        form={baseForm as never}
+      />,
+    )
+    expect(screen.queryByTestId('richtext')).toBeNull()
+  })
+
+  it('shows a loading message while the mutation is pending', () => {
+    mutationState = { isPending: true, isSuccess: false, error: null }
+    render(
+      <FormBlock
+        enableIntro={false}
+        form={baseForm as never}
+      />,
+    )
+    expect(screen.getByText('Loading, please wait...')).toBeInTheDocument()
+  })
+
+  it('renders the confirmation message and hides the form once submitted', () => {
+    mutationState = { isPending: false, isSuccess: true, error: null }
+    render(
+      <FormBlock
+        enableIntro={false}
+        form={baseForm as never}
+      />,
+    )
+    expect(screen.getByTestId('richtext')).toBeInTheDocument()
+    expect(screen.queryByLabelText('email')).toBeNull()
+  })
+
+  it('shows an error message when the mutation fails', () => {
+    mutationState = { isPending: false, isSuccess: false, error: new Error('Boom') }
+    render(
+      <FormBlock
+        enableIntro={false}
+        form={baseForm as never}
+      />,
+    )
+    expect(screen.getByText('500: Boom')).toBeInTheDocument()
+  })
+})
