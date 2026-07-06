@@ -8,10 +8,10 @@
 import { existsSync, readFileSync } from 'node:fs'
 
 const THRESHOLDS = {
-  statements: 10,
-  branches: 10,
-  functions: 10,
-  lines: 10,
+  statements: 17,
+  branches: 20,
+  functions: 17,
+  lines: 17,
 }
 
 const SUMMARY_PATH = 'coverage/coverage-summary.json'
