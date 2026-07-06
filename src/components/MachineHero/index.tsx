@@ -11,6 +11,7 @@ type Props = {
 export const MachineHero: React.FC<Props> = ({ machine }) => {
   const image = typeof machine.image === 'object' ? (machine.image as Media) : null
   const imageUrl = getMediaUrl(image?.url)
+  const brochure = typeof machine.brochure === 'object' ? (machine.brochure as Media) : null
 
   const frameUrls =
     machine.useRotationHero && machine.rotationFrames && machine.rotationFrames.length > 0
@@ -22,13 +23,21 @@ export const MachineHero: React.FC<Props> = ({ machine }) => {
           .filter(Boolean) as string[])
       : []
 
+  const heroText = {
+    eyebrow: machine.heroEyebrow,
+    heading: machine.name,
+    subtitle: machine.tagline,
+    brochureUrl: brochure?.url ?? null,
+    ctaLabel: machine.cta?.label || 'Contact Sales',
+    ctaUrl: machine.cta?.url || '/contact',
+  }
+
   if (frameUrls.length > 0) {
     return (
       <RotationScrubHero
         frameUrls={frameUrls}
         alt={machine.name}
-        eyebrow={machine.tagline}
-        heading={machine.name}
+        {...heroText}
       />
     )
   }
@@ -37,8 +46,7 @@ export const MachineHero: React.FC<Props> = ({ machine }) => {
     <ZoomFadeHero
       imageUrl={imageUrl}
       alt={machine.name}
-      eyebrow={machine.tagline}
-      heading={machine.name}
+      {...heroText}
     />
   )
 }

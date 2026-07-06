@@ -1,115 +1,3 @@
-.ak-machine-detail__cta-bar {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: var(--ak-surface-background);
-  border-bottom: 1px solid var(--ak-surface-border);
-}
-
-.ak-machine-detail__cta-bar-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-block: var(--bp-space-3, 0.75rem);
-}
-
-.ak-machine-detail__cta-bar-name {
-  font-weight: var(--bp-font-weight-semibold, 600);
-}
-
-.ak-machine-detail__specs {
-  padding-block: var(--bp-space-12, 3rem);
-}
-
-.ak-machine-detail__specs-inner {
-  max-width: 40rem;
-  margin-inline: auto;
-}
-
-.ak-machine-detail__spec-row {
-  display: flex;
-  justify-content: space-between;
-  padding-block: var(--bp-space-3, 0.75rem);
-  border-bottom: 1px solid var(--ak-surface-border);
-  opacity: 0;
-  transform: translateY(10px);
-  transition:
-    opacity 400ms var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1)),
-    transform 400ms var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1));
-}
-
-.ak-machine-detail__spec-row--in-view {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.ak-machine-detail__spec-label {
-  color: var(--bp-color-text-muted);
-}
-
-.ak-machine-detail__spec-value {
-  font-weight: var(--bp-font-weight-semibold, 600);
-}
-
-.ak-machine-detail__feature-row {
-  padding-block: var(--bp-space-16, 4rem);
-  opacity: 0;
-  transform: translateY(16px);
-  transition:
-    opacity 500ms var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1)),
-    transform 500ms var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1));
-}
-
-.ak-machine-detail__feature-row--in-view {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.ak-machine-detail__feature-inner {
-  display: flex;
-  align-items: center;
-  gap: var(--bp-space-10, 2.5rem);
-}
-
-.ak-machine-detail__feature-row--reverse .ak-machine-detail__feature-inner {
-  flex-direction: row-reverse;
-}
-
-.ak-machine-detail__feature-image {
-  position: relative;
-  flex: 1 1 50%;
-  aspect-ratio: 4 / 3;
-}
-
-.ak-machine-detail__feature-img {
-  object-fit: cover;
-  border-radius: var(--bp-radius-lg, 0.75rem);
-}
-
-.ak-machine-detail__feature-text {
-  flex: 1 1 50%;
-}
-
-.ak-machine-detail__feature-heading {
-  font-size: var(--bp-font-size-2xl, 1.5rem);
-  font-weight: var(--bp-font-weight-bold, 700);
-  margin-bottom: var(--bp-space-3, 0.75rem);
-}
-
-.ak-machine-detail__feature-body {
-  color: var(--bp-color-text-muted);
-}
-
-@media (max-width: 767px) {
-  .ak-machine-detail__feature-inner {
-    flex-direction: column;
-  }
-
-  .ak-machine-detail__feature-row--reverse .ak-machine-detail__feature-inner {
-    flex-direction: column;
-  }
-}
-
 .ak-machine-detail__gallery {
   padding-block: var(--bp-space-16, 4rem);
 }
@@ -141,11 +29,235 @@
   object-fit: cover;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .ak-machine-detail__spec-row,
-  .ak-machine-detail__feature-row {
-    opacity: 1;
-    transform: none;
-    transition: none;
+.ak-machine-detail__highlights {
+  padding-block: var(--bp-space-16, 4rem);
+  background: var(--ak-color-surface);
+}
+
+.ak-machine-detail__highlights-eyebrow {
+  --_eyebrow-color: var(--ak-accent);
+  font-size: var(--bp-font-size-sm, 0.875rem);
+  font-weight: var(--bp-font-weight-semibold, 600);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--_eyebrow-color);
+  text-align: center;
+  margin: 0 0 var(--bp-space-2, 0.5rem);
+}
+
+.ak-machine-detail__highlights-heading {
+  font-size: var(--bp-font-size-2xl, 1.5rem);
+  font-weight: var(--bp-font-weight-bold, 700);
+  text-align: center;
+  max-width: 40rem;
+  margin: 0 auto var(--bp-space-8, 2rem);
+}
+
+.ak-machine-detail__highlights-strip {
+  display: flex;
+  gap: var(--bp-space-4, 1rem);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-block: var(--bp-space-2, 0.5rem);
+}
+
+.ak-machine-detail__highlight-card {
+  flex: 0 0 15rem;
+  scroll-snap-align: start;
+  padding: var(--bp-space-5, 1.25rem);
+  border: 1px solid var(--ak-surface-border);
+  border-radius: var(--bp-radius-lg, 0.75rem);
+  background: var(--ak-surface-background);
+}
+
+.ak-machine-detail__highlight-icon {
+  --_icon-color: var(--ak-accent);
+  font-size: 1.75rem;
+  color: var(--_icon-color);
+}
+
+.ak-machine-detail__highlight-title {
+  font-weight: var(--bp-font-weight-semibold, 600);
+  margin: var(--bp-space-2, 0.5rem) 0 var(--bp-space-1, 0.25rem);
+}
+
+.ak-machine-detail__highlight-description {
+  font-size: var(--bp-font-size-sm, 0.875rem);
+  color: var(--bp-color-text-muted);
+}
+
+.ak-machine-detail__capabilities {
+  padding-block: var(--bp-space-16, 4rem);
+}
+
+.ak-machine-detail__capabilities-inner {
+  display: flex;
+  gap: var(--bp-space-10, 2.5rem);
+  align-items: flex-start;
+}
+
+.ak-machine-detail__capabilities-heading {
+  font-size: var(--bp-font-size-2xl, 1.5rem);
+  font-weight: var(--bp-font-weight-bold, 700);
+  margin: 0 0 var(--bp-space-6, 1.5rem);
+}
+
+.ak-machine-detail__capabilities-columns {
+  display: flex;
+  gap: var(--bp-space-8, 2rem);
+  flex: 1 1 60%;
+}
+
+.ak-machine-detail__capabilities-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1 1 50%;
+}
+
+.ak-machine-detail__capabilities-list li {
+  position: relative;
+  padding-left: var(--bp-space-4, 1rem);
+  margin-bottom: var(--bp-space-3, 0.75rem);
+  color: var(--bp-color-text-muted);
+}
+
+.ak-machine-detail__capabilities-list li::before {
+  --_bullet-color: var(--ak-accent);
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--_bullet-color);
+}
+
+.ak-machine-detail__capabilities-carousel {
+  flex: 1 1 40%;
+  display: flex;
+  gap: var(--bp-space-3, 0.75rem);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+}
+
+.ak-machine-detail__capabilities-photo {
+  position: relative;
+  flex: 0 0 100%;
+  aspect-ratio: 4 / 3;
+  scroll-snap-align: start;
+  border-radius: var(--bp-radius-lg, 0.75rem);
+  overflow: hidden;
+}
+
+.ak-machine-detail__capabilities-photo-img {
+  object-fit: contain;
+  background: var(--ak-surface-background);
+}
+
+@media (max-width: 767px) {
+  .ak-machine-detail__capabilities-inner {
+    flex-direction: column;
+  }
+}
+
+.ak-machine-detail__dimensions {
+  padding-block: var(--bp-space-16, 4rem);
+  background: var(--ak-color-surface);
+}
+
+.ak-machine-detail__dimensions-label {
+  font-size: var(--bp-font-size-sm, 0.875rem);
+  font-weight: var(--bp-font-weight-semibold, 600);
+  letter-spacing: 0.08em;
+  margin: 0 0 var(--bp-space-6, 1.5rem);
+}
+
+.ak-machine-detail__dimensions-diagrams {
+  display: flex;
+  gap: var(--bp-space-6, 1.5rem);
+  flex-wrap: wrap;
+}
+
+.ak-machine-detail__dimensions-diagram {
+  flex: 1 1 15rem;
+  margin: 0;
+}
+
+.ak-machine-detail__dimensions-diagram-image {
+  position: relative;
+  aspect-ratio: 1;
+}
+
+.ak-machine-detail__dimensions-diagram-img {
+  object-fit: contain;
+}
+
+.ak-machine-detail__dimensions-diagram-label {
+  text-align: center;
+  font-size: var(--bp-font-size-sm, 0.875rem);
+  color: var(--bp-color-text-muted);
+  margin-top: var(--bp-space-2, 0.5rem);
+}
+
+.ak-machine-detail__dimensions-values {
+  display: flex;
+  gap: var(--bp-space-8, 2rem);
+  margin: var(--bp-space-8, 2rem) 0 var(--bp-space-4, 1rem);
+}
+
+.ak-machine-detail__dimensions-values dt {
+  font-size: var(--bp-font-size-sm, 0.875rem);
+  color: var(--bp-color-text-muted);
+}
+
+.ak-machine-detail__dimensions-values dd {
+  margin: 0;
+  font-weight: var(--bp-font-weight-semibold, 600);
+}
+
+.ak-machine-detail__dimensions-caption {
+  font-size: var(--bp-font-size-sm, 0.875rem);
+  color: var(--bp-color-text-muted);
+}
+
+.ak-machine-detail__related {
+  padding-block: var(--bp-space-16, 4rem);
+}
+
+.ak-machine-detail__related-eyebrow {
+  --_eyebrow-color: var(--ak-accent);
+  font-size: var(--bp-font-size-sm, 0.875rem);
+  font-weight: var(--bp-font-weight-semibold, 600);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--_eyebrow-color);
+  text-align: center;
+  margin: 0 0 var(--bp-space-2, 0.5rem);
+}
+
+.ak-machine-detail__related-heading {
+  font-size: var(--bp-font-size-2xl, 1.5rem);
+  font-weight: var(--bp-font-weight-bold, 700);
+  text-align: center;
+  margin: 0 0 var(--bp-space-8, 2rem);
+}
+
+.ak-machine-detail__related-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--bp-space-6, 1.5rem);
+}
+
+@media (min-width: 40rem) {
+  .ak-machine-detail__related-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 64rem) {
+  .ak-machine-detail__related-grid {
+    grid-template-columns: repeat(4, 1fr);
   }
 }

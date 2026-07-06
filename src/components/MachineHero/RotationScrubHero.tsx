@@ -9,9 +9,22 @@ type Props = {
   alt: string
   eyebrow?: string | null
   heading: string
+  subtitle?: string | null
+  brochureUrl?: string | null
+  ctaLabel: string
+  ctaUrl: string
 }
 
-export const RotationScrubHero: React.FC<Props> = ({ frameUrls, alt, eyebrow, heading }) => {
+export const RotationScrubHero: React.FC<Props> = ({
+  frameUrls,
+  alt,
+  eyebrow,
+  heading,
+  subtitle,
+  brochureUrl,
+  ctaLabel,
+  ctaUrl,
+}) => {
   const wrapperRef = useRef<HTMLDivElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const framesRef = useRef<HTMLImageElement[]>([])
@@ -55,32 +68,48 @@ export const RotationScrubHero: React.FC<Props> = ({ frameUrls, alt, eyebrow, he
     drawFrame(frameIndex)
   }, [progress, framesReady, reducedMotion, frameUrls.length, drawFrame])
 
-  const textOpacity = reducedMotion ? 1 : Math.max(0, 1 - progress / 0.4)
-
   return (
-    <div
-      ref={wrapperRef}
-      className="ak-machine-hero"
-    >
-      <div className="ak-machine-hero__sticky">
-        {!framesReady && (
-          <div
-            className="ak-machine-hero__skeleton"
-            aria-hidden
+    <div className="ak-machine-hero">
+      <div className="ak-machine-hero__text">
+        {eyebrow && <p className="ak-machine-hero__eyebrow">{eyebrow}</p>}
+        <h1 className="ak-machine-hero__heading">{heading}</h1>
+        {subtitle && <p className="ak-machine-hero__subtitle">{subtitle}</p>}
+        <div className="ak-machine-hero__actions">
+          {brochureUrl && (
+            <a
+              href={brochureUrl}
+              className="bp-btn bp-btn--dark"
+              download
+            >
+              Download brochure
+            </a>
+          )}
+          <a
+            href={ctaUrl}
+            className="bp-btn bp-btn--outline"
+          >
+            {ctaLabel}
+          </a>
+        </div>
+      </div>
+
+      <div
+        ref={wrapperRef}
+        className="ak-machine-hero__image-pin-wrapper"
+      >
+        <div className="ak-machine-hero__sticky">
+          {!framesReady && (
+            <div
+              className="ak-machine-hero__skeleton"
+              aria-hidden
+            />
+          )}
+          <canvas
+            ref={canvasRef}
+            className="ak-machine-hero__canvas"
+            role="img"
+            aria-label={alt}
           />
-        )}
-        <canvas
-          ref={canvasRef}
-          className="ak-machine-hero__canvas"
-          role="img"
-          aria-label={alt}
-        />
-        <div
-          className="ak-machine-hero__text"
-          style={{ opacity: textOpacity }}
-        >
-          {eyebrow && <p className="ak-machine-hero__eyebrow">{eyebrow}</p>}
-          <h1 className="ak-machine-hero__heading">{heading}</h1>
         </div>
       </div>
     </div>

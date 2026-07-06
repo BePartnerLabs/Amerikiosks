@@ -59,7 +59,6 @@ async function seed() {
         tagline: m.tagline,
         image: mediaId,
         tags: [{ label: m.tag }],
-        layout: [],
         _status: 'published',
       },
     })

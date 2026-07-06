@@ -203,7 +203,6 @@ export const seedForBrands = async (payload: Payload, req: PayloadRequest): Prom
           tagline: m.tagline,
           image: image.id,
           tags: [{ label: m.tag }],
-          layout: [],
           _status: 'published',
         },
         req: { ...req, locale: 'en' } as PayloadRequest,
