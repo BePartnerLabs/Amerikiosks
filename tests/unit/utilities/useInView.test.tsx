@@ -81,4 +81,12 @@ describe('useInView', () => {
     })
     expect(getByTestId('probe').dataset.inView).toBe('false')
   })
+
+  it('immediately reports in view when IntersectionObserver is unavailable', () => {
+    // @ts-expect-error simulate an environment without IntersectionObserver support
+    delete global.IntersectionObserver
+
+    const { getByTestId } = render(<Probe />)
+    expect(getByTestId('probe').dataset.inView).toBe('true')
+  })
 })
