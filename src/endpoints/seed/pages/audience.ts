@@ -69,7 +69,7 @@ export const seedWhoItsFor = async (payload: Payload, req: PayloadRequest): Prom
 
   if (existing.totalDocs > 0) {
     const id = existing.docs[0]?.id as number
-    payload.logger.info("  Who it's for already exists, skipping (id: " + id + ')')
+    payload.logger.info(`  Who it's for already exists, skipping (id: ${id})`)
     return id
   }
 

@@ -51,12 +51,12 @@ for (const file of files) {
     // ── Selector context tracking ─────────────────────────────────
     // Accumulate selector text before the opening brace
     if (!trimmed.includes('{') && !trimmed.includes('}') && !trimmed.startsWith('@')) {
-      selectorBuffer += ' ' + trimmed
+      selectorBuffer += ` ${trimmed}`
     }
 
     if (trimmed.includes('{')) {
       braceDepth++
-      const currentSelector = selectorBuffer + ' ' + trimmed
+      const currentSelector = `${selectorBuffer} ${trimmed}`
       if (/\.bp-[\w_-]+/.test(currentSelector)) {
         insideBpSelector = true
         bpSelectorDepth = braceDepth

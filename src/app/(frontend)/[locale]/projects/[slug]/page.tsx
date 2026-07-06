@@ -88,7 +88,6 @@ export default async function ProjectPage({ params: paramsPromise }: Args) {
           {project.description && <p>{project.description}</p>}
           {project.body && (
             <RichText
-              // biome-ignore lint/suspicious/noExplicitAny: Payload richText type mismatch with lexical
               data={project.body as DefaultTypedEditorState}
               enableGutter={false}
             />
