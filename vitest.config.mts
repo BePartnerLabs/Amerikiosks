@@ -25,6 +25,8 @@ export default defineConfig({
         'src/migrations/**',
         'src/seed/**',
         'src/app/(payload)/**',
+        'src/components/AdminLogo/**',
+        'src/components/BeforeDashboard/**',
       ],
     },
   },
