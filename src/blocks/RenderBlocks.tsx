@@ -9,6 +9,7 @@ import { FAQWithFormServer } from '@/blocks/FAQWithForm/Server'
 import { FormBlock } from '@/blocks/Form/Component'
 import { FormatsGridServer } from '@/blocks/FormatsGrid/Server'
 import { InsightsShowcaseBlock } from '@/blocks/InsightsShowcase/Component'
+import { MachinesListingServer } from '@/blocks/MachinesListing/Server'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { ProcessStepsBlock } from '@/blocks/ProcessSteps/Component'
 import { ProjectsShowcaseBlock } from '@/blocks/ProjectsShowcase/Component'
@@ -29,6 +30,7 @@ const blockComponents = {
   formatsGrid: FormatsGridServer,
   processSteps: ProcessStepsBlock,
   faqWithForm: FAQWithFormServer,
+  machinesListing: MachinesListingServer,
 }
 
 export const RenderBlocks: React.FC<{

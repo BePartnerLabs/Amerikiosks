@@ -4,11 +4,12 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import type React from 'react'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { Machine } from '@/payload-types'
-import { MachineTile } from './MachineTile'
+import { MachineCard } from './MachineCard'
 
 type Props = {
   machines: Machine[]
   allTags: string[]
+  itemsPerPage: number
 }
 
 const formatTagLabel = (tag: string) =>
@@ -17,10 +18,11 @@ const formatTagLabel = (tag: string) =>
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ')
 
-export const MachinesClient: React.FC<Props> = ({ machines, allTags }) => {
+export const MachinesListingClient: React.FC<Props> = ({ machines, allTags, itemsPerPage }) => {
   const searchParams = useSearchParams()
   const router = useRouter()
   const [activeTag, setActiveTag] = useState(searchParams.get('tag') ?? '')
+  const [page, setPage] = useState(Number(searchParams.get('page') ?? '1') || 1)
   const trackRef = useRef<HTMLDivElement>(null)
   const chipRefs = useRef(new Map<string, HTMLButtonElement>())
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({})
@@ -32,9 +34,14 @@ export const MachinesClient: React.FC<Props> = ({ machines, allTags }) => {
     } else {
       params.delete('tag')
     }
+    if (page > 1) {
+      params.set('page', String(page))
+    } else {
+      params.delete('page')
+    }
     const query = params.toString()
     router.replace(query ? `?${query}` : '?', { scroll: false })
-  }, [activeTag, router])
+  }, [activeTag, page, router])
 
   useLayoutEffect(() => {
     const chip = chipRefs.current.get(activeTag)
@@ -53,25 +60,25 @@ export const MachinesClient: React.FC<Props> = ({ machines, allTags }) => {
     ? machines.filter((m) => m.tags?.some((t) => t.label === activeTag))
     : machines
 
+  const totalPages = Math.max(1, Math.ceil(filtered.length / itemsPerPage))
+  const currentPage = Math.min(page, totalPages)
+  const paged = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+
   const setTag = (tag: string) => {
-    const apply = () => setActiveTag(tag)
-    if (typeof document.startViewTransition === 'function') {
-      document.startViewTransition(apply)
-    } else {
-      apply()
-    }
+    setActiveTag(tag)
+    setPage(1)
   }
 
   return (
     <>
-      <fieldset className="ak-machines-page__filters">
+      <fieldset className="ak-machines-listing__filters">
         <legend className="sr-only">Filter by tag</legend>
         <div
-          className="ak-machines-page__filters-track"
+          className="ak-machines-listing__filters-track"
           ref={trackRef}
         >
           <span
-            className="ak-machines-page__filter-indicator"
+            className="ak-machines-listing__filter-indicator"
             style={indicatorStyle}
             aria-hidden="true"
           />
@@ -81,7 +88,7 @@ export const MachinesClient: React.FC<Props> = ({ machines, allTags }) => {
               if (el) chipRefs.current.set('', el)
               else chipRefs.current.delete('')
             }}
-            className="ak-machines-page__filter-chip"
+            className="ak-machines-listing__filter-chip"
             aria-pressed={activeTag === ''}
             onClick={() => setTag('')}
             data-ga-block="machines_page"
@@ -98,7 +105,7 @@ export const MachinesClient: React.FC<Props> = ({ machines, allTags }) => {
                 if (el) chipRefs.current.set(tag, el)
                 else chipRefs.current.delete(tag)
               }}
-              className="ak-machines-page__filter-chip"
+              className="ak-machines-listing__filter-chip"
               aria-pressed={activeTag === tag}
               onClick={() => setTag(tag)}
               data-ga-block="machines_page"
@@ -111,17 +118,37 @@ export const MachinesClient: React.FC<Props> = ({ machines, allTags }) => {
         </div>
       </fieldset>
 
-      <div className="ak-machines-page__grid">
-        {filtered.map((machine, index) => (
-          <MachineTile
+      <div className="ak-machines-listing__grid">
+        {paged.map((machine, index) => (
+          <MachineCard
             key={machine.id}
             machine={machine}
             index={index}
           />
         ))}
       </div>
+
       {filtered.length === 0 && (
-        <p className="ak-machines-page__empty">No machines found for this tag.</p>
+        <p className="ak-machines-listing__empty">No machines found for this tag.</p>
+      )}
+
+      {totalPages > 1 && (
+        <nav
+          className="ak-machines-listing__pagination"
+          aria-label="Machines pagination"
+        >
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+            <button
+              type="button"
+              key={p}
+              className="bp-btn ak-machines-listing__page-btn"
+              aria-current={p === currentPage ? 'page' : undefined}
+              onClick={() => setPage(p)}
+            >
+              {p}
+            </button>
+          ))}
+        </nav>
       )}
     </>
   )

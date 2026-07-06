@@ -14,6 +14,7 @@ import { seedForBrands } from '@/endpoints/seed/pages/for-brands'
 import { seedForEmergingBrands } from '@/endpoints/seed/pages/for-emerging-brands'
 import { seedForVenues } from '@/endpoints/seed/pages/for-venues'
 import { seedHome } from '@/endpoints/seed/pages/home'
+import { seedMachines } from '@/endpoints/seed/pages/machines'
 import { seedSolutions } from '@/endpoints/seed/pages/solutions'
 import { seedWhereItWorks } from '@/endpoints/seed/pages/where-it-works'
 import { seedWhereItWorksDetail } from '@/endpoints/seed/pages/where-it-works-detail'
@@ -44,6 +45,7 @@ const parts: Record<
     await seedPosts(payload, req)
   },
   solutions: seedSolutions,
+  machines: seedMachines,
   'where-it-works': seedWhereItWorks,
   'where-it-works-detail': seedWhereItWorksDetail,
   'case-studies': seedCaseStudies,

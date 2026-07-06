@@ -7,6 +7,7 @@ import { seedForBrands } from './for-brands'
 import { seedForEmergingBrands } from './for-emerging-brands'
 import { seedForVenues } from './for-venues'
 import { seedHome } from './home'
+import { seedMachines } from './machines'
 import { seedSolutions } from './solutions'
 import { seedWhereItWorks } from './where-it-works'
 import { seedWhereItWorksDetail } from './where-it-works-detail'
@@ -58,6 +59,7 @@ export const seedPages = async (
   const { pageIds, mediaIds } = await seedAudiencePages(payload, req, whoItsForId)
   await seedHome(payload, req, pageIds, postIds, mediaIds)
   await seedSolutions(payload, req)
+  await seedMachines(payload, req)
 
   // Delete ALL children of where-it-works before touching the parent so Nested Docs never
   // re-saves a stale mediumImpact child that has no hero.media.
