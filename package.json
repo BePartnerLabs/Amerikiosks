@@ -27,6 +27,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@img/sharp-linux-x64": "^0.35.3",
     "@payloadcms/admin-bar": "3.85.1",
     "@payloadcms/db-postgres": "3.85.1",
     "@payloadcms/live-preview-react": "3.85.1",
