@@ -14,7 +14,7 @@ A new Figma reference (`Machine detail (1).png`) shows a different page: a stati
 2. Redesign the hero: static (non-scroll-linked) eyebrow/title/subtitle/buttons block, followed by the existing scroll-scale image treatment applied only to the image (not the text).
 3. Replace `SpecRow`/`FeatureRow` with new `Highlights` and `Capabilities` sections matching the new fields.
 4. Add a `Dimensions` section rendering the labeled technical diagrams.
-5. Reuse existing patterns for "explore more models" (`MachinesListing`/`FormatsGrid`-style) and the bottom CTA banner (existing `cta` block pattern) — no new components needed there.
+5. Add "explore more models" and a bottom CTA banner to the page — checking the current `page.tsx`, neither section exists there today (an earlier draft of this spec incorrectly assumed they did). Both are new additions, built from existing pieces: "explore more models" reuses `MachineCard` (from `src/blocks/MachinesListing/MachineCard.tsx`) to render other machines; the bottom banner reuses the existing `CallToActionBlock` component (`src/blocks/CallToAction/Component.tsx`), rendered directly with the machine's name interpolated into the heading and its `cta` field for the link — the same component the `/machines` listing page uses via the Payload blocks system, just invoked directly here since this page is a hardcoded route, not a CMS blocks-driven `Pages` document.
 
 ## Out of scope
 
@@ -257,7 +257,11 @@ Replace the `machine.specs`/`machine.features` conditional blocks with:
 )}
 ```
 
-The "explore more models" section and bottom CTA banner sections of `page.tsx` are unchanged by this spec (they already exist and don't depend on any of the fields being removed/added).
+### `RelatedMachines.tsx` and the bottom CTA banner
+
+`RelatedMachines.tsx` (new) fetches up to 3 other published machines (excluding the current one, `payload.find` with `where: { slug: { not_equals: slug } }`, `limit: 3`) and renders them with the existing `MachineCard` component (`src/blocks/MachinesListing/MachineCard.tsx`) in a grid — reusing that card's exact markup/styling rather than inventing a new one.
+
+The bottom CTA banner renders `CallToActionBlock` (`src/blocks/CallToAction/Component.tsx`) directly in `page.tsx`, with a `richText` heading built at render time (e.g. "Ready to place {machine.name} in your location?") and a link built from `machine.cta` (falling back to a default "Contact Sales" / `/contact` when empty, matching the hero's existing fallback pattern).
 
 ## Testing
 
