@@ -69,8 +69,15 @@ const nextConfig: NextConfig = {
   // IS present in node_modules after install, but output-file-tracing doesn't
   // copy it into the deployed function bundle — marking it external alone
   // doesn't fix a missing-file problem. Force-include it explicitly.
+  // Scoped to linux-x64 only (Vercel's Lambda runtime) — including all of
+  // @img/** pulls in every platform's binaries (darwin, arm64, arm, ppc64,
+  // s390x, riscv64, ...) and blows past the 250MB function size limit.
   outputFileTracingIncludes: {
-    '/**': ['./node_modules/sharp/**', './node_modules/@img/**'],
+    '/**': [
+      './node_modules/sharp/**',
+      './node_modules/@img/sharp-linux-x64/**',
+      './node_modules/@img/sharp-libvips-linux-x64/**',
+    ],
   },
   turbopack: {
     root: path.resolve(dirname),
