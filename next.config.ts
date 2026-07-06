@@ -65,18 +65,22 @@ const nextConfig: NextConfig = {
   // at runtime on Vercel even though the build succeeds. Marking it external
   // keeps it resolved normally from node_modules instead of traced/bundled.
   serverExternalPackages: ['sharp'],
-  // Confirmed via Vercel runtime logs: the file (e.g. libvips-cpp.so.8.18.3)
-  // IS present in node_modules after install, but output-file-tracing doesn't
-  // copy it into the deployed function bundle — marking it external alone
-  // doesn't fix a missing-file problem. Force-include it explicitly.
-  // Scoped to linux-x64 only (Vercel's Lambda runtime) — including all of
-  // @img/** pulls in every platform's binaries (darwin, arm64, arm, ppc64,
-  // s390x, riscv64, ...) and blows past the 250MB function size limit.
+  // Confirmed via Vercel runtime logs: libvips-cpp.so.8.18.3 IS present in
+  // node_modules after install, but Next's automatic output-file-tracing
+  // misses it because sharp's compiled addon loads it via a low-level
+  // dlopen() call, not a static `require()` — tracing only follows the
+  // latter. sharp/@img/sharp-linux-x64 itself don't need this override;
+  // those ARE `require()`-reachable and already traced correctly (that's
+  // why the error only ever named this one specific .so file).
+  // Must glob the real file inside node_modules/.pnpm/** directly, not
+  // through node_modules/@img/*/lib/* — that path is a symlink into the
+  // pnpm store, and Vercel's function packager rejects symlinked
+  // directories for manually-included paths ("invalid deployment package
+  // ... framework produces files in symlinked directories") even though
+  // its own automatic tracing dereferences symlinks fine.
   outputFileTracingIncludes: {
     '/**': [
-      './node_modules/sharp/**',
-      './node_modules/@img/sharp-linux-x64/**',
-      './node_modules/@img/sharp-libvips-linux-x64/**',
+      './node_modules/.pnpm/@img+sharp-libvips-linux-x64@*/node_modules/@img/sharp-libvips-linux-x64/lib/**',
     ],
   },
   turbopack: {
