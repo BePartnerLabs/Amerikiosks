@@ -34,6 +34,12 @@ export const Machines: CollectionConfig = {
       admin: { description: 'Short label shown on cards, e.g. "Full-size branded machine"' },
     },
     {
+      name: 'heroEyebrow',
+      type: 'text',
+      localized: true,
+      admin: { description: 'Small kicker above the hero title, e.g. "NEXT GENERATION"' },
+    },
+    {
       name: 'image',
       type: 'upload',
       relationTo: 'media',
@@ -59,28 +65,86 @@ export const Machines: CollectionConfig = {
       fields: [{ name: 'image', type: 'upload', relationTo: 'media', required: true }],
     },
     {
-      name: 'specs',
-      type: 'array',
-      fields: [
-        { name: 'label', type: 'text', required: true, localized: true },
-        { name: 'value', type: 'text', required: true, localized: true },
-      ],
-    },
-    {
-      name: 'features',
-      type: 'array',
-      fields: [
-        { name: 'heading', type: 'text', required: true, localized: true },
-        { name: 'body', type: 'textarea', localized: true },
-        { name: 'image', type: 'upload', relationTo: 'media', required: true },
-      ],
-    },
-    {
       name: 'cta',
       type: 'group',
       fields: [
         { name: 'label', type: 'text', localized: true, defaultValue: 'Request a quote' },
         { name: 'url', type: 'text' },
+      ],
+    },
+    {
+      name: 'brochure',
+      type: 'upload',
+      relationTo: 'media',
+      admin: {
+        description:
+          'Optional downloadable brochure (PDF). Hides the "Download brochure" hero button when empty.',
+      },
+    },
+    {
+      name: 'highlights',
+      type: 'group',
+      fields: [
+        {
+          name: 'eyebrow',
+          type: 'text',
+          localized: true,
+          admin: { description: 'e.g. "WHY GAMMA 13"' },
+        },
+        {
+          name: 'heading',
+          type: 'text',
+          localized: true,
+          admin: { description: 'e.g. "Engineered for performance. Designed for any location."' },
+        },
+        {
+          name: 'items',
+          type: 'array',
+          fields: [
+            {
+              name: 'icon',
+              type: 'text',
+              admin: { description: 'Material Symbols icon name, e.g. "inventory_2"' },
+            },
+            { name: 'title', type: 'text', required: true, localized: true },
+            { name: 'description', type: 'text', localized: true },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'capabilities',
+      type: 'group',
+      fields: [
+        {
+          name: 'heading',
+          type: 'text',
+          localized: true,
+          admin: { description: 'e.g. "Built for scale. Designed for ease."' },
+        },
+        {
+          name: 'items',
+          type: 'array',
+          fields: [{ name: 'text', type: 'text', required: true, localized: true }],
+        },
+      ],
+    },
+    {
+      name: 'dimensions',
+      type: 'group',
+      fields: [
+        { name: 'height', type: 'text', admin: { description: 'e.g. 92"' } },
+        { name: 'width', type: 'text', admin: { description: 'e.g. 74"' } },
+        { name: 'depth', type: 'text', admin: { description: 'e.g. 40"' } },
+      ],
+    },
+    {
+      name: 'dimensionDiagrams',
+      type: 'array',
+      admin: { description: 'Labeled technical line-drawings (e.g. front, side, isometric views)' },
+      fields: [
+        { name: 'image', type: 'upload', relationTo: 'media', required: true },
+        { name: 'label', type: 'text', localized: true },
       ],
     },
     {
@@ -100,12 +164,6 @@ export const Machines: CollectionConfig = {
         condition: (_, siblingData) => Boolean(siblingData?.useRotationHero),
       },
       fields: [{ name: 'image', type: 'upload', relationTo: 'media', required: true }],
-    },
-    {
-      name: 'layout',
-      type: 'blocks',
-      localized: true,
-      blocks: [],
     },
   ],
 }

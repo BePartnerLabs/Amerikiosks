@@ -7,10 +7,7 @@ import { getLocale } from 'next-intl/server'
 import { getPayload } from 'payload'
 import { MachineHero } from '@/components/MachineHero'
 import type { Machine, Media } from '@/payload-types'
-import { getMediaUrl } from '@/utilities/getMediaUrl'
-import { FeatureRow } from './FeatureRow'
 import './machine-detail.css'
-import { SpecRow } from './SpecRow'
 
 type Props = {
   params: Promise<{ slug: string }>
@@ -69,40 +66,6 @@ export default async function MachineDetailPage({ params }: Props) {
           </div>
         </div>
       </div>
-
-      {machine.specs && machine.specs.length > 0 && (
-        <section className="ak-machine-detail__specs">
-          <div className="bp-content-grid">
-            <div className="content ak-machine-detail__specs-inner">
-              {machine.specs.map((spec, i) => (
-                <SpecRow
-                  key={spec.id ?? i}
-                  label={spec.label}
-                  value={spec.value}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {machine.features && machine.features.length > 0 && (
-        <section className="ak-machine-detail__features">
-          {machine.features.map((feature, i) => {
-            const image = typeof feature.image === 'object' ? (feature.image as Media) : null
-            return (
-              <FeatureRow
-                key={feature.id ?? i}
-                heading={feature.heading}
-                body={feature.body}
-                imageUrl={getMediaUrl(image?.url)}
-                imageAlt={feature.heading}
-                reverse={i % 2 === 1}
-              />
-            )
-          })}
-        </section>
-      )}
 
       {machine.gallery && machine.gallery.length > 0 && (
         <section className="ak-machine-detail__gallery">

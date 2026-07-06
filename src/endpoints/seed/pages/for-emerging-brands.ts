@@ -190,7 +190,6 @@ export const seedForEmergingBrands = async (
           tagline: m.tagline,
           image: image.id,
           tags: [{ label: m.tag }],
-          layout: [],
           _status: 'published',
         },
         req: { ...req, locale: 'en' } as PayloadRequest,

@@ -187,7 +187,6 @@ export const seedForAgencies = async (payload: Payload, req: PayloadRequest): Pr
           tagline: m.tagline,
           image: image.id,
           tags: [{ label: m.tag }],
-          layout: [],
           _status: 'published',
         },
         req: { ...req, locale: 'en' } as PayloadRequest,

@@ -1067,6 +1067,10 @@ export interface Machine {
    * Short label shown on cards, e.g. "Full-size branded machine"
    */
   tagline?: string | null;
+  /**
+   * Small kicker above the hero title, e.g. "NEXT GENERATION"
+   */
+  heroEyebrow?: string | null;
   image: number | Media;
   /**
    * e.g. full-size, compact, campaign, premium — used for block-level filtering
@@ -1083,25 +1087,71 @@ export interface Machine {
         id?: string | null;
       }[]
     | null;
-  specs?:
-    | {
-        label: string;
-        value: string;
-        id?: string | null;
-      }[]
-    | null;
-  features?:
-    | {
-        heading: string;
-        body?: string | null;
-        image: number | Media;
-        id?: string | null;
-      }[]
-    | null;
   cta?: {
     label?: string | null;
     url?: string | null;
   };
+  /**
+   * Optional downloadable brochure (PDF). Hides the "Download brochure" hero button when empty.
+   */
+  brochure?: (number | null) | Media;
+  highlights?: {
+    /**
+     * e.g. "WHY GAMMA 13"
+     */
+    eyebrow?: string | null;
+    /**
+     * e.g. "Engineered for performance. Designed for any location."
+     */
+    heading?: string | null;
+    items?:
+      | {
+          /**
+           * Material Symbols icon name, e.g. "inventory_2"
+           */
+          icon?: string | null;
+          title: string;
+          description?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  capabilities?: {
+    /**
+     * e.g. "Built for scale. Designed for ease."
+     */
+    heading?: string | null;
+    items?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  dimensions?: {
+    /**
+     * e.g. 92"
+     */
+    height?: string | null;
+    /**
+     * e.g. 74"
+     */
+    width?: string | null;
+    /**
+     * e.g. 40"
+     */
+    depth?: string | null;
+  };
+  /**
+   * Labeled technical line-drawings (e.g. front, side, isometric views)
+   */
+  dimensionDiagrams?:
+    | {
+        image: number | Media;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   /**
    * Show the full rotation-scrub hero instead of the default zoom+fade hero.
    */
@@ -1115,7 +1165,6 @@ export interface Machine {
         id?: string | null;
       }[]
     | null;
-  layout?: unknown[] | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -2206,6 +2255,7 @@ export interface MachinesSelect<T extends boolean = true> {
   generateSlug?: T;
   slug?: T;
   tagline?: T;
+  heroEyebrow?: T;
   image?: T;
   tags?:
     | T
@@ -2219,26 +2269,51 @@ export interface MachinesSelect<T extends boolean = true> {
         image?: T;
         id?: T;
       };
-  specs?:
-    | T
-    | {
-        label?: T;
-        value?: T;
-        id?: T;
-      };
-  features?:
-    | T
-    | {
-        heading?: T;
-        body?: T;
-        image?: T;
-        id?: T;
-      };
   cta?:
     | T
     | {
         label?: T;
         url?: T;
+      };
+  brochure?: T;
+  highlights?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        items?:
+          | T
+          | {
+              icon?: T;
+              title?: T;
+              description?: T;
+              id?: T;
+            };
+      };
+  capabilities?:
+    | T
+    | {
+        heading?: T;
+        items?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+      };
+  dimensions?:
+    | T
+    | {
+        height?: T;
+        width?: T;
+        depth?: T;
+      };
+  dimensionDiagrams?:
+    | T
+    | {
+        image?: T;
+        label?: T;
+        id?: T;
       };
   useRotationHero?: T;
   rotationFrames?:
@@ -2247,7 +2322,6 @@ export interface MachinesSelect<T extends boolean = true> {
         image?: T;
         id?: T;
       };
-  layout?: T | {};
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
