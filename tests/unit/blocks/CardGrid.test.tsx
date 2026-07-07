@@ -106,7 +106,7 @@ describe('CardGridBlock', () => {
       <CardGridBlock
         {...base}
         variant="icon"
-        items={[{ id: 'i1', title: 'Hotels', icon: '🏨', body: null }]}
+        items={[{ id: 'i1', title: 'Hotels', icon: 'hotel', body: null }]}
       />,
     )
     expect(container.querySelector('.ak-card-grid__card-icon-wrap')).not.toBeNull()

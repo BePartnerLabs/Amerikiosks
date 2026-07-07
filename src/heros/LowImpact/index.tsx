@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type React from 'react'
+import { Icon } from '@/components/Icon'
 import { CMSLink } from '@/components/Link'
 import RichText from '@/components/RichText'
 import type { Page } from '@/payload-types'
@@ -60,12 +61,7 @@ export const LowImpactHero: React.FC<LowImpactHeroType> = ({
                 href={crumbs[0].url ?? '/'}
                 aria-label="Home"
               >
-                <span
-                  className="material-symbols-outlined"
-                  aria-hidden="true"
-                >
-                  home
-                </span>
+                <Icon name="home" />
               </Link>
               {breadcrumbTrail && <span> / {breadcrumbTrail}</span>}
             </p>

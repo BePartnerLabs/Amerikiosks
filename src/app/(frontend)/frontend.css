@@ -1,5 +1,4 @@
 /* frontend.css — global reset + DS utilities. Design tokens live in tokens.css. */
-/* Material Symbols font is loaded via <link> in layout.tsx with display=optional */
 @import "./tokens.css";
 
 /* Cross-document view transitions (opt-in per page via MPA navigation) */
@@ -19,27 +18,6 @@ body {
 img {
   max-width: 100%;
   display: block;
-}
-
-@layer base {
-  .material-symbols-outlined {
-    font-family: "Material Symbols Outlined", sans-serif;
-    font-weight: normal;
-    font-style: normal;
-    font-size: 24px;
-    line-height: 1;
-    letter-spacing: normal;
-    text-transform: none;
-    display: inline-block;
-    white-space: nowrap;
-    direction: ltr;
-    font-variation-settings:
-      "FILL" 0,
-      "wght" 300,
-      "GRAD" 0,
-      "opsz" 24;
-    -webkit-font-smoothing: antialiased;
-  }
 }
 
 /* ─── BPL DS tokens ────────────────────────────────────── */

@@ -112,7 +112,7 @@
   --ak-dark-fg-muted: var(--ak-text-on-inverse-muted);
   --ak-dark-border: var(--ak-border-on-inverse);
   --ak-card-overlay: var(--md-semantic-surface-background-overlay-default, hsla(0, 0%, 0%, 0.6));
-  --ak-card-shadow-md: 0 2px 12px hsla(0, 0%, 0%, 0.15);
+  --ak-card-shadow-md: 0 4px 12px 0 hsla(0, 0%, 0%, 0.08);
 
   /* Surface / border / text */
   --ak-color-dark: var(--brand-color-palette-navy-900);

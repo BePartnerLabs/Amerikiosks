@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link'
 import type React from 'react'
+import { Icon } from '@/components/Icon'
 import { Media } from '@/components/Media'
 import type { Insight, Media as MediaType } from '@/payload-types'
 import useClickableCard from '@/utilities/useClickableCard'
@@ -118,7 +119,11 @@ const ManualCard: React.FC<CardProps> = (props) => {
           className="ak-card-grid__card-icon-wrap"
           aria-hidden="true"
         >
-          <span className="ak-card-grid__card-icon material-symbols-outlined">{icon}</span>
+          <Icon
+            name={icon}
+            className="ak-card-grid__card-icon"
+            size={40}
+          />
         </span>
       )}
       {eyebrow && variant === 'pillar' && <p className="ak-card-grid__card-eyebrow">{eyebrow}</p>}
@@ -139,12 +144,11 @@ const ManualCard: React.FC<CardProps> = (props) => {
           data-ga-label={titleProp ?? undefined}
         >
           {link.label}
-          <span
-            className="ak-card-grid__card-link-arrow material-symbols-outlined"
-            aria-hidden="true"
-          >
-            arrow_forward_ios
-          </span>
+          <Icon
+            name="arrow_forward_ios"
+            className="ak-card-grid__card-link-arrow"
+            size={16}
+          />
         </Link>
       )}
     </div>

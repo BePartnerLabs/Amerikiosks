@@ -1,3 +1,4 @@
+import { Icon } from '@/components/Icon'
 import type { Machine } from '@/payload-types'
 
 type Props = {
@@ -25,12 +26,10 @@ export const Highlights: React.FC<Props> = ({ highlights }) => {
                 className="ak-machine-detail__highlight-card"
               >
                 {item.icon && (
-                  <span
-                    className="material-symbols-outlined ak-machine-detail__highlight-icon"
-                    aria-hidden="true"
-                  >
-                    {item.icon}
-                  </span>
+                  <Icon
+                    name={item.icon}
+                    className="ak-machine-detail__highlight-icon"
+                  />
                 )}
                 <p className="ak-machine-detail__highlight-title">{item.title}</p>
                 {item.description && (

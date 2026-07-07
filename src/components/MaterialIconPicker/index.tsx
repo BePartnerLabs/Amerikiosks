@@ -4,37 +4,13 @@ import { useField } from '@payloadcms/ui'
 import type { TextFieldClientProps } from 'payload'
 import type React from 'react'
 import { useCallback, useState } from 'react'
+import { Icon } from '@/components/Icon'
+import { iconPaths } from '@/components/Icon/icons'
 
-const COMMON_ICONS = [
-  'storefront',
-  'handshake',
-  'campaign',
-  'rocket_launch',
-  'flight_takeoff',
-  'theaters',
-  'hotel',
-  'local_mall',
-  'apartment',
-  'groups',
-  'diversity_3',
-  'hub',
-  'trending_up',
-  'star',
-  'bolt',
-  'verified',
-  'place',
-  'map',
-  'explore',
-  'travel_explore',
-  'sports_esports',
-  'stadium',
-  'museum',
-  'casino',
-  'shopping_bag',
-  'school',
-  'business_center',
-  'domain',
-]
+// Curated for this industry (retail, hospitality, travel, venues, campaigns) —
+// same set the frontend ships as SVG via src/components/Icon. Add an icon by
+// adding it to iconPaths first (see icons.ts header), then list its name here.
+const COMMON_ICONS = Object.keys(iconPaths).filter((name) => name !== 'arrow_forward_ios')
 
 export const MaterialIconPicker: React.FC<TextFieldClientProps> = ({ field, path }) => {
   const { value, setValue } = useField<string>({ path: path as string })
@@ -66,12 +42,10 @@ export const MaterialIconPicker: React.FC<TextFieldClientProps> = ({ field, path
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         {value && (
-          <span
-            className="material-symbols-outlined"
-            style={{ fontSize: 28 }}
-          >
-            {value}
-          </span>
+          <Icon
+            name={value}
+            size={28}
+          />
         )}
         <input
           id={inputId}
@@ -154,12 +128,10 @@ export const MaterialIconPicker: React.FC<TextFieldClientProps> = ({ field, path
                   color: '#555',
                 }}
               >
-                <span
-                  className="material-symbols-outlined"
-                  style={{ fontSize: 22 }}
-                >
-                  {name}
-                </span>
+                <Icon
+                  name={name}
+                  size={22}
+                />
                 <span
                   style={{
                     overflow: 'hidden',

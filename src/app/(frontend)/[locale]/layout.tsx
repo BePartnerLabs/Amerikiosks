@@ -14,6 +14,7 @@ import { Footer } from '@/Footer/Component'
 import { Header } from '@/Header/Component'
 import { routing } from '@/i18n/routing'
 import { Providers } from '@/providers'
+import { generateOrganizationJsonLd, generateWebsiteJsonLd } from '@/utilities/generateJsonLd'
 import { getCachedGlobal } from '@/utilities/getGlobals'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { cn } from '@/utilities/ui'
@@ -45,7 +46,18 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   const messages = await getMessages()
   const settings = await getCachedGlobal('settings', 1)()
+  const footer = await getCachedGlobal('footer', 1)()
   const gaId = (settings as { googleAnalyticsId?: string } | null)?.googleAnalyticsId
+  const brandDescription = (footer as { brandDescription?: string } | null)?.brandDescription
+  const contactEmail = (footer as { contactEmail?: string } | null)?.contactEmail
+
+  const serverUrl = getServerSideURL()
+  const organizationJsonLd = generateOrganizationJsonLd({
+    serverUrl,
+    brandDescription,
+    contactEmail,
+  })
+  const websiteJsonLd = generateWebsiteJsonLd({ serverUrl })
 
   return (
     <html
@@ -54,6 +66,16 @@ export default async function LocaleLayout({ children, params }: Props) {
       suppressHydrationWarning
     >
       <head>
+        <script
+          type="application/ld+json"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD is server-generated structured data, not user input
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD is server-generated structured data, not user input
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
         <link
           href="/favicon.ico"
           rel="icon"
@@ -81,21 +103,6 @@ export default async function LocaleLayout({ children, params }: Props) {
             `}</Script>
           </>
         )}
-        {/* Material Symbols — preconnect + non-blocking load, display=optional prevents FOUT */}
-        <link
-          rel="preconnect"
-          href="https://fonts.googleapis.com"
-        />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="stylesheet"
-          // biome-ignore lint/suspicious/useGoogleFontDisplay: material symbols font needs display=block to prevent FOUT, and is not user-generated content
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block"
-        />
       </head>
       <body>
         <a
