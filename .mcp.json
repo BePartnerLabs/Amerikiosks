@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "Payload": {
+      "type": "http",
+      "url": "http://127.0.0.1:3000/api/mcp",
+      "headers": {
+        "Authorization": "Bearer 415a9d9a-de1c-4270-8007-f0244f2a8979"
+      }
+    }
+  }
+}

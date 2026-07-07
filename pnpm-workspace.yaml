@@ -1,0 +1,28 @@
+supportedArchitectures:
+  os:
+    - darwin
+    - linux
+  cpu:
+    - arm64
+    - x64
+legacyPeerDeps: true
+enablePrePostScripts: true
+allowBuilds:
+  sharp: true
+  esbuild: true
+  unrs-resolver: true
+  '@parcel/watcher': true
+  '@swc/core': true
+minimumReleaseAgeExclude:
+  - '@vercel/next@4.20.3'
+  - '@vercel/python@6.48.0'
+  - '@vitest/coverage-v8@4.1.10'
+  - '@vitest/expect@4.1.10'
+  - '@vitest/mocker@4.1.10'
+  - '@vitest/pretty-format@4.1.10'
+  - '@vitest/runner@4.1.10'
+  - '@vitest/snapshot@4.1.10'
+  - '@vitest/spy@4.1.10'
+  - '@vitest/utils@4.1.10'
+  - vercel@54.21.0
+  - vitest@4.1.10
