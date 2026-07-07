@@ -13,6 +13,7 @@ import * as migration_20260623_021431_add_card_grid_item_media from './20260623_
 import * as migration_20260705_225615_add_simple_hero_type from './20260705_225615_add_simple_hero_type';
 import * as migration_20260706_025859_remove_specs_features_layout_add_hero_fields from './20260706_025859_remove_specs_features_layout_add_hero_fields';
 import * as migration_20260706_212143_add_mcp_plugin from './20260706_212143_add_mcp_plugin';
+import * as migration_20260707_175738_add_machines_projects_seo_meta from './20260707_175738_add_machines_projects_seo_meta';
 
 export const migrations = [
   {
@@ -88,6 +89,11 @@ export const migrations = [
   {
     up: migration_20260706_212143_add_mcp_plugin.up,
     down: migration_20260706_212143_add_mcp_plugin.down,
-    name: '20260706_212143_add_mcp_plugin'
+    name: '20260706_212143_add_mcp_plugin',
+  },
+  {
+    up: migration_20260707_175738_add_machines_projects_seo_meta.up,
+    down: migration_20260707_175738_add_machines_projects_seo_meta.down,
+    name: '20260707_175738_add_machines_projects_seo_meta'
   },
 ];

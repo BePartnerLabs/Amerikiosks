@@ -7,6 +7,7 @@ import { getPayload } from 'payload'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { MachineHero } from '@/components/MachineHero'
 import type { Machine, Media } from '@/payload-types'
+import { generateMeta } from '@/utilities/generateMeta'
 import { Capabilities } from './Capabilities'
 import { Dimensions } from './Dimensions'
 import { Highlights } from './Highlights'
@@ -35,10 +36,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const locale = await getLocale()
   const machine = await getMachine(slug, locale as 'en' | 'es')
   if (!machine) return {}
-  return {
-    title: `${machine.name} — Amerikiosks`,
-    description: machine.tagline ?? undefined,
-  }
+  return generateMeta({
+    doc: {
+      ...machine,
+      meta: {
+        title: machine.meta?.title ?? machine.name,
+        description: machine.meta?.description ?? machine.tagline,
+        image: machine.meta?.image ?? machine.image,
+      },
+    },
+  })
 }
 
 export default async function MachineDetailPage({ params }: Props) {

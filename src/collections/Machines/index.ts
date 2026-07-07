@@ -1,3 +1,10 @@
+import {
+  MetaDescriptionField,
+  MetaImageField,
+  MetaTitleField,
+  OverviewField,
+  PreviewField,
+} from '@payloadcms/plugin-seo/fields'
 import type { CollectionConfig } from 'payload'
 import { slugField } from 'payload'
 import { anyone } from '../../access/anyone'
@@ -164,6 +171,30 @@ export const Machines: CollectionConfig = {
         condition: (_, siblingData) => Boolean(siblingData?.useRotationHero),
       },
       fields: [{ name: 'image', type: 'upload', relationTo: 'media', required: true }],
+    },
+    {
+      name: 'meta',
+      label: 'SEO',
+      type: 'group',
+      fields: [
+        OverviewField({
+          titlePath: 'meta.title',
+          descriptionPath: 'meta.description',
+          imagePath: 'meta.image',
+        }),
+        MetaTitleField({
+          hasGenerateFn: true,
+        }),
+        MetaImageField({
+          relationTo: 'media',
+        }),
+        MetaDescriptionField({}),
+        PreviewField({
+          hasGenerateFn: true,
+          titlePath: 'meta.title',
+          descriptionPath: 'meta.description',
+        }),
+      ],
     },
   ],
 }
