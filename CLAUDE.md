@@ -21,8 +21,8 @@ Actualmente maneja solo i18n (`next-intl`). El matcher excluye `/admin`, `/api`,
 pnpm dev                    # Start dev server
 pnpm build                  # Production build (also runs next-sitemap postbuild)
 pnpm start                  # Serve production build
-pnpm lint                   # ESLint
-pnpm lint:fix               # ESLint with auto-fix
+pnpm lint                   # biome
+pnpm lint:fix               # biome with auto-fix
 pnpm generate:types         # Regenerate payload-types.ts after schema changes
 pnpm generate:importmap     # Regenerate admin import map after adding components
 pnpm test:int               # Vitest integration tests
