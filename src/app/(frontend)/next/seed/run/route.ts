@@ -75,40 +75,46 @@ export async function POST(req: Request): Promise<Response> {
     // Delete existing seed media records via Payload so the storage adapter
     // (Vercel Blob or local filesystem) cleans up the files too. This prevents
     // "blob already exists" errors when re-seeding after a DB reset.
-    const seedStems = [
-      'hero-for-agencies',
-      'hero-for-brands',
-      'hero-for-venues',
-      'hero-home',
-      'image-hero1',
-      'image-post1',
-      'image-post2',
-      'image-post3',
-      'image-post4',
-      'partner-cvs',
-      'partner-hilton',
-      'partner-holiday-inn',
-      'partner-kroger',
-      'partner-mia',
-      'partner-royal-caribbean',
-      'machine-full-size',
-      'machine-campaign',
-      'machine-compact',
-      'machine-premium',
-      'project-fan-stand',
-      'project-airport-retail',
-    ]
-    // 1. Delete existing seed media records via Payload (adapter removes blobs too)
-    const { docs: seedMedia } = await payload.find({
-      collection: 'media',
-      where: { or: seedStems.map((stem) => ({ filename: { contains: stem } })) },
-      limit: 200,
-    })
-    for (const doc of seedMedia) {
-      try {
-        await payload.delete({ collection: 'media', id: doc.id, overrideAccess: true })
-      } catch {
-        // record may be referenced by pages; blob will be cleaned below
+    // Scoped to a full "Seed all" run only (no `part`) — running this on every
+    // individual part re-run wipes media that OTHER parts just uploaded, since
+    // stems aren't scoped per part. Individual parts already re-upload
+    // idempotently by filename via uploadMedia(), so no cleanup is needed there.
+    if (!part) {
+      const seedStems = [
+        'hero-for-agencies',
+        'hero-for-brands',
+        'hero-for-venues',
+        'hero-home',
+        'image-hero1',
+        'image-post1',
+        'image-post2',
+        'image-post3',
+        'image-post4',
+        'partner-cvs',
+        'partner-hilton',
+        'partner-holiday-inn',
+        'partner-kroger',
+        'partner-mia',
+        'partner-royal-caribbean',
+        'machine-full-size',
+        'machine-campaign',
+        'machine-compact',
+        'machine-premium',
+        'project-fan-stand',
+        'project-airport-retail',
+      ]
+      // 1. Delete existing seed media records via Payload (adapter removes blobs too)
+      const { docs: seedMedia } = await payload.find({
+        collection: 'media',
+        where: { or: seedStems.map((stem) => ({ filename: { contains: stem } })) },
+        limit: 200,
+      })
+      for (const doc of seedMedia) {
+        try {
+          await payload.delete({ collection: 'media', id: doc.id, overrideAccess: true })
+        } catch {
+          // record may be referenced by pages; blob will be cleaned below
+        }
       }
     }
     if (part) {
