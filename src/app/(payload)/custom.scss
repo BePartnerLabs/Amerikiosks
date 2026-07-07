@@ -27,8 +27,11 @@
   // Brand tokens available inside the editor
   --ak-accent: hsla(347, 76%, 48%, 1); // coral-600
   --ak-font-base: "Poppins", sans-serif;
+  --theme-base-800: var(--theme-elevation-800);
 }
-
+.icon{
+  color: var(--theme-base-800);
+}
 // ─── Rich text editor preview ─────────────────────────────────────────────────
 // Mirrors frontend typography so content looks the same in admin as on the site.
 .ContentEditable__root {

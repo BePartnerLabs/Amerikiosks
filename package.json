@@ -64,7 +64,8 @@
     "react-dom": "19.2.7",
     "react-hook-form": "7.81.0",
     "sharp": "0.35.3",
-    "tailwind-merge": "^3.6.0"
+    "tailwind-merge": "^3.6.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.2",
@@ -103,23 +104,7 @@
   },
   "engines": {
     "node": ">=24.0.0",
-    "pnpm": "^9 || ^10"
+    "pnpm": "^10 || ^11"
   },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "sharp",
-      "esbuild",
-      "unrs-resolver"
-    ],
-    "supportedArchitectures": {
-      "os": [
-        "darwin",
-        "linux"
-      ],
-      "cpu": [
-        "arm64",
-        "x64"
-      ]
-    }
-  }
+  "packageManager": "pnpm@11.10.0+sha512.0b7f8b98060031904c017e3a41eb187a16d40eeb829b95c4f8cb03681761fc4ab53dd219115b9b447f4dce1a05a214764461e7d3703392a9f32f9511ce8c86c8"
 }

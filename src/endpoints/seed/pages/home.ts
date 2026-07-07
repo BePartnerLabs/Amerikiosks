@@ -75,20 +75,21 @@ export const seedHome = async (
     ),
   ) as Record<(typeof audienceSlugs)[number], { pageId: number; imageId: number }>
 
-  const [heroImage, heroVideo] = await Promise.all([
-    uploadMedia(
-      payload,
-      req,
-      path.join(process.cwd(), 'src/endpoints/seed/assets/hero-home.png'),
-      'Amerikiosks kiosk in an airport lounge',
-    ),
-    uploadMedia(
-      payload,
-      req,
-      path.join(process.cwd(), 'src/endpoints/seed/assets/hero-home.mp4'),
-      'Amerikiosks hero background video',
-    ),
-  ])
+  // Uploaded sequentially, not via Promise.all: concurrent uploads of the
+  // image (which fans out into 7 derivative sizes) and the video against the
+  // S3 storage adapter silently drop the image upload under local MinIO.
+  const heroImage = await uploadMedia(
+    payload,
+    req,
+    path.join(process.cwd(), 'src/endpoints/seed/assets/hero-home.png'),
+    'Amerikiosks kiosk in an airport lounge',
+  )
+  const heroVideo = await uploadMedia(
+    payload,
+    req,
+    path.join(process.cwd(), 'src/endpoints/seed/assets/hero-home.mp4'),
+    'Amerikiosks hero background video',
+  )
 
   const heroData = {
     type: 'highImpact' as const,
