@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type React from 'react'
+import { Icon } from '@/components/Icon'
 import { CMSLink } from '@/components/Link'
 import { Media } from '@/components/Media'
 import RichText from '@/components/RichText'
@@ -58,12 +59,7 @@ export const MediumImpactHero: React.FC<Props> = ({
                   href={crumbs[0].url ?? '/'}
                   aria-label="Home"
                 >
-                  <span
-                    className="material-symbols-outlined"
-                    aria-hidden="true"
-                  >
-                    home
-                  </span>
+                  <Icon name="home" />
                 </Link>
                 {breadcrumbTrail && <span> / {breadcrumbTrail}</span>}
               </p>

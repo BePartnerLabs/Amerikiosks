@@ -4,6 +4,7 @@ import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import type React from 'react'
 
+import { Icon } from '@/components/Icon'
 import type { Header } from '@/payload-types'
 import './megamenu.css'
 
@@ -67,7 +68,7 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({ data, id: _id }) => {
                 >
                   {item.icon && (
                     <span className="ak-mega__item-icon">
-                      <span className="material-symbols-outlined">{item.icon}</span>
+                      <Icon name={item.icon} />
                     </span>
                   )}
                   <div className="ak-mega__item-body">

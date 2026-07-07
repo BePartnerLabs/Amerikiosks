@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import React, { useCallback, useEffect, useState } from 'react'
+import { Icon } from '@/components/Icon'
 import type { Header } from '@/payload-types'
 import '../Nav/megamenu.css'
 import './mobile-menu.css'
@@ -233,12 +234,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ data }) => {
                     >
                       {item.icon && (
                         <span className="ak-mega__item-icon">
-                          <span
-                            className="material-symbols-outlined"
-                            aria-hidden="true"
-                          >
-                            {item.icon}
-                          </span>
+                          <Icon name={item.icon} />
                         </span>
                       )}
                       <div className="ak-mega__item-body">

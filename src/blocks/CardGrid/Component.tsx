@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import type React from 'react'
 import { Card } from '@/components/Card'
+import { Icon } from '@/components/Icon'
 import RichText from '@/components/RichText'
 import { SectionHeader } from '@/components/SectionHeader'
 import type { CardGridBlock as CardGridBlockProps, Page } from '@/payload-types'
@@ -101,12 +102,11 @@ export const CardGridBlock: React.FC<CardGridBlockProps> = ({
                 data-ga-event="card_grid_cta_click"
               >
                 {link.label}
-                <span
-                  className="ak-card-grid__cta-btn-arrow material-symbols-outlined"
-                  aria-hidden="true"
-                >
-                  arrow_forward_ios
-                </span>
+                <Icon
+                  name="arrow_forward_ios"
+                  className="ak-card-grid__cta-btn-arrow"
+                  size={16}
+                />
               </Link>
             </div>
           )}

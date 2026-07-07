@@ -71,6 +71,7 @@
     "@biomejs/biome": "^2.5.2",
     "@commitlint/cli": "^21.2.0",
     "@commitlint/config-conventional": "^21.2.0",
+    "@material-symbols/svg-400": "^0.45.5",
     "@playwright/test": "1.61.1",
     "@tailwindcss/postcss": "^4.3.2",
     "@tailwindcss/typography": "^0.5.20",
@@ -100,7 +101,8 @@
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,json,css}": "biome check --write --no-errors-on-unmatched",
-    "*.css": "node scripts/validate-ds-tokens.mjs"
+    "*.css": "node scripts/validate-ds-tokens.mjs",
+    "*.{ts,tsx,jsx}": "node scripts/validate-no-raw-icon-image.mjs"
   },
   "engines": {
     "node": ">=24.0.0",

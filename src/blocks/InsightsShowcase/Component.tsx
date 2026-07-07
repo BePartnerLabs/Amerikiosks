@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { getPayload } from 'payload'
 import type React from 'react'
+import { Icon } from '@/components/Icon'
 import { SectionHeader } from '@/components/SectionHeader'
 import type { InsightsShowcaseBlock as InsightsShowcaseBlockProps, Media } from '@/payload-types'
 import { toSnakeCase } from '@/utilities/toSnakeCase'
@@ -89,12 +90,11 @@ export const InsightsShowcaseBlock: React.FC<InsightsShowcaseBlockProps> = async
                 data-ga-label={featured.title}
               >
                 {t('knowMore')}
-                <span
-                  className="ak-insights-showcase__link-arrow material-symbols-outlined"
-                  aria-hidden="true"
-                >
-                  arrow_forward_ios
-                </span>
+                <Icon
+                  name="arrow_forward_ios"
+                  className="ak-insights-showcase__link-arrow"
+                  size={16}
+                />
               </Link>
             </div>
           </div>
@@ -135,12 +135,11 @@ export const InsightsShowcaseBlock: React.FC<InsightsShowcaseBlockProps> = async
                         data-ga-label={insight.title}
                       >
                         {t('knowMore')}
-                        <span
-                          className="ak-insights-showcase__link-arrow material-symbols-outlined"
-                          aria-hidden="true"
-                        >
-                          arrow_forward_ios
-                        </span>
+                        <Icon
+                          name="arrow_forward_ios"
+                          className="ak-insights-showcase__link-arrow"
+                          size={16}
+                        />
                       </Link>
                     </div>
                   </div>

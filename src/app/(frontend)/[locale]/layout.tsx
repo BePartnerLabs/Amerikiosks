@@ -103,21 +103,6 @@ export default async function LocaleLayout({ children, params }: Props) {
             `}</Script>
           </>
         )}
-        {/* Material Symbols — preconnect + non-blocking load, display=optional prevents FOUT */}
-        <link
-          rel="preconnect"
-          href="https://fonts.googleapis.com"
-        />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="stylesheet"
-          // biome-ignore lint/suspicious/useGoogleFontDisplay: material symbols font needs display=block to prevent FOUT, and is not user-generated content
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block"
-        />
       </head>
       <body>
         <a

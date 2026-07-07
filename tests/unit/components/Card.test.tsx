@@ -82,14 +82,14 @@ describe('Card (manual variants)', () => {
   afterEach(cleanup)
 
   it('renders an icon card with its icon and title', () => {
-    render(
+    const { container } = render(
       <Card
         variant="icon"
         icon="inventory_2"
         title="High Capacity"
       />,
     )
-    expect(screen.getByText('inventory_2')).toBeInTheDocument()
+    expect(container.querySelector('.ak-card-grid__card-icon')).not.toBeNull()
     expect(screen.getByText('High Capacity')).toBeInTheDocument()
   })
 
