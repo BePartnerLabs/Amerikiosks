@@ -10,6 +10,7 @@ import { PayloadRedirects } from '@/components/PayloadRedirects'
 import RichText from '@/components/RichText'
 import { routing } from '@/i18n/routing'
 import type { Media } from '@/payload-types'
+import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 
 export async function generateStaticParams() {
@@ -102,7 +103,16 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
   const { slug = '', locale } = await paramsPromise
   const project = await queryProjectBySlug({ slug: decodeURIComponent(slug), locale })
   if (!project) return {}
-  return { title: project.title, description: project.description ?? undefined }
+  return generateMeta({
+    doc: {
+      ...project,
+      meta: {
+        title: project.meta?.title ?? project.title,
+        description: project.meta?.description ?? project.description,
+        image: project.meta?.image ?? project.image,
+      },
+    },
+  })
 }
 
 const queryProjectBySlug = cache(async ({ slug, locale }: { slug: string; locale: string }) => {

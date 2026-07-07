@@ -10,16 +10,18 @@ import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/
 import { s3Storage } from '@payloadcms/storage-s3'
 import type { Plugin } from 'payload'
 import { revalidateRedirects } from '@/hooks/revalidateRedirects'
-import type { Insight, Page } from '@/payload-types'
+import type { Insight, Machine, Page, Project } from '@/payload-types'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
 import { searchFields } from '@/search/fieldOverrides'
 import { getServerSideURL } from '@/utilities/getURL'
 
-const generateTitle: GenerateTitle<Insight | Page> = ({ doc }) => {
-  return doc?.title ? `${doc.title} | Amerikiosks` : 'Amerikiosks'
+export const generateTitle: GenerateTitle<Insight | Page | Project | Machine> = ({ doc }) => {
+  const label =
+    (doc as { title?: string; name?: string })?.title ?? (doc as { name?: string })?.name
+  return label ? `${label} | Amerikiosks` : 'Amerikiosks'
 }
 
-const generateURL: GenerateURL<Insight | Page> = ({ doc }) => {
+export const generateURL: GenerateURL<Insight | Page | Project | Machine> = ({ doc }) => {
   const url = getServerSideURL()
 
   return doc?.slug ? `${url}/${doc.slug}` : url
