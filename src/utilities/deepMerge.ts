@@ -1,6 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-
 /**
  * Simple object check.
  * @param item
@@ -16,20 +13,23 @@ export function isObject(item: unknown): item is object {
  * @param ...sources
  */
 export default function deepMerge<T, R>(target: T, source: R): T {
-  const output = { ...target }
+  const output = { ...target } as Record<string, unknown>
   if (isObject(target) && isObject(source)) {
     Object.keys(source).forEach((key) => {
-      if (isObject(source[key])) {
+      if (isObject((source as Record<string, unknown>)[key])) {
         if (!(key in target)) {
-          Object.assign(output, { [key]: source[key] })
+          output[key] = (source as Record<string, unknown>)[key]
         } else {
-          output[key] = deepMerge(target[key], source[key])
+          output[key] = deepMerge(
+            (target as Record<string, unknown>)[key],
+            (source as Record<string, unknown>)[key],
+          )
         }
       } else {
-        Object.assign(output, { [key]: source[key] })
+        output[key] = (source as Record<string, unknown>)[key]
       }
     })
   }
 
-  return output
+  return output as T
 }
