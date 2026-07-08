@@ -54,6 +54,44 @@ describe('GAListener', () => {
     document.body.removeChild(el)
   })
 
+  it('includes machineId when data-ga-machine-id is present (e.g. claim_submit from a QR-originated visit)', () => {
+    const gtag = vi.fn()
+    // biome-ignore lint/suspicious/noExplicitAny: assigning the global gtag mock for this test
+    ;(window as any).gtag = gtag
+
+    render(<GAListener />)
+    const el = document.createElement('button')
+    el.dataset.gaEvent = 'claim_submit'
+    el.dataset.gaLabel = 'Claim submitted'
+    el.dataset.gaMachineId = 'AK-0231'
+    document.body.appendChild(el)
+    el.click()
+
+    expect(gtag).toHaveBeenCalledWith(
+      'event',
+      'claim_submit',
+      expect.objectContaining({ machineId: 'AK-0231' }),
+    )
+    document.body.removeChild(el)
+  })
+
+  it('the common case: omits machineId entirely (not the string "undefined") when data-ga-machine-id is absent', () => {
+    const gtag = vi.fn()
+    // biome-ignore lint/suspicious/noExplicitAny: assigning the global gtag mock for this test
+    ;(window as any).gtag = gtag
+
+    render(<GAListener />)
+    const el = document.createElement('button')
+    el.dataset.gaEvent = 'claim_submit'
+    el.dataset.gaLabel = 'Claim submitted'
+    document.body.appendChild(el)
+    el.click()
+
+    const [, , params] = gtag.mock.calls[0]
+    expect(params.machineId).toBeUndefined()
+    document.body.removeChild(el)
+  })
+
   it('picks up the block/section from the nearest data-ga-block ancestor', () => {
     const gtag = vi.fn()
     // biome-ignore lint/suspicious/noExplicitAny: assigning the global gtag mock for this test

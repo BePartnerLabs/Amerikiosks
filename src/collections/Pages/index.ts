@@ -14,6 +14,7 @@ import { Archive } from '../../blocks/ArchiveBlock/config'
 import { AudienceShowcase } from '../../blocks/AudienceShowcase/config'
 import { CallToAction } from '../../blocks/CallToAction/config'
 import { CardGrid } from '../../blocks/CardGrid/config'
+import { ClaimForm } from '../../blocks/ClaimForm/config'
 import { Content } from '../../blocks/Content/config'
 import { FAQWithForm } from '../../blocks/FAQWithForm/config'
 import { FormBlock } from '../../blocks/Form/config'
@@ -23,6 +24,7 @@ import { MachinesListing } from '../../blocks/MachinesListing/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { ProcessSteps } from '../../blocks/ProcessSteps/config'
 import { ProjectsShowcase } from '../../blocks/ProjectsShowcase/config'
+import { SupportHub } from '../../blocks/SupportHub/config'
 import { TrustStrip } from '../../blocks/TrustStrip/config'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
@@ -95,6 +97,8 @@ export const Pages: CollectionConfig<'pages'> = {
                 MachinesListing,
                 ProcessSteps,
                 FAQWithForm,
+                ClaimForm,
+                SupportHub,
               ],
               admin: {
                 initCollapsed: true,

@@ -4,7 +4,9 @@ import { postgresAdapter } from '@payloadcms/db-postgres'
 import { buildConfig, type PayloadRequest } from 'payload'
 import sharp from 'sharp'
 import { defaultLexical } from '@/fields/defaultLexical'
+import { Brands } from './collections/Brands'
 import { Categories } from './collections/Categories'
+import { Claims } from './collections/Claims'
 import { FAQItems } from './collections/FAQItems'
 import { Insights } from './collections/Insights'
 import { Machines } from './collections/Machines'
@@ -72,7 +74,19 @@ export default buildConfig({
     },
     push: false,
   }),
-  collections: [Pages, Insights, Media, Categories, Users, Partners, Machines, FAQItems, Projects],
+  collections: [
+    Pages,
+    Insights,
+    Media,
+    Categories,
+    Users,
+    Partners,
+    Machines,
+    FAQItems,
+    Projects,
+    Brands,
+    Claims,
+  ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer, Settings],
   localization: {

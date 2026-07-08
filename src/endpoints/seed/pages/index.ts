@@ -2,6 +2,8 @@ import type { Payload, PayloadRequest } from 'payload'
 import { seedAudiencePages, seedWhoItsFor } from './audience'
 import { seedCaseStudies } from './case-studies'
 import { seedContact } from './contact'
+import { seedCustomerService } from './customer-service'
+import { seedCustomerServiceRequestARefund } from './customer-service-request-a-refund'
 import { seedForAgencies } from './for-agencies'
 import { seedForBrands } from './for-brands'
 import { seedForEmergingBrands } from './for-emerging-brands'
@@ -96,4 +98,6 @@ export const seedPages = async (
   await seedCaseStudies(payload, req)
   await seedWhyAmerikiosks(payload, req)
   await seedContact(payload, req)
+  await seedCustomerService(payload, req)
+  await seedCustomerServiceRequestARefund(payload, req)
 }
