@@ -15,7 +15,10 @@ vi.mock('next/cache', () => ({ revalidateTag: vi.fn() }))
 // so payload.config.ts would read process.env.PAYLOAD_SECRET before it exists.
 loadEnv({ path: '.env.local' })
 
-describe('seedRedirects (Local API integration)', () => {
+// Requires a real Postgres connection (via podman-compose + .env.local).
+// CI has no database service, so this suite is skipped there rather than
+// failing on Payload init.
+describe.skipIf(!process.env.DATABASE_URL)('seedRedirects (Local API integration)', () => {
   let payload: Payload
 
   beforeAll(async () => {
