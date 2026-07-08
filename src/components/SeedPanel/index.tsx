@@ -16,6 +16,9 @@ const PARTS = [
   { key: 'for-emerging-brands', label: 'For Emerging Brands' },
   { key: 'header', label: 'Header' },
   { key: 'footer', label: 'Footer' },
+  { key: 'brands', label: 'Brands' },
+  { key: 'customer-service', label: 'Customer Service (hub + refund form)' },
+  { key: 'redirects', label: 'Migration Redirects' },
 ]
 
 type Status = 'idle' | 'loading' | 'ok' | 'error'

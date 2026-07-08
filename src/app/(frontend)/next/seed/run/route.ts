@@ -3,12 +3,15 @@ import { headers } from 'next/headers'
 import { createLocalReq, getPayload } from 'payload'
 
 import { seed } from '@/endpoints/seed'
+import { seedBrands } from '@/endpoints/seed/brands'
 import { seedFooter } from '@/endpoints/seed/footer'
 import { seedHeader } from '@/endpoints/seed/header'
 import { seedPosts } from '@/endpoints/seed/insights'
 import { seedAudiencePages, seedWhoItsFor } from '@/endpoints/seed/pages/audience'
 import { seedCaseStudies } from '@/endpoints/seed/pages/case-studies'
 import { seedContact } from '@/endpoints/seed/pages/contact'
+import { seedCustomerService } from '@/endpoints/seed/pages/customer-service'
+import { seedCustomerServiceRequestARefund } from '@/endpoints/seed/pages/customer-service-request-a-refund'
 import { seedForAgencies } from '@/endpoints/seed/pages/for-agencies'
 import { seedForBrands } from '@/endpoints/seed/pages/for-brands'
 import { seedForEmergingBrands } from '@/endpoints/seed/pages/for-emerging-brands'
@@ -20,6 +23,7 @@ import { seedWhereItWorks } from '@/endpoints/seed/pages/where-it-works'
 import { seedWhereItWorksDetail } from '@/endpoints/seed/pages/where-it-works-detail'
 import { seedWhyAmerikiosks } from '@/endpoints/seed/pages/why-amerikiosks'
 import { seedPartners } from '@/endpoints/seed/partners'
+import { seedRedirects } from '@/endpoints/seed/redirects'
 
 export const maxDuration = 300
 
@@ -57,6 +61,12 @@ const parts: Record<
   'for-venues': seedForVenues,
   'for-agencies': seedForAgencies,
   'for-emerging-brands': seedForEmergingBrands,
+  brands: seedBrands,
+  redirects: seedRedirects,
+  'customer-service': async (payload, req) => {
+    await seedCustomerService(payload, req)
+    await seedCustomerServiceRequestARefund(payload, req)
+  },
 }
 
 export async function POST(req: Request): Promise<Response> {
@@ -102,6 +112,10 @@ export async function POST(req: Request): Promise<Response> {
         'machine-premium',
         'project-fan-stand',
         'project-airport-retail',
+        'brand-carlos-bakery',
+        'brand-pharmabox',
+        'brand-fan-stand',
+        'brand-istore',
       ]
       // 1. Delete existing seed media records via Payload (adapter removes blobs too)
       const { docs: seedMedia } = await payload.find({

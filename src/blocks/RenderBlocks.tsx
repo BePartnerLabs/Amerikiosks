@@ -4,6 +4,7 @@ import { ArchiveBlock } from '@/blocks/ArchiveBlock/Component'
 import { AudienceShowcaseServer } from '@/blocks/AudienceShowcase/Server'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { CardGridBlock } from '@/blocks/CardGrid/Component'
+import { ClaimFormServer } from '@/blocks/ClaimForm/Server'
 import { ContentBlock } from '@/blocks/Content/Component'
 import { FAQWithFormServer } from '@/blocks/FAQWithForm/Server'
 import { FormBlock } from '@/blocks/Form/Component'
@@ -13,12 +14,14 @@ import { MachinesListingServer } from '@/blocks/MachinesListing/Server'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { ProcessStepsBlock } from '@/blocks/ProcessSteps/Component'
 import { ProjectsShowcaseBlock } from '@/blocks/ProjectsShowcase/Component'
+import { SupportHubBlock } from '@/blocks/SupportHub/Component'
 import { TrustStripServer } from '@/blocks/TrustStrip/Server'
 import type { Page } from '@/payload-types'
 
 const blockComponents = {
   archive: ArchiveBlock,
   audienceShowcase: AudienceShowcaseServer,
+  claimForm: ClaimFormServer,
   content: ContentBlock,
   cta: CallToActionBlock,
   formBlock: FormBlock,
@@ -31,6 +34,7 @@ const blockComponents = {
   processSteps: ProcessStepsBlock,
   faqWithForm: FAQWithFormServer,
   machinesListing: MachinesListingServer,
+  supportHub: SupportHubBlock,
 }
 
 export const RenderBlocks: React.FC<{

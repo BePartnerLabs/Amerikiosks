@@ -14,6 +14,7 @@ import * as migration_20260705_225615_add_simple_hero_type from './20260705_2256
 import * as migration_20260706_025859_remove_specs_features_layout_add_hero_fields from './20260706_025859_remove_specs_features_layout_add_hero_fields';
 import * as migration_20260706_212143_add_mcp_plugin from './20260706_212143_add_mcp_plugin';
 import * as migration_20260707_175738_add_machines_projects_seo_meta from './20260707_175738_add_machines_projects_seo_meta';
+import * as migration_20260708_144541_add_brands_claims_support_hub from './20260708_144541_add_brands_claims_support_hub';
 
 export const migrations = [
   {
@@ -94,6 +95,11 @@ export const migrations = [
   {
     up: migration_20260707_175738_add_machines_projects_seo_meta.up,
     down: migration_20260707_175738_add_machines_projects_seo_meta.down,
-    name: '20260707_175738_add_machines_projects_seo_meta'
+    name: '20260707_175738_add_machines_projects_seo_meta',
+  },
+  {
+    up: migration_20260708_144541_add_brands_claims_support_hub.up,
+    down: migration_20260708_144541_add_brands_claims_support_hub.down,
+    name: '20260708_144541_add_brands_claims_support_hub'
   },
 ];

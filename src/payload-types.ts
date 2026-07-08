@@ -77,6 +77,8 @@ export interface Config {
     machines: Machine;
     faqItems: FaqItem;
     projects: Project;
+    brands: Brand;
+    claims: Claim;
     exports: Export;
     imports: Import;
     redirects: Redirect;
@@ -106,6 +108,8 @@ export interface Config {
     machines: MachinesSelect<false> | MachinesSelect<true>;
     faqItems: FaqItemsSelect<false> | FaqItemsSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
+    brands: BrandsSelect<false> | BrandsSelect<true>;
+    claims: ClaimsSelect<false> | ClaimsSelect<true>;
     exports: ExportsSelect<false> | ExportsSelect<true>;
     imports: ImportsSelect<false> | ImportsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
@@ -267,6 +271,8 @@ export interface Page {
         | MachinesListingBlock
         | ProcessStepsBlock
         | FAQWithFormBlock
+        | ClaimFormBlock
+        | SupportHubBlock
       )[]
     | null;
   meta?: {
@@ -1297,6 +1303,34 @@ export interface FAQWithFormBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ClaimFormBlock".
+ */
+export interface ClaimFormBlock {
+  submitButtonLabel?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'claimForm';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SupportHubBlock".
+ */
+export interface SupportHubBlock {
+  /**
+   * E.164 format, e.g. +18885093699
+   */
+  phoneNumber: string;
+  /**
+   * E.164 format, e.g. +18885093699
+   */
+  whatsappNumber: string;
+  refundFormUrl: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'supportHub';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "partners".
  */
 export interface Partner {
@@ -1404,6 +1438,62 @@ export interface Project {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * Client brands/product lines sold through Amerikiosks machines (e.g. Carlo's Bakery, Pharmabox by CVS) — not the machine hardware itself, see Machines.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "brands".
+ */
+export interface Brand {
+  id: number;
+  name: string;
+  logo?: (number | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Refund/complaint claims submitted from the customer-service QR flow on deployed kiosks.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "claims".
+ */
+export interface Claim {
+  id: number;
+  /**
+   * Which client brand/product line was being purchased (e.g. Carlo's Bakery).
+   */
+  kioskBrand: number | Brand;
+  paymentMethod: 'card' | 'cash';
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  transactionDateTime: string;
+  /**
+   * Structured location — avoid free-text so downstream systems get clean data.
+   */
+  location: {
+    state: string;
+    city: string;
+    propertyName: string;
+  };
+  claimReason: 'partial_dispense' | 'damaged_product' | 'wrong_product' | 'no_product';
+  additionalInfo?: string | null;
+  /**
+   * Last 4 digits of the card used, if payment method was card.
+   */
+  lastFourCardDigits?: string | null;
+  photo?: (number | null) | Media;
+  /**
+   * Captured from the QR code scan (machine_id query param), for internal reference.
+   */
+  machineId?: string | null;
+  integrationTarget?: ('jotform' | 'odoo') | null;
+  syncStatus?: ('pending' | 'synced' | 'error') | null;
+  syncError?: string | null;
+  syncedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1794,6 +1884,14 @@ export interface PayloadLockedDocument {
         value: number | Project;
       } | null)
     | ({
+        relationTo: 'brands';
+        value: number | Brand;
+      } | null)
+    | ({
+        relationTo: 'claims';
+        value: number | Claim;
+      } | null)
+    | ({
         relationTo: 'redirects';
         value: number | Redirect;
       } | null)
@@ -1921,6 +2019,8 @@ export interface PagesSelect<T extends boolean = true> {
         machinesListing?: T | MachinesListingBlockSelect<T>;
         processSteps?: T | ProcessStepsBlockSelect<T>;
         faqWithForm?: T | FAQWithFormBlockSelect<T>;
+        claimForm?: T | ClaimFormBlockSelect<T>;
+        supportHub?: T | SupportHubBlockSelect<T>;
       };
   meta?:
     | T
@@ -2201,6 +2301,26 @@ export interface FAQWithFormBlockSelect<T extends boolean = true> {
         id?: T;
       };
   form?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ClaimFormBlock_select".
+ */
+export interface ClaimFormBlockSelect<T extends boolean = true> {
+  submitButtonLabel?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SupportHubBlock_select".
+ */
+export interface SupportHubBlockSelect<T extends boolean = true> {
+  phoneNumber?: T;
+  whatsappNumber?: T;
+  refundFormUrl?: T;
   id?: T;
   blockName?: T;
 }
@@ -2516,6 +2636,46 @@ export interface ProjectsSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "brands_select".
+ */
+export interface BrandsSelect<T extends boolean = true> {
+  name?: T;
+  logo?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "claims_select".
+ */
+export interface ClaimsSelect<T extends boolean = true> {
+  kioskBrand?: T;
+  paymentMethod?: T;
+  customerName?: T;
+  customerEmail?: T;
+  customerPhone?: T;
+  transactionDateTime?: T;
+  location?:
+    | T
+    | {
+        state?: T;
+        city?: T;
+        propertyName?: T;
+      };
+  claimReason?: T;
+  additionalInfo?: T;
+  lastFourCardDigits?: T;
+  photo?: T;
+  machineId?: T;
+  integrationTarget?: T;
+  syncStatus?: T;
+  syncError?: T;
+  syncedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -3223,6 +3383,8 @@ export interface TaskCreateCollectionExport {
       | 'machines'
       | 'faqItems'
       | 'projects'
+      | 'brands'
+      | 'claims'
       | 'exports'
       | 'imports';
     drafts?: ('yes' | 'no') | null;
