@@ -66,6 +66,16 @@ export default buildConfig({
       ],
     },
   },
+  email: () => ({
+    name: 'Amerikiosks Website',
+    defaultFromName: 'Amerikiosks Website',
+    defaultFromAddress: 'website@amerikiosks.com',
+    sendEmail: async (options) => {
+      console.log('Sending email with options:', options)
+      // Implement your email sending logic here, e.g., using Nodemailer or any other email service
+      return Promise.resolve()
+    },
+  }),
   // This config helps us configure global or default features that the other editors can inherit
   editor: defaultLexical,
   db: postgresAdapter({
