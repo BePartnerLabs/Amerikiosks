@@ -28,9 +28,6 @@
   --md-semantic-border-width-default: 1px;
 
   /* Size — Spacing scale (rem, 16px root — px breaks browser text-zoom) */
-  --md-size-space-2: 0.125rem; /* 2px */
-  --md-size-space-4: 0.25rem; /* 4px */
-  --md-size-space-8: 0.5rem; /* 8px */
   --md-size-space-12: 0.75rem; /* 12px */
   --md-size-space-16: 1rem; /* 16px */
   --md-size-space-20: 1.25rem; /* 20px */
@@ -38,37 +35,19 @@
   --md-size-space-32: 2rem; /* 32px */
   --md-size-space-40: 2.5rem; /* 40px */
   --md-size-space-48: 3rem; /* 48px */
-  --md-size-space-56: 3.5rem; /* 56px */
   --md-size-space-64: 4rem; /* 64px */
-  --md-size-space-80: 5rem; /* 80px */
-  --md-size-space-96: 6rem; /* 96px */
-
-  /* UI Text sizes */
-  --ui-text-badge-label-font-size: 0.875rem; /* 14px */
-  --ui-text-badge-label-line-height: 1.3125rem; /* 21px */
-  --ui-text-button-label-font-size: 1rem; /* 16px */
-  --ui-text-button-label-line-height: 1.5rem; /* 24px */
 
   /* Button tokens */
   --md-btn-shape-border-radius: var(--bp-radius-md); /* 8px / 0.5rem */
-  --md-btn-text-font-size: var(--ui-text-button-label-font-size);
   --md-btn-text-font-weight: 500;
-  --md-btn-text-line-height: var(--ui-text-button-label-line-height);
 
   /* Foundation — Shadow scale (Figma: 02 Foundation / foundation/effect/shadow/*) */
   --foundation-shadow-sm: 0px 2px 8px 0px hsla(0, 0%, 0%, 0.08);
   --foundation-shadow-md: 0px 4px 12px 0px hsla(0, 0%, 0%, 0.08);
   --foundation-shadow-lg: 0px 8px 24px 0px hsla(0, 0%, 0%, 0.06);
-  --foundation-shadow-xl: 0px 16px 32px 0px hsla(0, 0%, 0%, 0.08);
 
   /* Navbar tokens */
-  --navbar-height: 78px;
-  --navbar-bg: var(--brand-color-palette-navy-950);
-  --navbar-border-bottom: var(--md-semantic-border-width-default) solid currentColor;
   --navbar-padding-vertical: var(--md-size-space-12);
-  --navbar-padding-horizontal: var(--md-size-space-48);
-  --navbar-inner-height: 50px;
-  --navbar-inner-width: 1344px;
 }
 
 /* ─── Layer 2: Semantic aliases — confirmed per element ─────── */
@@ -132,7 +111,6 @@
   --ak-color-heading: var(--brand-color-palette-navy-900);
   --ak-color-border: var(--brand-color-palette-steel-100);
   --ak-color-muted: var(--brand-color-palette-steel-600);
-  --ak-color-white: var(--brand-color-palette-white);
   --ak-card-shadow-subtle: var(--foundation-shadow-sm);
 
   /* Section backgrounds */
@@ -151,7 +129,6 @@
   --ak-cta-btn-color: var(--brand-color-palette-navy-900);
 
   /* CardGrid — compact */
-  --ak-card-grid-bg: var(--brand-color-palette-navy-900);
   --ak-card-bg: var(--brand-color-palette-navy-800);
   --ak-card-shadow: var(--foundation-shadow-lg);
 
@@ -182,7 +159,6 @@
      token instead of repeating the hsla triplet. */
   --ak-shadow-tint: var(--brand-color-palette-navy-900);
   --ak-shadow-lift: 0 4px 16px color-mix(in srgb, var(--ak-shadow-tint) 12%, transparent);
-  --ak-shadow-lift-md: 0 8px 24px color-mix(in srgb, var(--ak-shadow-tint) 16%, transparent);
 
   /* Surface card tokens */
   --ak-surface-background: var(--brand-color-palette-white);
