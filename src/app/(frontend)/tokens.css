@@ -93,6 +93,12 @@
   --ak-white: var(--brand-color-palette-white);
   --ak-accent: var(--brand-color-palette-coral-600);
 
+  /* Status colors (Figma: brand.color.status.<name>.main) — Banner, alerts, etc.
+     "error" intentionally uses --ak-accent (brand coral), not a generic red. */
+  --ak-color-status-info: #088196;
+  --ak-color-status-success: #106f3a;
+  --ak-color-status-warning: #8a4a06;
+
   /* Header */
   --ak-bg: var(--brand-color-palette-navy-950);
 
