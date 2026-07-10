@@ -2,12 +2,16 @@
 /**
  * DS token compliance validator.
  *
- * Rules checked (component CSS only — primitives files are excluded):
+ * Rules checked (component CSS only — primitives files are excluded, unless noted):
  *   1. background-color / color set directly with --ak-* (not through a --_* or Level 2 var)
  *   2. Hardcoded color literals in component CSS (hex, rgb, hsl outside tokens.css)
  *   3. Public slots use shorthand alias (-bg, -fg) instead of CSS property name
  *   4. Any CSS property using var(--ak-*) directly inside a .bp-* selector context
  *      (must be channeled through a Level 2 --<component>-* var instead)
+ *   5. Spacing/typography custom properties declared in px instead of rem — applies
+ *      to ALL files including primitives, since px there breaks browser text-zoom
+ *      for anything referencing the token (border-width and shadow offsets are exempt,
+ *      those are conventionally px).
  */
 
 import { readFileSync } from 'node:fs'
@@ -28,6 +32,15 @@ const CSS_PROPERTY_WITH_AK = /^\s*(?!--[\w-]+\s*:)[\w-]+\s*:[^;{]*var\(--ak-/
 
 // Files where hardcoded values and shorthand aliases are allowed
 const PRIMITIVES_FILES = new Set(['tokens.css', 'frontend.css', 'globals.css'])
+
+// Rule 5 — custom property declarations for spacing/typography must use rem, not px.
+// Matches the *declaration* of a token (--foo-space-8: 8px;), not usages (padding: var(--foo)).
+const SPACING_TYPOGRAPHY_VAR_DECL =
+  /^\s*--[\w-]*(?:space|spacing|font-size|line-height|gap|padding|margin|radius|height|width)[\w-]*\s*:\s*[\d.]+px/i
+// Exempt: border-width, shadow offsets/blur, fixed layout containers, pill radius, and
+// explicitly-named "-px" utility tokens — all conventionally kept in px regardless of scale.
+const PX_EXEMPT_NAME =
+  /--[\w-]*(?:border-width|shadow|navbar-height|navbar-inner|-px\s*:|radius-full|radius-pill|content-max-width|breakout-max-width|max-width)/i
 
 const files = process.argv.slice(2)
 let hasError = false
@@ -118,6 +131,19 @@ for (const file of files) {
       console.error(
         `[DS] Rule 4 — var(--ak-*) used directly as CSS property value inside .bp-* selector (use Level 2 --component-* intermediary): ${loc}`,
       )
+      console.error(`     ${trimmed}\n`)
+      hasError = true
+    }
+
+    // Rule 5 — spacing/typography token declared in px (breaks browser text-zoom).
+    // Applies everywhere, including primitives files — this is where these tokens live.
+    // Private (--_*) vars are component-internal one-offs, not reusable design tokens — exempt.
+    if (
+      SPACING_TYPOGRAPHY_VAR_DECL.test(line) &&
+      !PX_EXEMPT_NAME.test(line) &&
+      !PRIVATE_VAR_DECL.test(line)
+    ) {
+      console.error(`[DS] Rule 5 — spacing/typography token declared in px, use rem: ${loc}`)
       console.error(`     ${trimmed}\n`)
       hasError = true
     }

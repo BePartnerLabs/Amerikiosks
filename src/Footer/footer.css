@@ -1,7 +1,8 @@
 .ak-footer {
   --_background: var(--footer-bg, var(--ak-footer-bg));
+  --_footer-text: var(--footer-text-color, var(--ak-white));
   background-color: var(--_background);
-  border-top: 1px solid color-mix(in srgb, var(--ak-white) 12%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--_footer-text) 12%, transparent);
 }
 
 .ak-footer__inner {
@@ -32,25 +33,25 @@
 /* ─── Bottom bar ─────────────────────────────────────────── */
 .ak-footer__bottom {
   padding-block: var(--bp-space-6);
-  border-top: 1px solid color-mix(in srgb, var(--ak-white) 12%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--_footer-text) 12%, transparent);
 }
 
 .ak-footer__copyright {
   margin: 0;
   font-size: var(--bp-text-sm);
-  color: var(--ak-white);
+  color: var(--_footer-text);
 }
 
 /* ─── Brand ─────────────────────────────────────────────── */
 .ak-footer__logo {
   display: inline-block;
-  color: var(--ak-white);
+  color: var(--_footer-text);
 }
 
 .ak-footer__tagline {
   margin: var(--bp-space-4) 0 0;
   font-size: var(--bp-text-sm);
-  color: var(--ak-white);
+  color: var(--_footer-text);
   line-height: 1.65;
   max-width: 48ch;
 }
@@ -60,7 +61,7 @@
   margin: 0 0 var(--bp-space-4);
   font-size: var(--bp-text-sm);
   font-weight: 700;
-  color: var(--ak-white);
+  color: var(--_footer-text);
 }
 
 .ak-footer__col-links {
@@ -74,13 +75,13 @@
 
 .ak-footer__link {
   font-size: var(--bp-text-sm);
-  color: color-mix(in srgb, var(--ak-white) 60%, transparent);
+  color: color-mix(in srgb, var(--_footer-text) 60%, transparent);
   text-decoration: none;
   transition: color var(--bp-duration-fast) var(--bp-ease);
 }
 
 .ak-footer__link:hover {
-  color: var(--ak-white);
+  color: var(--_footer-text);
 }
 
 .ak-footer__link:focus-visible,

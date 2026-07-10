@@ -12,8 +12,9 @@
 }
 
 .ak-media-block__caption {
+  --_caption-color: var(--media-caption-color, var(--ak-color-muted));
   margin-top: var(--bp-space-3, 0.75rem);
   font-size: var(--bp-text-sm, 0.875rem);
-  color: var(--ak-color-muted);
+  color: var(--_caption-color);
   text-align: center;
 }
