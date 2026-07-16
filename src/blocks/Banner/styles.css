@@ -10,23 +10,27 @@
 }
 
 .ak-banner--info {
-  background-color: color-mix(in srgb, var(--ak-color-primary) 8%, transparent);
-  color: var(--ak-color-primary);
+  --_banner-color: var(--banner-info-color, var(--ak-color-status-info));
+  background-color: color-mix(in srgb, var(--_banner-color) 8%, transparent);
+  color: var(--_banner-color);
 }
 
 .ak-banner--warning {
-  background-color: color-mix(in srgb, #f59e0b 8%, transparent);
-  color: #92400e;
+  --_banner-color: var(--banner-warning-color, var(--ak-color-status-warning));
+  background-color: color-mix(in srgb, var(--_banner-color) 8%, transparent);
+  color: var(--_banner-color);
 }
 
 .ak-banner--error {
-  background-color: color-mix(in srgb, var(--ak-accent) 8%, transparent);
-  color: var(--ak-accent);
+  --_banner-color: var(--banner-error-color, var(--ak-accent));
+  background-color: color-mix(in srgb, var(--_banner-color) 8%, transparent);
+  color: var(--_banner-color);
 }
 
 .ak-banner--success {
-  background-color: color-mix(in srgb, #10b981 8%, transparent);
-  color: #065f46;
+  --_banner-color: var(--banner-success-color, var(--ak-color-status-success));
+  background-color: color-mix(in srgb, var(--_banner-color) 8%, transparent);
+  color: var(--_banner-color);
 }
 
 .ak-banner__content {

@@ -3,7 +3,8 @@
    ═══════════════════════════════════════════════════════════════ */
 
 .ak-archive {
-  background-color: var(--ak-color-surface);
+  --_background: var(--archive-background, var(--ak-color-surface));
+  background-color: var(--_background);
 }
 
 .ak-archive__inner {
@@ -18,10 +19,11 @@
 }
 
 .ak-archive__header h2 {
+  --_heading-color: var(--archive-heading-color, var(--ak-color-heading));
   margin: 0;
   font-family: var(--font-poppins, sans-serif);
   font-size: clamp(1.75rem, 2.5vw + 1rem, 3rem);
   font-weight: 700;
   line-height: 1.2;
-  color: var(--ak-color-heading);
+  color: var(--_heading-color);
 }

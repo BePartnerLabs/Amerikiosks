@@ -27,42 +27,27 @@
   /* 02 Semantic — Border */
   --md-semantic-border-width-default: 1px;
 
-  /* Size — Spacing scale */
-  --md-size-space-2: 2px;
-  --md-size-space-4: 4px;
-  --md-size-space-8: 8px;
-  --md-size-space-12: 12px;
-  --md-size-space-16: 16px;
-  --md-size-space-20: 20px;
-  --md-size-space-24: 24px;
-  --md-size-space-32: 32px;
-  --md-size-space-40: 40px;
-  --md-size-space-48: 48px;
-  --md-size-space-56: 56px;
-  --md-size-space-64: 64px;
-  --md-size-space-80: 80px;
-  --md-size-space-96: 96px;
-
-  /* UI Text sizes */
-  --ui-text-badge-label-font-size: 14px;
-  --ui-text-badge-label-line-height: 21px;
-  --ui-text-button-label-font-size: 16px;
-  --ui-text-button-label-line-height: 24px;
+  /* Size — Spacing scale (rem, 16px root — px breaks browser text-zoom) */
+  --md-size-space-12: 0.75rem; /* 12px */
+  --md-size-space-16: 1rem; /* 16px */
+  --md-size-space-20: 1.25rem; /* 20px */
+  --md-size-space-24: 1.5rem; /* 24px */
+  --md-size-space-32: 2rem; /* 32px */
+  --md-size-space-40: 2.5rem; /* 40px */
+  --md-size-space-48: 3rem; /* 48px */
+  --md-size-space-64: 4rem; /* 64px */
 
   /* Button tokens */
   --md-btn-shape-border-radius: var(--bp-radius-md); /* 8px / 0.5rem */
-  --md-btn-text-font-size: var(--ui-text-button-label-font-size);
   --md-btn-text-font-weight: 500;
-  --md-btn-text-line-height: var(--ui-text-button-label-line-height);
+
+  /* Foundation — Shadow scale (Figma: 02 Foundation / foundation/effect/shadow/*) */
+  --foundation-shadow-sm: 0px 2px 8px 0px hsla(0, 0%, 0%, 0.08);
+  --foundation-shadow-md: 0px 4px 12px 0px hsla(0, 0%, 0%, 0.08);
+  --foundation-shadow-lg: 0px 8px 24px 0px hsla(0, 0%, 0%, 0.06);
 
   /* Navbar tokens */
-  --navbar-height: 78px;
-  --navbar-bg: var(--brand-color-palette-navy-950);
-  --navbar-border-bottom: var(--md-semantic-border-width-default) solid currentColor;
   --navbar-padding-vertical: var(--md-size-space-12);
-  --navbar-padding-horizontal: var(--md-size-space-48);
-  --navbar-inner-height: 50px;
-  --navbar-inner-width: 1344px;
 }
 
 /* ─── Layer 2: Semantic aliases — confirmed per element ─────── */
@@ -80,12 +65,18 @@
   /* Button tokens — Figma spec */
   --ak-btn-height: 3.125rem; /* 50px */
   --ak-btn-padding: 0.5625rem 1.125rem; /* 9px 18px */
-  --ak-btn-radius: 0.4375rem; /* 7px */
+  --ak-btn-radius: var(--bp-radius-md); /* 8px — matches Figma btn/shape/border-radius */
   --ak-btn-gap: var(--bp-space-2); /* 8px */
 
   /* Colors */
   --ak-white: var(--brand-color-palette-white);
   --ak-accent: var(--brand-color-palette-coral-600);
+
+  /* Status colors (Figma: brand.color.status.<name>.main) — Banner, alerts, etc.
+     "error" intentionally uses --ak-accent (brand coral), not a generic red. */
+  --ak-color-status-info: #088196;
+  --ak-color-status-success: #106f3a;
+  --ak-color-status-warning: #8a4a06;
 
   /* Header */
   --ak-bg: var(--brand-color-palette-navy-950);
@@ -112,7 +103,7 @@
   --ak-dark-fg-muted: var(--ak-text-on-inverse-muted);
   --ak-dark-border: var(--ak-border-on-inverse);
   --ak-card-overlay: var(--md-semantic-surface-background-overlay-default, hsla(0, 0%, 0%, 0.6));
-  --ak-card-shadow-md: 0 4px 12px 0 hsla(0, 0%, 0%, 0.08);
+  --ak-card-shadow-md: var(--foundation-shadow-md);
 
   /* Surface / border / text */
   --ak-color-dark: var(--brand-color-palette-navy-900);
@@ -120,8 +111,7 @@
   --ak-color-heading: var(--brand-color-palette-navy-900);
   --ak-color-border: var(--brand-color-palette-steel-100);
   --ak-color-muted: var(--brand-color-palette-steel-600);
-  --ak-color-white: var(--brand-color-palette-white);
-  --ak-card-shadow-subtle: 0 1px 4px hsla(0, 0%, 0%, 0.06);
+  --ak-card-shadow-subtle: var(--foundation-shadow-sm);
 
   /* Section backgrounds */
   --ak-section-bg-blue: var(--md-primitives-color-blue-100);
@@ -139,9 +129,8 @@
   --ak-cta-btn-color: var(--brand-color-palette-navy-900);
 
   /* CardGrid — compact */
-  --ak-card-grid-bg: var(--brand-color-palette-navy-900);
   --ak-card-bg: var(--brand-color-palette-navy-800);
-  --ak-card-shadow: 0px 8px 20px 0px hsla(0, 0%, 0%, 0.08);
+  --ak-card-shadow: var(--foundation-shadow-lg);
 
   /* Megamenu */
   --ak-mega-left-bg: var(--brand-color-palette-navy-900);
@@ -164,25 +153,35 @@
   /* Motion */
   --ak-transition-fast: 150ms ease;
   --ak-transition-med: 200ms ease;
-  --ak-shadow-lift: 0 4px 16px hsla(213, 96%, 11%, 0.12);
-  --ak-shadow-lift-md: 0 8px 24px hsla(213, 96%, 11%, 0.16);
+
+  /* Shadow tint — brand-colored shadows (navy) vs Figma's plain-black card
+     shadow scale below. Every colored shadow derives its color from this one
+     token instead of repeating the hsla triplet. */
+  --ak-shadow-tint: var(--brand-color-palette-navy-900);
+  --ak-shadow-lift: 0 4px 16px color-mix(in srgb, var(--ak-shadow-tint) 12%, transparent);
 
   /* Surface card tokens */
   --ak-surface-background: var(--brand-color-palette-white);
   --ak-surface-border: hsla(196, 17%, 54%, 0.18);
   --ak-surface-border-hover: hsla(196, 17%, 54%, 0.35);
-  --ak-surface-shadow-sm: 0px 10px 22px 0px hsla(213, 96%, 11%, 0.08);
-  --ak-surface-shadow-md: 0px 12px 26px 0px hsla(213, 96%, 11%, 0.09);
-  --ak-surface-shadow-lg: 0px 14px 28px 0px hsla(213, 96%, 11%, 0.1);
-  --ak-surface-shadow-sm-hover: 0px 14px 30px 0px hsla(213, 96%, 11%, 0.13);
-  --ak-surface-shadow-md-hover: 0px 18px 36px 0px hsla(213, 96%, 11%, 0.14);
-  --ak-surface-shadow-lg-hover: 0px 22px 40px 0px hsla(213, 96%, 11%, 0.15);
+  --ak-surface-shadow-sm: 0px 10px 22px 0px
+    color-mix(in srgb, var(--ak-shadow-tint) 8%, transparent);
+  --ak-surface-shadow-md: 0px 12px 26px 0px
+    color-mix(in srgb, var(--ak-shadow-tint) 9%, transparent);
+  --ak-surface-shadow-lg: 0px 14px 28px 0px
+    color-mix(in srgb, var(--ak-shadow-tint) 10%, transparent);
+  --ak-surface-shadow-sm-hover: 0px 14px 30px 0px
+    color-mix(in srgb, var(--ak-shadow-tint) 13%, transparent);
+  --ak-surface-shadow-md-hover: 0px 18px 36px 0px
+    color-mix(in srgb, var(--ak-shadow-tint) 14%, transparent);
+  --ak-surface-shadow-lg-hover: 0px 22px 40px 0px
+    color-mix(in srgb, var(--ak-shadow-tint) 15%, transparent);
 
   /* Input tokens */
   --ak-input-background: hsla(200, 50%, 98%, 1);
   --ak-input-border: hsla(196, 17%, 54%, 0.28);
   --ak-input-height: 3.375rem; /* 54px — Figma spec */
-  --ak-input-radius: var(--bp-radius-sm); /* 6px — Figma spec */
+  --ak-input-radius: var(--bp-radius-md); /* 8px — matches Figma input/shape/radius */
 
   /* Text tokens */
   --ak-text-disclaimer: hsla(213, 96%, 11%, 0.68);
