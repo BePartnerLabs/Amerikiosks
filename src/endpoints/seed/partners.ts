@@ -7,7 +7,7 @@ const PARTNERS = [
   { name: 'CVS', file: 'partner-cvs.png', order: 2 },
   { name: 'Holiday Inn', file: 'partner-holiday-inn.png', order: 3 },
   { name: 'Kroger', file: 'partner-kroger.png', order: 4 },
-  { name: 'Royal Caribbean', file: 'partner-royal-caribbean.png', order: 5 },
+  { name: 'Royal Caribbean', file: 'partner-royal-caribbean.svg', order: 5 },
   { name: 'Miami International Airport', file: 'partner-mia.png', order: 6 },
 ]
 
