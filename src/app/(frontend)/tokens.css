@@ -197,3 +197,36 @@
     transform: translateY(0);
   }
 }
+
+:root {
+  --foundation-efect-focus-default-color: var(--brand-color-palette-navy-900);
+  --foundation-effect-focus-default-offset-x: 0;
+  --foundation-effect-focus-default-offset-y: 0;
+  --foundation-effect-focus-default-blur: 0;
+  --foundation-effect-focus-default-spread: 4px;
+  --foundation-effect-shadow-none-color: #00000000;
+  --foundation-effect-shadow-none-offset-x: 0;
+  --foundation-effect-shadow-none-offset-y: 0;
+  --foundation-effect-shadow-none-blur: 0;
+  --foundation-effect-shadow-none-spread: 0;
+  --foundation-effect-shadow-sm-color: #00000014;
+  --foundation-effect-shadow-sm-offset-x: 0;
+  --foundation-effect-shadow-sm-offset-y: 2px;
+  --foundation-effect-shadow-sm-blur: 8px;
+  --foundation-effect-shadow-sm-spread: 0;
+  --foundation-effect-shadow-md-color: #00000014;
+  --foundation-effect-shadow-md-offset-x: 0;
+  --foundation-effect-shadow-md-offset-y: 4px;
+  --foundation-effect-shadow-md-blur: 12px;
+  --foundation-effect-shadow-md-spread: 0;
+  --foundation-effect-shadow-lg-color: #0000000f;
+  --foundation-effect-shadow-lg-offset-x: 0;
+  --foundation-effect-shadow-lg-offset-y: 8px;
+  --foundation-effect-shadow-lg-blur: 24px;
+  --foundation-effect-shadow-lg-spread: 0;
+  --foundation-effect-shadow-xl-color: #00000014;
+  --foundation-effect-shadow-xl-offset-x: 0;
+  --foundation-effect-shadow-xl-offset-y: 16px;
+  --foundation-effect-shadow-xl-blur: 32px;
+  --foundation-effect-shadow-xl-spread: 0;
+}

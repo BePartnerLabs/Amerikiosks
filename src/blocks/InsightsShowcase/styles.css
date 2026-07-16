@@ -17,11 +17,17 @@
 
 /* ─── Featured row ────────────────────────────────────────────── */
 .ak-insights-showcase__featured {
+  --_border-radius: var(--border-radius, var(--bp-radius-lg));
+
   display: grid;
   grid-template-columns: 55fr 45fr;
   gap: var(--bp-space-8, 2rem);
   align-items: stretch;
-  border-bottom: 1px solid var(--ak-color-border);
+  border-radius: var(--_border-radius);
+
+  box-shadow: var(--foundation-effect-shadow-md-offset-x)
+    var(--foundation-effect-shadow-md-offset-y) var(--foundation-effect-shadow-md-blur)
+    var(--foundation-effect-shadow-md-spread) var(--foundation-effect-shadow-md-color);
 }
 
 .ak-insights-showcase__featured-img-wrap {
@@ -73,11 +79,13 @@
   --card-shadow: var(--ak-card-shadow);
   --card-border: 1px solid var(--ak-color-border);
   --card-background: var(--ak-color-surface);
-  --card-radius: var(--bp-radius-lg, 0.75rem);
+  --_card-radius: var(--card-radius, var(--bp-radius-lg));
   --card-padding: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  border-radius: var(--_card-radius);
+  box-shadow: var(--card-shadow);
 }
 
 .ak-insights-showcase__cards .bp-card__image {
