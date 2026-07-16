@@ -240,7 +240,7 @@ export const seedHome = async (
     blockType: 'cardGrid' as const,
     blockName: 'Card Grid — Home Value Props',
     variant: 'compact' as const,
-    heading: 'The right moment\ndoes more.',
+    heading: 'The <strong>right moment</strong>\ndoes more.',
     items: [
       {
         title: 'Premium placement',

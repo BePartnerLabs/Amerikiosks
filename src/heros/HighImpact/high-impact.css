@@ -68,7 +68,7 @@
   font-family: var(--ak-font-base);
   font-size: clamp(2rem, 4vw + 1rem, 3rem);
   font-weight: 600;
-  line-height: 4.5rem;
+  line-height: 1.2;
   text-wrap: balance;
 }
 
@@ -86,7 +86,7 @@
 .ak-hero-home__content p {
   margin: 0;
   font-size: var(--bp-text-lg);
-  line-height: 1.65;
+  line-height: 1.5;
   max-width: 52ch;
   text-wrap: balance;
 }

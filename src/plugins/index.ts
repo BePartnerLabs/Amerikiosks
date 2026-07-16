@@ -84,6 +84,9 @@ export const plugins: Plugin[] = [
           return field
         })
       },
+      admin: {
+        group: 'Config',
+      },
       hooks: {
         afterChange: [revalidateRedirects],
       },

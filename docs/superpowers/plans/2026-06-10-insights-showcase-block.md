@@ -247,7 +247,6 @@ git commit -m "feat(insights-showcase): register block in Pages layout builder"
   grid-template-columns: 1fr 1fr;
   gap: var(--bp-space-8, 2rem);
   align-items: center;
-  border-bottom: 1px solid var(--ak-color-border);
   padding-bottom: var(--bp-space-10, 2.5rem);
 }
 
