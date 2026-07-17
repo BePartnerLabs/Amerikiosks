@@ -5,6 +5,8 @@ import { authenticated } from '../access/authenticated'
 export const Partners: CollectionConfig = {
   slug: 'partners',
   admin: {
+    description:
+      'Client/venue logos shown in the trust strip on the homepage (e.g. Hilton, Royal Caribbean, CVS). Not related to Brands.',
     defaultColumns: ['name', 'order', 'updatedAt'],
     useAsTitle: 'name',
   },

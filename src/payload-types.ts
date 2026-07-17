@@ -1330,6 +1330,8 @@ export interface SupportHubBlock {
   blockType: 'supportHub';
 }
 /**
+ * Client/venue logos shown in the trust strip on the homepage (e.g. Hilton, Royal Caribbean, CVS). Not related to Brands.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "partners".
  */
@@ -1440,7 +1442,7 @@ export interface Project {
   _status?: ('draft' | 'published') | null;
 }
 /**
- * Client brands/product lines sold through Amerikiosks machines (e.g. Carlo's Bakery, Pharmabox by CVS) — not the machine hardware itself, see Machines.
+ * Client brands/product lines sold through Amerikiosks machines (e.g. Carlo's Bakery, Pharmabox by CVS) — used in the refund claim form. Not the machine hardware (see Machines) or homepage trust-strip logos (see Partners).
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "brands".
