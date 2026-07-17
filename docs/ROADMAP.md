@@ -27,15 +27,26 @@ Future ideas and planned improvements for the Amerikiosks website. Items are gro
 - **Branch protection enforcement** — Several recent commits bypassed branch protection ("Changes must be made through a pull request"). Enforce required status checks (`Lint and Test`) so direct pushes to `main` are blocked for all contributors.
 - **`llms.txt` + markdown pages** — Payload-driven markdown pages served at known URLs (e.g. `/about.md`, `/services.md`) for AI agent consumption, following the `llms.txt` spec.
 - **Convert `[locale]/[slug]/page.tsx` to a catch-all (`[...slug]`)** — `nestedDocsPlugin` is already active on `pages`, but setting a `parent` on a doc only affects breadcrumbs/SEO `generateURL` metadata, not actual Next.js routing: the App Router resolves URLs purely by folder structure, and `[slug]` only matches a single segment. Any page nested under another (e.g. `/customer-service/request-a-refund`) needs its own bespoke route folder today (see that page's route for the current workaround). Converting to `[...slug]` would make nested pages "just work" without a dedicated folder per case, but touches routing for every page on the site: `generateStaticParams` would need to build full breadcrumb paths instead of a single slug, `queryPageBySlug` would need to match a joined path (likely via a denormalized `fullPath` field kept in sync by a hook) instead of `where: { slug: { equals } }`, the `home` special case (`slug === 'home'` → `/`) needs adapting to an empty array, and `PayloadRedirects`/`translate-slug`/the SEO plugin's `generateURL` all currently assume a flat single-segment slug and would need auditing. Worth doing once there's a second/third nested-page case, but deserves its own reviewed plan rather than being bundled into unrelated feature work.
+  - **Analyze whether `nestedDocsPlugin` itself could resolve this more directly** before building the catch-all migration by hand — worth a spec-first look at whether the plugin already exposes (or could be configured to expose) the joined path in a form `generateStaticParams`/`queryPageBySlug` could consume directly, instead of us hand-rolling a `fullPath` denormalization hook from scratch.
+- **shadcn primitives → DS migration** — `Select` was already replaced with a native `<select>` (real bug: Radix portals to `document.body`, which sits below a native-popover drawer's top-layer). The rest (`Button`, `Input`, `Label`, `Checkbox`, `Textarea`, `Pagination` in `src/components/ui/`) are still shadcn wrappers with no active bug — migrate to `ds.bepartnerlabs.com` components when there's a dedicated pass for it, not bundled into unrelated feature work.
 
 ---
 
 ## Analytics
 
 - **TrustStrip dwell time dashboard** — `partner_logo_dwell` events are firing to GA4. Create a GA4 custom report or Looker Studio dashboard to visualize which partner logos get the most screen time.
+- **Mark `generate_lead` and `claim_submit` as GA4 Key Events** — manual step in GA4 Admin → Events → toggle "Mark as key event". Code already fires both (declarative `data-ga-event` + synthetic-click pattern); `form_start`/`form_submit` are separately auto-collected by GA4 Enhanced Measurement, no code needed for those.
+- **Confirm JotForm question-ID mapping before relying on it in production** — `src/repositories/JotFormRepository.ts` has placeholder question IDs flagged with a TODO. Verify against the real JotForm form before decommissioning WordPress.
 
 ---
 
 ## Content
 
 - **Seed TrustStrip block on home page** — After running the seed, the home page still needs a TrustStrip block added manually in `/admin`. Automate this in `src/endpoints/seed/pages/home.ts` so the section appears out of the box after seeding.
+
+---
+
+## Launch checklist (WordPress decommission)
+
+- **Scan a real QR code on a deployed kiosk** against a preview deploy before decommissioning WordPress — confirms the `/customer-service/request-a-refund?machine_id=...` URL printed on physical kiosks still resolves correctly end to end.
+- **Check Neon's branch-expiration setting** (dashboard, or the Vercel↔Neon integration config) — confirm whether preview-deployment branches auto-delete on a timer and after how long, so nobody loses a staging branch they meant to keep using.
