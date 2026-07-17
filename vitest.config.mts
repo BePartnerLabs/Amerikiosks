@@ -9,6 +9,10 @@ export default defineConfig({
     setupFiles: ['./vitest.setup.ts'],
     include: ['tests/int/**/*.int.spec.ts', 'tests/unit/**/*.test.tsx', 'tests/unit/**/*.test.ts'],
     css: false,
+    // Cap worker concurrency — running all ~90 files fully in parallel starves
+    // the Local API integration test (real Postgres connection) of CPU and
+    // causes its beforeAll hook to time out under load.
+    maxWorkers: 4,
     server: {
       deps: {
         inline: [/@payloadcms/, /next-intl/],
