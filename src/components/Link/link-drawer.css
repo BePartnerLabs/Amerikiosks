@@ -1,0 +1,121 @@
+/* ═══════════════════════════════════════════════════════════════
+   CMSLink — modal-form drawer (type: "modal")
+   ═══════════════════════════════════════════════════════════════ */
+
+.ak-link-drawer {
+  /* Explicit fallback for browsers without Popover API support (rare —
+     Safari 17+/2023, Chrome/Edge 114+/2023, Firefox 125+/2024 all support
+     it) — without this, an unsupported browser skips the native UA
+     stylesheet that hides [popover] by default, dumping the form inline. */
+  display: none;
+
+  position: fixed;
+  inset-block: 0;
+  inset-inline-end: 0;
+  inset-inline-start: auto;
+  /* Leaves a sliver of the page visible on narrow screens so the drawer
+     reads as an overlay, not a full takeover. */
+  width: min(28rem, calc(100vw - 10px));
+  max-width: calc(100vw - 10px);
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  border: none;
+  box-shadow: var(--ak-shadow-lift, 0 8px 30px rgb(0 0 0 / 15%));
+  overflow-y: auto;
+
+  --_background: var(--ak-color-surface);
+  background-color: var(--_background);
+
+  transform: translateX(100%);
+  transition:
+    transform 0.3s ease,
+    overlay 0.3s ease allow-discrete,
+    display 0.3s ease allow-discrete;
+}
+
+.ak-link-drawer:popover-open {
+  display: flex;
+  flex-direction: column;
+  transform: translateX(0);
+}
+
+@starting-style {
+  .ak-link-drawer:popover-open {
+    transform: translateX(100%);
+  }
+}
+
+.ak-link-drawer::backdrop {
+  --_backdrop: var(--ak-card-overlay);
+  background-color: var(--_backdrop);
+}
+
+.ak-link-drawer__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--bp-space-4, 1rem);
+  padding: var(--bp-space-5, 1.25rem) var(--bp-space-6, 1.5rem);
+  border-bottom: 1px solid var(--ak-color-border);
+}
+
+.ak-link-drawer__title {
+  --_color: var(--ak-color-heading);
+  color: var(--_color);
+  margin: 0;
+  font-size: var(--bp-text-xl, 1.25rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.ak-link-drawer__close {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+
+  --_color: var(--ak-color-heading);
+  color: var(--_color);
+}
+
+.ak-link-drawer__close:hover {
+  --_background: var(--ak-color-border);
+  background-color: var(--_background);
+}
+
+/* Fixes a container-type + flex-column interaction: an element with
+   container-type set doesn't reliably stretch to its flex parent's cross
+   size on its own — it needs an explicit width. */
+.ak-link-drawer .ak-form {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: var(--bp-space-6, 1.5rem);
+}
+
+/* The drawer surface already provides the card chrome — strip the Form
+   block's own card border/background so it doesn't double up. */
+.ak-link-drawer .ak-form__card {
+  padding: 0;
+  border: none;
+  background: none;
+}
+
+/* The drawer is always narrow (max 28rem) — always stack fields, regardless
+   of a field's configured 50%/100% width. */
+.ak-link-drawer .ak-form__fields {
+  grid-template-columns: 1fr;
+}
+
+.ak-link-drawer .ak-form__field {
+  grid-column: span 1;
+}

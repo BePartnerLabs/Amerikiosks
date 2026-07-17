@@ -92,6 +92,27 @@ describe('GAListener', () => {
     document.body.removeChild(el)
   })
 
+  it('includes formName when data-ga-form-name is present (e.g. generate_lead from a modal form drawer)', () => {
+    const gtag = vi.fn()
+    // biome-ignore lint/suspicious/noExplicitAny: assigning the global gtag mock for this test
+    ;(window as any).gtag = gtag
+
+    render(<GAListener />)
+    const el = document.createElement('button')
+    el.dataset.gaEvent = 'generate_lead'
+    el.dataset.gaLabel = 'Partnership Program submitted'
+    el.dataset.gaFormName = 'Partnership Program'
+    document.body.appendChild(el)
+    el.click()
+
+    expect(gtag).toHaveBeenCalledWith(
+      'event',
+      'generate_lead',
+      expect.objectContaining({ formName: 'Partnership Program' }),
+    )
+    document.body.removeChild(el)
+  })
+
   it('picks up the block/section from the nearest data-ga-block ancestor', () => {
     const gtag = vi.fn()
     // biome-ignore lint/suspicious/noExplicitAny: assigning the global gtag mock for this test

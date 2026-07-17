@@ -8,7 +8,7 @@ import type { Header as HeaderType } from '@/payload-types'
 import { MegaMenu } from './MegaMenu'
 
 export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
-  const navItems = data?.navItems || []
+  const navItems = (data?.navItems || []).filter((item) => !item.hidden)
   const [openId, setOpenId] = useState<string | null>(null)
 
   return (

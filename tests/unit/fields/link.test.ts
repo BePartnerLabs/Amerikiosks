@@ -44,6 +44,31 @@ describe('link field', () => {
     }
     expect(field.label).toBe('Custom Label')
   })
+
+  it('includes a "modal" option in the type radio', () => {
+    const field = link() as GroupField
+    const typeRow = field.fields.find(
+      (f) => f.type === 'row' && f.fields.some((sub) => 'name' in sub && sub.name === 'type'),
+    ) as { fields: { name?: string; options?: { value: string }[] }[] }
+    const typeField = typeRow.fields.find((f) => f.name === 'type')
+    expect(typeField?.options?.map((o) => o.value)).toContain('modal')
+  })
+
+  it('includes a modalForm relationship to "forms", shown only when type is modal', () => {
+    const field = link() as GroupField
+    const modalFormField = field.fields
+      .flatMap((f) => (f.type === 'row' ? f.fields : [f]))
+      .find((f) => 'name' in f && f.name === 'modalForm') as
+      | {
+          relationTo?: string
+          admin?: { condition?: (data: unknown, sibling: unknown) => boolean }
+        }
+      | undefined
+
+    expect(modalFormField?.relationTo).toBe('forms')
+    expect(modalFormField?.admin?.condition?.({}, { type: 'modal' })).toBe(true)
+    expect(modalFormField?.admin?.condition?.({}, { type: 'custom' })).toBe(false)
+  })
 })
 
 describe('linkGroup field', () => {

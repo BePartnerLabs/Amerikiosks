@@ -173,8 +173,11 @@ describe('MobileMenu', () => {
     render(<MobileMenu data={baseData} />)
     fireEvent.click(screen.getByRole('button', { name: /open navigation menu/i }))
     const cta = screen.getByRole('link', { name: /get a demo/i })
-    expect(cta).toHaveAttribute('data-ga-event', 'cta_click')
-    expect(cta).toHaveAttribute('data-ga-section', 'header')
+    // GAListener resolves data-ga-* via closest() click delegation, so the
+    // attributes living on the wrapping span (not the link itself) still work.
+    const gaEl = cta.closest('[data-ga-event]')
+    expect(gaEl).toHaveAttribute('data-ga-event', 'cta_click')
+    expect(gaEl).toHaveAttribute('data-ga-section', 'header')
   })
 
   it('renders nothing for CTA when url is empty', () => {

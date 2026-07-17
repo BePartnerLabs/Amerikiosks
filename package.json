@@ -33,7 +33,6 @@
     "@payloadcms/live-preview-react": "3.86.0",
     "@payloadcms/next": "3.86.0",
     "@payloadcms/plugin-form-builder": "3.86.0",
-    "@payloadcms/plugin-import-export": "3.86.0",
     "@payloadcms/plugin-mcp": "^3.86.0",
     "@payloadcms/plugin-nested-docs": "3.86.0",
     "@payloadcms/plugin-redirects": "3.86.0",

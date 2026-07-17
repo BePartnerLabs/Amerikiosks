@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Icon } from '@/components/Icon'
+import { CMSLink } from '@/components/Link'
 import type { Header } from '@/payload-types'
 import '../Nav/megamenu.css'
 import './mobile-menu.css'
@@ -44,7 +45,7 @@ const resolveMegaItemHref = (item: MegaItem): string => {
 export const MobileMenu: React.FC<MobileMenuProps> = ({ data }) => {
   const [open, setOpen] = useState(false)
   const [activePanel, setActivePanel] = useState<NavItem | null>(null)
-  const navItems = data?.navItems || []
+  const navItems = (data?.navItems || []).filter((item) => !item.hidden)
 
   const hamburgerRef = React.useRef<HTMLButtonElement>(null)
   const closeButtonRef = React.useRef<HTMLButtonElement>(null)
@@ -200,17 +201,24 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ data }) => {
               })}
             </div>
 
-            {data.cta?.url && (
-              <Link
-                href={data.cta.url}
-                className="ak-mobile-sheet__cta bp-btn bp-btn--primary"
+            {data.cta && (data.cta.type === 'modal' ? data.cta.modalForm : data.cta.url) && (
+              // biome-ignore lint/a11y/noStaticElementInteractions: delegation wrapper only — the actual interactive control is the inner CMSLink button/link, this onClick just also closes the mobile sheet on the same (bubbled) click
+              // biome-ignore lint/a11y/useKeyWithClickEvents: same reason — keyboard activation of the inner link/button already bubbles a click event to this wrapper
+              <span
                 data-ga-event="cta_click"
                 data-ga-section="header"
                 data-ga-label={data.cta.label ?? ''}
                 onClick={closeMenu}
               >
-                {data.cta.label}
-              </Link>
+                <CMSLink
+                  type={data.cta.type ?? 'custom'}
+                  url={data.cta.url}
+                  modalForm={data.cta.modalForm}
+                  label={data.cta.label}
+                  appearance="default"
+                  className="ak-mobile-sheet__cta"
+                />
+              </span>
             )}
           </div>
 

@@ -53,12 +53,17 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
                 label: 'Custom URL',
                 value: 'custom',
               },
+              {
+                label: 'Open a modal form',
+                value: 'modal',
+              },
             ],
           },
           {
             name: 'newTab',
             type: 'checkbox',
             admin: {
+              condition: (_, siblingData) => siblingData?.type !== 'modal',
               style: {
                 alignSelf: 'flex-end',
               },
@@ -91,6 +96,17 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
       label: 'Custom URL',
       required: true,
       localized: true,
+    },
+    {
+      name: 'modalForm',
+      type: 'relationship',
+      admin: {
+        condition: (_, siblingData) => siblingData?.type === 'modal',
+        description: 'Opens this form in a modal drawer instead of navigating.',
+      },
+      label: 'Form to open',
+      relationTo: 'forms',
+      required: true,
     },
   ]
 

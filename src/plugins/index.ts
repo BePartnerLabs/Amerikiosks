@@ -1,5 +1,4 @@
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
-import { importExportPlugin } from '@payloadcms/plugin-import-export'
 import { mcpPlugin } from '@payloadcms/plugin-mcp'
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
 import { redirectsPlugin } from '@payloadcms/plugin-redirects'
@@ -39,14 +38,6 @@ export const plugins: Plugin[] = [
       faqItems: { enabled: { find: true } },
       machines: { enabled: { find: true, create: true, update: true, delete: true } },
     },
-  }),
-  importExportPlugin({
-    collections: [
-      { slug: 'pages' },
-      { slug: 'insights' },
-      { slug: 'media' },
-      { slug: 'categories' },
-    ],
   }),
   // Use Cloudflare R2 (S3-compatible) when credentials are set.
   // Locally, Payload falls back to the staticDir in Media.ts (/public/media).

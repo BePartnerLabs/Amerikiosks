@@ -17,6 +17,15 @@ export const Header: GlobalConfig = {
           appearances: false,
         }),
         {
+          name: 'hidden',
+          type: 'checkbox',
+          defaultValue: false,
+          label: 'Hidden',
+          admin: {
+            description: 'Temporarily remove this item from the nav without deleting it.',
+          },
+        },
+        {
           name: 'hasMegaMenu',
           type: 'checkbox',
           defaultValue: false,
@@ -126,11 +135,43 @@ export const Header: GlobalConfig = {
           defaultValue: 'Start a Partnership',
         },
         {
+          name: 'type',
+          type: 'radio',
+          admin: {
+            layout: 'horizontal',
+          },
+          defaultValue: 'custom',
+          options: [
+            {
+              label: 'URL',
+              value: 'custom',
+            },
+            {
+              label: 'Open a modal form',
+              value: 'modal',
+            },
+          ],
+        },
+        {
           name: 'url',
           type: 'text',
           label: 'Button URL',
           required: true,
           defaultValue: '/start-a-partnership',
+          admin: {
+            condition: (_, siblingData) => (siblingData?.type ?? 'custom') === 'custom',
+          },
+        },
+        {
+          name: 'modalForm',
+          type: 'relationship',
+          admin: {
+            condition: (_, siblingData) => siblingData?.type === 'modal',
+            description: 'Opens this form in a modal drawer instead of navigating.',
+          },
+          label: 'Form to open',
+          relationTo: 'forms',
+          required: true,
         },
       ],
     },
