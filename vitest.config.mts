@@ -12,12 +12,7 @@ export default defineConfig({
     // Cap worker concurrency — running all ~90 files fully in parallel starves
     // the Local API integration test (real Postgres connection) of CPU and
     // causes its beforeAll hook to time out under load.
-    poolOptions: {
-      threads: {
-        maxThreads: 4,
-        minThreads: 1,
-      },
-    },
+    maxWorkers: 4,
     server: {
       deps: {
         inline: [/@payloadcms/, /next-intl/],
