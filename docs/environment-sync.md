@@ -1,55 +1,69 @@
-# Sincronizar contenido entre ambientes (import/export)
+# Import/export: qué sirve y qué no en este proyecto
 
 Usa el plugin `@payloadcms/plugin-import-export`, disponible por collection en
 `/admin/collections/<slug>` (botones Export/Import arriba a la derecha del
 listado). Habilitado hoy para: `pages`, `insights`, `media`, `categories`,
 `brands`, `claims`, `forms`.
 
-## Lo que el plugin NO hace
+**Este plugin NO es una herramienta de sincronización entre ambientes
+(prod↔staging).** Verificado leyendo el código real de import
+(`batchProcessor.js` del plugin): el comportamiento por modo hace que no
+sea seguro para ese caso de uso.
 
-- **No mueve binarios.** Exportar `media` solo trae los campos del
-  documento (filename, url, alt, mimeType, dimensiones) — no el archivo en
-  sí. Los bytes viven en el storage (S3/R2 en prod, disco local en dev).
-  Si origen y destino no comparten el mismo bucket, hay que copiar los
-  archivos aparte (ej. `aws s3 sync` bucket a bucket) además de importar
-  los documentos.
-- **No resuelve dependencias entre collections.** Los campos `relationship`
-  son foreign keys reales en Postgres — importar un doc que referencia un
-  ID que todavía no existe en destino falla con un error de integridad
-  referencial. El orden de importación es responsabilidad tuya.
+## Por qué no sirve para sincronizar ambientes
 
-## Orden recomendado (dependencias primero)
+Cada environment tiene su propia secuencia de IDs autogenerados en
+Postgres (`SERIAL`), completamente independiente entre sí.
 
-1. **`media`** — no depende de nada.
-2. **`categories`** — no depende de nada.
-3. **`forms`** — no depende de nada.
-4. **`brands`** — no depende de nada.
-5. **`insights`** — depende de `media` (imágenes) y `categories`.
-6. **`pages`** — depende de `media`, `insights` (si hay referencias
-   internas tipo `reference` en algún link), y `forms` (si algún link es
-   `type: modal`).
-7. **`claims`** — depende de `brands`.
+- **Modo `create`** (default): siempre llama `payload.create()` — nunca
+  busca un doc existente, así que nunca sobreescribe nada. Pero por eso
+  mismo, cada import genera **documentos duplicados con IDs nuevos**, y
+  cualquier campo `relationship` en los datos importados (media, forms,
+  otras páginas) sigue apuntando a los IDs del ambiente de **origen** —
+  que en destino no existen o, peor, pertenecen a otro documento
+  completamente distinto. Relaciones rotas garantizadas.
+- **Modo `update`/`upsert`** con `matchField: 'id'` (el default): acá sí
+  busca un doc existente por ese campo (`payload.find({ [matchField]:
+  { equals: matchValue } })`) y lo **actualiza in-place** si lo
+  encuentra. Como los IDs son independientes por ambiente, un `id`
+  coincidente en destino casi seguro pertenece a un documento **no
+  relacionado** — el import lo sobreescribe igual. Este es el modo
+  realmente peligroso: puede pisar contenido de producción sin ninguna
+  relación con lo que pensás estar actualizando.
 
-Si tu deploy no toca todas las collections, solo hace falta respetar el
-orden entre las que sí cambiaron.
+En ningún modo el plugin mueve los binarios de `media` — solo exporta los
+campos del documento (filename, url, alt, mimeType, dimensiones), nunca el
+archivo en sí.
 
-## Checklist por sincronización
+## Dónde SÍ es útil
 
-- [ ] Exportar collections en el orden de arriba, desde el ambiente origen.
-- [ ] Si `media` cambió: sincronizar también los archivos del bucket
-      (fuera de Payload).
-- [ ] Importar en destino, mismo orden.
-- [ ] Correr `pnpm payload migrate` en destino si hay migraciones de schema
-      pendientes (el import/export no reemplaza las migraciones — son dos
-      cosas distintas: schema vs. contenido).
-- [ ] Verificar visualmente 2–3 páginas clave en destino después del
-      import (relaciones rotas suelen notarse ahí, no en el import mismo).
+- **Edición masiva dentro del mismo ambiente**: exportar `brands` (o
+  cualquier collection), editar el CSV/JSON, reimportar en modo
+  `update`/`upsert` — acá los IDs SÍ coinciden porque es el mismo DB, no
+  hay riesgo de colisión con contenido ajeno.
+- **Carga inicial en un ambiente nuevo y vacío**: modo `create` en un DB
+  recién migrado sin datos previos — no hay colisión de IDs posible
+  porque no hay nada todavía. Sigue sin resolver relaciones entre
+  collections por sí solo (ver abajo), pero al menos no hay riesgo de
+  sobreescritura.
 
-## Por qué no automatizarlo (por ahora)
+## Si igual se necesita mover contenido entre ambientes
 
-Automatizar esto (un script que exporte/importe todo en el orden correcto)
-es viable, pero antes de escribirlo conviene confirmar con un ciclo manual
-que el plugin efectivamente remapea IDs entre ambientes con datos
-distintos (no lo hemos probado todavía). Si el remapeo de IDs no es
-confiable, un script automatizado fallaría silenciosamente de la misma
-forma que un import manual mal ordenado.
+No usar import/export para esto. Alternativas reales:
+- Restaurar un dump/snapshot de Postgres completo (pg_dump/pg_restore) —
+  preserva IDs y relaciones consistentemente porque mueve TODO el schema
+  + datos de una vez, no collection por collection.
+- Sincronizar el bucket S3/R2 aparte (los binarios nunca viajan con
+  Payload de ningún modo).
+
+## Orden de dependencias (si de todos modos se usa create, en un ambiente vacío)
+
+1. `media`, `categories`, `forms`, `brands` — no dependen de nada.
+2. `insights` — depende de `media` y `categories`.
+3. `pages` — depende de `media`, `insights` (si hay links `reference`) y
+   `forms` (si algún link es `type: modal`).
+4. `claims` — depende de `brands`.
+
+Los campos `relationship` son foreign keys reales en Postgres — importar
+fuera de este orden falla con un error de integridad referencial, igual
+que ya vimos con el sistema de seed.
