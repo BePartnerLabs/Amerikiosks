@@ -1,5 +1,28 @@
 # Seed System — Context for Claude
 
+**Solo para desarrollo local.** No hay UI en `/admin` para correr el seed —
+staging/producción se cargan y mantienen vía el plugin de import/export de
+Payload, no con este sistema. El seed nunca debe correr contra una DB con
+contenido real.
+
+## Cómo correr el seed
+
+Con el server local corriendo (`pnpm dev`), desde la consola del navegador
+(F12) en cualquier página del sitio, o con `curl`:
+
+```js
+// Seed completo
+await fetch('/next/seed/run', { method: 'POST' }).then((r) => r.json())
+
+// Solo una parte (ver objeto `parts` en route.ts para las keys disponibles)
+await fetch('/next/seed/run?part=home', { method: 'POST' }).then((r) => r.json())
+```
+
+```bash
+curl -X POST http://localhost:3000/next/seed/run
+curl -X POST "http://localhost:3000/next/seed/run?part=home"
+```
+
 ## Estructura
 
 | Archivo | Propósito |
@@ -7,7 +30,6 @@
 | `src/app/(frontend)/next/seed/run/route.ts` | Endpoint POST — despacha por `?part=` |
 | `src/endpoints/seed/pages/utils.ts` | `upsertPage()` — crea/actualiza EN, luego ES |
 | `src/endpoints/seed/uploadMedia.ts` | Sube imagen de `public/seed-assets/`, idempotente |
-| `src/components/SeedPanel/index.tsx` | Botones en el dashboard — agregar entrada aquí |
 | `public/seed-assets/` | Todas las imágenes del seed viven aquí |
 
 ## Agregar un nuevo seed
@@ -15,7 +37,6 @@
 1. Crear `src/endpoints/seed/pages/<name>.ts`
 2. Exportar `async function seed<Name>(payload, req)`
 3. Registrar en `route.ts` → objeto `parts`: `'my-part': seedMyPart`
-4. Agregar en `SeedPanel/index.tsx` → array `PARTS`: `{ key: 'my-part', label: 'My Part' }`
 
 ## uploadMedia — idempotente por filename
 
@@ -229,7 +250,6 @@ Las FKs en Postgres son integers. Pasar strings causa errores de validación sil
 | Pasar `layout: []` en datos ES | Layout no está localizado — omitirlo; `upsertPage` lo strip automáticamente |
 | No registrar seed en `seedPages` | "Seed all" crea solo el stub; la página completa nunca se seedea |
 | No agregar stem al `seedStems` en `route.ts` | Error "blob already exists" al re-seedear tras reset de DB |
-| No agregar botón en `SeedPanel/index.tsx` | El botón no aparece en el dashboard |
 | Usar `String()` para IDs FK | Postgres rechaza strings en integer FKs |
 | `revalidatePage` con slug sin prefijo de locale | En producción, el ISR no invalida la URL ES — usar `req.locale` para construir el path |
 | Inyectar `id` de la row EN en `items` de un block con `localized: true` en el array (ej. `cardGrid`) | Payload duplica la row entera por locale en la misma tabla base (sin `_locales` aparte) — pasar el `id` de EN colisiona con la row EN existente → `ValidationError: Value must be unique` en `id`. Solo inyectar `id` cuando el array NO es `localized: true` (ej. `audienceShowcase`, donde solo los subcampos como `cta`/`label` son localized vía tabla `_locales`); para esos sí hace falta para que el update sea in-place y no vacíe el valor EN. Ver `upsertPage` en `utils.ts` (`itemsArrayIsLocalized`). |

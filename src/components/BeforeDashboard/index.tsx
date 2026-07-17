@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { getPayload } from 'payload'
 import type React from 'react'
 
-import { SeedButton } from './SeedButton'
 import './index.scss'
 
 const baseClass = 'before-dashboard'
@@ -35,21 +34,14 @@ const BeforeDashboard: React.FC = async () => {
       </Banner>
       <ul className={`${baseClass}__instructions`}>
         <li>
-          <SeedButton />
-          {
-            ' — loads the header navigation, pages, and base content. Run this whenever you need to reset the site structure.'
-          }
-        </li>
-        <li>
-          {'Then '}
           <Link
             href="/"
             target="_blank"
             rel="noopener"
           >
-            visit the website
+            Visit the website
           </Link>
-          {' to preview the results.'}
+          {' to preview the site.'}
         </li>
       </ul>
     </div>

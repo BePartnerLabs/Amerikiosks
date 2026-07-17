@@ -37,7 +37,6 @@ export default buildConfig({
       },
       beforeLogin: ['@/components/BeforeLogin'],
       beforeDashboard: ['@/components/BeforeDashboard'],
-      afterNavLinks: ['@/components/SeedPanel'],
     },
     importMap: {
       baseDir: path.resolve(dirname),
