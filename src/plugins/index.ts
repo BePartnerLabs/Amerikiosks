@@ -46,6 +46,9 @@ export const plugins: Plugin[] = [
       { slug: 'insights' },
       { slug: 'media' },
       { slug: 'categories' },
+      { slug: 'brands' },
+      { slug: 'claims' },
+      { slug: 'forms' },
     ],
   }),
   // Use Cloudflare R2 (S3-compatible) when credentials are set.
