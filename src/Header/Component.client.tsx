@@ -5,6 +5,7 @@ import Link from 'next/link'
 import type React from 'react'
 import { useEffect, useRef } from 'react'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
+import { CMSLink } from '@/components/Link'
 import { Logo } from '@/components/Logo/Logo'
 import type { Header } from '@/payload-types'
 import { HeaderNav } from './Nav'
@@ -61,16 +62,21 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
 
             <div className="bp-header__actions">
               <LanguageSwitcher />
-              {data.cta?.url && (
-                <Link
-                  href={data.cta.url}
-                  className="bp-btn bp-btn--primary bp-header__cta--desktop"
+              {data.cta && (data.cta.type === 'modal' ? data.cta.modalForm : data.cta.url) && (
+                <span
                   data-ga-event="cta_click"
                   data-ga-section="header"
                   data-ga-label={data.cta.label ?? ''}
                 >
-                  {data.cta.label}
-                </Link>
+                  <CMSLink
+                    type={data.cta.type ?? 'custom'}
+                    url={data.cta.url}
+                    modalForm={data.cta.modalForm}
+                    label={data.cta.label}
+                    appearance="default"
+                    className="bp-header__cta--desktop"
+                  />
+                </span>
               )}
               <MobileMenu data={data} />
             </div>
