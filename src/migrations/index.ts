@@ -15,6 +15,8 @@ import * as migration_20260706_025859_remove_specs_features_layout_add_hero_fiel
 import * as migration_20260706_212143_add_mcp_plugin from './20260706_212143_add_mcp_plugin';
 import * as migration_20260707_175738_add_machines_projects_seo_meta from './20260707_175738_add_machines_projects_seo_meta';
 import * as migration_20260708_144541_add_brands_claims_support_hub from './20260708_144541_add_brands_claims_support_hub';
+import * as migration_20260717_002705_add_modal_form_link_type from './20260717_002705_add_modal_form_link_type';
+import * as migration_20260717_015506_add_header_cta_modal_type from './20260717_015506_add_header_cta_modal_type';
 
 export const migrations = [
   {
@@ -100,6 +102,16 @@ export const migrations = [
   {
     up: migration_20260708_144541_add_brands_claims_support_hub.up,
     down: migration_20260708_144541_add_brands_claims_support_hub.down,
-    name: '20260708_144541_add_brands_claims_support_hub'
+    name: '20260708_144541_add_brands_claims_support_hub',
+  },
+  {
+    up: migration_20260717_002705_add_modal_form_link_type.up,
+    down: migration_20260717_002705_add_modal_form_link_type.down,
+    name: '20260717_002705_add_modal_form_link_type',
+  },
+  {
+    up: migration_20260717_015506_add_header_cta_modal_type.up,
+    down: migration_20260717_015506_add_header_cta_modal_type.down,
+    name: '20260717_015506_add_header_cta_modal_type'
   },
 ];
