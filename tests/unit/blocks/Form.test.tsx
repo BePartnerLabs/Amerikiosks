@@ -137,6 +137,19 @@ describe('FormBlock', () => {
     expect(screen.queryByLabelText('email')).toBeNull()
   })
 
+  it('carries data-ga-event="generate_lead" and the form title on the success node', () => {
+    mutationState = { isPending: false, isSuccess: true, error: null }
+    render(
+      <FormBlock
+        enableIntro={false}
+        form={{ ...baseForm, title: 'Partnership Program' } as never}
+      />,
+    )
+    const successNode = screen.getByTestId('form-block-success')
+    expect(successNode).toHaveAttribute('data-ga-event', 'generate_lead')
+    expect(successNode).toHaveAttribute('data-ga-form-name', 'Partnership Program')
+  })
+
   it('shows an error message when the mutation fails', () => {
     mutationState = { isPending: false, isSuccess: false, error: new Error('Boom') }
     render(

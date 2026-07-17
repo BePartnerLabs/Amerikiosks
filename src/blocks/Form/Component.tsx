@@ -4,7 +4,7 @@ import type { DefaultTypedEditorState } from '@payloadcms/richtext-lexical'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import type React from 'react'
-import { useCallback } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import RichText from '@/components/RichText'
 import { Button } from '@/components/ui/button'
@@ -28,7 +28,14 @@ export const FormBlock: React.FC<
   const {
     enableIntro,
     form: formFromProps,
-    form: { id: formID, confirmationMessage, confirmationType, redirect, submitButtonLabel } = {},
+    form: {
+      id: formID,
+      confirmationMessage,
+      confirmationType,
+      redirect,
+      submitButtonLabel,
+      title,
+    } = {},
     introContent,
   } = props
 
@@ -67,6 +74,16 @@ export const FormBlock: React.FC<
 
   const onSubmit = useCallback((data: FormFieldBlock[]) => mutate(data), [mutate])
 
+  // GAListener only listens for clicks, so an async form success (no click
+  // of its own) needs a synthetic one on mount to dispatch generate_lead —
+  // same pattern as ClaimForm's success node.
+  const successRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (hasSubmitted) {
+      successRef.current?.click()
+    }
+  }, [hasSubmitted])
+
   return (
     <div className="ak-form">
       {enableIntro && introContent && !hasSubmitted && (
@@ -79,7 +96,14 @@ export const FormBlock: React.FC<
       <div className="ak-form__card">
         <FormProvider {...formMethods}>
           {!isLoading && hasSubmitted && confirmationType === 'message' && (
-            <RichText data={confirmationMessage} />
+            <div
+              ref={successRef}
+              data-testid="form-block-success"
+              data-ga-event="generate_lead"
+              data-ga-form-name={title}
+            >
+              <RichText data={confirmationMessage} />
+            </div>
           )}
           {isLoading && !hasSubmitted && (
             <p className="ak-form__loading">Loading, please wait...</p>

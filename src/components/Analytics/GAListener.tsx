@@ -11,6 +11,7 @@ type Gtag = (
     label?: string
     locale?: string
     machineId?: string
+    formName?: string
   },
 ) => void
 
@@ -28,6 +29,7 @@ export function GAListener() {
         label: el.dataset.gaLabel || el.innerText.trim().slice(0, 100) || undefined,
         locale: document.documentElement.lang || undefined,
         machineId: el.dataset.gaMachineId ?? undefined,
+        formName: el.dataset.gaFormName ?? undefined,
       })
     }
     document.addEventListener('click', handler)
