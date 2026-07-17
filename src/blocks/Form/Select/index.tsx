@@ -1,25 +1,18 @@
 import type { SelectField } from '@payloadcms/plugin-form-builder/types'
 import type React from 'react'
-import type { Control, FieldErrorsImpl } from 'react-hook-form'
-import { Controller } from 'react-hook-form'
+import type { FieldErrorsImpl, FieldValues, UseFormRegister } from 'react-hook-form'
 import { Label } from '@/components/ui/label'
-import {
-  Select as SelectComponent,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 
 import { FormError } from '../Error'
 import { Width } from '../Width'
+import './select.css'
 
 export const Select: React.FC<
   SelectField & {
-    control: Control
     errors: Partial<FieldErrorsImpl>
+    register: UseFormRegister<FieldValues>
   }
-> = ({ name, control, errors, label, options, required, width, defaultValue }) => {
+> = ({ name, defaultValue, errors, label, options, register, required, width }) => {
   return (
     <Width width={width}>
       <Label htmlFor={name}>
@@ -30,41 +23,27 @@ export const Select: React.FC<
           </span>
         )}
       </Label>
-      <Controller
-        control={control}
-        defaultValue={defaultValue}
-        name={name}
-        render={({ field: { onChange, value } }) => {
-          const controlledValue = options.find((t) => t.value === value)
-
-          return (
-            <SelectComponent
-              onValueChange={(val) => onChange(val)}
-              value={controlledValue?.value}
-            >
-              <SelectTrigger
-                className="ak-form__select-trigger"
-                id={name}
-              >
-                <SelectValue placeholder={label} />
-              </SelectTrigger>
-              <SelectContent>
-                {options.map(({ label, value }) => {
-                  return (
-                    <SelectItem
-                      key={value}
-                      value={value}
-                    >
-                      {label}
-                    </SelectItem>
-                  )
-                })}
-              </SelectContent>
-            </SelectComponent>
-          )
-        }}
-        rules={{ required }}
-      />
+      <select
+        className="ak-form__native-select"
+        defaultValue={defaultValue ?? ''}
+        id={name}
+        {...register(name, { required })}
+      >
+        <option
+          disabled
+          value=""
+        >
+          {label}
+        </option>
+        {options.map(({ label: optionLabel, value }) => (
+          <option
+            key={value}
+            value={value}
+          >
+            {optionLabel}
+          </option>
+        ))}
+      </select>
       {errors[name] && <FormError name={name} />}
     </Width>
   )

@@ -1,0 +1,53 @@
+/* ═══════════════════════════════════════════════════════════════
+   Form Select field — native <select>, styled via the browser's
+   Customizable Select API (appearance: base-select + ::picker(select)).
+   Unsupported browsers (no fallback needed) simply render the OS's
+   default native dropdown — still fully functional, just unstyled.
+   ═══════════════════════════════════════════════════════════════ */
+
+.ak-form__native-select {
+  appearance: base-select;
+  width: 100%;
+  padding-inline: var(--bp-space-3, 0.75rem);
+  font-family: inherit;
+  font-size: var(--bp-text-sm, 0.875rem);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  --_background: var(--form-input-background, var(--ak-input-background));
+  --_border-color: var(--form-input-border-color, var(--ak-input-border));
+  --_border-radius: var(--form-input-radius, var(--ak-input-radius));
+  --_height: var(--form-input-height, var(--ak-input-height));
+  --_color: var(--ak-color-heading);
+  background-color: var(--_background);
+  border: 1px solid var(--_border-color);
+  border-radius: var(--_border-radius);
+  height: var(--_height);
+  color: var(--_color);
+}
+
+.ak-form__native-select::picker(select) {
+  appearance: base-select;
+  --_background: var(--form-input-background, var(--ak-input-background));
+  --_border-color: var(--form-input-border-color, var(--ak-input-border));
+  --_border-radius: var(--form-input-radius, var(--ak-input-radius));
+  background-color: var(--_background);
+  border: 1px solid var(--_border-color);
+  border-radius: var(--_border-radius);
+  padding: var(--bp-space-1, 0.25rem);
+}
+
+.ak-form__native-select option {
+  padding: var(--bp-space-2, 0.5rem) var(--bp-space-3, 0.75rem);
+  border-radius: var(--bp-radius-sm, 0.25rem);
+
+  --_color: var(--ak-color-heading);
+  color: var(--_color);
+}
+
+.ak-form__native-select option:hover,
+.ak-form__native-select option:focus {
+  --_background: var(--ak-color-border);
+  background-color: var(--_background);
+}
