@@ -48,7 +48,9 @@ export const RenderBlocks: React.FC<{
     return (
       <Fragment>
         {blocks.map((block) => {
-          const { blockType } = block
+          const { blockType, blockName } = block
+
+          if (blockName?.trim().toLowerCase() === 'hidden') return null
 
           if (blockType && blockType in blockComponents) {
             const Block = blockComponents[blockType] as React.ComponentType<Record<string, unknown>>

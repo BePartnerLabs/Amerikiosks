@@ -1,0 +1,96 @@
+# Client Manual — Outline
+
+Working outline for the final content-editor usage manual. Each bullet is a topic to expand into its own section (screenshots, step-by-step) once we sit down to write the manual properly. Not for developers — this is the doc a non-technical content editor at Amerikiosks will use day to day in `/admin`.
+
+---
+
+## 1. Getting started
+
+- Logging in to `/admin`, resetting a forgotten password
+- Layout of the admin UI: sidebar collections vs. globals, the top account menu
+- Draft vs. Published state — what "Save draft" vs. "Publish" actually does
+- Live Preview — previewing a page before it's public
+
+## 2. Pages
+
+- Creating a new page, setting its slug and title
+- The Layout Builder: adding, reordering (drag), and deleting blocks
+- **Hiding a block without deleting it** — name it exactly `hidden` (see `docs/ROADMAP.md` → Client Manual)
+- SEO tab per page: meta title, description, share image
+- Parent/child pages (nested docs) and how that affects breadcrumbs
+
+## 3. Layout blocks — what each one is for
+
+- Hero variants (High/Medium/Low Impact) — when to use which
+- Card Grid — compact / icon / pillar variants, when each fits
+- Trust Strip — the auto-scrolling logo strip, adding/reordering partners
+- Content, Media, CTA, Archive — general-purpose blocks
+- Audience Showcase, Formats Grid, Process Steps — structured multi-item blocks
+- FAQ + Form, Claim Form, Support Hub, Machines Listing — specialized blocks
+- Projects Showcase, Insights Showcase — pull from other collections, not manually authored
+
+## 4. The Link field — three ways a button/link can behave
+
+- Internal page link vs. custom URL vs. **"Open a modal form"**
+- When to use the modal-form type (e.g. "Start a Partnership") vs. a real page
+
+## 5. Bold text in headings
+
+- The `**text**` syntax to bold part of a block heading (SectionHeader-based blocks)
+
+## 6. Insights (blog/news)
+
+- Creating a post, categories, authors
+- Draft/preview/publish workflow (same as Pages)
+- How Insights feeds the site search index automatically (nothing to configure)
+
+## 7. Other collections
+
+- Machines catalog — adding a machine, tags, images
+- FAQ Items — reusable across pages via the FAQ block
+- Partners — logos shown in Trust Strip, the `order` field
+- Projects — case studies shown in Projects Showcase
+- Categories — taxonomy for Insights
+
+## 8. Forms
+
+- Creating/editing a form (form-builder plugin): fields, confirmation message, notification email
+- Connecting a form to a button via the Link field's modal type
+- Where form submissions go / how to check them
+
+## 9. Header & Footer (site-wide)
+
+- Editing nav items, the mega menu panels
+- **Hiding a nav item** without deleting it (existing `hidden` checkbox on nav items)
+- The header CTA button — URL vs. modal form
+- Footer links and content
+
+## 10. Settings (site-wide)
+
+- `noIndex` flag — hiding the entire site from search engines (staging use)
+- Any other global toggles
+
+## 11. Localization (EN / ES)
+
+- How to switch locale in the admin
+- What's shared vs. per-locale (layout structure is shared; most text fields are per-locale)
+- Translating a page vs. creating a new one
+
+## 12. Media library
+
+- Uploading images, required alt text
+- Image sizes Payload generates automatically (don't re-upload for each use)
+
+## 13. Redirects
+
+- Adding a redirect (old URL → new URL)
+- When Payload creates one automatically vs. when to add one by hand
+
+## 14. Publishing checklist
+
+- Steps before going live with a change (preview, SEO check, mobile check)
+- Who to contact for something outside the CMS (dev changes, DNS, hosting)
+
+---
+
+*Source material already captured in code comments / `docs/ROADMAP.md` should be cross-linked here rather than duplicated once each section is written out.*

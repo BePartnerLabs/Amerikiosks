@@ -1,6 +1,12 @@
+.ak-section-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--md-size-space-24);
+}
+
 .ak-section-header__eyebrow {
   --_color: var(--section-eyebrow-color, var(--ak-eyebrow-color));
-  margin: 0 0 var(--md-size-space-12);
+  margin: 0;
   font-size: 0.875rem;
   line-height: 1.5;
   font-weight: 600;

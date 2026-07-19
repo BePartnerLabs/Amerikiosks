@@ -74,4 +74,30 @@ describe('RenderBlocks', () => {
     )
     expect(screen.queryByText(/./)).toBeNull()
   })
+
+  it('skips a block whose blockName is exactly "hidden"', () => {
+    render(
+      <RenderBlocks
+        blocks={
+          [{ blockType: 'cta', blockName: 'Hidden', id: '1' }] as unknown as NonNullable<
+            Page['layout']
+          >
+        }
+      />,
+    )
+    expect(screen.queryByText('cta')).toBeNull()
+  })
+
+  it('renders a block whose blockName merely contains "hidden"', () => {
+    render(
+      <RenderBlocks
+        blocks={
+          [
+            { blockType: 'cta', blockName: 'Hidden promo (old)', id: '1' },
+          ] as unknown as NonNullable<Page['layout']>
+        }
+      />,
+    )
+    expect(screen.getByText('cta')).toBeInTheDocument()
+  })
 })

@@ -46,6 +46,12 @@ Future ideas and planned improvements for the Amerikiosks website. Items are gro
 
 ---
 
+## Client Manual (final usage guide)
+
+- **Hiding a layout block without deleting it** — set a block's "Block Name" (admin field, top of each block in the Layout list) to exactly `hidden` (case-insensitive, e.g. `Hidden`) and it stops rendering on the page while staying fully configured. Useful for sections still waiting on content that shouldn't block a release. A name that merely *contains* "hidden" (e.g. `Hidden promo (old)`) still renders — only an exact match toggles it off. Implemented in `src/blocks/RenderBlocks.tsx`.
+
+---
+
 ## Launch checklist (WordPress decommission)
 
 - **Scan a real QR code on a deployed kiosk** against a preview deploy before decommissioning WordPress — confirms the `/customer-service/request-a-refund?machine_id=...` URL printed on physical kiosks still resolves correctly end to end.
