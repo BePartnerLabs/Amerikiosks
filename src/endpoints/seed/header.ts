@@ -1,5 +1,7 @@
 import type { Payload, PayloadRequest } from 'payload'
 
+import { ensureStartAPartnershipForm } from './start-a-partnership-form'
+
 const findPageId = async (
   payload: Payload,
   req: PayloadRequest,
@@ -17,6 +19,8 @@ const findPageId = async (
 
 export const seedHeader = async (payload: Payload, req: PayloadRequest): Promise<void> => {
   payload.logger.info('— Seeding header...')
+
+  const startPartnershipFormId = await ensureStartAPartnershipForm(payload, req)
 
   const [
     forBrandsId,
@@ -56,7 +60,11 @@ export const seedHeader = async (payload: Payload, req: PayloadRequest): Promise
     slug: 'header',
     locale: 'en',
     data: {
-      cta: { label: 'Start a Partnership', url: '/start-a-partnership' },
+      cta: {
+        label: 'Start a Partnership',
+        type: 'modal',
+        modalForm: startPartnershipFormId,
+      },
       navItems: [
         {
           link: { label: 'Solutions', ...refOr(solutionsId, '/solutions') },
@@ -181,7 +189,11 @@ export const seedHeader = async (payload: Payload, req: PayloadRequest): Promise
     slug: 'header',
     locale: 'es',
     data: {
-      cta: { label: 'Iniciar Partnership', url: '/start-a-partnership' },
+      cta: {
+        label: 'Iniciar Partnership',
+        type: 'modal',
+        modalForm: startPartnershipFormId,
+      },
       navItems: [
         {
           id: navItems[0]?.id,

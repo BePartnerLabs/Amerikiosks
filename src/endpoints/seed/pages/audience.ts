@@ -39,7 +39,12 @@ const audiencePages = [
     slugEs: 'para-marcas-emergentes',
     title: 'For Emerging Brands',
     titleEs: 'Para Marcas Emergentes',
-    heroAsset: 'hero-for-brands.png',
+    // Placeholder — reuses the agencies asset only to avoid an exact filename
+    // collision with 'for-brands' (uploadMedia is idempotent by filename, so
+    // sharing 'hero-for-brands.png' made both pages resolve to the same media
+    // doc, which is what produced the duplicate id in the home Audience
+    // Showcase). Swap for a dedicated emerging-brands photo when available.
+    heroAsset: 'hero-for-agencies.png',
     heroAlt: 'Emerging brand kiosk launch in a premium venue',
     description: 'Test real-world retail presence before scaling into stores.',
     descriptionEs: 'Prueba tu presencia retail en el mundo real antes de escalar a tiendas.',

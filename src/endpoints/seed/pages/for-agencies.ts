@@ -1,6 +1,12 @@
 import path from 'node:path'
 import type { Payload, PayloadRequest } from 'payload'
-import { agencyActivationForm } from '../agency-activation-form'
+import {
+  agencyActivationForm,
+  agencyActivationFormConfirmationMessageEs,
+  agencyActivationFormFieldDefs,
+  agencyActivationFormSubmitButtonLabelEs,
+} from '../agency-activation-form'
+import { findOrCreateForm, translateFormEs } from '../translateForm'
 import { uploadMedia } from '../uploadMedia'
 import { upsertPage } from './utils'
 
@@ -315,21 +321,20 @@ export const seedForAgencies = async (payload: Payload, req: PayloadRequest): Pr
     })
   }
 
-  let agencyFormId: number
-  const existingForm = await payload.find({
-    collection: 'forms',
-    where: { title: { equals: agencyActivationForm.title } },
-    limit: 1,
+  const { id: agencyFormId, fields: agencyFormFields } = await findOrCreateForm(
+    payload,
     req,
-  })
-  if (existingForm.totalDocs > 0) {
-    agencyFormId = existingForm.docs[0]?.id as number
-    payload.logger.info('  Agency Activation Form exists, skipping creation')
-  } else {
-    const created = await payload.create({ collection: 'forms', data: agencyActivationForm, req })
-    agencyFormId = created.id as number
-    payload.logger.info('  Created Agency Activation Form')
-  }
+    agencyActivationForm,
+  )
+  await translateFormEs(
+    payload,
+    req,
+    agencyFormId,
+    agencyFormFields,
+    agencyActivationFormFieldDefs,
+    agencyActivationFormSubmitButtonLabelEs,
+    agencyActivationFormConfirmationMessageEs,
+  )
 
   const heroImage = await uploadMedia(
     payload,

@@ -1,6 +1,7 @@
 import path from 'node:path'
 import type { Payload, PayloadRequest } from 'payload'
 
+import { ensureStartAPartnershipForm } from '../start-a-partnership-form'
 import { uploadMedia } from '../uploadMedia'
 import { upsertPage } from './utils'
 
@@ -12,6 +13,8 @@ export const seedHome = async (
   audienceMediaIds: Record<string, number> = {},
 ): Promise<void> => {
   payload.logger.info('— Seeding home page...')
+
+  const startPartnershipFormId = await ensureStartAPartnershipForm(payload, req)
 
   const audienceSlugs = ['for-brands', 'for-venues', 'for-agencies', 'for-emerging-brands'] as const
   const audienceResolved = Object.fromEntries(
@@ -95,7 +98,16 @@ export const seedHome = async (
     type: 'highImpact' as const,
     media: heroImage.id,
     backgroundVideo: heroVideo.id,
-    links: [],
+    links: [
+      {
+        link: {
+          type: 'modal' as const,
+          modalForm: startPartnershipFormId,
+          label: 'Start A Partnership with us',
+          appearance: 'default' as const,
+        },
+      },
+    ],
     richText: {
       root: {
         type: 'root' as const,
@@ -167,6 +179,16 @@ export const seedHome = async (
 
   const heroDataEs = {
     ...heroData,
+    links: [
+      {
+        link: {
+          type: 'modal' as const,
+          modalForm: startPartnershipFormId,
+          label: 'Inicia un Partnership con nosotros',
+          appearance: 'default' as const,
+        },
+      },
+    ],
     richText: {
       root: {
         type: 'root' as const,
@@ -240,7 +262,7 @@ export const seedHome = async (
     blockType: 'cardGrid' as const,
     blockName: 'Card Grid — Home Value Props',
     variant: 'compact' as const,
-    heading: 'The <strong>right moment</strong>\ndoes more.',
+    heading: 'The **right moment**\ndoes more.',
     items: [
       {
         title: 'Premium placement',
@@ -267,7 +289,7 @@ export const seedHome = async (
 
   const valuePropsBlockEs = {
     ...valuePropsBlock,
-    heading: 'El momento correcto\nhace más.',
+    heading: 'El **momento correcto**\nhace más.',
     items: [
       {
         title: 'Ubicación premium',

@@ -25,6 +25,10 @@ export const TrustStrip: Block = {
       label: 'Heading',
       required: true,
       localized: true,
+      admin: {
+        description:
+          'Para destacar una palabra o frase en negrita, envuélvela en asteriscos dobles: **texto**',
+      },
     },
     {
       name: 'limit',

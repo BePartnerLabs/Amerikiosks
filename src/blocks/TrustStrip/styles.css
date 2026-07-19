@@ -28,7 +28,7 @@
   margin: 0;
   padding: 0;
   padding-inline-end: var(--_gap);
-  animation: ak-marquee 40s linear infinite;
+  animation: ak-marquee 60s linear infinite;
   flex-shrink: 0;
 }
 
@@ -41,6 +41,7 @@
   background: var(--_background);
   border: 1px solid var(--_border-color);
   border-radius: 0.75rem;
+  padding: 14px;
   width: 188px;
   aspect-ratio: 188 / 76;
   flex-shrink: 0;
@@ -66,16 +67,12 @@
 @container trust-strip (max-width: 640px) {
   .ak-trust-strip {
     padding-block: var(--md-size-space-40);
+    padding-inline: var(--bp-space-3, 0.75rem);
   }
 
   .ak-trust-strip__track {
     --_gap: 0.625rem;
-    animation-duration: 28s;
-  }
-
-  .ak-trust-strip__card {
-    width: 120px;
-    height: 56px;
+    animation-duration: 42s;
   }
 }
 

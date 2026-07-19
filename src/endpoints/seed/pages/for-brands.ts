@@ -1,6 +1,12 @@
 import path from 'node:path'
 import type { Payload, PayloadRequest } from 'payload'
-import { brandProgramForm } from '../brand-program-form'
+import {
+  brandProgramForm,
+  brandProgramFormConfirmationMessageEs,
+  brandProgramFormFieldDefs,
+  brandProgramFormSubmitButtonLabelEs,
+} from '../brand-program-form'
+import { findOrCreateForm, translateFormEs } from '../translateForm'
 import { uploadMedia } from '../uploadMedia'
 import { upsertPage } from './utils'
 
@@ -351,25 +357,20 @@ export const seedForBrands = async (payload: Payload, req: PayloadRequest): Prom
   }
 
   // ── Brand Program Form ────────────────────────────────────────────────────
-  let brandFormId: number
-  const existingForm = await payload.find({
-    collection: 'forms',
-    where: { title: { equals: brandProgramForm.title } },
-    limit: 1,
+  const { id: brandFormId, fields: brandFormFields } = await findOrCreateForm(
+    payload,
     req,
-  })
-  if (existingForm.totalDocs > 0) {
-    brandFormId = existingForm.docs[0]?.id as number
-    payload.logger.info('  Brand Program Form exists, skipping creation')
-  } else {
-    const created = await payload.create({
-      collection: 'forms',
-      data: brandProgramForm,
-      req,
-    })
-    brandFormId = created.id as number
-    payload.logger.info('  Created Brand Program Form')
-  }
+    brandProgramForm,
+  )
+  await translateFormEs(
+    payload,
+    req,
+    brandFormId,
+    brandFormFields,
+    brandProgramFormFieldDefs,
+    brandProgramFormSubmitButtonLabelEs,
+    brandProgramFormConfirmationMessageEs,
+  )
 
   // ── Hero image ─────────────────────────────────────────────────────────────
   const heroImage = await uploadMedia(

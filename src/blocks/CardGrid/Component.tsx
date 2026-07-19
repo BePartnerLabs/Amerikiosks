@@ -6,6 +6,7 @@ import RichText from '@/components/RichText'
 import { SectionHeader } from '@/components/SectionHeader'
 import type { CardGridBlock as CardGridBlockProps, Page } from '@/payload-types'
 import { toSnakeCase } from '@/utilities/toSnakeCase'
+import { CardGridCarousel } from './CarouselNav'
 import './styles.css'
 
 type Item = NonNullable<CardGridBlockProps['items']>[number]
@@ -31,6 +32,32 @@ export const CardGridBlock: React.FC<CardGridBlockProps> = ({
   if (!heading && (!items || items.length === 0)) return null
 
   const ctaUrl = resolveUrl(link)
+
+  const cards =
+    Array.isArray(items) && items.length > 0
+      ? items.map((item, i) => {
+          const cardUrl = resolveUrl(item.link)
+          return (
+            <Card
+              key={item.id ?? i}
+              variant={variant}
+              media={item.media}
+              icon={item.icon}
+              eyebrow={item.eyebrow}
+              title={item.title}
+              body={
+                item.body && (
+                  <RichText
+                    data={item.body}
+                    enableGutter={false}
+                  />
+                )
+              }
+              link={cardUrl ? { href: cardUrl, label: item.link?.label } : null}
+            />
+          )
+        })
+      : null
 
   return (
     <section
@@ -67,32 +94,12 @@ export const CardGridBlock: React.FC<CardGridBlockProps> = ({
             </div>
           )}
 
-          {Array.isArray(items) && items.length > 0 && (
-            <div className="ak-card-grid__cards">
-              {items.map((item, i) => {
-                const cardUrl = resolveUrl(item.link)
-                return (
-                  <Card
-                    key={item.id ?? i}
-                    variant={variant}
-                    media={item.media}
-                    icon={item.icon}
-                    eyebrow={item.eyebrow}
-                    title={item.title}
-                    body={
-                      item.body && (
-                        <RichText
-                          data={item.body}
-                          enableGutter={false}
-                        />
-                      )
-                    }
-                    link={cardUrl ? { href: cardUrl, label: item.link?.label } : null}
-                  />
-                )
-              })}
-            </div>
-          )}
+          {cards &&
+            (variant === 'compact' ? (
+              <CardGridCarousel>{cards}</CardGridCarousel>
+            ) : (
+              <div className="ak-card-grid__cards">{cards}</div>
+            ))}
 
           {ctaUrl && link?.label && variant === 'pillar' && (
             <div className="ak-card-grid__cta">

@@ -874,6 +874,9 @@ export interface CardGridBlock {
    * Small label above the heading, e.g. "WHERE IT WORKS"
    */
   eyebrow?: string | null;
+  /**
+   * Para destacar una palabra o frase en negrita, envuélvela en asteriscos dobles: **texto**
+   */
   heading: string;
   /**
    * Optional text below the heading. Used in pillar variant.
@@ -943,6 +946,9 @@ export interface TrustStripBlock {
    * Small label above the heading, e.g. "WHO WE WORK WITH"
    */
   eyebrow?: string | null;
+  /**
+   * Para destacar una palabra o frase en negrita, envuélvela en asteriscos dobles: **texto**
+   */
   heading: string;
   /**
    * Max number of partners to show. 0 = show all.
@@ -961,6 +967,9 @@ export interface AudienceShowcaseBlock {
    * Small label above heading, e.g. "WHO IT'S FOR"
    */
   eyebrow?: string | null;
+  /**
+   * Para destacar una palabra o frase en negrita, envuélvela en asteriscos dobles: **texto**
+   */
   heading: string;
   subheading?: string | null;
   items?:
@@ -1001,6 +1010,9 @@ export interface InsightsShowcaseBlock {
    * Small label above heading, e.g. "INSIGHTS"
    */
   eyebrow?: string | null;
+  /**
+   * Para destacar una palabra o frase en negrita, envuélvela en asteriscos dobles: **texto**
+   */
   heading: string;
   id?: string | null;
   blockName?: string | null;
@@ -1015,6 +1027,9 @@ export interface ProjectsShowcaseBlock {
    * Small label above heading, e.g. "REAL BRAND MOMENTS"
    */
   eyebrow?: string | null;
+  /**
+   * Para destacar una palabra o frase en negrita, envuélvela en asteriscos dobles: **texto**
+   */
   heading: string;
   /**
    * Supporting text shown below the heading
@@ -1051,6 +1066,9 @@ export interface FormatsGridBlock {
    * Small label above heading, e.g. "FORMATS"
    */
   eyebrow?: string | null;
+  /**
+   * Para destacar una palabra o frase en negrita, envuélvela en asteriscos dobles: **texto**
+   */
   heading: string;
   subheading?: string | null;
   /**
@@ -1223,6 +1241,9 @@ export interface ProcessStepsBlock {
    * Small label above heading, e.g. "HOW IT WORKS"
    */
   eyebrow?: string | null;
+  /**
+   * Para destacar una palabra o frase en negrita, envuélvela en asteriscos dobles: **texto**
+   */
   heading: string;
   subheading?: string | null;
   steps: {
@@ -1285,6 +1306,9 @@ export interface FAQWithFormBlock {
    * Small label above heading, e.g. "START A PROGRAM"
    */
   eyebrow?: string | null;
+  /**
+   * Para destacar una palabra o frase en negrita, envuélvela en asteriscos dobles: **texto**
+   */
   heading: string;
   subheading?: string | null;
   /**

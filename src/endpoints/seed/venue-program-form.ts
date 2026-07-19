@@ -1,38 +1,86 @@
 import type { RequiredDataFromCollectionSlug } from 'payload'
+import { buildConfirmationMessage, buildFormFields, type FormFieldDef } from './translateForm'
+
+export const venueProgramFormFieldDefs: FormFieldDef[] = [
+  {
+    name: 'venue-name',
+    blockType: 'text',
+    label: 'Venue name',
+    labelEs: 'Nombre del venue',
+    required: true,
+    width: 50,
+  },
+  {
+    name: 'work-email',
+    blockType: 'email',
+    label: 'Work email',
+    labelEs: 'Email de trabajo',
+    required: true,
+    width: 50,
+  },
+  {
+    name: 'venue-type',
+    blockType: 'text',
+    label: 'Venue type (hotel, airport, mall, stadium, hospital…)',
+    labelEs: 'Tipo de venue (hotel, aeropuerto, mall, estadio, hospital…)',
+    required: true,
+    width: 50,
+  },
+  {
+    name: 'location',
+    blockType: 'text',
+    label: 'City / country',
+    labelEs: 'Ciudad / país',
+    required: true,
+    width: 50,
+  },
+  {
+    name: 'monthly-footfall',
+    blockType: 'text',
+    label: 'Estimated monthly foot traffic',
+    labelEs: 'Tráfico mensual estimado de visitantes',
+    width: 50,
+  },
+  {
+    name: 'available-locations',
+    blockType: 'text',
+    label: 'Number of available locations within the venue',
+    labelEs: 'Número de ubicaciones disponibles dentro del venue',
+    width: 50,
+  },
+  {
+    name: 'available-space',
+    blockType: 'text',
+    label: 'Approximate dimensions of the available space',
+    labelEs: 'Dimensiones aproximadas del espacio disponible',
+    width: 50,
+  },
+  {
+    name: 'current-revenue-model',
+    blockType: 'text',
+    label: 'Current revenue model (concession, fixed rent, none yet)',
+    labelEs: 'Modelo de ingresos actual (concesión, renta fija, sin modelo definido)',
+    width: 50,
+  },
+  {
+    name: 'message',
+    blockType: 'textarea',
+    label: 'Additional notes',
+    labelEs: 'Notas adicionales',
+    width: 100,
+  },
+]
+
+export const venueProgramFormSubmitButtonLabelEs = 'Enviar solicitud de partnership'
+
+export const venueProgramFormConfirmationMessageEs = buildConfirmationMessage(
+  '¡Gracias! Nos pondremos en contacto pronto.',
+)
 
 export const venueProgramForm: RequiredDataFromCollectionSlug<'forms'> = {
   title: 'Venue Program Form',
   confirmationType: 'message',
-  confirmationMessage: {
-    root: {
-      type: 'root',
-      children: [
-        {
-          type: 'heading',
-          children: [
-            {
-              type: 'text',
-              detail: 0,
-              format: 0,
-              mode: 'normal',
-              style: '',
-              text: '¡Gracias! Nos pondremos en contacto pronto.',
-              version: 1,
-            },
-          ],
-          direction: 'ltr',
-          format: '',
-          indent: 0,
-          tag: 'h2',
-          version: 1,
-        },
-      ],
-      direction: 'ltr',
-      format: '',
-      indent: 0,
-      version: 1,
-    },
-  },
+  confirmationMessage: buildConfirmationMessage("Thank you! We'll be in touch shortly."),
   emails: [
     {
       emailFrom: '"Amerikiosks" <noreply@amerikiosks.com>',
@@ -70,82 +118,9 @@ export const venueProgramForm: RequiredDataFromCollectionSlug<'forms'> = {
       },
     },
   ],
-  fields: [
-    {
-      name: 'venue-name',
-      blockName: 'venue-name',
-      blockType: 'text',
-      label: 'Nombre del venue',
-      required: true,
-      width: 50,
-    },
-    {
-      name: 'work-email',
-      blockName: 'work-email',
-      blockType: 'email',
-      label: 'Email de trabajo',
-      required: true,
-      width: 50,
-    },
-    {
-      name: 'venue-type',
-      blockName: 'venue-type',
-      blockType: 'text',
-      label: 'Tipo de venue (hotel, aeropuerto, mall, estadio, hospital…)',
-      required: true,
-      width: 50,
-    },
-    {
-      name: 'location',
-      blockName: 'location',
-      blockType: 'text',
-      label: 'Ciudad / país',
-      required: true,
-      width: 50,
-    },
-    {
-      name: 'monthly-footfall',
-      blockName: 'monthly-footfall',
-      blockType: 'text',
-      label: 'Tráfico mensual estimado de visitantes',
-      required: false,
-      width: 50,
-    },
-    {
-      name: 'available-locations',
-      blockName: 'available-locations',
-      blockType: 'text',
-      label: 'Número de ubicaciones disponibles dentro del venue',
-      required: false,
-      width: 50,
-    },
-    {
-      name: 'available-space',
-      blockName: 'available-space',
-      blockType: 'text',
-      label: 'Dimensiones aproximadas del espacio disponible',
-      required: false,
-      width: 50,
-    },
-    {
-      name: 'current-revenue-model',
-      blockName: 'current-revenue-model',
-      blockType: 'text',
-      label: 'Modelo de ingresos actual (concesión, renta fija, sin modelo definido)',
-      required: false,
-      width: 50,
-    },
-    {
-      name: 'message',
-      blockName: 'message',
-      blockType: 'textarea',
-      label: 'Notas adicionales',
-      required: false,
-      width: 100,
-    },
-  ],
+  fields: buildFormFields(venueProgramFormFieldDefs),
   redirect: undefined,
-  submitButtonLabel: 'Enviar solicitud de partnership',
+  submitButtonLabel: 'Submit Partnership Request',
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
 }
