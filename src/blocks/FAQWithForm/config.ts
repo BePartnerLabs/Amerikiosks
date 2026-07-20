@@ -5,7 +5,10 @@ export const FAQWithForm: Block = {
   interfaceName: 'FAQWithFormBlock',
   imageURL: '/block-previews/faq-with-form.png',
   imageAltText: 'FAQ with Form block — accordion FAQ + lead capture form',
-  labels: { singular: 'FAQ With Form', plural: 'FAQ With Forms' },
+  labels: {
+    singular: { en: 'FAQ With Form', es: 'FAQ con Formulario' },
+    plural: { en: 'FAQ With Forms', es: 'FAQ con Formularios' },
+  },
   fields: [
     {
       name: 'eyebrow',

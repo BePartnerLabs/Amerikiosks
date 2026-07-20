@@ -157,6 +157,10 @@ src/repositories/index.ts               ← named exports consumed by components
 
 Reference: `https://www.giorgiosaud.io/notebook/repository-pattern.md`
 
+## Client Deliverables
+
+`docs/CLIENT-MANUAL.md` is one of the final project deliverables — a self-management usage guide handed off to the client so their content editors can run the site in `/admin` without a developer. It's currently an outline (punteo). As features land that a content editor would need to know about (new block, new admin convention like the `hidden` blockName trick, a new collection), add or update the relevant bullet there — don't let it drift out of sync with what's actually shippable. It gets fleshed out into full step-by-step sections and validated with the client at the end of the project, not written all at once.
+
 ## Spec Workflow
 
 Living specs live in `openspec/specs/[feature]/spec.md`. Read the relevant spec before touching a feature.

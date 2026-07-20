@@ -6,8 +6,8 @@ export const TrustStrip: Block = {
   imageURL: '/block-previews/trust-strip.png',
   imageAltText: 'Trust Strip block — partner logos carousel',
   labels: {
-    singular: 'Trust Strip',
-    plural: 'Trust Strips',
+    singular: { en: 'Trust Strip', es: 'Franja de Confianza' },
+    plural: { en: 'Trust Strips', es: 'Franjas de Confianza' },
   },
   fields: [
     {

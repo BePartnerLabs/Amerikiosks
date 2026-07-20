@@ -102,7 +102,7 @@ export const Insights: CollectionConfig<'insights'> = {
               localized: true,
             },
           ],
-          label: 'Content',
+          label: { en: 'Content', es: 'Contenido' },
         },
         {
           fields: [
@@ -132,11 +132,11 @@ export const Insights: CollectionConfig<'insights'> = {
               relationTo: 'categories',
             },
           ],
-          label: 'Meta',
+          label: { en: 'Meta', es: 'Meta' },
         },
         {
           name: 'meta',
-          label: 'SEO',
+          label: { en: 'SEO', es: 'SEO' },
           fields: [
             OverviewField({
               titlePath: 'meta.title',

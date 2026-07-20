@@ -11,7 +11,10 @@ export const ProcessSteps: Block = {
   interfaceName: 'ProcessStepsBlock',
   imageURL: '/block-previews/process-steps.png',
   imageAltText: 'Process Steps block — numbered step sequence',
-  labels: { singular: 'Process Steps', plural: 'Process Steps' },
+  labels: {
+    singular: { en: 'Process Steps', es: 'Pasos del Proceso' },
+    plural: { en: 'Process Steps', es: 'Pasos del Proceso' },
+  },
   fields: [
     {
       name: 'eyebrow',

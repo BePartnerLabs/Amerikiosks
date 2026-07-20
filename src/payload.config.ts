@@ -1,6 +1,8 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { en } from '@payloadcms/translations/languages/en'
+import { es } from '@payloadcms/translations/languages/es'
 import { buildConfig, type PayloadRequest } from 'payload'
 import sharp from 'sharp'
 import { defaultLexical } from '@/fields/defaultLexical'
@@ -102,6 +104,9 @@ export default buildConfig({
     locales: ['en', 'es'],
     defaultLocale: 'en',
     fallback: true,
+  },
+  i18n: {
+    supportedLanguages: { en, es },
   },
   plugins,
   secret: process.env.PAYLOAD_SECRET,

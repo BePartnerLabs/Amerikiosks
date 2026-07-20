@@ -6,7 +6,10 @@ export const ProjectsShowcase: Block = {
   interfaceName: 'ProjectsShowcaseBlock',
   imageURL: '/block-previews/projects-showcase.png',
   imageAltText: 'Projects Showcase — heading + project cards filtered by tag',
-  labels: { singular: 'Projects Showcase', plural: 'Projects Showcases' },
+  labels: {
+    singular: { en: 'Projects Showcase', es: 'Vitrina de Proyectos' },
+    plural: { en: 'Projects Showcases', es: 'Vitrinas de Proyectos' },
+  },
   fields: [
     {
       name: 'eyebrow',

@@ -3,6 +3,10 @@ import type { Block } from 'payload'
 export const Code: Block = {
   slug: 'code',
   interfaceName: 'CodeBlock',
+  labels: {
+    singular: { en: 'Code', es: 'Código' },
+    plural: { en: 'Code Blocks', es: 'Bloques de Código' },
+  },
   fields: [
     {
       name: 'language',

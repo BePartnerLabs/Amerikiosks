@@ -5,7 +5,10 @@ export const AudienceShowcase: Block = {
   interfaceName: 'AudienceShowcaseBlock',
   imageURL: '/block-previews/audience-showcase.png',
   imageAltText: 'Audience Showcase block — 2×2 image overlay card grid',
-  labels: { singular: 'Audience Showcase', plural: 'Audience Showcases' },
+  labels: {
+    singular: { en: 'Audience Showcase', es: 'Vitrina de Audiencia' },
+    plural: { en: 'Audience Showcases', es: 'Vitrinas de Audiencia' },
+  },
   fields: [
     {
       name: 'eyebrow',
