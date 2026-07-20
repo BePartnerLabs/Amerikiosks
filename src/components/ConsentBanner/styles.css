@@ -1,41 +1,297 @@
 /* src/components/ConsentBanner/styles.css */
-.ak-consent-banner {
+
+/* ── Card — bottom-right, floating ───────────────────────────── */
+.ak-consent-card {
   position: fixed;
-  inset-inline: 0;
-  bottom: 0;
+  right: var(--bp-space-6, 1.5rem);
+  bottom: var(--bp-space-6, 1.5rem);
   z-index: var(--consent-banner-z-index, 50);
+  width: min(23rem, calc(100vw - 2 * var(--bp-space-4, 1rem)));
   background: var(--consent-banner-background, var(--bp-color-surface, #fff));
-  border-top: 1px solid var(--bp-color-border);
-  box-shadow: var(--bp-shadow-md);
+  border: 1px solid var(--bp-color-border);
+  border-radius: var(--bp-radius-lg, 0.75rem);
+  box-shadow: var(--bp-shadow-xl, var(--bp-shadow-lg));
+  padding: var(--bp-space-6, 1.5rem);
 }
 
-.ak-consent-banner__inner {
-  max-width: var(--bp-container-max-width, 75rem);
-  margin-inline: auto;
-  padding: var(--bp-space-4, 1rem) var(--bp-space-6, 1.5rem);
+.ak-consent-card__text {
+  margin: 0 0 var(--bp-space-4, 1rem);
+  color: var(--bp-color-text-muted, var(--bp-color-text));
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.ak-consent-card__link {
+  color: var(--bp-color-text);
+  text-decoration: underline;
+  text-decoration-color: var(--bp-color-border);
+  text-underline-offset: 0.2em;
+}
+.ak-consent-card__link:hover {
+  text-decoration-color: currentColor;
+}
+
+.ak-consent-card__actions,
+.ak-consent-card__preferences {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--bp-space-4, 1rem);
+  gap: var(--bp-space-2, 0.5rem) var(--bp-space-3, 0.75rem);
 }
 
-.ak-consent-banner__text {
-  flex: 1 1 20rem;
-  margin: 0;
+.ak-consent-card__actions {
+  justify-content: space-between;
+}
+
+.ak-consent-card__actions-right {
+  display: flex;
+  align-items: center;
+  gap: var(--bp-space-2, 0.5rem);
+}
+
+.ak-consent-card__preferences {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.ak-consent-card__preferences .bp-btn {
+  align-self: flex-end;
+}
+
+.ak-consent-card__toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Reject: intentionally low-emphasis — plain text, no fill, no accent
+   color, no directional cue (that visual weight is reserved for the
+   forward/CTA action, "Accept all"). */
+.ak-consent-card__actions .ak-consent-card__reject.bp-btn {
+  --btn-background: transparent;
+  --btn-color: var(--bp-color-text-muted);
+  --btn-border: none;
+  --btn-padding: 0 var(--bp-space-1, 0.25rem);
+  height: auto;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 0.2em;
+}
+.ak-consent-card__actions .ak-consent-card__reject.bp-btn:hover {
+  --btn-color: var(--bp-color-text);
+  text-decoration-color: var(--bp-color-text-muted);
+}
+
+.ak-consent-card__icon-btn {
+  flex: 0 0 auto;
+  width: 2.75rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.ak-consent-card__icon-btn svg {
+  width: 1.375rem;
+  height: 1.375rem;
+}
+
+/* ── Toggle switch (the DS ships no .bp-toggle styling of its own;
+   this component defines its own switch visuals on the standard
+   bp-toggle__* markup/class names) ──────────────────────────── */
+.bp-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bp-space-2, 0.5rem);
+  cursor: pointer;
+}
+
+.bp-toggle__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.bp-toggle__track {
+  flex: 0 0 auto;
+  width: 2.25rem;
+  height: 1.25rem;
+  border-radius: var(--bp-radius-full, 999px);
+  background: var(--bp-color-border);
+  position: relative;
+  /* Decorative (aria-hidden) sibling of .bp-toggle__input, which is
+     visually hidden (clipped to 1px) rather than removed from the click
+     target — without this, the track paints on top of that clipped box
+     and swallows clicks meant for the input, including the label-click
+     forwarding real browsers rely on and Playwright's actionability
+     check requires. */
+  pointer-events: none;
+  transition: background-color var(--bp-duration-fast, 0.15s) var(--bp-ease, ease);
+}
+
+.bp-toggle__thumb {
+  position: absolute;
+  top: 0.125rem;
+  left: 0.125rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: var(--bp-color-surface, #fff);
+  box-shadow: var(--bp-shadow-sm);
+  transition: transform var(--bp-duration-fast, 0.15s) var(--bp-ease, ease);
+}
+
+.bp-toggle__input:checked + .bp-toggle__track {
+  background: var(--bp-primary);
+}
+.bp-toggle__input:checked + .bp-toggle__track .bp-toggle__thumb {
+  transform: translateX(1rem);
+}
+
+.bp-toggle__input:disabled + .bp-toggle__track {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.bp-toggle__input:focus-visible + .bp-toggle__track {
+  outline: 2px solid var(--bp-primary);
+  outline-offset: 2px;
+}
+
+.bp-toggle__label {
+  font-size: 0.875rem;
   color: var(--bp-color-text);
 }
 
-.ak-consent-banner__actions,
-.ak-consent-banner__preferences {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--bp-space-3, 0.75rem);
+.bp-toggle__input:disabled ~ .bp-toggle__label {
+  cursor: not-allowed;
 }
 
+/* ── Reopen button — bottom-left (unchanged position, opposite
+   corner from the card so they never overlap) ───────────────── */
 .ak-consent-reopen-btn {
   position: fixed;
   inset-inline-start: var(--bp-space-4, 1rem);
   bottom: var(--bp-space-4, 1rem);
   z-index: var(--consent-banner-z-index, 50);
+}
+
+/* ── Category info tooltip ───────────────────────────────────── */
+.bp-tooltip-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.bp-tooltip-trigger {
+  width: 1.25rem;
+  height: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--bp-color-text-muted);
+  cursor: help;
+  padding: 0;
+}
+.bp-tooltip-trigger svg {
+  width: 0.9375rem;
+  height: 0.9375rem;
+}
+.bp-tooltip-trigger:hover,
+.bp-tooltip-trigger:focus-visible {
+  color: var(--bp-color-text);
+}
+
+.bp-tooltip {
+  position: absolute;
+  bottom: calc(100% + 0.5rem);
+  left: 50%;
+  transform: translateX(-50%) translateY(0.25rem);
+  width: max-content;
+  max-width: min(18.75rem, 80vw);
+  background: var(--bp-color-text);
+  color: var(--bp-color-surface, #fff);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  padding: 0.5rem 0.625rem;
+  border-radius: var(--bp-radius-md, 0.5rem);
+  box-shadow: var(--bp-shadow-lg);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease,
+    visibility 0s linear 0.15s;
+  pointer-events: none;
+  z-index: 5;
+}
+.bp-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 0.3125rem solid transparent;
+  border-top-color: var(--bp-color-text);
+}
+
+/* Hover: 300ms delay before revealing, so an accidental cursor graze
+   across the trigger doesn't fire it. Focus (keyboard tab, or a tap
+   that lands and holds focus): reveal immediately. */
+.bp-tooltip-wrap:hover .bp-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+  transition-delay: 0.3s, 0.3s, 0.3s;
+}
+.bp-tooltip-wrap:focus-within .bp-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+  transition-delay: 0s, 0s, 0s;
+}
+
+.bp-tooltip--start {
+  left: 0;
+  transform: translateX(0) translateY(0.25rem);
+}
+.bp-tooltip-wrap:hover .bp-tooltip--start,
+.bp-tooltip-wrap:focus-within .bp-tooltip--start {
+  transform: translateX(0) translateY(0);
+}
+.bp-tooltip--start::after {
+  left: 0.75rem;
+  transform: none;
+}
+
+.bp-tooltip--end {
+  left: auto;
+  right: 0;
+  transform: translateX(0) translateY(0.25rem);
+}
+.bp-tooltip-wrap:hover .bp-tooltip--end,
+.bp-tooltip-wrap:focus-within .bp-tooltip--end {
+  transform: translateX(0) translateY(0);
+}
+.bp-tooltip--end::after {
+  left: auto;
+  right: 0.75rem;
+  transform: none;
+}
+
+.bp-tooltip--below {
+  bottom: auto;
+  top: calc(100% + 0.5rem);
+}
+.bp-tooltip--below::after {
+  top: auto;
+  bottom: 100%;
+  border-top-color: transparent;
+  border-bottom-color: var(--bp-color-text);
 }

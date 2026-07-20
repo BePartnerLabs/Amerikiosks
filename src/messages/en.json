@@ -35,6 +35,11 @@
     "reject": "Reject",
     "preferences": "Preferences",
     "save": "Save preferences",
-    "reopenAriaLabel": "Cookie preferences"
+    "reopenAriaLabel": "Cookie preferences",
+    "cookiePolicyLabel": "Cookie Policy",
+    "necessaryDescription": "Required for the site to work — language, admin session, preview mode. Can't be turned off.",
+    "analyticsDescription": "Google Analytics — helps us understand how the site is used. Off by default.",
+    "necessaryInfoLabel": "More about necessary cookies",
+    "analyticsInfoLabel": "More about analytics cookies"
   }
 }

@@ -135,4 +135,51 @@ describe('ConsentBanner', () => {
     fireEvent.click(screen.getByRole('button', { name: 'save' }))
     expect(onSave).toHaveBeenCalledTimes(1)
   })
+
+  it('renders a Cookie Policy link pointing at /cookie-policy', () => {
+    render(
+      <ConsentBanner
+        expanded={false}
+        analyticsChecked={true}
+        onExpand={noop}
+        onAnalyticsChange={noop}
+        onAcceptAll={noop}
+        onReject={noop}
+        onSave={noop}
+      />,
+    )
+    const link = screen.getByRole('link', { name: 'cookiePolicyLabel' })
+    expect(link).toHaveAttribute('href', '/cookie-policy')
+  })
+
+  it('renders category info tooltip triggers with distinct accessible labels when expanded', () => {
+    render(
+      <ConsentBanner
+        expanded={true}
+        analyticsChecked={true}
+        onExpand={noop}
+        onAnalyticsChange={noop}
+        onAcceptAll={noop}
+        onReject={noop}
+        onSave={noop}
+      />,
+    )
+    expect(screen.getByRole('button', { name: 'necessaryInfoLabel' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'analyticsInfoLabel' })).toBeInTheDocument()
+  })
+
+  it('does not render category info tooltips when collapsed', () => {
+    render(
+      <ConsentBanner
+        expanded={false}
+        analyticsChecked={true}
+        onExpand={noop}
+        onAnalyticsChange={noop}
+        onAcceptAll={noop}
+        onReject={noop}
+        onSave={noop}
+      />,
+    )
+    expect(screen.queryByRole('button', { name: 'necessaryInfoLabel' })).not.toBeInTheDocument()
+  })
 })

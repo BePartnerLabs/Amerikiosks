@@ -1,6 +1,8 @@
 'use client'
 
+import Link from 'next/link'
 import { useTranslations } from 'next-intl'
+import { InfoTooltip } from './InfoTooltip'
 import './styles.css'
 
 type Props = {
@@ -26,27 +28,47 @@ export function ConsentBanner({
 
   return (
     <section
-      className="ak-consent-banner"
+      className="ak-consent-card"
       aria-label={t('ariaLabel')}
     >
-      <div className="ak-consent-banner__inner">
-        <p className="ak-consent-banner__text">{t('description')}</p>
+      <p className="ak-consent-card__text">
+        {t('description')}{' '}
+        <Link
+          className="ak-consent-card__link"
+          href="/cookie-policy"
+        >
+          {t('cookiePolicyLabel')}
+        </Link>
+      </p>
 
-        {!expanded ? (
-          <div className="ak-consent-banner__actions">
+      {!expanded ? (
+        <div className="ak-consent-card__actions">
+          <button
+            className="ak-consent-card__reject bp-btn"
+            type="button"
+            onClick={onReject}
+          >
+            {t('reject')}
+          </button>
+          <div className="ak-consent-card__actions-right">
             <button
-              className="bp-btn bp-btn--secondary"
+              className="ak-consent-card__icon-btn bp-btn bp-btn--outline"
               type="button"
+              aria-label={t('preferences')}
+              title={t('preferences')}
               onClick={onExpand}
             >
-              {t('preferences')}
-            </button>
-            <button
-              className="bp-btn bp-btn--ghost"
-              type="button"
-              onClick={onReject}
-            >
-              {t('reject')}
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.75"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M14.7 6.3a1 1 0 0 0 1.4 0l1.6-1.6a1 1 0 0 1 1.6.3 6 6 0 0 1-8.1 8.1l-6.2 6.2a1.5 1.5 0 0 1-2.1-2.1l6.2-6.2a6 6 0 0 1 8.1-8.1 1 1 0 0 1 .3 1.6z" />
+              </svg>
             </button>
             <button
               className="bp-btn"
@@ -56,8 +78,10 @@ export function ConsentBanner({
               {t('acceptAll')}
             </button>
           </div>
-        ) : (
-          <div className="ak-consent-banner__preferences">
+        </div>
+      ) : (
+        <div className="ak-consent-card__preferences">
+          <div className="ak-consent-card__toggle-row">
             <label className="bp-toggle bp-toggle--sm">
               <input
                 className="bp-toggle__input"
@@ -77,7 +101,14 @@ export function ConsentBanner({
               </span>
               <span className="bp-toggle__label">{t('necessaryLabel')}</span>
             </label>
+            <InfoTooltip
+              id="consent-necessary-tooltip"
+              label={t('necessaryInfoLabel')}
+              description={t('necessaryDescription')}
+            />
+          </div>
 
+          <div className="ak-consent-card__toggle-row">
             <label className="bp-toggle bp-toggle--sm">
               <input
                 className="bp-toggle__input"
@@ -96,17 +127,22 @@ export function ConsentBanner({
               </span>
               <span className="bp-toggle__label">{t('analyticsLabel')}</span>
             </label>
-
-            <button
-              className="bp-btn"
-              type="button"
-              onClick={onSave}
-            >
-              {t('save')}
-            </button>
+            <InfoTooltip
+              id="consent-analytics-tooltip"
+              label={t('analyticsInfoLabel')}
+              description={t('analyticsDescription')}
+            />
           </div>
-        )}
-      </div>
+
+          <button
+            className="bp-btn"
+            type="button"
+            onClick={onSave}
+          >
+            {t('save')}
+          </button>
+        </div>
+      )}
     </section>
   )
 }
