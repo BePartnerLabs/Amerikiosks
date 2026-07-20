@@ -8,3 +8,4 @@ Consolidated index of all documented blocks and globals.
 | [Header](../../src/Header/README.md) | Global | 52% | |
 | [Footer](../../src/Footer/README.md) | Global | 38% | |
 | [Hero — HighImpact](../../src/heros/HighImpact/README.md) | Hero Variant | 38% | |
+| [Trust Strip](../../src/blocks/TrustStrip/README.md) | Layout Block | 76% | |

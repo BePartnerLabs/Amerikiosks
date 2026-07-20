@@ -51,8 +51,27 @@
   object-fit: contain;
 }
 
-.ak-trust-strip__viewport:hover .ak-trust-strip__track {
+.ak-trust-strip__viewport:hover .ak-trust-strip__track,
+.ak-trust-strip__viewport--paused .ak-trust-strip__track {
   animation-play-state: paused;
+}
+
+.ak-trust-strip__pause-toggle {
+  --_background: var(--ak-brand-card-bg);
+  --_border-color: var(--ak-brand-card-border);
+  --_color: var(--ak-color-heading);
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--md-size-space-8, 0.5rem);
+  margin-block-end: var(--md-size-space-16);
+  padding: 0.5rem 0.875rem;
+  border-radius: 999px;
+  border: 1px solid var(--_border-color);
+  background: var(--_background);
+  color: var(--_color);
+  cursor: pointer;
 }
 
 @keyframes ak-marquee {

@@ -16,7 +16,11 @@ const MATERIAL_FONT_CLASS = /material-symbols-outlined/
 const RAW_IMG_TAG = /<img[\s>]/
 
 const MATERIAL_FONT_ALLOWLIST = new Set(['src/components/Icon/icons.ts'])
-const RAW_IMG_ALLOWLIST = new Set([])
+const RAW_IMG_ALLOWLIST = new Set([
+  // Mocks DOM markup via innerHTML to test IntersectionObserver behavior
+  // against a real <img>'s alt text — not production JSX.
+  'tests/unit/blocks/TrustStripTracker.test.tsx',
+])
 
 const files = process.argv.slice(2)
 let hasError = false

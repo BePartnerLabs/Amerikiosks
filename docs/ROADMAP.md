@@ -53,6 +53,20 @@ Future ideas and planned improvements for the Amerikiosks website. Items are gro
 
 ---
 
+## GDPR / Privacy Compliance
+
+Audited 2026-07-19 — **site currently does not comply**, no consent mechanism exists at all. Planned as its own branch, between this UX/UI pass and the next one.
+
+- **Cookie consent gate for GA4** — `gtag.js` currently loads unconditionally in `src/app/(frontend)/[locale]/layout.tsx` on every page load, before any user consent. Needs a consent banner that blocks the `<Script>` injection until opt-in (analytics isn't "strictly necessary" under GDPR/ePrivacy).
+- **Privacy Policy page** — doesn't exist (checked seed + DB, neither has one).
+- **Cookie Policy page** — same, doesn't exist.
+- **Terms of Service page** — not strictly GDPR, but usually shipped alongside.
+- **Consent preference center** — a way to withdraw consent after the fact.
+- **PII consent checkbox on lead-capture forms** — Brand/Venue/Agency/Emerging-Brand/Start-a-Partnership forms all collect name/email/phone/company with no visible opt-in or purpose/retention disclosure at the point of capture.
+- Not a gap: JotForm integration (`JotFormRepository`) is server-to-server (API calls), not a client embed — no extra third-party cookies from it. No other ad-tech/fingerprinting scripts found in a first pass.
+
+---
+
 ## Launch checklist (WordPress decommission)
 
 - **Scan a real QR code on a deployed kiosk** against a preview deploy before decommissioning WordPress — confirms the `/customer-service/request-a-refund?machine_id=...` URL printed on physical kiosks still resolves correctly end to end.

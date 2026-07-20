@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import { useRef } from 'react'
+import { TrustStripPauseToggle } from './PauseToggle'
 import { TrustStripTracker } from './Tracker'
 
 type CarouselPartner = {
@@ -28,6 +29,7 @@ export const TrustStripCarousel: React.FC<{ partners: CarouselPartner[] }> = ({ 
 
   return (
     <>
+      <TrustStripPauseToggle viewportRef={viewportRef} />
       <div
         ref={viewportRef}
         className="ak-trust-strip__viewport"
