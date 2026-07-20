@@ -28,7 +28,7 @@ test.describe('Consent banner', () => {
 
   test('rejecting keeps GA4 out and shows the floating preferences button', async ({ page }) => {
     await page.goto('http://localhost:3000')
-    await page.getByRole('button', { name: /^reject$|^rechazar$/i }).click()
+    await page.getByRole('button', { name: /reject|rechazar/i }).click()
 
     const gaScript = page.locator('script[src*="googletagmanager.com/gtag/js"]')
     await expect(gaScript).toHaveCount(0)
@@ -39,7 +39,7 @@ test.describe('Consent banner', () => {
 
   test('reopening from the floating button and re-accepting loads GA4', async ({ page }) => {
     await page.goto('http://localhost:3000')
-    await page.getByRole('button', { name: /^reject$|^rechazar$/i }).click()
+    await page.getByRole('button', { name: /reject|rechazar/i }).click()
 
     await page.getByRole('button', { name: /cookie preferences|preferencias de cookies/i }).click()
     await page.getByRole('switch', { name: /analytics|anal[ií]ticas/i }).click()

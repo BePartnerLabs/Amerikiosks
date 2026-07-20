@@ -58,4 +58,21 @@ describe('consent utility', () => {
     const raw = serializeConsentCookie(true)
     expect(parseConsentCookie(raw)).not.toBeNull()
   })
+
+  it('parses a URI-encoded cookie value exactly as ConsentManager writes it', () => {
+    const raw = serializeConsentCookie(true)
+    const encoded = encodeURIComponent(raw)
+    const timestamp = JSON.parse(raw).timestamp
+
+    expect(parseConsentCookie(encoded)).toEqual({
+      analytics: true,
+      timestamp,
+    })
+  })
+
+  it('returns null (not throw) for a malformed percent-encoded value', () => {
+    expect(() => parseConsentCookie('%')).not.toThrow()
+    expect(parseConsentCookie('%')).toBeNull()
+    expect(parseConsentCookie('%E0%A4%A')).toBeNull()
+  })
 })

@@ -11,7 +11,7 @@ export function parseConsentCookie(raw: string | undefined): ConsentPreferences 
 
   let parsed: unknown
   try {
-    parsed = JSON.parse(raw)
+    parsed = JSON.parse(decodeURIComponent(raw))
   } catch {
     return null
   }
