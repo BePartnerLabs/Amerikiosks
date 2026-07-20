@@ -25,5 +25,16 @@
     "heading": "404 - Página no encontrada",
     "message": "La página que buscas no existe.",
     "backHome": "Volver al inicio"
+  },
+  "consent": {
+    "ariaLabel": "Consentimiento de cookies",
+    "description": "Usamos cookies para operar este sitio y, con tu permiso, para entender cómo se usa. Las cookies necesarias siempre están activas.",
+    "necessaryLabel": "Necesarias",
+    "analyticsLabel": "Analíticas",
+    "acceptAll": "Aceptar todo",
+    "reject": "Rechazar",
+    "preferences": "Preferencias",
+    "save": "Guardar preferencias",
+    "reopenAriaLabel": "Preferencias de cookies"
   }
 }

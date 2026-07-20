@@ -25,5 +25,16 @@
     "heading": "404 - Page Not Found",
     "message": "The page you are looking for does not exist.",
     "backHome": "Back to Home"
+  },
+  "consent": {
+    "ariaLabel": "Cookie consent",
+    "description": "We use cookies to run this site and, with your permission, to understand how it's used. Necessary cookies are always on.",
+    "necessaryLabel": "Necessary",
+    "analyticsLabel": "Analytics",
+    "acceptAll": "Accept all",
+    "reject": "Reject",
+    "preferences": "Preferences",
+    "save": "Save preferences",
+    "reopenAriaLabel": "Cookie preferences"
   }
 }
