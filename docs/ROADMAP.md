@@ -33,6 +33,12 @@ Future ideas and planned improvements for the Amerikiosks website. Items are gro
 
 ---
 
+## Design System
+
+- **Narrow "prose" lane on `.bp-content-grid`** — Discussed 2026-07-20 while building the legal pages (Privacy/Cookie/Terms). `.bp-content-grid` (`src/app/(frontend)/globals.css`) currently exposes `full-width` / `breakout` / `content` named lines, with `content` maxing out at 1344px — fine for marketing layouts (cards, heroes) but too wide for a wall of body text (blog posts, legal pages), where comfortable line length is closer to ~44rem. Shipped a stopgap for now: `max-width: 44rem; margin-inline: auto;` scoped to `.ak-content .ak-rich-text` in `src/blocks/Content/styles.css` — narrows the *text*, not the grid. The more correct fix is a new named line on the shared grid itself (e.g. `[prose-start]...[prose-end]`, narrower than `content`) so blog/legal content can opt in via `grid-column: prose`, consistent with how `breakout`/`full-width` already work. Deliberately not done in the GDPR branch — it touches a primitive shared by every block on the site and belongs in its own design-system spec (`openspec/specs/design-system/spec.md`), not bundled into unrelated feature work.
+
+---
+
 ## Analytics
 
 - **TrustStrip dwell time dashboard** — `partner_logo_dwell` events are firing to GA4. Create a GA4 custom report or Looker Studio dashboard to visualize which partner logos get the most screen time.
@@ -55,15 +61,16 @@ Future ideas and planned improvements for the Amerikiosks website. Items are gro
 
 ## GDPR / Privacy Compliance
 
-Audited 2026-07-19 — **site currently does not comply**, no consent mechanism exists at all. Planned as its own branch, between this UX/UI pass and the next one.
+Audited 2026-07-19 — site did not comply, no consent mechanism existed at all. Implemented on `feat/gdpr-consent-banner`.
 
-- **Cookie consent gate for GA4** — `gtag.js` currently loads unconditionally in `src/app/(frontend)/[locale]/layout.tsx` on every page load, before any user consent. Needs a consent banner that blocks the `<Script>` injection until opt-in (analytics isn't "strictly necessary" under GDPR/ePrivacy).
-- **Privacy Policy page** — doesn't exist (checked seed + DB, neither has one).
-- **Cookie Policy page** — same, doesn't exist.
-- **Terms of Service page** — not strictly GDPR, but usually shipped alongside.
-- **Consent preference center** — a way to withdraw consent after the fact.
-- **PII consent checkbox on lead-capture forms** — Brand/Venue/Agency/Emerging-Brand/Start-a-Partnership forms all collect name/email/phone/company with no visible opt-in or purpose/retention disclosure at the point of capture.
+- ~~**Cookie consent gate for GA4**~~ — done. GA4 `<Script>` in `src/app/(frontend)/[locale]/layout.tsx` is now gated behind an `ak_consent` cookie read server-side; see `src/components/ConsentBanner/`.
+- ~~**Privacy Policy page**~~ — done, seeded (`src/endpoints/seed/pages/privacy-policy.ts`), content from the client's own draft.
+- ~~**Cookie Policy page**~~ — done, seeded (`src/endpoints/seed/pages/cookie-policy.ts`).
+- ~~**Terms of Service page**~~ — done, seeded (`src/endpoints/seed/pages/terms-and-conditions.ts`), replaces the old WordPress 2023 WooCommerce boilerplate that didn't match the current B2B site.
+- ~~**Consent preference center**~~ — done, `ConsentPreferencesButton` (floating, bottom-left) reopens the banner at any time.
+- **PII consent checkbox on lead-capture forms** — still open. Brand/Venue/Agency/Emerging-Brand/Start-a-Partnership forms all collect name/email/phone/company with no visible opt-in or purpose/retention disclosure at the point of capture.
 - Not a gap: JotForm integration (`JotFormRepository`) is server-to-server (API calls), not a client embed — no extra third-party cookies from it. No other ad-tech/fingerprinting scripts found in a first pass.
+- All three legal pages are a functional draft, not legal advice — CCPA applicability, PCI-DSS payment language, and Curaçao/El Salvador-specific requirements still need review by qualified counsel before they're final.
 
 ---
 
