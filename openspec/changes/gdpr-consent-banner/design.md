@@ -76,9 +76,18 @@ Textos en `messages/en.json` / `messages/es.json` (next-intl), no hardcodeados: 
   - Rechazar → cookie con `analytics: false`, GA4 ausente del DOM.
   - Reabrir desde botón flotante → cambiar de Analytics off a on → GA4 aparece tras guardar.
 
+## Privacy Policy y Cookie Policy (agregado al alcance)
+
+Decisión revertida durante la ejecución: originalmente estas páginas quedaban para un spec separado, pero se sumaron a esta misma rama. Implementación:
+
+- Dos `Page` seedeadas (colección `pages` existente, sin colección nueva) vía `upsertPage`, con un bloque `Content` (rich text) por locale — mismo patrón que el resto de páginas del seed (ver `src/endpoints/seed/pages/solutions.ts` como referencia).
+- `src/endpoints/seed/pages/privacy-policy.ts` (slug `privacy-policy` / `politica-de-privacidad`) — copy adaptado del Privacy Policy real de amerikiosks.com (WordPress), extendido con la sección de cookies/categorías que introduce este change.
+- `src/endpoints/seed/pages/cookie-policy.ts` (slug `cookie-policy` en ambos locales, deliberadamente sin traducir — ver nota abajo) — el WordPress actual no tiene esta página (404), así que el copy es nuevo, escrito específicamente contra lo que este sitio hace hoy (solo GA4, gateado por el banner).
+- **Ambas páginas llevan un disclaimer explícito en la intro:** son un borrador de trabajo, no reemplazan revisión por asesoría legal calificada. No tratar como contenido legal final.
+- **Limitación conocida:** el link del banner a Cookie Policy usa `next/link` plano con `href="/cookie-policy"` (no locale-aware) — por diseño de `src/i18n/routing.ts`, un path sin prefijo siempre resuelve a locale `en`, así que un visitante en `/es/...` que clickea el link ve la versión en inglés. No se resuelve en este change (requeriría el `Link` locale-aware de `@/i18n/routing`, fuera de alcance de la corrección puntual).
+
 ## Qué NO incluye este change
 
-- Privacy Policy y Cookie Policy pages en Payload (spec separado).
 - Checkbox de opt-in en formularios de lead-gen (spec separado).
 - Colección server-side de logs de consentimiento (decisión ya tomada: no aplica para este caso).
 - Categorías de marketing/ads (no existen trackers de ese tipo hoy).
