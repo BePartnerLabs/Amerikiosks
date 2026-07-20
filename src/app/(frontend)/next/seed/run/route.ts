@@ -21,6 +21,7 @@ import { seedHome } from '@/endpoints/seed/pages/home'
 import { seedMachines } from '@/endpoints/seed/pages/machines'
 import { seedPrivacyPolicy } from '@/endpoints/seed/pages/privacy-policy'
 import { seedSolutions } from '@/endpoints/seed/pages/solutions'
+import { seedTermsAndConditions } from '@/endpoints/seed/pages/terms-and-conditions'
 import { seedWhereItWorks } from '@/endpoints/seed/pages/where-it-works'
 import { seedWhereItWorksDetail } from '@/endpoints/seed/pages/where-it-works-detail'
 import { seedWhyAmerikiosks } from '@/endpoints/seed/pages/why-amerikiosks'
@@ -71,6 +72,7 @@ const parts: Record<
   },
   'privacy-policy': seedPrivacyPolicy,
   'cookie-policy': seedCookiePolicy,
+  'terms-and-conditions': seedTermsAndConditions,
 }
 
 export async function POST(req: Request): Promise<Response> {

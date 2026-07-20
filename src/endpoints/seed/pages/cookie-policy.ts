@@ -50,7 +50,7 @@ const richTextHeroEn = {
       {
         type: 'paragraph' as const,
         version: 1,
-        children: [{ type: 'text' as const, version: 1, text: 'Last updated: July 19, 2026' }],
+        children: [{ type: 'text' as const, version: 1, text: 'Effective date: July 20, 2026' }],
       },
     ],
   },
@@ -74,129 +74,107 @@ const richTextHeroEs = {
         type: 'paragraph' as const,
         version: 1,
         children: [
-          { type: 'text' as const, version: 1, text: 'Última actualización: 19 de julio de 2026' },
+          { type: 'text' as const, version: 1, text: 'Fecha de vigencia: 20 de julio de 2026' },
         ],
       },
     ],
   },
 }
 
-// Draft content — the previous WordPress site (amerikiosks.com) never had a dedicated
-// Cookie Policy page (it 404s there), so this is written from scratch based on what
-// this site actually does: only Google Analytics 4, gated behind the consent banner
-// added by this change, with no other trackers (audited against the live WordPress
-// site — no Facebook/LinkedIn/TikTok/Hotjar/Clarity/Bing pixels found). Not a
-// substitute for review by qualified legal counsel before this page is final.
+// Content sourced from the client's own draft (Amerikiosks_Privacy_Cookie_Policies.md,
+// provided directly by the user). Two adjustments from that draft:
+// - Dropped the "Functional" category (sessionStorage-based "liked" machine models) —
+//   verified against the codebase, no such feature exists; publishing it would be a
+//   false claim about cookies not actually set, which the source doc itself warns
+//   against.
+// - "We will present a cookie consent banner" -> present tense: the banner is already
+//   live as of this change (src/components/ConsentBanner), not a future commitment.
+// The category table became plain paragraphs (one per category) — this project's
+// lexical editor config doesn't have TableFeature enabled (it ships marked
+// "experimental" in the installed Payload version), and the content doesn't need a
+// grid to be clear. Not a substitute for review by qualified legal counsel.
 const bodyEn = buildLegalDoc(
-  [
-    'This Cookie Policy explains what cookies this website uses, why, and how you can control them. It supplements our Privacy Policy.',
-    'This page is a working draft prepared as part of our GDPR compliance effort and has not yet been reviewed by legal counsel. Do not treat it as final legal advice — contact support@amerikiosks.com with any questions before relying on it.',
-  ],
+  [],
   [
     {
       heading: 'What Are Cookies',
       paragraphs: [
-        'Cookies are small text files a website stores on your device to remember information about your visit, such as your language preference or whether you accepted cookies.',
+        "Small text files stored on your device when you visit the Site, used to make it function properly and to understand how it's used.",
       ],
     },
     {
-      heading: 'How We Ask for Your Consent',
+      heading: 'Cookies We Use',
       paragraphs: [
-        'When you first visit this site, a consent banner asks you to accept or reject non-essential cookies. Necessary cookies are always on and don’t require consent — they’re what makes the site work. You can change your choice at any time using the floating "Cookie preferences" button that appears after your first decision.',
+        'Strictly necessary — core site functionality, security, and load balancing (Vercel), such as session cookies. Required for the Site to work; you cannot opt out of these.',
+        'Analytics — understanding traffic and conversion via Google Analytics 4 (cookies such as _ga, _ga_*). You can opt out at any time.',
+        'Marketing — not currently used. This site runs no advertising or retargeting pixels today. If that changes in the future, you will be asked for consent before any such cookie is set.',
       ],
     },
     {
-      heading: 'Necessary Cookies',
+      heading: 'Managing Cookies',
       paragraphs: [
-        "Required for the site to work and can't be turned off: they remember your language preference, keep you signed in to the admin panel if you're a content editor, and support the content preview mode.",
-      ],
-    },
-    {
-      heading: 'Analytics Cookies',
-      paragraphs: [
-        'Set only if you accept them, and off by default. We use Google Analytics 4 to understand how visitors use this site — which pages are popular, how people navigate, and similar aggregate patterns. This helps us improve the site; it does not identify you personally.',
-        'Google Analytics is currently the only analytics or advertising tracker on this site. If that changes, we will update this page and, where required, ask for your consent again.',
-      ],
-    },
-    {
-      heading: 'Managing Your Preferences',
-      paragraphs: [
-        'You can accept or reject analytics cookies at any time via the floating "Cookie preferences" button. You can also block or delete cookies through your browser settings, though doing so may limit some site functionality.',
+        'You can control cookies through your browser settings (block, delete, or receive alerts). Blocking strictly necessary cookies may break site functionality.',
+        'We present a cookie consent banner on your first visit, letting you accept or reject non-essential cookies before they are set. You can change your choice at any time using the floating "Cookie preferences" button.',
       ],
     },
     {
       heading: 'Third-Party Cookies',
       paragraphs: [
-        'Google Analytics sets its own cookies, governed by Google’s privacy policy. We don’t control how Google processes that data beyond the reporting it provides us.',
+        'Some cookies are set by third parties we work with (currently, Google Analytics). We do not control these providers’ cookies directly — refer to their respective privacy policies.',
       ],
     },
     {
-      heading: 'Changes to This Policy',
+      heading: 'Changes',
       paragraphs: [
-        'If we add new cookie categories or change how we use existing ones, we will update this page and, where required by law, ask for your consent again.',
+        'We may update this Cookie Policy; check back periodically for the latest version.',
       ],
     },
     {
-      heading: 'Contact Us',
-      paragraphs: ['Questions about this Cookie Policy can be sent to support@amerikiosks.com.'],
+      heading: 'Contact',
+      paragraphs: ['info@Amerikiosks.com'],
     },
   ],
 )
 
 const bodyEs = buildLegalDoc(
-  [
-    'Esta Política de Cookies explica qué cookies usa este sitio, por qué, y cómo podés controlarlas. Complementa nuestra Política de Privacidad.',
-    'Esta página es un borrador de trabajo preparado como parte de nuestro esfuerzo de cumplimiento GDPR y todavía no fue revisada por asesoría legal. No la trates como asesoramiento legal definitivo — escribinos a support@amerikiosks.com ante cualquier duda antes de basarte en ella.',
-  ],
+  [],
   [
     {
-      heading: 'Qué son las cookies',
+      heading: 'Qué Son las Cookies',
       paragraphs: [
-        'Las cookies son pequeños archivos de texto que un sitio web guarda en tu dispositivo para recordar información sobre tu visita, como tu preferencia de idioma o si aceptaste las cookies.',
+        'Pequeños archivos de texto almacenados en tu dispositivo al visitar el Sitio, usados para que funcione correctamente y para entender cómo se usa.',
       ],
     },
     {
-      heading: 'Cómo pedimos tu consentimiento',
+      heading: 'Cookies Que Usamos',
       paragraphs: [
-        'Cuando visitás el sitio por primera vez, un banner de consentimiento te pide aceptar o rechazar las cookies no esenciales. Las cookies necesarias siempre están activas y no requieren consentimiento — son las que hacen que el sitio funcione. Podés cambiar tu decisión en cualquier momento con el botón flotante "Preferencias de cookies" que aparece después de tu primera decisión.',
+        'Estrictamente necesarias — funcionalidad central del sitio, seguridad, y balanceo de carga (Vercel), como cookies de sesión. Requeridas para que el Sitio funcione; no podés desactivarlas.',
+        'Analíticas — entender tráfico y conversión vía Google Analytics 4 (cookies como _ga, _ga_*). Podés rechazarlas en cualquier momento.',
+        'Marketing — no se usan actualmente. Este sitio no corre pixeles de publicidad ni retargeting hoy. Si eso cambia en el futuro, te pediremos consentimiento antes de activar cualquier cookie de ese tipo.',
       ],
     },
     {
-      heading: 'Cookies necesarias',
+      heading: 'Gestión de Cookies',
       paragraphs: [
-        'Requeridas para que el sitio funcione y no se pueden desactivar: recuerdan tu preferencia de idioma, mantienen tu sesión iniciada en el panel de admin si sos editor de contenido, y habilitan el modo de vista previa.',
+        'Podés controlar las cookies desde la configuración de tu navegador (bloquear, eliminar o recibir alertas). Bloquear cookies estrictamente necesarias puede romper la funcionalidad del sitio.',
+        'Mostramos un banner de consentimiento de cookies en tu primera visita, que te permite aceptar o rechazar cookies no esenciales antes de que se activen. Podés cambiar tu decisión en cualquier momento con el botón flotante "Preferencias de cookies".',
       ],
     },
     {
-      heading: 'Cookies de analítica',
+      heading: 'Cookies de Terceros',
       paragraphs: [
-        'Se activan solo si las aceptás, y están desactivadas por defecto. Usamos Google Analytics 4 para entender cómo los visitantes usan este sitio — qué páginas son populares, cómo navega la gente, y patrones agregados similares. Esto nos ayuda a mejorar el sitio; no te identifica personalmente.',
-        'Google Analytics es actualmente el único rastreador de analítica o publicidad en este sitio. Si eso cambia, actualizaremos esta página y, cuando corresponda, volveremos a pedir tu consentimiento.',
+        'Algunas cookies son configuradas por terceros con los que trabajamos (actualmente, Google Analytics). No controlamos directamente las cookies de estos proveedores — revisá sus políticas de privacidad respectivas.',
       ],
     },
     {
-      heading: 'Cómo gestionar tus preferencias',
+      heading: 'Cambios',
       paragraphs: [
-        'Podés aceptar o rechazar las cookies de analítica en cualquier momento con el botón flotante "Preferencias de cookies". También podés bloquear o eliminar cookies desde la configuración de tu navegador, aunque eso puede limitar algunas funciones del sitio.',
-      ],
-    },
-    {
-      heading: 'Cookies de terceros',
-      paragraphs: [
-        'Google Analytics establece sus propias cookies, reguladas por la política de privacidad de Google. No controlamos cómo Google procesa esos datos más allá de los reportes que nos provee.',
-      ],
-    },
-    {
-      heading: 'Cambios a esta política',
-      paragraphs: [
-        'Si agregamos nuevas categorías de cookies o cambiamos cómo usamos las existentes, actualizaremos esta página y, cuando la ley lo requiera, volveremos a pedir tu consentimiento.',
+        'Podemos actualizar esta Política de Cookies; revisá periódicamente la versión más reciente.',
       ],
     },
     {
       heading: 'Contacto',
-      paragraphs: [
-        'Consultas sobre esta Política de Cookies pueden enviarse a support@amerikiosks.com.',
-      ],
+      paragraphs: ['info@Amerikiosks.com'],
     },
   ],
 )

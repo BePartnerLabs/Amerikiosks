@@ -13,6 +13,7 @@ import { seedHome } from './home'
 import { seedMachines } from './machines'
 import { seedPrivacyPolicy } from './privacy-policy'
 import { seedSolutions } from './solutions'
+import { seedTermsAndConditions } from './terms-and-conditions'
 import { seedWhereItWorks } from './where-it-works'
 import { seedWhereItWorksDetail } from './where-it-works-detail'
 import { seedWhyAmerikiosks } from './why-amerikiosks'
@@ -104,4 +105,5 @@ export const seedPages = async (
   await seedCustomerServiceRequestARefund(payload, req)
   await seedPrivacyPolicy(payload, req)
   await seedCookiePolicy(payload, req)
+  await seedTermsAndConditions(payload, req)
 }
