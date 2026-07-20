@@ -79,6 +79,7 @@ export const upsertPage = async (
       links: esLinks,
       steps: esSteps,
       cta: esCta,
+      columns: esColumns,
       ...blockRest
     } = block as unknown as Record<string, unknown>
 
@@ -148,6 +149,26 @@ export const upsertPage = async (
           }))
         : undefined
 
+    // columns (Content block) — subfield-localized, same as `items`/`steps`/`cta`: only
+    // `richText` is localized, `size`/`enableLink`/`link` are shared. Inject the EN row id
+    // for an in-place UPDATE; without it Drizzle deletes+recreates the column row scoped to
+    // the ES-only update, silently dropping the EN richText that was just created (confirmed:
+    // every existing `content`-block page had this bug — `columns` was never in this
+    // destructure list until now).
+    const enColumns = (enBlock?.columns ?? []) as Array<Record<string, unknown>>
+    const mergedColumns =
+      Array.isArray(esColumns) && esColumns.length > 0
+        ? (esColumns as Array<Record<string, unknown>>).map((esColumn, j) => {
+            const enColumn = enColumns[j] ?? {}
+            const { richText: esRichText } = esColumn
+            return {
+              ...enColumn,
+              id: enColumn.id,
+              ...(esRichText !== undefined ? { richText: esRichText } : {}),
+            }
+          })
+        : undefined
+
     return {
       ...blockRest,
       id: blockId,
@@ -155,6 +176,7 @@ export const upsertPage = async (
       ...(mergedItems !== undefined ? { items: mergedItems } : {}),
       ...(mergedSteps !== undefined ? { steps: mergedSteps } : {}),
       ...(mergedCta !== undefined ? { cta: mergedCta } : {}),
+      ...(mergedColumns !== undefined ? { columns: mergedColumns } : {}),
     }
   })
 
