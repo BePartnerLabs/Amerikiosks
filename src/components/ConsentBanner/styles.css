@@ -1,0 +1,41 @@
+/* src/components/ConsentBanner/styles.css */
+.ak-consent-banner {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: var(--consent-banner-z-index, 50);
+  background: var(--consent-banner-background, var(--bp-color-surface, #fff));
+  border-top: 1px solid var(--bp-color-border);
+  box-shadow: var(--bp-shadow-md);
+}
+
+.ak-consent-banner__inner {
+  max-width: var(--bp-container-max-width, 75rem);
+  margin-inline: auto;
+  padding: var(--bp-space-4, 1rem) var(--bp-space-6, 1.5rem);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--bp-space-4, 1rem);
+}
+
+.ak-consent-banner__text {
+  flex: 1 1 20rem;
+  margin: 0;
+  color: var(--bp-color-text);
+}
+
+.ak-consent-banner__actions,
+.ak-consent-banner__preferences {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--bp-space-3, 0.75rem);
+}
+
+.ak-consent-reopen-btn {
+  position: fixed;
+  inset-inline-start: var(--bp-space-4, 1rem);
+  bottom: var(--bp-space-4, 1rem);
+  z-index: var(--consent-banner-z-index, 50);
+}
