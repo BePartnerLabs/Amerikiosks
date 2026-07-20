@@ -26,6 +26,7 @@ export function ConsentManager({ initialConsent }: Props) {
     document.cookie = `${CONSENT_COOKIE_NAME}=${encodeURIComponent(
       serializeConsentCookie(analytics),
     )}; path=/; max-age=${CONSENT_COOKIE_MAX_AGE}; SameSite=Lax`
+    setAnalyticsChecked(analytics)
     setDecided(true)
     setOpen(false)
     setExpanded(false)

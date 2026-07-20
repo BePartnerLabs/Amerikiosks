@@ -85,4 +85,12 @@ describe('ConsentManager', () => {
     expect(screen.getByRole('region', { name: 'ariaLabel' })).toBeInTheDocument()
     expect(screen.getByRole('switch', { name: 'analyticsLabel' })).toBeInTheDocument()
   })
+
+  it('reflects a rejected decision as unchecked when reopened after reject', () => {
+    render(<ConsentManager initialConsent={null} />)
+    fireEvent.click(screen.getByRole('button', { name: 'reject' }))
+    fireEvent.click(screen.getByRole('button', { name: 'reopenAriaLabel' }))
+
+    expect(screen.getByRole('switch', { name: 'analyticsLabel' })).not.toBeChecked()
+  })
 })
