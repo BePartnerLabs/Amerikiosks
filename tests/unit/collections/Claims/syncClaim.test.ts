@@ -30,6 +30,7 @@ function makeReq(overrides: Record<string, unknown> = {}) {
   return {
     payload: {
       update: vi.fn().mockResolvedValue(undefined),
+      findByID: vi.fn().mockResolvedValue({ id: 'brand-1', name: "Carlo's Bakery" }),
       logger: { info: vi.fn(), error: vi.fn() },
     },
     context: {},
@@ -55,6 +56,15 @@ describe('syncClaim', () => {
       expect.objectContaining({ customerName: 'Test Prueba' }),
     )
     expect(odooSubmit).not.toHaveBeenCalled()
+
+    // kioskBrand is a relationship (row id) on the doc — JotForm's radio question
+    // needs the brand's display name, resolved via findByID, not the raw id.
+    expect(req.payload.findByID).toHaveBeenCalledWith(
+      expect.objectContaining({ collection: 'brands', id: 'brand-1' }),
+    )
+    expect(jotFormSubmit).toHaveBeenCalledWith(
+      expect.objectContaining({ kioskBrand: "Carlo's Bakery" }),
+    )
     expect(req.payload.update).toHaveBeenCalledWith(
       expect.objectContaining({
         collection: 'claims',

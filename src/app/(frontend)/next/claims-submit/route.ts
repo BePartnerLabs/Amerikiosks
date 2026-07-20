@@ -1,15 +1,84 @@
 import configPromise from '@payload-config'
+import type { RequiredDataFromCollectionSlug } from 'payload'
 import { getPayload } from 'payload'
+import { detectImageMimeType } from '@/utilities/detectImageMimeType'
+
+const MAX_PHOTO_BYTES = 8 * 1024 * 1024 // 8MB
+
+function stringField(formData: FormData, name: string): string | undefined {
+  const value = formData.get(name)
+  return typeof value === 'string' && value.length > 0 ? value : undefined
+}
+
+// Duck-typed instead of `instanceof File` — the File constructed by a real
+// browser/undici request and the one jsdom's test environment provides are
+// different realms, so `instanceof` silently fails across that boundary even
+// though both are structurally identical Blob-like File objects.
+function isFileLike(value: unknown): value is File {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    typeof (value as { arrayBuffer?: unknown }).arrayBuffer === 'function' &&
+    typeof (value as { size?: unknown }).size === 'number' &&
+    typeof (value as { name?: unknown }).name === 'string'
+  )
+}
 
 export async function POST(req: Request) {
-  const body = await req.json()
+  const formData = await req.formData()
   const payload = await getPayload({ config: configPromise })
+
+  const locationRaw = stringField(formData, 'location')
+  const location = locationRaw ? JSON.parse(locationRaw) : undefined
+
+  const data = {
+    kioskBrand: stringField(formData, 'kioskBrand'),
+    paymentMethod: stringField(formData, 'paymentMethod'),
+    customerName: stringField(formData, 'customerName'),
+    customerEmail: stringField(formData, 'customerEmail'),
+    customerPhone: stringField(formData, 'customerPhone'),
+    transactionDateTime: stringField(formData, 'transactionDateTime'),
+    location,
+    claimReason: stringField(formData, 'claimReason'),
+    additionalInfo: stringField(formData, 'additionalInfo'),
+    lastFourCardDigits: stringField(formData, 'lastFourCardDigits'),
+    refundMethod: stringField(formData, 'refundMethod'),
+    refundAccount: stringField(formData, 'refundAccount'),
+    machineId: stringField(formData, 'machineId'),
+  }
+
+  // The photo is deliberately never written to Claims.photo or Payload Media for
+  // a public submission (see that field's admin description) — it's validated
+  // here, then handed to the afterChange hook via req.context so it can be
+  // forwarded straight to JotForm, and never touches our own storage.
+  let photoContext: { buffer: Buffer; filename: string; contentType: string } | undefined
+  const photoFile = formData.get('photo')
+  if (isFileLike(photoFile)) {
+    if (photoFile.size > MAX_PHOTO_BYTES) {
+      return Response.json({ error: 'Photo exceeds the 8MB size limit.' }, { status: 400 })
+    }
+    const arrayBuffer = await photoFile.arrayBuffer()
+    const bytes = new Uint8Array(arrayBuffer)
+    const detectedType = detectImageMimeType(bytes)
+    if (!detectedType) {
+      return Response.json(
+        { error: 'Photo must be a JPEG, PNG, WEBP, or HEIC image.' },
+        { status: 400 },
+      )
+    }
+    photoContext = {
+      buffer: Buffer.from(arrayBuffer),
+      filename: photoFile.name || 'claim-photo',
+      contentType: detectedType,
+    }
+  }
 
   try {
     const claim = await payload.create({
       collection: 'claims',
-      data: body,
+      data: data as unknown as RequiredDataFromCollectionSlug<'claims'>,
       overrideAccess: false,
+      context: photoContext ? { photoFile: photoContext } : undefined,
     })
 
     return Response.json(claim, { status: 201 })

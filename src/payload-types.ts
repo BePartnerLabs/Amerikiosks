@@ -1491,7 +1491,7 @@ export interface Claim {
    * Which client brand/product line was being purchased (e.g. Carlo's Bakery).
    */
   kioskBrand: number | Brand;
-  paymentMethod: 'card' | 'cash';
+  paymentMethod: 'card' | 'cash' | 'google_pay' | 'apple_pay';
   customerName: string;
   customerEmail: string;
   customerPhone: string;
@@ -1510,6 +1510,17 @@ export interface Claim {
    * Last 4 digits of the card used, if payment method was card.
    */
   lastFourCardDigits?: string | null;
+  /**
+   * Only relevant for cash refunds (card refunds go back to the card automatically). Values match JotForm's "Select a refund method" options verbatim.
+   */
+  refundMethod?: ('Zelle' | 'CashApp' | 'Paypal' | 'Venmo') | null;
+  /**
+   * Username/email/phone associated with the refund method account above.
+   */
+  refundAccount?: string | null;
+  /**
+   * Optional staff-attached photo (authenticated admin only). Public claim submissions don't populate this — the photo, if provided, is forwarded straight to JotForm without being stored here (see syncClaim.ts).
+   */
   photo?: (number | null) | Media;
   /**
    * Captured from the QR code scan (machine_id query param), for internal reference.
@@ -2624,6 +2635,8 @@ export interface ClaimsSelect<T extends boolean = true> {
   claimReason?: T;
   additionalInfo?: T;
   lastFourCardDigits?: T;
+  refundMethod?: T;
+  refundAccount?: T;
   photo?: T;
   machineId?: T;
   integrationTarget?: T;

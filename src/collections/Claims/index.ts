@@ -39,6 +39,8 @@ export const Claims: CollectionConfig = {
       options: [
         { label: 'Credit/Debit Card', value: 'card' },
         { label: 'Cash', value: 'cash' },
+        { label: 'Google Pay', value: 'google_pay' },
+        { label: 'Apple Pay', value: 'apple_pay' },
       ],
     },
     {
@@ -100,9 +102,36 @@ export const Claims: CollectionConfig = {
       },
     },
     {
+      name: 'refundMethod',
+      type: 'select',
+      options: [
+        { label: 'Zelle', value: 'Zelle' },
+        { label: 'CashApp', value: 'CashApp' },
+        { label: 'PayPal', value: 'Paypal' },
+        { label: 'Venmo', value: 'Venmo' },
+      ],
+      admin: {
+        description:
+          'Only relevant for cash refunds (card refunds go back to the card automatically). Values match JotForm\'s "Select a refund method" options verbatim.',
+        condition: (data) => data?.paymentMethod === 'cash',
+      },
+    },
+    {
+      name: 'refundAccount',
+      type: 'text',
+      admin: {
+        description: 'Username/email/phone associated with the refund method account above.',
+        condition: (data) => data?.paymentMethod === 'cash',
+      },
+    },
+    {
       name: 'photo',
       type: 'upload',
       relationTo: 'media',
+      admin: {
+        description:
+          "Optional staff-attached photo (authenticated admin only). Public claim submissions don't populate this — the photo, if provided, is forwarded straight to JotForm without being stored here (see syncClaim.ts).",
+      },
     },
     {
       name: 'machineId',

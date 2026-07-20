@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query'
 import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
 import type React from 'react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { Path } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
@@ -18,7 +18,7 @@ export type ClaimFormBlockType = {
 }
 
 type Brand = { id: number | string; name: string; logoUrl?: string }
-type FormValues = Omit<ClaimFormData, 'machineId'>
+type FormValues = Omit<ClaimFormData, 'machineId' | 'photo'>
 
 // Fixes the JotForm bug found in the live-site audit: the confirmation email
 // showed "Type a question" for 5 of 11 fields instead of the real label.
@@ -32,6 +32,8 @@ const FIELD_LABELS: Record<string, string> = {
   claimReason: 'What Happened',
   additionalInfo: 'Additional Information',
   lastFourCardDigits: 'Last 4 Digits of the Card',
+  refundMethod: 'Refund Method',
+  refundAccount: 'Refund Account',
   machineId: 'Machine ID',
 }
 
@@ -91,6 +93,61 @@ const PAYMENT_METHODS = [
       </svg>
     ),
   },
+  {
+    value: 'google_pay',
+    label: 'Google Pay',
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        width={28}
+        height={28}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.5}
+        aria-hidden="true"
+      >
+        <rect
+          x="2"
+          y="5"
+          width="20"
+          height="14"
+          rx="2"
+        />
+        <circle
+          cx="12"
+          cy="12"
+          r="4"
+        />
+      </svg>
+    ),
+  },
+  {
+    value: 'apple_pay',
+    label: 'Apple Pay',
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        width={28}
+        height={28}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.5}
+        aria-hidden="true"
+      >
+        <rect
+          x="2"
+          y="5"
+          width="20"
+          height="14"
+          rx="2"
+        />
+        <path
+          d="M12 8v8M8 12h8"
+          strokeLinecap="round"
+        />
+      </svg>
+    ),
+  },
 ]
 
 const CLAIM_REASONS = [
@@ -98,6 +155,15 @@ const CLAIM_REASONS = [
   { value: 'damaged_product', label: 'The product was damaged' },
   { value: 'wrong_product', label: 'I received the wrong product' },
   { value: 'no_product', label: "I didn't receive my product" },
+]
+
+// Values match Claims.refundMethod's select options and JotForm's "Select a
+// refund method" option text verbatim.
+const REFUND_METHODS = [
+  { value: 'Zelle', label: 'Zelle' },
+  { value: 'CashApp', label: 'CashApp' },
+  { value: 'Paypal', label: 'PayPal' },
+  { value: 'Venmo', label: 'Venmo' },
 ]
 
 const nowForDateTimeLocal = () => {
@@ -108,7 +174,7 @@ const nowForDateTimeLocal = () => {
 
 type Step = { key: string; fields: Path<FormValues>[]; required: boolean }
 
-const STEPS: Step[] = [
+const BASE_STEPS: Step[] = [
   { key: 'kioskBrand', fields: ['kioskBrand'], required: true },
   { key: 'paymentMethod', fields: ['paymentMethod'], required: true },
   { key: 'customerName', fields: ['customerName'], required: true },
@@ -122,8 +188,20 @@ const STEPS: Step[] = [
   },
   { key: 'claimReason', fields: ['claimReason'], required: true },
   { key: 'additionalInfo', fields: ['additionalInfo'], required: false },
+]
+
+// Card refunds go back to the card automatically (card + digits step); cash
+// refunds need a destination account instead (refundMethod + refundAccount) —
+// mirrors the branching audited on the live JotForm (qid 18/20/21), condensed
+// into two straightforward extra steps instead of cloning its image+yes/no flow.
+const CARD_STEPS: Step[] = [
   { key: 'lastFourCardDigits', fields: ['lastFourCardDigits'], required: false },
 ]
+const CASH_STEPS: Step[] = [
+  { key: 'refundMethod', fields: ['refundMethod'], required: true },
+  { key: 'refundAccount', fields: ['refundAccount'], required: true },
+]
+const PHOTO_STEP: Step = { key: 'photo', fields: [], required: false }
 
 export const ClaimFormBlock: React.FC<{ id?: string; brands: Brand[] } & ClaimFormBlockType> = ({
   brands,
@@ -132,6 +210,8 @@ export const ClaimFormBlock: React.FC<{ id?: string; brands: Brand[] } & ClaimFo
   const searchParams = useSearchParams()
   const machineId = searchParams?.get('machine_id') ?? undefined
   const successRef = useRef<HTMLDivElement>(null)
+  const [photo, setPhoto] = useState<File | undefined>(undefined)
+  const [photoError, setPhotoError] = useState<string | undefined>(undefined)
 
   // step -1 = intro screen, 0..STEPS.length-1 = one field group per screen
   // (mirrors the 11-screen flow audited on Amerikiosks' current JotForm).
@@ -140,11 +220,22 @@ export const ClaimFormBlock: React.FC<{ id?: string; brands: Brand[] } & ClaimFo
   const {
     register,
     trigger,
+    watch,
     handleSubmit,
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: { transactionDateTime: nowForDateTimeLocal() },
   })
+
+  const paymentMethod = watch('paymentMethod')
+
+  // Branches only once a payment method is actually chosen (paymentMethod is ''
+  // pre-selection) — card vs. cash follow-up steps, plus the optional photo step
+  // shared by both, appended after the base flow.
+  const STEPS: Step[] = useMemo(() => {
+    const followUp = paymentMethod === 'cash' ? CASH_STEPS : CARD_STEPS
+    return [...BASE_STEPS, ...followUp, PHOTO_STEP]
+  }, [paymentMethod])
 
   const {
     mutate,
@@ -159,8 +250,9 @@ export const ClaimFormBlock: React.FC<{ id?: string; brands: Brand[] } & ClaimFo
   const onSubmit = useCallback(
     // Radio/select values are always strings in the DOM — kioskBrand is a
     // numeric relationship ID server-side, so it must be coerced before send.
-    (data: FormValues) => mutate({ ...data, kioskBrand: Number(data.kioskBrand), machineId }),
-    [mutate, machineId],
+    (data: FormValues) =>
+      mutate({ ...data, kioskBrand: Number(data.kioskBrand), machineId, photo }),
+    [mutate, machineId, photo],
   )
 
   // GAListener only listens for clicks (see src/components/Analytics/GAListener.tsx).
@@ -180,7 +272,7 @@ export const ClaimFormBlock: React.FC<{ id?: string; brands: Brand[] } & ClaimFo
       if (!valid) return
     }
     setStep((s) => s + 1)
-  }, [step, trigger])
+  }, [step, trigger, STEPS])
 
   const goBack = useCallback(() => setStep((s) => s - 1), [])
 
@@ -441,6 +533,65 @@ export const ClaimFormBlock: React.FC<{ id?: string; brands: Brand[] } & ClaimFo
               maxLength={4}
               {...register('lastFourCardDigits')}
             />
+          </div>
+        )}
+
+        {current.key === 'refundMethod' && (
+          <div className="ak-claim-form__field">
+            <label htmlFor="refundMethod">Select a refund method</label>
+            <select
+              id="refundMethod"
+              {...register('refundMethod', { required: true })}
+            >
+              <option value="" />
+              {REFUND_METHODS.map((method) => (
+                <option
+                  key={method.value}
+                  value={method.value}
+                >
+                  {method.label}
+                </option>
+              ))}
+            </select>
+            {errors.refundMethod && <p className="ak-claim-form__error">This field is required.</p>}
+          </div>
+        )}
+
+        {current.key === 'refundAccount' && (
+          <div className="ak-claim-form__field">
+            <label htmlFor="refundAccount">
+              Username/email/phone associated with your refund account
+            </label>
+            <input
+              id="refundAccount"
+              {...register('refundAccount', { required: true })}
+            />
+            {errors.refundAccount && (
+              <p className="ak-claim-form__error">This field is required.</p>
+            )}
+          </div>
+        )}
+
+        {current.key === 'photo' && (
+          <div className="ak-claim-form__field">
+            <label htmlFor="photo">Attach a picture of the issue (optional)</label>
+            <input
+              id="photo"
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/heic"
+              onChange={(e) => {
+                const file = e.target.files?.[0]
+                if (file && file.size > 8 * 1024 * 1024) {
+                  setPhotoError('Photo exceeds the 8MB size limit.')
+                  setPhoto(undefined)
+                  e.target.value = ''
+                  return
+                }
+                setPhotoError(undefined)
+                setPhoto(file)
+              }}
+            />
+            {photoError && <p className="ak-claim-form__error">{photoError}</p>}
           </div>
         )}
 
