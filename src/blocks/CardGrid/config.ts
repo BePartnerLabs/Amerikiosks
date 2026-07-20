@@ -10,7 +10,10 @@ export const CardGrid: Block = {
   interfaceName: 'CardGridBlock',
   imageURL: '/block-previews/card-grid-compact.png',
   imageAltText: 'Card Grid block — compact, icon, and pillar variants',
-  labels: { singular: 'Card Grid', plural: 'Card Grids' },
+  labels: {
+    singular: { en: 'Card Grid', es: 'Grilla de Tarjetas' },
+    plural: { en: 'Card Grids', es: 'Grillas de Tarjetas' },
+  },
   fields: [
     {
       name: 'variant',
@@ -37,6 +40,10 @@ export const CardGrid: Block = {
       type: 'text',
       required: true,
       localized: true,
+      admin: {
+        description:
+          'Para destacar una palabra o frase en negrita, envuélvela en asteriscos dobles: **texto**',
+      },
     },
     {
       name: 'subheading',

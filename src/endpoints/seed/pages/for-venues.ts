@@ -1,7 +1,13 @@
 import path from 'node:path'
 import type { Payload, PayloadRequest } from 'payload'
+import { findOrCreateForm, translateFormEs } from '../translateForm'
 import { uploadMedia } from '../uploadMedia'
-import { venueProgramForm } from '../venue-program-form'
+import {
+  venueProgramForm,
+  venueProgramFormConfirmationMessageEs,
+  venueProgramFormFieldDefs,
+  venueProgramFormSubmitButtonLabelEs,
+} from '../venue-program-form'
 import { upsertPage } from './utils'
 
 const projects = [
@@ -322,21 +328,20 @@ export const seedForVenues = async (payload: Payload, req: PayloadRequest): Prom
     })
   }
 
-  let venueFormId: number
-  const existingForm = await payload.find({
-    collection: 'forms',
-    where: { title: { equals: venueProgramForm.title } },
-    limit: 1,
+  const { id: venueFormId, fields: venueFormFields } = await findOrCreateForm(
+    payload,
     req,
-  })
-  if (existingForm.totalDocs > 0) {
-    venueFormId = existingForm.docs[0]?.id as number
-    payload.logger.info('  Venue Program Form exists, skipping creation')
-  } else {
-    const created = await payload.create({ collection: 'forms', data: venueProgramForm, req })
-    venueFormId = created.id as number
-    payload.logger.info('  Created Venue Program Form')
-  }
+    venueProgramForm,
+  )
+  await translateFormEs(
+    payload,
+    req,
+    venueFormId,
+    venueFormFields,
+    venueProgramFormFieldDefs,
+    venueProgramFormSubmitButtonLabelEs,
+    venueProgramFormConfirmationMessageEs,
+  )
 
   const heroImage = await uploadMedia(
     payload,

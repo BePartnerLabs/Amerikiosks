@@ -1,9 +1,16 @@
+.ak-section-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--md-size-space-24);
+}
+
 .ak-section-header__eyebrow {
   --_color: var(--section-eyebrow-color, var(--ak-eyebrow-color));
-  margin: 0 0 var(--md-size-space-12);
-  font-size: var(--bp-text-xs);
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  font-weight: 600;
+  letter-spacing: 0;
   text-transform: uppercase;
   color: var(--_color);
 }
@@ -12,9 +19,9 @@
   --_color: var(--section-heading-color, var(--ak-section-heading-color));
   margin: 0;
   font-family: var(--ak-font-base);
-  font-size: clamp(1.75rem, 3vw + 0.5rem, 2.5rem);
-  font-weight: 500;
-  line-height: 1.4;
+  font-size: clamp(2rem, 1.824rem + 0.75vw, 2.5rem); /* 32px mobile -> 40px desktop */
+  font-weight: 400;
+  line-height: 1.5;
   color: var(--_color);
   white-space: pre-line;
   text-wrap: balance;

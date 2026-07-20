@@ -70,6 +70,10 @@ const columnFields: Field[] = [
 export const Content: Block = {
   slug: 'content',
   interfaceName: 'ContentBlock',
+  labels: {
+    singular: { en: 'Content', es: 'Contenido' },
+    plural: { en: 'Content Blocks', es: 'Bloques de Contenido' },
+  },
   fields: [
     {
       name: 'columns',

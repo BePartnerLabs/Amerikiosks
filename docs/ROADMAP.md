@@ -19,6 +19,7 @@ Future ideas and planned improvements for the Amerikiosks website. Items are gro
 - **TrustStrip WCAG 2.2.2 keyboard pause** — Add a visually-hidden pause/play toggle button to the marquee carousel so keyboard users without `prefers-reduced-motion` can pause animation. Currently documented as a known limitation in `src/blocks/TrustStrip/README.md`.
 - **TrustStrip screenshots** — Take desktop (1280px) and mobile (375px) screenshots with real partner logos seeded and add to `src/blocks/TrustStrip/README.md` to reach 80%+ completeness score.
 - **Partner drag-to-reorder** — Replace the `order` number field with a drag-and-drop interface in admin. Requires a `PartnerOrder` Global or a custom Payload UI component.
+- **Batch "Releases" + writer approval workflow** — Explored 2026-07-19, not committed. Two related asks from the client: (1) group several documents across collections into a named "release" with a message, publish/unpublish them together (~3-5 dev days: `Releases` collection + relationship + batch publish/unpublish hooks + custom admin UI); (2) writers can only save drafts, an approver actually publishes (~1-1.5 dev days: `reviewStatus` field + `access` control gate, no plugin covers this — Payload's Enterprise "Publishing Workflows" is approval/notifications-focused, not release-grouping). Reviewer "pending review" panel: per-collection filtered list view is free with the `reviewStatus` field; a unified cross-collection inbox is a custom admin view, +1 day. **Validate scope with the client once the full collection set is locked, not just for the first release — for the first complete project close-out.**
 
 ---
 
@@ -43,6 +44,26 @@ Future ideas and planned improvements for the Amerikiosks website. Items are gro
 ## Content
 
 - **Seed TrustStrip block on home page** — After running the seed, the home page still needs a TrustStrip block added manually in `/admin`. Automate this in `src/endpoints/seed/pages/home.ts` so the section appears out of the box after seeding.
+
+---
+
+## Client Manual (final usage guide)
+
+- **Hiding a layout block without deleting it** — set a block's "Block Name" (admin field, top of each block in the Layout list) to exactly `hidden` (case-insensitive, e.g. `Hidden`) and it stops rendering on the page while staying fully configured. Useful for sections still waiting on content that shouldn't block a release. A name that merely *contains* "hidden" (e.g. `Hidden promo (old)`) still renders — only an exact match toggles it off. Implemented in `src/blocks/RenderBlocks.tsx`.
+
+---
+
+## GDPR / Privacy Compliance
+
+Audited 2026-07-19 — **site currently does not comply**, no consent mechanism exists at all. Planned as its own branch, between this UX/UI pass and the next one.
+
+- **Cookie consent gate for GA4** — `gtag.js` currently loads unconditionally in `src/app/(frontend)/[locale]/layout.tsx` on every page load, before any user consent. Needs a consent banner that blocks the `<Script>` injection until opt-in (analytics isn't "strictly necessary" under GDPR/ePrivacy).
+- **Privacy Policy page** — doesn't exist (checked seed + DB, neither has one).
+- **Cookie Policy page** — same, doesn't exist.
+- **Terms of Service page** — not strictly GDPR, but usually shipped alongside.
+- **Consent preference center** — a way to withdraw consent after the fact.
+- **PII consent checkbox on lead-capture forms** — Brand/Venue/Agency/Emerging-Brand/Start-a-Partnership forms all collect name/email/phone/company with no visible opt-in or purpose/retention disclosure at the point of capture.
+- Not a gap: JotForm integration (`JotFormRepository`) is server-to-server (API calls), not a client embed — no extra third-party cookies from it. No other ad-tech/fingerprinting scripts found in a first pass.
 
 ---
 

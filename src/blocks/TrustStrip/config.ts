@@ -6,8 +6,8 @@ export const TrustStrip: Block = {
   imageURL: '/block-previews/trust-strip.png',
   imageAltText: 'Trust Strip block — partner logos carousel',
   labels: {
-    singular: 'Trust Strip',
-    plural: 'Trust Strips',
+    singular: { en: 'Trust Strip', es: 'Franja de Confianza' },
+    plural: { en: 'Trust Strips', es: 'Franjas de Confianza' },
   },
   fields: [
     {
@@ -25,6 +25,10 @@ export const TrustStrip: Block = {
       label: 'Heading',
       required: true,
       localized: true,
+      admin: {
+        description:
+          'Para destacar una palabra o frase en negrita, envuélvela en asteriscos dobles: **texto**',
+      },
     },
     {
       name: 'limit',

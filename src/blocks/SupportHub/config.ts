@@ -29,7 +29,7 @@ export const SupportHub: Block = {
     singularName: 'SupportHubBlock',
   },
   labels: {
-    plural: 'Support Hub Blocks',
-    singular: 'Support Hub Block',
+    plural: { en: 'Support Hub Blocks', es: 'Bloques de Centro de Soporte' },
+    singular: { en: 'Support Hub Block', es: 'Bloque de Centro de Soporte' },
   },
 }

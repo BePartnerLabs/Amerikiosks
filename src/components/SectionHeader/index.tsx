@@ -1,4 +1,5 @@
 import type React from 'react'
+import { renderBoldText } from '@/utilities/renderBoldText'
 import './styles.css'
 
 type Props = {
@@ -12,7 +13,7 @@ export const SectionHeader: React.FC<Props> = ({ eyebrow, heading, subtitle, ali
   return (
     <div className={`ak-section-header ak-section-header--${align}`}>
       {eyebrow && <p className="ak-section-header__eyebrow">{eyebrow}</p>}
-      <h2 className="ak-section-header__heading">{heading}</h2>
+      <h2 className="ak-section-header__heading">{renderBoldText(heading)}</h2>
       {subtitle && <p className="ak-section-header__subtitle">{subtitle}</p>}
     </div>
   )

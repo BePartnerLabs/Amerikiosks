@@ -6,7 +6,10 @@ export const ProjectsShowcase: Block = {
   interfaceName: 'ProjectsShowcaseBlock',
   imageURL: '/block-previews/projects-showcase.png',
   imageAltText: 'Projects Showcase — heading + project cards filtered by tag',
-  labels: { singular: 'Projects Showcase', plural: 'Projects Showcases' },
+  labels: {
+    singular: { en: 'Projects Showcase', es: 'Vitrina de Proyectos' },
+    plural: { en: 'Projects Showcases', es: 'Vitrinas de Proyectos' },
+  },
   fields: [
     {
       name: 'eyebrow',
@@ -19,6 +22,10 @@ export const ProjectsShowcase: Block = {
       type: 'text',
       required: true,
       localized: true,
+      admin: {
+        description:
+          'Para destacar una palabra o frase en negrita, envuélvela en asteriscos dobles: **texto**',
+      },
     },
     {
       name: 'body',

@@ -5,7 +5,10 @@ export const MachinesListing: Block = {
   interfaceName: 'MachinesListingBlock',
   imageURL: '/block-previews/machines-listing.png',
   imageAltText: 'Machines Listing block — filterable, paginated machine card grid',
-  labels: { singular: 'Machines Listing', plural: 'Machines Listings' },
+  labels: {
+    singular: { en: 'Machines Listing', es: 'Listado de Máquinas' },
+    plural: { en: 'Machines Listings', es: 'Listados de Máquinas' },
+  },
   fields: [
     {
       name: 'itemsPerPage',

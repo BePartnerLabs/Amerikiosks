@@ -28,7 +28,7 @@ Partners are managed at **Partners** in the main admin menu. Each partner has:
 
 | Variante | Descripción |
 |----------|-------------|
-| `default` | Infinite CSS marquee scrolling left at 40s, pauses on hover, edge fades |
+| `default` | Infinite CSS marquee scrolling left at 40s, pauses on hover or via the keyboard-focusable Pause/Play toggle, edge fades |
 
 ## Screenshots
 
@@ -38,11 +38,11 @@ Partners are managed at **Partners** in the main admin menu. Each partner has:
 
 ## Quality Checklist
 
-**Completeness: 14/21 (67%)**
+**Completeness: 16/21 (76%)**
 
 ### Accessibility AAA
 - [ ] Contrast ratio minimum 7:1
-- [ ] All interactive elements keyboard navigable — **known limitation:** no pause/play button; keyboard users without `prefers-reduced-motion` cannot pause the animation (WCAG 2.2.2). Future improvement: add a visually-hidden toggle.
+- [x] All interactive elements keyboard navigable — a visually-hidden-until-focused Pause/Play toggle (`PauseToggle.tsx`) satisfies WCAG 2.2.2 (Pause, Stop, Hide): `Tab` reveals the button, `Enter`/`Space` toggles `aria-pressed` and adds `.ak-trust-strip__viewport--paused`, which sets `animation-play-state: paused` on both tracks (same mechanism as the existing `:hover` pause)
 - [x] ARIA labels on elements without visible text — `aria-label={heading}` on `<section>`, `aria-hidden="true"` on duplicate track, `aria-live="off"` on viewport to suppress screen reader announcements of scrolling content
 - [x] Correct HTML landmarks — `<section>` with aria-label, `<ul>/<li>` for logo list
 - [ ] Focus visible on all interactive elements
@@ -75,9 +75,9 @@ Partners are managed at **Partners** in the main admin menu. Each partner has:
 - [x] Animations respect `prefers-reduced-motion`
 
 ### Delivery
-- [x] Unit tests added
+- [x] Unit tests added — `TrustStrip.test.tsx`, `TrustStripPauseToggle.test.tsx`, `TrustStripTracker.test.tsx`
 - [x] All fields documented in table above
-- [ ] Screenshots up to date
+- [x] Screenshots up to date — desktop (1280px) and mobile (375px, iPhone 12) captured against live seed data
 - [ ] Delivery notes written
 
 ## GA4 Analytics

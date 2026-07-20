@@ -5,7 +5,10 @@ export const FormatsGrid: Block = {
   interfaceName: 'FormatsGridBlock',
   imageURL: '/block-previews/formats-grid.png',
   imageAltText: 'Formats Grid block — machine format card grid',
-  labels: { singular: 'Formats Grid', plural: 'Formats Grids' },
+  labels: {
+    singular: { en: 'Formats Grid', es: 'Grilla de Formatos' },
+    plural: { en: 'Formats Grids', es: 'Grillas de Formatos' },
+  },
   fields: [
     {
       name: 'eyebrow',
@@ -18,6 +21,10 @@ export const FormatsGrid: Block = {
       type: 'text',
       required: true,
       localized: true,
+      admin: {
+        description:
+          'Para destacar una palabra o frase en negrita, envuélvela en asteriscos dobles: **texto**',
+      },
     },
     {
       name: 'subheading',

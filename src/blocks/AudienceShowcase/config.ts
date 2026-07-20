@@ -5,7 +5,10 @@ export const AudienceShowcase: Block = {
   interfaceName: 'AudienceShowcaseBlock',
   imageURL: '/block-previews/audience-showcase.png',
   imageAltText: 'Audience Showcase block — 2×2 image overlay card grid',
-  labels: { singular: 'Audience Showcase', plural: 'Audience Showcases' },
+  labels: {
+    singular: { en: 'Audience Showcase', es: 'Vitrina de Audiencia' },
+    plural: { en: 'Audience Showcases', es: 'Vitrinas de Audiencia' },
+  },
   fields: [
     {
       name: 'eyebrow',
@@ -18,6 +21,10 @@ export const AudienceShowcase: Block = {
       type: 'text',
       required: true,
       localized: true,
+      admin: {
+        description:
+          'Para destacar una palabra o frase en negrita, envuélvela en asteriscos dobles: **texto**',
+      },
     },
     {
       name: 'subheading',

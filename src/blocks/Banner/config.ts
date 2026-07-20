@@ -7,6 +7,10 @@ import type { Block } from 'payload'
 
 export const Banner: Block = {
   slug: 'banner',
+  labels: {
+    singular: { en: 'Banner', es: 'Banner' },
+    plural: { en: 'Banners', es: 'Banners' },
+  },
   fields: [
     {
       name: 'style',

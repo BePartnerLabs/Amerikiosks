@@ -14,7 +14,7 @@ export const ClaimForm: Block = {
     singularName: 'ClaimFormBlock',
   },
   labels: {
-    plural: 'Claim Form Blocks',
-    singular: 'Claim Form Block',
+    plural: { en: 'Claim Form Blocks', es: 'Bloques de Formulario de Reclamo' },
+    singular: { en: 'Claim Form Block', es: 'Bloque de Formulario de Reclamo' },
   },
 }

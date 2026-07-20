@@ -1,6 +1,12 @@
 import path from 'node:path'
 import type { Payload, PayloadRequest } from 'payload'
-import { emergingBrandForm } from '../emerging-brand-form'
+import {
+  emergingBrandForm,
+  emergingBrandFormConfirmationMessageEs,
+  emergingBrandFormFieldDefs,
+  emergingBrandFormSubmitButtonLabelEs,
+} from '../emerging-brand-form'
+import { findOrCreateForm, translateFormEs } from '../translateForm'
 import { uploadMedia } from '../uploadMedia'
 import { upsertPage } from './utils'
 
@@ -318,21 +324,20 @@ export const seedForEmergingBrands = async (
     })
   }
 
-  let emergingFormId: number
-  const existingForm = await payload.find({
-    collection: 'forms',
-    where: { title: { equals: emergingBrandForm.title } },
-    limit: 1,
+  const { id: emergingFormId, fields: emergingFormFields } = await findOrCreateForm(
+    payload,
     req,
-  })
-  if (existingForm.totalDocs > 0) {
-    emergingFormId = existingForm.docs[0]?.id as number
-    payload.logger.info('  Emerging Brand Form exists, skipping creation')
-  } else {
-    const created = await payload.create({ collection: 'forms', data: emergingBrandForm, req })
-    emergingFormId = created.id as number
-    payload.logger.info('  Created Emerging Brand Form')
-  }
+    emergingBrandForm,
+  )
+  await translateFormEs(
+    payload,
+    req,
+    emergingFormId,
+    emergingFormFields,
+    emergingBrandFormFieldDefs,
+    emergingBrandFormSubmitButtonLabelEs,
+    emergingBrandFormConfirmationMessageEs,
+  )
 
   const heroImage = await uploadMedia(
     payload,
