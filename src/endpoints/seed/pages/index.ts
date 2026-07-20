@@ -2,6 +2,7 @@ import type { Payload, PayloadRequest } from 'payload'
 import { seedAudiencePages, seedWhoItsFor } from './audience'
 import { seedCaseStudies } from './case-studies'
 import { seedContact } from './contact'
+import { seedCookiePolicy } from './cookie-policy'
 import { seedCustomerService } from './customer-service'
 import { seedCustomerServiceRequestARefund } from './customer-service-request-a-refund'
 import { seedForAgencies } from './for-agencies'
@@ -10,6 +11,7 @@ import { seedForEmergingBrands } from './for-emerging-brands'
 import { seedForVenues } from './for-venues'
 import { seedHome } from './home'
 import { seedMachines } from './machines'
+import { seedPrivacyPolicy } from './privacy-policy'
 import { seedSolutions } from './solutions'
 import { seedWhereItWorks } from './where-it-works'
 import { seedWhereItWorksDetail } from './where-it-works-detail'
@@ -100,4 +102,6 @@ export const seedPages = async (
   await seedContact(payload, req)
   await seedCustomerService(payload, req)
   await seedCustomerServiceRequestARefund(payload, req)
+  await seedPrivacyPolicy(payload, req)
+  await seedCookiePolicy(payload, req)
 }
