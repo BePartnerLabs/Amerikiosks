@@ -9,6 +9,7 @@ import { defaultLexical } from '@/fields/defaultLexical'
 import { Brands } from './collections/Brands'
 import { Categories } from './collections/Categories'
 import { Claims } from './collections/Claims'
+import { ConsentLogs } from './collections/ConsentLogs'
 import { FAQItems } from './collections/FAQItems'
 import { Insights } from './collections/Insights'
 import { Machines } from './collections/Machines'
@@ -97,6 +98,7 @@ export default buildConfig({
     Projects,
     Brands,
     Claims,
+    ConsentLogs,
   ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer, Settings],

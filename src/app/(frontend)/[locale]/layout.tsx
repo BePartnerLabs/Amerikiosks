@@ -2,7 +2,7 @@ import { GeistMono } from 'geist/font/mono'
 import { GeistSans } from 'geist/font/sans'
 import type { Metadata, Viewport } from 'next'
 import { Poppins } from 'next/font/google'
-import { draftMode } from 'next/headers'
+import { cookies, draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 import Script from 'next/script'
 import { NextIntlClientProvider } from 'next-intl'
@@ -10,10 +10,12 @@ import { getMessages } from 'next-intl/server'
 import type React from 'react'
 import { AdminBar } from '@/components/AdminBar'
 import { GAListener } from '@/components/Analytics/GAListener'
+import { ConsentManager } from '@/components/ConsentBanner/ConsentManager'
 import { Footer } from '@/Footer/Component'
 import { Header } from '@/Header/Component'
 import { routing } from '@/i18n/routing'
 import { Providers } from '@/providers'
+import { CONSENT_COOKIE_NAME, parseConsentCookie } from '@/utilities/consent'
 import { generateOrganizationJsonLd, generateWebsiteJsonLd } from '@/utilities/generateJsonLd'
 import { getCachedGlobal } from '@/utilities/getGlobals'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
@@ -39,6 +41,10 @@ type Props = {
 export default async function LocaleLayout({ children, params }: Props) {
   const { locale } = await params
   const { isEnabled } = await draftMode()
+
+  const cookieStore = await cookies()
+  const consent = parseConsentCookie(cookieStore.get(CONSENT_COOKIE_NAME)?.value)
+  const hasAnalyticsConsent = consent?.analytics === true
 
   if (!locales.includes(locale as 'en' | 'es')) {
     notFound()
@@ -86,7 +92,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           rel="icon"
           type="image/svg+xml"
         />
-        {gaId && (
+        {gaId && hasAnalyticsConsent && (
           <>
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
@@ -114,6 +120,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         <NextIntlClientProvider messages={messages}>
           <Providers>
             <GAListener />
+            <ConsentManager initialConsent={consent} />
             <AdminBar adminBarProps={{ preview: isEnabled }} />
             <Header />
             <main id="main-content">{children}</main>

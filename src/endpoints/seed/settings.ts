@@ -40,6 +40,7 @@ export async function seedSettings(
         'Amerikiosks provides branded kiosk hardware and software solutions for retail, hospitality, and venue environments.',
       llmsIncludePages: true,
       llmsIncludeInsights: true,
+      googleAnalyticsId: 'G-TEST12345',
     },
     req,
     overrideAccess: false,

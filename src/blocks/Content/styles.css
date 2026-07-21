@@ -40,3 +40,35 @@
     grid-column: span 12;
   }
 }
+
+/* Long-form body text (legal pages, articles): the 12-col grid gives the
+   column its position, but a full-width column left at ~1344px reads far
+   past comfortable line length — cap the actual text measure and center
+   it within the column, independent of the column's own width. */
+.ak-content .ak-rich-text {
+  max-width: 44rem;
+  margin-inline: auto;
+}
+
+.ak-content .ak-rich-text h2 {
+  font-size: var(--bp-text-2xl, 1.5rem);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--bp-color-text);
+  margin-block: var(--bp-space-8, 2rem) var(--bp-space-3, 0.75rem);
+}
+
+.ak-content .ak-rich-text h2:first-child {
+  margin-top: 0;
+}
+
+.ak-content .ak-rich-text p {
+  font-size: var(--bp-text-base, 1rem);
+  line-height: 1.7;
+  color: var(--bp-color-text-muted, var(--bp-color-text));
+  margin-block: 0 var(--bp-space-4, 1rem);
+}
+
+.ak-content .ak-rich-text p:last-child {
+  margin-bottom: 0;
+}

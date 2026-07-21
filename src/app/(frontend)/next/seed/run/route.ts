@@ -10,6 +10,7 @@ import { seedPosts } from '@/endpoints/seed/insights'
 import { seedAudiencePages, seedWhoItsFor } from '@/endpoints/seed/pages/audience'
 import { seedCaseStudies } from '@/endpoints/seed/pages/case-studies'
 import { seedContact } from '@/endpoints/seed/pages/contact'
+import { seedCookiePolicy } from '@/endpoints/seed/pages/cookie-policy'
 import { seedCustomerService } from '@/endpoints/seed/pages/customer-service'
 import { seedCustomerServiceRequestARefund } from '@/endpoints/seed/pages/customer-service-request-a-refund'
 import { seedForAgencies } from '@/endpoints/seed/pages/for-agencies'
@@ -18,7 +19,9 @@ import { seedForEmergingBrands } from '@/endpoints/seed/pages/for-emerging-brand
 import { seedForVenues } from '@/endpoints/seed/pages/for-venues'
 import { seedHome } from '@/endpoints/seed/pages/home'
 import { seedMachines } from '@/endpoints/seed/pages/machines'
+import { seedPrivacyPolicy } from '@/endpoints/seed/pages/privacy-policy'
 import { seedSolutions } from '@/endpoints/seed/pages/solutions'
+import { seedTermsAndConditions } from '@/endpoints/seed/pages/terms-and-conditions'
 import { seedWhereItWorks } from '@/endpoints/seed/pages/where-it-works'
 import { seedWhereItWorksDetail } from '@/endpoints/seed/pages/where-it-works-detail'
 import { seedWhyAmerikiosks } from '@/endpoints/seed/pages/why-amerikiosks'
@@ -67,6 +70,9 @@ const parts: Record<
     await seedCustomerService(payload, req)
     await seedCustomerServiceRequestARefund(payload, req)
   },
+  'privacy-policy': seedPrivacyPolicy,
+  'cookie-policy': seedCookiePolicy,
+  'terms-and-conditions': seedTermsAndConditions,
 }
 
 export async function POST(req: Request): Promise<Response> {
