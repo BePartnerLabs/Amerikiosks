@@ -93,4 +93,23 @@ describe('ConsentManager', () => {
 
     expect(screen.getByRole('switch', { name: 'analyticsLabel' })).not.toBeChecked()
   })
+
+  it('anchors bottom-right on first appearance, bottom-left when reopened via the floating button', () => {
+    render(
+      <ConsentManager
+        initialConsent={{ analytics: false, timestamp: '2026-01-01T00:00:00.000Z' }}
+      />,
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'reopenAriaLabel' }))
+
+    expect(screen.getByRole('region', { name: 'ariaLabel' })).toHaveClass('ak-consent-card--start')
+  })
+
+  it('does not anchor bottom-left on the very first appearance (no trigger button clicked)', () => {
+    render(<ConsentManager initialConsent={null} />)
+
+    expect(screen.getByRole('region', { name: 'ariaLabel' })).not.toHaveClass(
+      'ak-consent-card--start',
+    )
+  })
 })

@@ -21,6 +21,11 @@ export function ConsentManager({ initialConsent }: Props) {
   const [open, setOpen] = useState(initialConsent === null)
   const [expanded, setExpanded] = useState(false)
   const [analyticsChecked, setAnalyticsChecked] = useState(initialConsent?.analytics ?? true)
+  // The very first appearance (no trigger button, just loads with the page)
+  // sits bottom-right. Reopening via the floating button feels disconnected
+  // if the panel pops up on the opposite side of the screen from the click —
+  // once there's a trigger, the panel follows it.
+  const [anchor, setAnchor] = useState<'end' | 'start'>('end')
 
   function persist(analytics: boolean) {
     document.cookie = `${CONSENT_COOKIE_NAME}=${encodeURIComponent(
@@ -36,6 +41,7 @@ export function ConsentManager({ initialConsent }: Props) {
   function reopen() {
     setExpanded(true)
     setOpen(true)
+    setAnchor('start')
   }
 
   if (open) {
@@ -43,6 +49,7 @@ export function ConsentManager({ initialConsent }: Props) {
       <ConsentBanner
         expanded={expanded}
         analyticsChecked={analyticsChecked}
+        anchor={anchor}
         onExpand={() => setExpanded(true)}
         onAnalyticsChange={setAnalyticsChecked}
         onAcceptAll={() => persist(true)}

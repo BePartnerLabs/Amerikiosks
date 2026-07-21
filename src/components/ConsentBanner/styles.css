@@ -14,6 +14,14 @@
   padding: var(--bp-space-6, 1.5rem);
 }
 
+/* Reopened via the floating button (bottom-left) — anchor the panel next to
+   it instead of the default bottom-right, so it doesn't pop up on the
+   opposite side of the screen from the click that triggered it. */
+.ak-consent-card--start {
+  right: auto;
+  left: var(--bp-space-6, 1.5rem);
+}
+
 .ak-consent-card__text {
   margin: 0 0 var(--bp-space-4, 1rem);
   color: var(--bp-color-text-muted, var(--bp-color-text));
@@ -172,12 +180,33 @@
 }
 
 /* ── Reopen button — bottom-left (unchanged position, opposite
-   corner from the card so they never overlap) ───────────────── */
+   corner from the card so they never overlap). Circular icon-only
+   button (cookie glyph) instead of a labeled pill. ───────────── */
 .ak-consent-reopen-btn {
   position: fixed;
   inset-inline-start: var(--bp-space-4, 1rem);
   bottom: var(--bp-space-4, 1rem);
   z-index: var(--consent-banner-z-index, 50);
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--bp-color-border);
+  background: var(--bp-color-surface, #fff);
+  color: var(--bp-color-text);
+  box-shadow: var(--bp-shadow-lg);
+  cursor: pointer;
+}
+.ak-consent-reopen-btn:hover {
+  --_hover-color: var(--consent-reopen-hover-color, var(--ak-accent, var(--bp-primary)));
+  color: var(--_hover-color);
+}
+.ak-consent-reopen-btn svg {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 /* ── Category info tooltip ───────────────────────────────────── */

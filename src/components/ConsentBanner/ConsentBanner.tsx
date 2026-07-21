@@ -8,6 +8,12 @@ import './styles.css'
 type Props = {
   expanded: boolean
   analyticsChecked: boolean
+  /**
+   * 'end' (bottom-right, the default first-appearance position) or 'start'
+   * (bottom-left, used when reopened via the floating preferences button so
+   * the panel appears next to the control that triggered it).
+   */
+  anchor?: 'end' | 'start'
   onExpand: () => void
   onAnalyticsChange: (checked: boolean) => void
   onAcceptAll: () => void
@@ -18,6 +24,7 @@ type Props = {
 export function ConsentBanner({
   expanded,
   analyticsChecked,
+  anchor = 'end',
   onExpand,
   onAnalyticsChange,
   onAcceptAll,
@@ -28,7 +35,7 @@ export function ConsentBanner({
 
   return (
     <section
-      className="ak-consent-card"
+      className={`ak-consent-card${anchor === 'start' ? ' ak-consent-card--start' : ''}`}
       aria-label={t('ariaLabel')}
     >
       <p className="ak-consent-card__text">
