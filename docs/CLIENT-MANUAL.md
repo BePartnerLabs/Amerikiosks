@@ -70,6 +70,12 @@ Working outline for the final content-editor usage manual. Each bullet is a topi
 - `noIndex` flag — hiding the entire site from search engines (staging use)
 - Any other global toggles
 
+## 10a. Consent Logs (cookie-consent audit trail)
+
+- Read-only collection at `/admin/collections/consentLogs` (requires an admin login) — one entry per accept/reject/save on the cookie banner, kept as evidence that consent was requested and recorded
+- Contains only a random id, the choice made, and the date — no IP address or other personal data
+- Nothing to edit here day-to-day; it exists for legal/audit purposes only
+
 ## 11. Localization (EN / ES)
 
 - How to switch locale in the admin

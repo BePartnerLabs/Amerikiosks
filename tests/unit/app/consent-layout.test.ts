@@ -9,9 +9,12 @@ function shouldLoadGA4(gaId: string | undefined, rawCookie: string | undefined):
 
 describe('GA4 consent gating logic', () => {
   it('does not load GA4 when there is no gaId configured', () => {
-    expect(shouldLoadGA4(undefined, JSON.stringify({ analytics: true, timestamp: 'x' }))).toBe(
-      false,
-    )
+    expect(
+      shouldLoadGA4(
+        undefined,
+        JSON.stringify({ analytics: true, timestamp: 'x', consentId: 'abc' }),
+      ),
+    ).toBe(false)
   })
 
   it('does not load GA4 when consent has not been decided', () => {
@@ -19,12 +22,20 @@ describe('GA4 consent gating logic', () => {
   })
 
   it('does not load GA4 when analytics was rejected', () => {
-    expect(shouldLoadGA4('G-TEST', JSON.stringify({ analytics: false, timestamp: 'x' }))).toBe(
-      false,
-    )
+    expect(
+      shouldLoadGA4(
+        'G-TEST',
+        JSON.stringify({ analytics: false, timestamp: 'x', consentId: 'abc' }),
+      ),
+    ).toBe(false)
   })
 
   it('loads GA4 when a gaId is configured and analytics was accepted', () => {
-    expect(shouldLoadGA4('G-TEST', JSON.stringify({ analytics: true, timestamp: 'x' }))).toBe(true)
+    expect(
+      shouldLoadGA4(
+        'G-TEST',
+        JSON.stringify({ analytics: true, timestamp: 'x', consentId: 'abc' }),
+      ),
+    ).toBe(true)
   })
 })

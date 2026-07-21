@@ -79,6 +79,7 @@ export interface Config {
     projects: Project;
     brands: Brand;
     claims: Claim;
+    consentLogs: ConsentLog;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -108,6 +109,7 @@ export interface Config {
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     brands: BrandsSelect<false> | BrandsSelect<true>;
     claims: ClaimsSelect<false> | ClaimsSelect<true>;
+    consentLogs: ConsentLogsSelect<false> | ConsentLogsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -1524,6 +1526,18 @@ export interface Claim {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "consentLogs".
+ */
+export interface ConsentLog {
+  id: number;
+  consentId: string;
+  analytics: boolean;
+  policyVersion?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1842,6 +1856,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'claims';
         value: number | Claim;
+      } | null)
+    | ({
+        relationTo: 'consentLogs';
+        value: number | ConsentLog;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -2630,6 +2648,17 @@ export interface ClaimsSelect<T extends boolean = true> {
   syncStatus?: T;
   syncError?: T;
   syncedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "consentLogs_select".
+ */
+export interface ConsentLogsSelect<T extends boolean = true> {
+  consentId?: T;
+  analytics?: T;
+  policyVersion?: T;
   updatedAt?: T;
   createdAt?: T;
 }

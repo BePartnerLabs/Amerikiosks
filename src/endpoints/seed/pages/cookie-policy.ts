@@ -118,6 +118,12 @@ const bodyEn = buildLegalDoc(
       ],
     },
     {
+      heading: 'Proof of Consent',
+      paragraphs: [
+        'When you make a cookie choice, we keep a record of that decision on our servers as evidence that consent was requested and given (or declined): a randomly generated id, the choice you made, and the date. This id is stored in your browser alongside your preference and is not derived from or linked to your IP address, device fingerprint, or any other personal identifier — we do not log your IP address for this purpose.',
+      ],
+    },
+    {
       heading: 'Third-Party Cookies',
       paragraphs: [
         'Some cookies are set by third parties we work with (currently, Google Analytics). We do not control these providers’ cookies directly — refer to their respective privacy policies.',
@@ -158,6 +164,12 @@ const bodyEs = buildLegalDoc(
       paragraphs: [
         'Podés controlar las cookies desde la configuración de tu navegador (bloquear, eliminar o recibir alertas). Bloquear cookies estrictamente necesarias puede romper la funcionalidad del sitio.',
         'Mostramos un banner de consentimiento de cookies en tu primera visita, que te permite aceptar o rechazar cookies no esenciales antes de que se activen. Podés cambiar tu decisión en cualquier momento con el botón flotante "Preferencias de cookies".',
+      ],
+    },
+    {
+      heading: 'Prueba de Consentimiento',
+      paragraphs: [
+        'Cuando tomás una decisión sobre cookies, guardamos un registro de esa decisión en nuestros servidores como evidencia de que se solicitó y se otorgó (o rechazó) el consentimiento: un id generado aleatoriamente, la elección que hiciste y la fecha. Ese id se guarda en tu navegador junto con tu preferencia y no se deriva ni está vinculado a tu dirección IP, huella digital del dispositivo, ni ningún otro identificador personal — no registramos tu dirección IP para este fin.',
       ],
     },
     {

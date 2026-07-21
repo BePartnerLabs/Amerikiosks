@@ -101,6 +101,7 @@ const bodyEn = buildLegalDoc(
       paragraphs: [
         "Data you give us directly: contact forms (partnership inquiries, venue operator inquiries, brand applications) — name, email, phone, company, role, and message content — plus any information submitted through the Site's lead pre-qualification forms.",
         'Data collected automatically: usage data via Google Analytics 4 (pages visited, session duration, referral source, device/browser type, approximate location derived from IP), and standard server logs (IP address, timestamp, user agent).',
+        'Cookie consent record: when you make a cookie choice, we log a randomly generated id, the choice, and the date as proof of consent. This record does not include your IP address or any other identifier — see the Cookie Policy for details.',
         'Data from kiosk transactions: transaction metadata (item, time, machine ID, amount) processed by our payment processor. Amerikiosks does not collect, transmit, or store full payment card data — that is handled entirely by our PCI-DSS-compliant payment processor.',
       ],
     },
@@ -179,6 +180,7 @@ const bodyEs = buildLegalDoc(
       paragraphs: [
         'Datos que nos entregas directamente: formularios de contacto (consultas de partnership, operadores de venue, aplicaciones de marca) — nombre, correo, teléfono, empresa, cargo y mensaje — más cualquier información enviada a través de los formularios de precalificación de leads del Sitio.',
         'Datos recolectados automáticamente: datos de uso vía Google Analytics 4 (páginas visitadas, duración de sesión, fuente de referencia, tipo de dispositivo/navegador, ubicación aproximada derivada de la IP), y registros estándar de servidor (dirección IP, timestamp, user agent).',
+        'Registro de consentimiento de cookies: cuando tomás una decisión sobre cookies, registramos un id generado aleatoriamente, la elección y la fecha como prueba de consentimiento. Este registro no incluye tu dirección IP ni ningún otro identificador — ver la Política de Cookies para más detalles.',
         'Datos de transacciones en kiosks: metadata de transacción (ítem, hora, ID de máquina, monto) procesada por nuestro procesador de pagos. Amerikiosks no recolecta, transmite ni almacena datos completos de tarjeta — eso lo maneja íntegramente nuestro procesador de pagos, certificado PCI-DSS.',
       ],
     },
