@@ -95,6 +95,10 @@ img {
   transition: background-color var(--bp-duration-fast) var(--bp-ease);
 }
 
+.bp-btn:has(svg) {
+  --btn-padding: 0.5625rem 0;
+}
+
 .bp-btn--primary:hover {
   --btn-background: color-mix(in srgb, var(--bp-primary) 85%, black);
 }
