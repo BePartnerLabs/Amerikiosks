@@ -1,9 +1,9 @@
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
+import type { CollectionSlug } from 'payload'
 import { getPayload } from 'payload'
-import type { Config } from 'src/payload-types'
 
-type Collection = keyof Config['collections']
+type Collection = CollectionSlug
 
 async function getDocument(collection: Collection, slug: string, depth = 0) {
   const payload = await getPayload({ config: configPromise })

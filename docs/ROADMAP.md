@@ -2,15 +2,13 @@
 
 Future ideas and planned improvements for the Amerikiosks website. Items are grouped by theme, not prioritized — move to a spec when ready to implement.
 
-> This PR also verifies the centralized labeler and release-drafter workflows are wired correctly.
-
 ---
 
 ## SEO & Discoverability
 
 - **`llms.txt` support** — Add `/llms.txt` and `/llms-full.txt` routes (markdown overview of the site for AI assistants). Gated by the `noIndex` Settings flag — returns a minimal "not available" response when blocked, serves site description + page index when public.
-- **PR labeler (no external deps)** — GitHub Actions workflow that reads branch prefix (`feat/`, `fix/`, `docs/`) and PR commit messages to auto-apply labels. Release Drafter uses these labels to categorize changelog entries.
-- **Changelog from semantic commits** — Switch `release-draft.yml` from `--generate-notes` (PR titles only) to a custom `git log` parser that groups entries by commit type (`feat`, `fix`, `perf`, `docs`) for richer release notes.
+- ~~**PR labeler**~~ — done, `.github/workflows/labeler.yml` (centralized-workflows) auto-labels PRs by branch prefix/content.
+- ~~**Changelog grouped by type**~~ — done via Release Drafter (centralized-workflows) using the labeler's labels — release notes already group into Features/Bug Fixes/Maintenance (see the v1.15.0 release), no custom `git log` parser needed.
 
 ---
 
@@ -25,16 +23,16 @@ Future ideas and planned improvements for the Amerikiosks website. Items are gro
 
 ## Infrastructure
 
-- **Branch protection enforcement** — Several recent commits bypassed branch protection ("Changes must be made through a pull request"). Enforce required status checks (`Lint and Test`) so direct pushes to `main` are blocked for all contributors.
+- ~~**Branch protection enforcement**~~ — done. `main` requires `lint / Lint` and `test / Unit tests` status checks; direct pushes are blocked for all contributors.
 - **`llms.txt` + markdown pages** — Payload-driven markdown pages served at known URLs (e.g. `/about.md`, `/services.md`) for AI agent consumption, following the `llms.txt` spec.
 - **Convert `[locale]/[slug]/page.tsx` to a catch-all (`[...slug]`)** — `nestedDocsPlugin` is already active on `pages`, but setting a `parent` on a doc only affects breadcrumbs/SEO `generateURL` metadata, not actual Next.js routing: the App Router resolves URLs purely by folder structure, and `[slug]` only matches a single segment. Any page nested under another (e.g. `/customer-service/request-a-refund`) needs its own bespoke route folder today (see that page's route for the current workaround). Converting to `[...slug]` would make nested pages "just work" without a dedicated folder per case, but touches routing for every page on the site: `generateStaticParams` would need to build full breadcrumb paths instead of a single slug, `queryPageBySlug` would need to match a joined path (likely via a denormalized `fullPath` field kept in sync by a hook) instead of `where: { slug: { equals } }`, the `home` special case (`slug === 'home'` → `/`) needs adapting to an empty array, and `PayloadRedirects`/`translate-slug`/the SEO plugin's `generateURL` all currently assume a flat single-segment slug and would need auditing. Worth doing once there's a second/third nested-page case, but deserves its own reviewed plan rather than being bundled into unrelated feature work.
   - **Analyze whether `nestedDocsPlugin` itself could resolve this more directly** before building the catch-all migration by hand — worth a spec-first look at whether the plugin already exposes (or could be configured to expose) the joined path in a form `generateStaticParams`/`queryPageBySlug` could consume directly, instead of us hand-rolling a `fullPath` denormalization hook from scratch.
 - **shadcn primitives → DS migration** — `Select` was already replaced with a native `<select>` (real bug: Radix portals to `document.body`, which sits below a native-popover drawer's top-layer). The rest (`Button`, `Input`, `Label`, `Checkbox`, `Textarea`, `Pagination` in `src/components/ui/`) are still shadcn wrappers with no active bug — migrate to `ds.bepartnerlabs.com` components when there's a dedicated pass for it, not bundled into unrelated feature work.
-- **Pending major dep bumps — investigated 2026-07-21, both blocked, not caused by env issues:**
-  - **`typescript` 6→7** — `tsc --noEmit` fails immediately: TS7 removed the `baseUrl` compiler option (`tsconfig.json`'s `strict`/`ignoreDeprecations`/`baseUrl` block). Vitest doesn't catch this (it type-strips via esbuild, no real typecheck), so `pnpm test:int` passes even though the project doesn't actually compile — don't use test results alone as a green light for this bump. Removing `baseUrl` (paths already resolve relative to `tsconfig.json` without it) gets further but isn't a clean swap: 4 files (`src/blocks/Banner/Component.tsx`, `src/collections/Insights/hooks/populateAuthors.ts`, `src/heros/PostHero/index.tsx`, `src/utilities/getDocument.ts`) use bare `src/...` imports instead of the `@/` alias and only resolved via `baseUrl` — needs fixing to `@/...`. Separately, `src/utilities/getDocument.ts` and `src/utilities/getGlobals.ts` hit real generic-type regressions under TS7's stricter `keyof`-derived constraint checking (`string | number | symbol` not narrowing to the expected literal union) — needs an actual type-level fix, not just a config change. Treat as its own task: fix the 4 imports, fix the two generics files, migrate `tsconfig.json`, then bump.
-  - **`@vitejs/plugin-react` 4→6** — hard startup failure, `ERR_PACKAGE_PATH_NOT_EXPORTED` on `vite/internal` when vitest loads its config; the installed `vite@7.3.6` (pulled in transitively by vitest) doesn't expose the subpath plugin-react 6 imports. Reproduced twice, not a fluke. Needs a compatible `vite`/`vitest` pairing investigated before retrying.
+- ~~**`vercel` CLI 54→56**~~ — done, bumped clean, no issues (`chore/bump-vercel-cli`).
+- **Pending major dep bumps — investigated 2026-07-21, both genuinely blocked (not env flakiness):**
+  - **`typescript` 6→7** — attempted on `chore/upgrade-typescript-7`. `tsc --noEmit` fails immediately under TS7 because it removed the `baseUrl` compiler option. Vitest doesn't catch this (it type-strips via esbuild, no real typecheck) — `pnpm test:int` passes even when the project doesn't actually compile, so don't use test results alone as a green light for TS bumps. Fixed the *config-level* half of this: dropped `baseUrl` (paths already resolve relative to `tsconfig.json` without it), fixed 4 files with bare `src/...` imports that only worked via `baseUrl` (`src/blocks/Banner/Component.tsx`, `src/collections/Insights/hooks/populateAuthors.ts`, `src/heros/PostHero/index.tsx`, `src/utilities/getDocument.ts`), and fixed 2 real generic-type regressions in `src/utilities/getDocument.ts`/`getGlobals.ts` (were hand-rolling `keyof Config['collections']`/`keyof Config['globals']`, which TS7 widens to `string | number | symbol` — switched to Payload's own exported `CollectionSlug`/`GlobalSlug` types instead, which is more correct regardless of TS version). With all of that, `tsc --noEmit` passes clean under TS7 — but `pnpm build` still fails: Next.js 16.2.10's own build-time TypeScript version detection doesn't understand TS7 and crashes with `The "id" argument must be of type string. Received undefined` after trying to reinstall `typescript`. This is a Next.js-side gap, not fixable from this repo — retry once Next.js ships TS7 support. The tsconfig/import/type fixes above are harmless under TS6 too and worth keeping regardless.
+  - **`@vitejs/plugin-react` 4→6** — hard startup failure, `ERR_PACKAGE_PATH_NOT_EXPORTED` on `vite/internal` when vitest loads its config; the installed `vite@7.3.6` (pulled in transitively by vitest) doesn't expose the subpath plugin-react 6 imports. Reproduced twice in isolation, not a fluke. Needs a compatible `vite`/`vitest` pairing investigated before retrying.
   - **`graphql` 16→17** — do not attempt: `payload` and `@payloadcms/next` both pin `"graphql": "^16.8.1"` as a hard peer dependency. Blocked until Payload ships v17 support.
-  - **`vercel` CLI 54→56** — bumped cleanly, no issues (see `chore/bump-typescript-vitejs-vercel`).
   - Also learned: this repo's local dev DB runs via Podman (`podman-compose up -d`, needs `podman machine start` first if the VM isn't running) — `tests/int/redirects.int.spec.ts` needs a real Postgres connection and will fail/timeout with a misleading "hook timed out" error if the machine isn't up. Check `podman-compose ps` before blaming a dependency bump for integration test failures.
 
 ---
@@ -49,13 +47,13 @@ Future ideas and planned improvements for the Amerikiosks website. Items are gro
 
 - **TrustStrip dwell time dashboard** — `partner_logo_dwell` events are firing to GA4. Create a GA4 custom report or Looker Studio dashboard to visualize which partner logos get the most screen time.
 - **Mark `generate_lead` and `claim_submit` as GA4 Key Events** — manual step in GA4 Admin → Events → toggle "Mark as key event". Code already fires both (declarative `data-ga-event` + synthetic-click pattern); `form_start`/`form_submit` are separately auto-collected by GA4 Enhanced Measurement, no code needed for those.
-- **Confirm JotForm question-ID mapping before relying on it in production** — `src/repositories/JotFormRepository.ts` has placeholder question IDs flagged with a TODO. Verify against the real JotForm form before decommissioning WordPress.
+- ~~**Confirm JotForm question-ID mapping before relying on it in production**~~ — done. Verified against the live JotForm form's actual HTML (question IDs, option text); `src/repositories/JotFormRepository.ts` rewritten to match, no placeholder TODO left.
 
 ---
 
 ## Content
 
-- **Seed TrustStrip block on home page** — After running the seed, the home page still needs a TrustStrip block added manually in `/admin`. Automate this in `src/endpoints/seed/pages/home.ts` so the section appears out of the box after seeding.
+- ~~**Seed TrustStrip block on home page**~~ — done, `src/endpoints/seed/pages/home.ts` includes `trustStripBlock` in both locales.
 
 ---
 

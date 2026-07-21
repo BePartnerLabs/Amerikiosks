@@ -1,8 +1,8 @@
 import React from 'react'
-import { formatDateTime } from 'src/utilities/formatDateTime'
 import { Media } from '@/components/Media'
 import type { Insight } from '@/payload-types'
 import { formatAuthors } from '@/utilities/formatAuthors'
+import { formatDateTime } from '@/utilities/formatDateTime'
 
 export const PostHero: React.FC<{
   post: Insight
