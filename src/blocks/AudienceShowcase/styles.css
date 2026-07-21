@@ -19,18 +19,22 @@
   gap: var(--bp-space-4, 1rem);
 }
 
+/* 656:500 (Figma) — height follows width instead of a fixed rem value,
+   so the card keeps its designed proportions at any grid width. */
 .ak-audience-showcase__card {
   --_background: var(--audience-card-background, var(--ak-dark-background));
+  --_border-color: var(--md-card-border-color, #5e7882);
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
-  height: 25rem;
-  border-radius: var(--bp-radius-md, 0.75rem);
+  aspect-ratio: 656 / 500;
+  border-radius: var(--bp-radius-lg, 0.75rem);
+  border: 1px solid var(--_border-color);
   overflow: hidden;
   text-decoration: none;
   background-color: var(--_background);
-  box-shadow: var(--ak-card-shadow-md);
+  box-shadow: var(--ak-card-shadow-subtle);
 }
 
 .ak-audience-showcase__card-img {
@@ -53,24 +57,16 @@
   .ak-audience-showcase__card:hover .ak-audience-showcase__card-img {
     transform: scale(1.04);
   }
-
-  .ak-audience-showcase__card-cta {
-    transition:
-      opacity var(--ak-transition-fast),
-      border-color var(--ak-transition-fast);
-  }
-
-  .ak-audience-showcase__card:hover .ak-audience-showcase__card-cta {
-    opacity: 0.85;
-    border-color: color-mix(in srgb, var(--ak-white) 50%, transparent);
-  }
 }
 
+/* Bottom-heavy gradient (Figma: 180deg, transparent 0% -> dark 100%) — text
+   now sits at the bottom of the card, so the darkest part of the overlay
+   concentrates there for legibility while the top of the photo stays clear. */
 .ak-audience-showcase__card-overlay {
-  --_overlay: var(--audience-card-overlay, var(--ak-card-overlay));
+  --_overlay-color: var(--audience-card-overlay, var(--ak-dark-background));
   position: absolute;
   inset: 0;
-  background: var(--_overlay);
+  background: linear-gradient(180deg, transparent 0%, var(--_overlay-color) 100%);
 }
 
 .ak-audience-showcase__card-content {
@@ -80,50 +76,54 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: var(--bp-space-8, 2rem);
-  gap: var(--bp-space-3, 0.75rem);
+  width: 100%;
+  padding: var(--card-padding-y, 1.25rem) var(--card-padding-x, 1.25rem);
+  gap: var(--bp-space-4, 1rem);
 }
 
 .ak-audience-showcase__card-title {
   --_color: var(--audience-card-title-color, var(--ak-dark-foreground));
   margin: 0;
-  font-size: var(--bp-text-2xl, 1.5rem);
-  font-weight: 700;
+  font-size: 2rem;
+  font-weight: 600;
   color: var(--_color);
-  line-height: 1.2;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-align: center;
 }
 
 .ak-audience-showcase__card-description {
   --_color: var(--audience-card-description-color, var(--ak-dark-foreground));
   margin: 0;
-  font-size: var(--bp-text-sm, 0.875rem);
+  font-size: 1rem;
   font-weight: 400;
   color: var(--_color);
   line-height: 1.5;
+  letter-spacing: 0;
+  text-align: center;
   opacity: 0.85;
   max-width: 50ch;
 }
 
-.ak-audience-showcase__card-cta {
-  --_color: var(--audience-card-cta-color, var(--ak-dark-foreground));
-  display: inline-block;
+.ak-audience-showcase__card-cta.bp-btn {
+  --outline-color: var(--ak-white);
+  --outline-border: 1px solid var(--ak-white);
+  --outline-background: var(--audience-card-cta-background, hsla(0, 0%, 0%, 0.55));
   margin-top: var(--bp-space-2, 0.5rem);
-  padding: 0.5rem 1.5rem;
-  font-size: var(--bp-text-sm, 0.875rem);
-  font-weight: 500;
-  color: var(--_color);
-  border: 1.5px solid var(--_color);
-  border-radius: var(--bp-radius-md, 0.75rem);
+  min-width: 7.5rem;
+  height: 3rem;
+  padding: 0.75rem 2rem;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.375rem;
+  letter-spacing: 0;
+  border-radius: var(--bp-radius-md, 0.5rem);
 }
 
-@media (max-width: 64rem) {
-  .ak-audience-showcase__card {
-    height: 20rem;
-  }
-}
-
-@media (max-width: 40rem) {
-  .ak-audience-showcase__card {
-    height: 16rem;
-  }
+.ak-audience-showcase__card-cta.bp-btn:hover {
+  --outline-background: color-mix(
+    in srgb,
+    var(--ak-white) 15%,
+    var(--audience-card-cta-background, hsla(0, 0%, 0%, 0.55))
+  );
 }

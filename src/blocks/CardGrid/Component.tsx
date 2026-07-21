@@ -95,7 +95,7 @@ export const CardGridBlock: React.FC<CardGridBlockProps> = ({
           )}
 
           {cards &&
-            (variant === 'compact' ? (
+            (variant === 'compact' || variant === 'icon' ? (
               <CardGridCarousel>{cards}</CardGridCarousel>
             ) : (
               <div className="ak-card-grid__cards">{cards}</div>
