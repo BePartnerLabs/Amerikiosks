@@ -1,3 +1,4 @@
+import type { PayloadRequest } from 'payload'
 import { serverHttpClient } from './clients/ServerHttpClient'
 
 export type ClaimSubmission = {
@@ -123,8 +124,22 @@ function toJotFormFields(claim: ClaimSubmission): Record<string, string> {
 }
 
 export const JotFormRepository = {
-  async submit(claim: ClaimSubmission): Promise<{ responseCode: number; message: string }> {
-    const url = `https://api.jotform.com/form/${JOTFORM_FORM_ID}/submissions?apiKey=${process.env.JOTFORM_API_KEY}`
+  async submit(
+    claim: ClaimSubmission,
+    req: PayloadRequest,
+  ): Promise<{ responseCode: number; message: string }> {
+    // Local API call — overrideAccess defaults to true, so this reads the key
+    // regardless of the field's own access.read: authenticatedFieldAccess
+    // restriction (that gate is for external REST/GraphQL requests only, see
+    // src/Settings/config.ts).
+    const settings = await req.payload.findGlobal({ slug: 'settings', req })
+    const apiKey = settings.jotformApiKey
+
+    // APIKEY header instead of the ?apiKey= query param — JotForm supports
+    // both, but the header keeps the key out of server access logs, proxy
+    // logs, and any URL that gets cached or forwarded.
+    const url = `https://api.jotform.com/form/${JOTFORM_FORM_ID}/submissions`
+    const headers = { APIKEY: apiKey ?? '' }
     const fields = toJotFormFields(claim)
 
     if (claim.photo) {
@@ -137,9 +152,9 @@ export const JotFormRepository = {
         new Blob([new Uint8Array(claim.photo.buffer)], { type: claim.photo.contentType }),
         claim.photo.filename,
       )
-      return serverHttpClient.postMultipart(url, formData)
+      return serverHttpClient.postMultipart(url, formData, headers)
     }
 
-    return serverHttpClient.postForm(url, fields)
+    return serverHttpClient.postForm(url, fields, headers)
   },
 }

@@ -82,6 +82,21 @@ describe('POST /next/claims-submit', () => {
     expect(json).toMatchObject({ id: 1 })
   })
 
+  it('coerces kioskBrand back to a number — FormData only carries strings, but it is a relationship (numeric row id)', async () => {
+    const create = vi.fn().mockResolvedValue({ id: 1 })
+    mockGetPayload.mockResolvedValue({ create } as unknown as Awaited<
+      ReturnType<typeof getPayload>
+    >)
+
+    await callPOST({ ...validFields, kioskBrand: '1' })
+
+    expect(create).toHaveBeenCalledWith(
+      expect.objectContaining({ data: expect.objectContaining({ kioskBrand: 1 }) }),
+    )
+    const [call] = create.mock.calls
+    expect(typeof call[0].data.kioskBrand).toBe('number')
+  })
+
   it('parses the location field back into a structured object', async () => {
     const create = vi.fn().mockResolvedValue({ id: 1 })
     mockGetPayload.mockResolvedValue({ create } as unknown as Awaited<
