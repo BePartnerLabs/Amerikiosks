@@ -3,6 +3,8 @@ import type { Claim } from '@/payload-types'
 import { JotFormRepository, OdooRepository } from '@/repositories'
 import type { ClaimSubmission } from '@/repositories/JotFormRepository'
 
+type PhotoContext = { buffer: Buffer; filename: string; contentType: string }
+
 /**
  * Dispatches a newly created claim to the configured integration target
  * (JotForm today, Odoo once its REST API is ready — see Phase B) and records
@@ -14,8 +16,28 @@ export const syncClaim: CollectionAfterChangeHook<Claim> = async ({ doc, operati
     return doc
   }
 
+  // kioskBrand is stored as a relationship — JotForm's radio question needs the
+  // brand's display name ("Carlo's Bakery"), not the Brands doc's row id.
+  const kioskBrandId =
+    typeof doc.kioskBrand === 'object' && doc.kioskBrand !== null
+      ? doc.kioskBrand.id
+      : doc.kioskBrand
+  const brand = await req.payload.findByID({
+    collection: 'brands',
+    id: kioskBrandId,
+    depth: 0,
+    req,
+  })
+
+  // The photo, when present, only ever exists in memory for this one request —
+  // next/claims-submit/route.ts stashes it on req.context before calling
+  // payload.create(), since it's deliberately never written to the Claims.photo
+  // field or Payload Media for public submissions (see that field's admin
+  // description for why). Not available on subsequent requests/updates.
+  const photo = req.context?.photoFile as PhotoContext | undefined
+
   const submission: ClaimSubmission = {
-    kioskBrand: String(doc.kioskBrand),
+    kioskBrand: brand.name,
     paymentMethod: doc.paymentMethod,
     customerName: doc.customerName,
     customerEmail: doc.customerEmail,
@@ -25,6 +47,9 @@ export const syncClaim: CollectionAfterChangeHook<Claim> = async ({ doc, operati
     claimReason: doc.claimReason,
     additionalInfo: doc.additionalInfo ?? undefined,
     lastFourCardDigits: doc.lastFourCardDigits ?? undefined,
+    refundMethod: doc.refundMethod ?? undefined,
+    refundAccount: doc.refundAccount ?? undefined,
+    photo,
   }
 
   const repository = doc.integrationTarget === 'odoo' ? OdooRepository : JotFormRepository

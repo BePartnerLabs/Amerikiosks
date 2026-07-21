@@ -33,6 +33,42 @@ describe('ClaimsRepository', () => {
     expect(result).toEqual({ id: 'claim-1' })
     const [url, options] = fetchMock.mock.calls[0]
     expect(url).toContain('/next/claims-submit')
-    expect(JSON.parse(options.body)).toMatchObject({ machineId: 'AK-0231' })
+    expect(options.body).toBeInstanceOf(FormData)
+    expect(options.body.get('machineId')).toBe('AK-0231')
+    expect(options.body.get('location')).toBe(JSON.stringify(data.location))
+    // Never set Content-Type explicitly on a FormData body — the fetch runtime
+    // derives the multipart boundary from the FormData instance itself.
+    expect(options.headers).toBeUndefined()
+  })
+
+  it('appends the photo file when present, omits it otherwise', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 201,
+      json: () => Promise.resolve({ id: 'claim-1' }),
+    })
+    vi.stubGlobal('fetch', fetchMock)
+    vi.stubGlobal('window', { location: { origin: 'http://localhost:3000' } })
+
+    const data: ClaimFormData = {
+      kioskBrand: 'brand-1',
+      paymentMethod: 'cash',
+      customerName: 'Test Prueba',
+      customerEmail: 'hola@bepartnerlabs.com',
+      customerPhone: '3055550100',
+      transactionDateTime: '2026-07-08T09:23:00.000Z',
+      location: { state: 'FL', city: 'Doral', propertyName: 'BePartnerLabs Test Property' },
+      claimReason: 'partial_dispense',
+      refundMethod: 'Zelle',
+      refundAccount: 'test@example.com',
+      photo: new File(['fake-bytes'], 'issue.jpg', { type: 'image/jpeg' }),
+    }
+
+    await ClaimsRepository.submit(data)
+
+    const [, options] = fetchMock.mock.calls[0]
+    expect(options.body.get('refundMethod')).toBe('Zelle')
+    expect(options.body.get('refundAccount')).toBe('test@example.com')
+    expect(options.body.get('photo')).toBeInstanceOf(File)
   })
 })

@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ClaimSubmission",
+  "description": "Repository-agnostic shape of a refund/complaint claim, as defined by src/repositories/JotFormRepository.ts's ClaimSubmission type. Both JotFormRepository.submit() and OdooRepository.submit() (Phase B, not yet implemented) accept exactly this shape — syncClaim.ts builds it once from a Claims doc and dispatches to whichever repository doc.integrationTarget selects, so Odoo's implementation must consume the same fields to be a drop-in swap. JotForm-specific concerns (the qid mapping, compound-field splitting, option-label translation) live only inside JotFormRepository.ts and are NOT part of this contract — Odoo gets plain, already-clean values.",
+  "type": "object",
+  "required": [
+    "kioskBrand",
+    "paymentMethod",
+    "customerName",
+    "customerEmail",
+    "customerPhone",
+    "transactionDateTime",
+    "location",
+    "claimReason"
+  ],
+  "properties": {
+    "kioskBrand": {
+      "type": "string",
+      "description": "Resolved brand display name (e.g. \"Carlo's Bakery\"), not the internal Brands collection relationship ID. Resolved from the relationship before building the submission — see syncClaim.ts."
+    },
+    "paymentMethod": {
+      "type": "string",
+      "enum": ["card", "cash", "google_pay", "apple_pay"],
+      "description": "Internal slug matching Claims.paymentMethod's select options. JotFormRepository maps this to JotForm's exact option text (e.g. 'card' -> 'Credit/Debit Card') internally — Odoo should decide its own mapping independently, this field stays the slug."
+    },
+    "customerName": {
+      "type": "string",
+      "description": "Full name as a single string (Claims.customerName is one text field). JotFormRepository splits it into first/last internally for JotForm's compound Name field — that split is JotForm-specific, not part of this contract."
+    },
+    "customerEmail": {
+      "type": "string",
+      "format": "email"
+    },
+    "customerPhone": {
+      "type": "string",
+      "description": "As entered by the customer, no fixed format enforced today."
+    },
+    "transactionDateTime": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp. JotFormRepository splits this into month/day/year/hour/min/ampm internally for JotForm's compound date/time field — that split is JotForm-specific."
+    },
+    "location": {
+      "type": "object",
+      "required": ["state", "city", "propertyName"],
+      "properties": {
+        "state": { "type": "string" },
+        "city": { "type": "string" },
+        "propertyName": { "type": "string" }
+      },
+      "description": "Structured location, matching Claims.location's group field. JotFormRepository concatenates these into one string for JotForm's single free-text location question — Odoo can likely keep them structured if its API supports that."
+    },
+    "claimReason": {
+      "type": "string",
+      "enum": ["partial_dispense", "damaged_product", "wrong_product", "no_product"],
+      "description": "Internal slug matching Claims.claimReason's select options. JotFormRepository maps this to JotForm's exact option text (including JotForm's trailing periods) internally."
+    },
+    "additionalInfo": {
+      "type": "string",
+      "description": "Optional free-text detail from the customer."
+    },
+    "lastFourCardDigits": {
+      "type": "string",
+      "maxLength": 4,
+      "description": "Optional, only meaningful when paymentMethod is 'card'."
+    },
+    "refundMethod": {
+      "type": "string",
+      "enum": ["Zelle", "CashApp", "Paypal", "Venmo"],
+      "description": "Optional — only relevant for cash refunds (card refunds return to the card automatically). Values already match JotForm's option text verbatim, unlike paymentMethod/claimReason, since this select was added specifically to mirror JotForm qid 20."
+    },
+    "refundAccount": {
+      "type": "string",
+      "description": "Optional — username/email/phone for the refundMethod account above."
+    },
+    "photo": {
+      "type": "object",
+      "description": "Optional. NOT persisted in the Claims collection or in Payload Media — captured only in-memory during the public submission request and passed through req.context to the afterChange hook (see syncClaim.ts and next/claims-submit/route.ts), so it only exists for the duration of that one request. Odoo's implementation, if it needs the file, must accept and forward it the same way — there is no stored URL to fetch it from afterward.",
+      "required": ["buffer", "filename", "contentType"],
+      "properties": {
+        "buffer": {
+          "type": "string",
+          "contentEncoding": "binary",
+          "description": "Node.js Buffer, raw file bytes."
+        },
+        "filename": { "type": "string" },
+        "contentType": {
+          "type": "string",
+          "enum": ["image/jpeg", "image/png", "image/webp", "image/heic"],
+          "description": "Allowlisted by magic-byte sniffing server-side in next/claims-submit/route.ts, not trusted from the client-supplied MIME type."
+        }
+      }
+    }
+  }
+}

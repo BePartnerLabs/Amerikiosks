@@ -19,6 +19,14 @@ export class ApiClient {
     if (!res.ok) throw new Error(`ApiClient: POST ${path} failed with ${res.status}`)
     return res.json() as Promise<T>
   }
+
+  /** Never set Content-Type explicitly — the browser derives the multipart boundary from the FormData instance itself. */
+  async postFormData<T>(path: string, formData: FormData): Promise<T> {
+    const url = new URL(path, window.location.origin)
+    const res = await fetch(url.toString(), { method: 'POST', body: formData })
+    if (!res.ok) throw new Error(`ApiClient: POST ${path} failed with ${res.status}`)
+    return res.json() as Promise<T>
+  }
 }
 
 export const apiClient = new ApiClient()

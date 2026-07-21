@@ -83,8 +83,12 @@ async function completeAllSteps() {
   await screen.findByLabelText(/additional information/i)
   clickNext()
 
-  // lastFourCardDigits (optional) — last step, submit
+  // lastFourCardDigits (optional, card-only follow-up)
   await screen.findByLabelText(/last 4 digits/i)
+  clickNext()
+
+  // photo (optional) — last step, submit
+  await screen.findByLabelText(/attach a picture/i)
   fireEvent.click(screen.getByRole('button', { name: /submit/i }))
 }
 
@@ -132,6 +136,60 @@ describe('ClaimForm block', () => {
     await waitFor(() => {
       expect(mutate).toHaveBeenCalledWith(
         expect.objectContaining({ machineId: 'AK-0231', customerName: 'Test Prueba' }),
+      )
+    })
+  })
+
+  it('shows Refund Method/Account steps (not card digits) when Cash is selected, and includes them in the submitted payload', async () => {
+    render(<ClaimFormBlock brands={brands} />)
+    fireEvent.click(screen.getByRole('button', { name: /start/i }))
+
+    fireEvent.click(await screen.findByRole('radio', { name: "Carlo's Bakery" }))
+    clickNext()
+
+    fireEvent.click(await screen.findByRole('radio', { name: /^cash$/i }))
+    clickNext()
+
+    fireEvent.change(await screen.findByLabelText(/^name$/i), { target: { value: 'Test Prueba' } })
+    clickNext()
+    fireEvent.change(await screen.findByLabelText(/email/i), {
+      target: { value: 'hola@bepartnerlabs.com' },
+    })
+    clickNext()
+    fireEvent.change(await screen.findByLabelText(/phone/i), { target: { value: '3055550100' } })
+    clickNext()
+    await screen.findByLabelText(/date and time/i)
+    clickNext()
+    fireEvent.change(await screen.findByLabelText(/state/i), { target: { value: 'FL' } })
+    fireEvent.change(screen.getByLabelText(/city/i), { target: { value: 'Doral' } })
+    fireEvent.change(screen.getByLabelText(/property/i), {
+      target: { value: 'BePartnerLabs Test Property' },
+    })
+    clickNext()
+    fireEvent.change(await screen.findByLabelText(/what happened/i), {
+      target: { value: 'partial_dispense' },
+    })
+    clickNext()
+    await screen.findByLabelText(/additional information/i)
+    clickNext()
+
+    // Cash branch: refund method + account instead of card digits.
+    expect(screen.queryByLabelText(/last 4 digits/i)).toBeNull()
+    fireEvent.change(await screen.findByLabelText(/select a refund method/i), {
+      target: { value: 'Zelle' },
+    })
+    clickNext()
+    fireEvent.change(await screen.findByLabelText(/username\/email\/phone/i), {
+      target: { value: 'refund@example.com' },
+    })
+    clickNext()
+
+    await screen.findByLabelText(/attach a picture/i)
+    fireEvent.click(screen.getByRole('button', { name: /submit/i }))
+
+    await waitFor(() => {
+      expect(mutate).toHaveBeenCalledWith(
+        expect.objectContaining({ refundMethod: 'Zelle', refundAccount: 'refund@example.com' }),
       )
     })
   })
