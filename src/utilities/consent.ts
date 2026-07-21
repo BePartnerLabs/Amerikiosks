@@ -4,6 +4,7 @@ export const CONSENT_COOKIE_MAX_AGE = 31536000 // 1 year, in seconds
 export type ConsentPreferences = {
   analytics: boolean
   timestamp: string
+  consentId: string
 }
 
 export function parseConsentCookie(raw: string | undefined): ConsentPreferences | null {
@@ -21,11 +22,20 @@ export function parseConsentCookie(raw: string | undefined): ConsentPreferences 
   const candidate = parsed as Record<string, unknown>
   if (typeof candidate.analytics !== 'boolean') return null
   if (typeof candidate.timestamp !== 'string') return null
+  if (typeof candidate.consentId !== 'string') return null
 
-  return { analytics: candidate.analytics, timestamp: candidate.timestamp }
+  return {
+    analytics: candidate.analytics,
+    timestamp: candidate.timestamp,
+    consentId: candidate.consentId,
+  }
 }
 
-export function serializeConsentCookie(analytics: boolean): string {
-  const preferences: ConsentPreferences = { analytics, timestamp: new Date().toISOString() }
+export function serializeConsentCookie(analytics: boolean, consentId: string): string {
+  const preferences: ConsentPreferences = {
+    analytics,
+    timestamp: new Date().toISOString(),
+    consentId,
+  }
   return JSON.stringify(preferences)
 }

@@ -18,6 +18,7 @@ import * as migration_20260708_144541_add_brands_claims_support_hub from './2026
 import * as migration_20260717_002705_add_modal_form_link_type from './20260717_002705_add_modal_form_link_type';
 import * as migration_20260717_015506_add_header_cta_modal_type from './20260717_015506_add_header_cta_modal_type';
 import * as migration_20260717_022345_add_header_nav_item_hidden from './20260717_022345_add_header_nav_item_hidden';
+import * as migration_20260721_012312_add_consent_logs from './20260721_012312_add_consent_logs';
 
 export const migrations = [
   {
@@ -118,6 +119,11 @@ export const migrations = [
   {
     up: migration_20260717_022345_add_header_nav_item_hidden.up,
     down: migration_20260717_022345_add_header_nav_item_hidden.down,
-    name: '20260717_022345_add_header_nav_item_hidden'
+    name: '20260717_022345_add_header_nav_item_hidden',
+  },
+  {
+    up: migration_20260721_012312_add_consent_logs.up,
+    down: migration_20260721_012312_add_consent_logs.down,
+    name: '20260721_012312_add_consent_logs'
   },
 ];
