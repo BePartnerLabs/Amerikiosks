@@ -1,6 +1,6 @@
 .ak-hero-interior {
-  --_bg-color: var(--hero-interior-bg, var(--ak-surface-inverse-raised));
-  --_color: var(--hero-interior-color, var(--ak-white));
+  --_bg-color: var(--hero-interior-bg, var(--ak-white));
+  --_color: var(--hero-interior-color, var(--bp-color-text));
   background-color: var(--_bg-color);
   color: var(--_color);
 }
@@ -21,7 +21,7 @@
 }
 
 .ak-hero-interior__breadcrumb {
-  --_color: var(--hero-interior-breadcrumb-color, var(--ak-white));
+  --_color: var(--hero-interior-breadcrumb-color, var(--bp-color-text-muted));
   display: inline-flex;
   align-items: center;
   gap: var(--bp-space-1, 0.25rem);
@@ -40,7 +40,7 @@
 }
 
 .ak-hero-interior__breadcrumb-home:hover {
-  --_breadcrumb-hover-color: var(--hero-interior-breadcrumb-hover-color, var(--ak-white));
+  --_breadcrumb-hover-color: var(--hero-interior-breadcrumb-hover-color, var(--bp-color-text));
   color: var(--_breadcrumb-hover-color);
 }
 
@@ -66,12 +66,16 @@
   font-style: normal;
 }
 
-/* :not() excludes the breadcrumb <p> — it's also a bare <p> but needs its own color (see __breadcrumb rule above) */
+/* :not() excludes the breadcrumb <p> — it's also a bare <p> but needs its own color (see __breadcrumb rule above)
+   Typography per Figma: md/semantic/type/text/blockquote/default, sized 17px/28px for this hero. */
 .ak-hero-interior__text p:not(.ak-hero-interior__breadcrumb) {
-  --_color: var(--hero-interior-p-color, var(--ak-white));
+  --_color: var(--hero-interior-p-color, var(--bp-color-text-muted));
   margin: 0;
-  font-size: var(--bp-text-base, 1rem);
-  line-height: 1.65;
+  font-family: var(--ak-title-1-font-family, sans-serif);
+  font-size: 1.0625rem; /* 17px */
+  font-weight: 400;
+  line-height: 1.647; /* 28/17 */
+  letter-spacing: 0;
   color: var(--_color);
   max-width: 52ch;
 }
@@ -88,40 +92,13 @@
 
 /* outline appearance uses the shared .bp-btn--outline-solid modifier (frontend.css) */
 .ak-hero-interior__actions .bp-btn--outline-solid {
-  --outline-solid-color: var(--hero-interior-outline-color, var(--ak-white));
+  --outline-solid-color: var(--hero-interior-outline-color, var(--bp-color-text));
   --outline-solid-hover-color: var(--_bg-color);
 }
 
 /* ghost appearance — borderless text link with arrow (frontend.css .bp-btn--ghost) */
 .ak-hero-interior__actions .bp-btn--ghost {
-  --ghost-color: var(--hero-interior-ghost-color, var(--ak-white));
-}
-
-.ak-hero-interior__tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--bp-space-2, 0.5rem);
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.ak-hero-interior__tag {
-  --_color: var(--hero-interior-tag-color, var(--ak-white));
-  --_tag-background: var(--hero-interior-tag-background, hsla(0, 0%, 100%, 0.1));
-  --_tag-border-color: var(--hero-interior-tag-border-color, hsla(0, 0%, 100%, 0.22));
-  display: inline-flex;
-  align-items: center;
-  height: 2rem; /* 32px */
-  padding-inline: 1.125rem; /* 18px */
-  font-size: var(--bp-text-xs);
-  font-weight: 500;
-  line-height: 1;
-  color: var(--_color);
-  background: var(--_tag-background);
-  border: var(--md-semantic-border-width-default) solid var(--_tag-border-color);
-  border-radius: var(--bp-radius-xl); /* 16px */
-  white-space: nowrap;
+  --ghost-color: var(--hero-interior-ghost-color, var(--bp-color-text));
 }
 
 /* ─── Media column ────────────────────────────────────────── */

@@ -9,13 +9,7 @@ import './medium-impact.css'
 
 type Props = Page['hero'] & { breadcrumbs?: Page['breadcrumbs'] }
 
-export const MediumImpactHero: React.FC<Props> = ({
-  links,
-  media,
-  richText,
-  tags,
-  breadcrumbs,
-}) => {
+export const MediumImpactHero: React.FC<Props> = ({ links, media, richText, breadcrumbs }) => {
   // Prepend synthetic Home root — the plugin only tracks parent chain, not the root page
   const home = { label: 'Home', url: '/', id: 'home' }
   const crumbs = breadcrumbs && breadcrumbs.length > 0 ? [home, ...breadcrumbs] : []
@@ -82,16 +76,6 @@ export const MediumImpactHero: React.FC<Props> = ({
                         link.appearance === 'outline' ? 'bp-btn--outline-solid' : undefined
                       }
                     />
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            {Array.isArray(tags) && tags.length > 0 && (
-              <ul className="ak-hero-interior__tags">
-                {tags.map(({ label, id }, i) => (
-                  <li key={id ?? i}>
-                    <span className="ak-hero-interior__tag">{label}</span>
                   </li>
                 ))}
               </ul>
