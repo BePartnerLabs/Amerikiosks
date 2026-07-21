@@ -1,0 +1,27 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  release:
+    types: [published]
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  migrate:
+    uses: BePartnerLabs/centralized-workflows/.github/workflows/migrate-payload.yml@v1
+    with:
+      environment: ${{ github.event_name == 'release' && 'production' || 'preview' }}
+    secrets: inherit
+
+  deploy:
+    needs: migrate
+    uses: BePartnerLabs/centralized-workflows/.github/workflows/deploy-vercel.yml@v1
+    with:
+      environment: ${{ github.event_name == 'release' && 'production' || 'preview' }}
+      prod: ${{ github.event_name == 'release' }}
+    secrets: inherit
