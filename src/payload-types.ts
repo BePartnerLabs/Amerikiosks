@@ -143,6 +143,7 @@ export interface Config {
   user: User | PayloadMcpApiKey;
   jobs: {
     tasks: {
+      syncClaimToIntegration: TaskSyncClaimToIntegration;
       schedulePublish: TaskSchedulePublish;
       inline: {
         input: unknown;
@@ -1777,7 +1778,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'schedulePublish';
+        taskSlug: 'inline' | 'syncClaimToIntegration' | 'schedulePublish';
         taskID: string;
         input?:
           | {
@@ -1810,7 +1811,7 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  taskSlug?: ('inline' | 'schedulePublish') | null;
+  taskSlug?: ('inline' | 'syncClaimToIntegration' | 'schedulePublish') | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
@@ -3190,6 +3191,10 @@ export interface Setting {
    * Include published insights (posts) in llms.txt.
    */
   llmsIncludeInsights?: boolean | null;
+  /**
+   * API key for the JotForm submissions API (used by the Claims refund flow). Only visible to logged-in admin users — never exposed in the public Settings API response.
+   */
+  jotformApiKey?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -3316,6 +3321,7 @@ export interface SettingsSelect<T extends boolean = true> {
   llmsSiteDescription?: T;
   llmsIncludePages?: T;
   llmsIncludeInsights?: T;
+  jotformApiKey?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -3329,6 +3335,16 @@ export interface CollectionsWidget {
     [k: string]: unknown;
   };
   width: 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskSyncClaimToIntegration".
+ */
+export interface TaskSyncClaimToIntegration {
+  input: {
+    claimId: number;
+  };
+  output?: unknown;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

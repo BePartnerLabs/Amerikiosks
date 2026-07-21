@@ -9,6 +9,7 @@ import { defaultLexical } from '@/fields/defaultLexical'
 import { Brands } from './collections/Brands'
 import { Categories } from './collections/Categories'
 import { Claims } from './collections/Claims'
+import { syncClaimTask } from './collections/Claims/tasks/syncClaimTask'
 import { ConsentLogs } from './collections/ConsentLogs'
 import { FAQItems } from './collections/FAQItems'
 import { Insights } from './collections/Insights'
@@ -132,6 +133,6 @@ export default buildConfig({
         return authHeader === `Bearer ${secret}`
       },
     },
-    tasks: [],
+    tasks: [syncClaimTask],
   },
 })

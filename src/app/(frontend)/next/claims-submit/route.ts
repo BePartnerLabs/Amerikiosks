@@ -31,8 +31,14 @@ export async function POST(req: Request) {
   const locationRaw = stringField(formData, 'location')
   const location = locationRaw ? JSON.parse(locationRaw) : undefined
 
+  const kioskBrandRaw = stringField(formData, 'kioskBrand')
+
   const data = {
-    kioskBrand: stringField(formData, 'kioskBrand'),
+    // kioskBrand is a relationship (numeric row id) — FormData only carries
+    // strings, so it must be coerced back before reaching the Local API,
+    // same as the pre-FormData JSON flow did client-side before this route
+    // switched to multipart for the photo upload.
+    kioskBrand: kioskBrandRaw ? Number(kioskBrandRaw) : undefined,
     paymentMethod: stringField(formData, 'paymentMethod'),
     customerName: stringField(formData, 'customerName'),
     customerEmail: stringField(formData, 'customerEmail'),

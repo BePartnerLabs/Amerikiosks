@@ -1,12 +1,15 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-const jotFormSubmit = vi.fn()
-const odooSubmit = vi.fn()
-
-vi.mock('@/repositories', () => ({
-  JotFormRepository: { submit: jotFormSubmit },
-  OdooRepository: { submit: odooSubmit },
+const dispatchClaimSyncMock = vi.fn().mockResolvedValue(undefined)
+vi.mock('@/collections/Claims/dispatchClaimSync', () => ({
+  dispatchClaimSync: dispatchClaimSyncMock,
 }))
+
+vi.mock('@/utilities/getURL', () => ({
+  getServerSideURL: () => 'http://localhost:3000',
+}))
+
+const fetchMock = vi.fn().mockResolvedValue({ ok: true })
 
 afterEach(() => {
   vi.clearAllMocks()
@@ -29,8 +32,8 @@ const baseDoc = {
 function makeReq(overrides: Record<string, unknown> = {}) {
   return {
     payload: {
+      jobs: { queue: vi.fn().mockResolvedValue({ id: 'job-1' }) },
       update: vi.fn().mockResolvedValue(undefined),
-      findByID: vi.fn().mockResolvedValue({ id: 'brand-1', name: "Carlo's Bakery" }),
       logger: { info: vi.fn(), error: vi.fn() },
     },
     context: {},
@@ -39,8 +42,8 @@ function makeReq(overrides: Record<string, unknown> = {}) {
 }
 
 describe('syncClaim', () => {
-  it('on create with integrationTarget "jotform", calls JotFormRepository.submit and marks the doc synced', async () => {
-    jotFormSubmit.mockResolvedValue({ responseCode: 200 })
+  it('no photo: queues syncClaimToIntegration and triggers /api/payload-jobs/run without awaiting it, does not dispatch directly', async () => {
+    vi.stubGlobal('fetch', fetchMock)
     const { syncClaim } = await import('@/collections/Claims/hooks/syncClaim')
     const req = makeReq()
 
@@ -52,49 +55,31 @@ describe('syncClaim', () => {
     } as never)
 
     expect(result).toBe(baseDoc)
-    expect(jotFormSubmit).toHaveBeenCalledWith(
-      expect.objectContaining({ customerName: 'Test Prueba' }),
-    )
-    expect(odooSubmit).not.toHaveBeenCalled()
-
-    // kioskBrand is a relationship (row id) on the doc — JotForm's radio question
-    // needs the brand's display name, resolved via findByID, not the raw id.
-    expect(req.payload.findByID).toHaveBeenCalledWith(
-      expect.objectContaining({ collection: 'brands', id: 'brand-1' }),
-    )
-    expect(jotFormSubmit).toHaveBeenCalledWith(
-      expect.objectContaining({ kioskBrand: "Carlo's Bakery" }),
-    )
-    expect(req.payload.update).toHaveBeenCalledWith(
+    expect(req.payload.jobs.queue).toHaveBeenCalledWith(
       expect.objectContaining({
-        collection: 'claims',
-        id: 'claim-1',
-        data: expect.objectContaining({ syncStatus: 'synced' }),
-        context: { skipClaimsSync: true },
+        task: 'syncClaimToIntegration',
+        input: { claimId: 'claim-1' },
       }),
     )
+    expect(dispatchClaimSyncMock).not.toHaveBeenCalled()
+    expect(fetchMock).toHaveBeenCalledWith(
+      'http://localhost:3000/api/payload-jobs/run',
+      expect.objectContaining({
+        headers: expect.objectContaining({ Authorization: expect.any(String) }),
+      }),
+    )
+    vi.unstubAllGlobals()
   })
 
-  it('on create with integrationTarget "odoo", calls OdooRepository.submit instead', async () => {
-    odooSubmit.mockResolvedValue({ ok: true })
+  it('photo present: dispatches synchronously (dispatchClaimSync) instead of queuing a job, since the photo only exists in memory for this request', async () => {
+    vi.stubGlobal('fetch', fetchMock)
     const { syncClaim } = await import('@/collections/Claims/hooks/syncClaim')
-    const req = makeReq()
-
-    await syncClaim({
-      doc: { ...baseDoc, integrationTarget: 'odoo' },
-      previousDoc: undefined,
-      operation: 'create',
-      req,
-    } as never)
-
-    expect(odooSubmit).toHaveBeenCalled()
-    expect(jotFormSubmit).not.toHaveBeenCalled()
-  })
-
-  it('when the repository submit rejects, records syncStatus "error" with syncError, without throwing (claim must still persist)', async () => {
-    jotFormSubmit.mockRejectedValue(new Error('ServerHttpClient: POST ... failed with 500'))
-    const { syncClaim } = await import('@/collections/Claims/hooks/syncClaim')
-    const req = makeReq()
+    const photo = {
+      buffer: Buffer.from([1, 2, 3]),
+      filename: 'issue.jpg',
+      contentType: 'image/jpeg',
+    }
+    const req = makeReq({ context: { photoFile: photo } })
 
     const result = await syncClaim({
       doc: baseDoc,
@@ -104,18 +89,13 @@ describe('syncClaim', () => {
     } as never)
 
     expect(result).toBe(baseDoc)
-    expect(req.payload.update).toHaveBeenCalledWith(
-      expect.objectContaining({
-        data: expect.objectContaining({
-          syncStatus: 'error',
-          syncError: expect.stringContaining('failed with 500'),
-        }),
-        context: { skipClaimsSync: true },
-      }),
-    )
+    expect(dispatchClaimSyncMock).toHaveBeenCalledWith(baseDoc, req, photo)
+    expect(req.payload.jobs.queue).not.toHaveBeenCalled()
+    expect(fetchMock).not.toHaveBeenCalled()
+    vi.unstubAllGlobals()
   })
 
-  it('does nothing on update operations (no repository call, no payload.update)', async () => {
+  it('does nothing on update operations (no queue, no dispatch)', async () => {
     const { syncClaim } = await import('@/collections/Claims/hooks/syncClaim')
     const req = makeReq()
 
@@ -127,9 +107,8 @@ describe('syncClaim', () => {
     } as never)
 
     expect(result).toBe(baseDoc)
-    expect(jotFormSubmit).not.toHaveBeenCalled()
-    expect(odooSubmit).not.toHaveBeenCalled()
-    expect(req.payload.update).not.toHaveBeenCalled()
+    expect(dispatchClaimSyncMock).not.toHaveBeenCalled()
+    expect(req.payload.jobs.queue).not.toHaveBeenCalled()
   })
 
   it('does nothing when context.skipClaimsSync is set (recursion guard for the hook-triggered update itself)', async () => {
@@ -144,7 +123,7 @@ describe('syncClaim', () => {
     } as never)
 
     expect(result).toBe(baseDoc)
-    expect(jotFormSubmit).not.toHaveBeenCalled()
-    expect(req.payload.update).not.toHaveBeenCalled()
+    expect(dispatchClaimSyncMock).not.toHaveBeenCalled()
+    expect(req.payload.jobs.queue).not.toHaveBeenCalled()
   })
 })

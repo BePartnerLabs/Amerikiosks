@@ -1,3 +1,4 @@
+import type { PayloadRequest } from 'payload'
 import type { ClaimSubmission } from './JotFormRepository'
 
 /**
@@ -6,7 +7,7 @@ import type { ClaimSubmission } from './JotFormRepository'
  * either one via a config toggle without a rewrite when Odoo is ready.
  */
 export const OdooRepository = {
-  async submit(_claim: ClaimSubmission): Promise<never> {
+  async submit(_claim: ClaimSubmission, _req: PayloadRequest): Promise<never> {
     throw new Error('OdooRepository.submit: Odoo integration not yet implemented (Phase B)')
   },
 }

@@ -1,5 +1,12 @@
-import type { GlobalConfig } from 'payload'
+import type { FieldAccess, GlobalConfig } from 'payload'
 import { revalidateSettings } from './hooks/revalidateSettings'
+
+// Settings' own global-level access is public (read: () => true) — this field
+// carries a secret, so it needs its own stricter read gate, independent of
+// that. No role system exists in this project yet (Users has no `role`
+// field), so "authenticated" is the closest equivalent to "admin" today —
+// every /admin user is effectively an admin.
+const authenticatedFieldAccess: FieldAccess = ({ req: { user } }) => Boolean(user)
 
 export const Settings: GlobalConfig = {
   slug: 'settings',
@@ -132,6 +139,30 @@ export const Settings: GlobalConfig = {
               admin: {
                 description: 'Include published insights (posts) in llms.txt.',
                 condition: (data) => data?.llmsEnabled === true,
+              },
+            },
+          ],
+        },
+        {
+          label: 'Integrations',
+          fields: [
+            {
+              name: 'jotformApiKey',
+              type: 'text',
+              label: 'JotForm API Key',
+              access: {
+                // The global's own access.read is public (see above) — this
+                // field overrides that with its own stricter gate, since it's
+                // a secret. Local API calls from server-side code (e.g.
+                // JotFormRepository reading this to build a request) default
+                // to overrideAccess: true and bypass this entirely, same as
+                // any other Payload access control — only external
+                // REST/GraphQL requests are actually gated by this.
+                read: authenticatedFieldAccess,
+              },
+              admin: {
+                description:
+                  'API key for the JotForm submissions API (used by the Claims refund flow). Only visible to logged-in admin users — never exposed in the public Settings API response.',
               },
             },
           ],

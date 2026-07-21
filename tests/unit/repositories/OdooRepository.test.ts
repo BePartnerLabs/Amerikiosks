@@ -15,7 +15,7 @@ const baseClaim: ClaimSubmission = {
 
 describe('OdooRepository (Phase B stub)', () => {
   it('rejects clearly until the Odoo REST API integration is implemented', async () => {
-    await expect(OdooRepository.submit(baseClaim)).rejects.toThrow(
+    await expect(OdooRepository.submit(baseClaim, {} as never)).rejects.toThrow(
       /Odoo.*not yet implemented|Phase B/i,
     )
   })

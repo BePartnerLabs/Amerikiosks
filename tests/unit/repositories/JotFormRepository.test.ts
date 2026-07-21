@@ -20,31 +20,39 @@ const baseClaim = {
   lastFourCardDigits: '0000',
 } as const
 
+const findGlobalMock = vi.fn()
+
+function fakeReq(apiKey = 'test-key') {
+  findGlobalMock.mockResolvedValue({ jotformApiKey: apiKey })
+  return { payload: { findGlobal: findGlobalMock } } as never
+}
+
 describe('JotFormRepository', () => {
   afterEach(() => {
     vi.clearAllMocks()
-    vi.unstubAllEnvs()
   })
 
-  it('submits form-urlencoded to the JotForm submissions API for the configured form ID, with the API key', async () => {
-    vi.stubEnv('JOTFORM_API_KEY', 'test-key')
+  it('reads the API key from the Settings global (Local API — bypasses the field-level access.read gate) and sends it as an APIKEY header, not a query param', async () => {
     postFormMock.mockResolvedValue({ responseCode: 200, message: 'success' })
 
     const { JotFormRepository } = await import('@/repositories/JotFormRepository')
-    await JotFormRepository.submit(baseClaim)
+    const req = fakeReq('test-key')
+    await JotFormRepository.submit(baseClaim, req)
 
+    expect(findGlobalMock).toHaveBeenCalledWith(expect.objectContaining({ slug: 'settings' }))
     expect(postFormMock).toHaveBeenCalledWith(
       expect.stringContaining('api.jotform.com/form/230405763622148/submissions'),
       expect.any(Object),
+      { APIKEY: 'test-key' },
     )
     const [url] = postFormMock.mock.calls[0]
-    expect(url).toContain('apiKey=test-key')
+    expect(url).not.toContain('apiKey=')
   })
 
   it('splits the compound Name field into submission[3_first] / submission[3_last]', async () => {
     postFormMock.mockResolvedValue({ responseCode: 200, message: 'success' })
     const { JotFormRepository } = await import('@/repositories/JotFormRepository')
-    await JotFormRepository.submit(baseClaim)
+    await JotFormRepository.submit(baseClaim, fakeReq())
 
     const [, fields] = postFormMock.mock.calls[0]
     expect(fields['submission[3_first]']).toBe('Test')
@@ -55,7 +63,7 @@ describe('JotFormRepository', () => {
   it('sends the compound Phone field as submission[5_full], not submission[5]', async () => {
     postFormMock.mockResolvedValue({ responseCode: 200, message: 'success' })
     const { JotFormRepository } = await import('@/repositories/JotFormRepository')
-    await JotFormRepository.submit(baseClaim)
+    await JotFormRepository.submit(baseClaim, fakeReq())
 
     const [, fields] = postFormMock.mock.calls[0]
     expect(fields['submission[5_full]']).toBe('3055550100')
@@ -68,7 +76,7 @@ describe('JotFormRepository', () => {
     // 2026-07-08T09:23:00.000Z parsed with the local Date constructor — assert against
     // the same Date the repository builds internally, not a hardcoded local time.
     const date = new Date(baseClaim.transactionDateTime)
-    await JotFormRepository.submit(baseClaim)
+    await JotFormRepository.submit(baseClaim, fakeReq())
 
     const [, fields] = postFormMock.mock.calls[0]
     expect(fields['submission[6_month]']).toBe(String(date.getMonth() + 1))
@@ -80,7 +88,7 @@ describe('JotFormRepository', () => {
   it("maps the internal paymentMethod slug to JotForm's exact option text", async () => {
     postFormMock.mockResolvedValue({ responseCode: 200, message: 'success' })
     const { JotFormRepository } = await import('@/repositories/JotFormRepository')
-    await JotFormRepository.submit(baseClaim)
+    await JotFormRepository.submit(baseClaim, fakeReq())
 
     const [, fields] = postFormMock.mock.calls[0]
     expect(fields['submission[10]']).toBe('Credit/Debit Card')
@@ -89,7 +97,7 @@ describe('JotFormRepository', () => {
   it("maps the internal claimReason slug to JotForm's exact option text (with trailing period)", async () => {
     postFormMock.mockResolvedValue({ responseCode: 200, message: 'success' })
     const { JotFormRepository } = await import('@/repositories/JotFormRepository')
-    await JotFormRepository.submit(baseClaim)
+    await JotFormRepository.submit(baseClaim, fakeReq())
 
     const [, fields] = postFormMock.mock.calls[0]
     expect(fields['submission[7]']).toBe('Only part of my order was dispensed.')
@@ -99,48 +107,51 @@ describe('JotFormRepository', () => {
     postFormMock.mockResolvedValue({ responseCode: 200, message: 'success' })
     const { JotFormRepository } = await import('@/repositories/JotFormRepository')
 
-    await JotFormRepository.submit({
-      ...baseClaim,
-      refundMethod: 'Zelle',
-      refundAccount: 'test@example.com',
-    })
+    await JotFormRepository.submit(
+      { ...baseClaim, refundMethod: 'Zelle', refundAccount: 'test@example.com' },
+      fakeReq(),
+    )
     const [, fieldsWithRefund] = postFormMock.mock.calls[0]
     expect(fieldsWithRefund['submission[20]']).toBe('Zelle')
     expect(fieldsWithRefund['submission[21]']).toBe('test@example.com')
 
     postFormMock.mockClear()
-    await JotFormRepository.submit(baseClaim)
+    await JotFormRepository.submit(baseClaim, fakeReq())
     const [, fieldsWithoutRefund] = postFormMock.mock.calls[0]
     expect(fieldsWithoutRefund['submission[20]']).toBeUndefined()
     expect(fieldsWithoutRefund['submission[21]']).toBeUndefined()
   })
 
-  it('submits multipart with the photo attached to submission[12] when a photo is present', async () => {
+  it('submits multipart with the photo attached to submission[12] when a photo is present, still via the APIKEY header', async () => {
     postMultipartMock.mockResolvedValue({ responseCode: 200, message: 'success' })
     const { JotFormRepository } = await import('@/repositories/JotFormRepository')
 
-    await JotFormRepository.submit({
-      ...baseClaim,
-      photo: {
-        buffer: Buffer.from([0xff, 0xd8, 0xff]),
-        filename: 'issue.jpg',
-        contentType: 'image/jpeg',
+    await JotFormRepository.submit(
+      {
+        ...baseClaim,
+        photo: {
+          buffer: Buffer.from([0xff, 0xd8, 0xff]),
+          filename: 'issue.jpg',
+          contentType: 'image/jpeg',
+        },
       },
-    })
+      fakeReq('test-key'),
+    )
 
     expect(postMultipartMock).toHaveBeenCalledTimes(1)
     expect(postFormMock).not.toHaveBeenCalled()
-    const [url, formData] = postMultipartMock.mock.calls[0]
+    const [url, formData, headers] = postMultipartMock.mock.calls[0]
     expect(url).toContain('api.jotform.com/form/230405763622148/submissions')
+    expect(url).not.toContain('apiKey=')
+    expect(headers).toEqual({ APIKEY: 'test-key' })
     expect(formData).toBeInstanceOf(FormData)
     expect(formData.get('submission[12]')).toBeInstanceOf(Blob)
   })
 
   it('propagates an error when the underlying HTTP call fails, so the sync hook can record it', async () => {
-    vi.stubEnv('JOTFORM_API_KEY', 'test-key')
     postFormMock.mockRejectedValue(new Error('ServerHttpClient: POST ... failed with 500'))
 
     const { JotFormRepository } = await import('@/repositories/JotFormRepository')
-    await expect(JotFormRepository.submit(baseClaim)).rejects.toThrow('failed with 500')
+    await expect(JotFormRepository.submit(baseClaim, fakeReq())).rejects.toThrow('failed with 500')
   })
 })
