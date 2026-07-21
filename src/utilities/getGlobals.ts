@@ -1,9 +1,8 @@
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
-import { type DataFromGlobalSlug, getPayload } from 'payload'
-import type { Config } from 'src/payload-types'
+import { type DataFromGlobalSlug, type GlobalSlug, getPayload } from 'payload'
 
-type Global = keyof Config['globals']
+type Global = GlobalSlug
 
 async function getGlobal<T extends Global>(
   slug: T,
