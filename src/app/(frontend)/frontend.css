@@ -323,6 +323,86 @@ textarea.bp-input {
   margin: 0;
 }
 
+/* ─── DS: Pagination ───────────────────────────────────────────
+   Public API: --pagination-color, --pagination-background,
+   --pagination-border, --pagination-radius, --pagination-size,
+   --pagination-gap */
+.bp-pagination {
+  --_color: var(--pagination-color, var(--bp-color-text));
+  --_border: var(--pagination-border, 1px solid var(--bp-color-border));
+  --_radius: var(--pagination-radius, var(--bp-radius-md));
+  --_size: var(--pagination-size, 2.25rem);
+  --_gap: var(--pagination-gap, var(--bp-space-1));
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--_gap);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bp-pagination__item {
+  display: flex;
+}
+
+.bp-pagination__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--_size);
+  min-height: var(--_size);
+  padding-inline: var(--bp-space-2);
+  border: var(--_border);
+  border-radius: var(--_radius);
+  color: var(--_color);
+  text-decoration: none;
+  font-size: var(--bp-text-sm);
+  font-weight: var(--bp-font-weight-medium);
+  background-color: transparent;
+  cursor: pointer;
+  transition:
+    background-color var(--bp-duration-fast) var(--bp-ease),
+    color var(--bp-duration-fast) var(--bp-ease),
+    border-color var(--bp-duration-fast) var(--bp-ease);
+}
+
+.bp-pagination__link:hover:not([aria-current]):not([aria-disabled="true"]) {
+  background-color: var(--bp-color-bg-subtle);
+  border-color: var(--bp-primary);
+}
+
+.bp-pagination__link:focus-visible {
+  outline: 2px solid var(--bp-primary);
+  outline-offset: 2px;
+}
+
+.bp-pagination__link[aria-current="page"] {
+  --pagination-background: var(--bp-primary);
+  background-color: var(--pagination-background);
+  color: var(--bp-color-bg);
+  border-color: var(--pagination-background);
+  pointer-events: none;
+}
+
+.bp-pagination__link[aria-disabled="true"] {
+  opacity: 0.4;
+  pointer-events: none;
+  cursor: default;
+}
+
+.bp-pagination__ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--_size);
+  min-height: var(--_size);
+  color: var(--bp-color-text-muted);
+  font-size: var(--bp-text-sm);
+  user-select: none;
+}
+
 /* ─── Section scroll reveal ────────────────────────────────── */
 /* opacity-only — no translateY to avoid gaps between full-bleed sections */
 @keyframes ak-section-reveal {
