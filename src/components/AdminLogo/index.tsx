@@ -4,8 +4,7 @@ export default function AdminLogo() {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 108.25 65.74"
       height="40"
-      width="auto"
-      style={{ display: 'block' }}
+      style={{ display: 'block', width: 'auto' }}
       aria-label="Amerikiosks"
     >
       <polygon
