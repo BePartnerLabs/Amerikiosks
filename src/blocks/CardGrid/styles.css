@@ -162,9 +162,6 @@
   background-color: var(--_card-background);
   border-radius: 0 0 var(--bp-radius-lg, 0.75rem) var(--bp-radius-lg, 0.75rem);
   border-top: 3px solid var(--ak-accent);
-  border-right: 1px solid var(--ak-color-border);
-  border-bottom: 1px solid var(--ak-color-border);
-  border-left: 1px solid var(--ak-color-border);
   box-shadow: var(--_card-shadow);
   padding: var(--card-padding, 1.25rem);
   gap: var(--bp-space-4, 1rem);
@@ -206,9 +203,6 @@
   --_background: var(--card-background, var(--brand-color-palette-white));
   background-color: var(--_background);
   border-top: 3px solid var(--ak-accent);
-  border-right: 1px solid var(--ak-color-border);
-  border-bottom: 1px solid var(--ak-color-border);
-  border-left: 1px solid var(--ak-color-border);
   box-shadow: var(--ak-card-shadow-subtle);
 }
 
@@ -253,7 +247,6 @@
 .ak-card-grid--pillar .ak-card-grid__card {
   --_background: var(--card-background, var(--ak-color-surface));
   background-color: var(--_background);
-  border: 1px solid var(--ak-color-border);
   border-top: 3px solid var(--card-top-border-color, hsla(196, 17%, 54%, 1));
   box-shadow: var(--ak-card-shadow-subtle);
   aspect-ratio: 312 / 177;
