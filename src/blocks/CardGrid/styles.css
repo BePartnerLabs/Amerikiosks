@@ -291,7 +291,7 @@
   font-variation-settings: "opsz" 16;
 }
 
-/* ─── Carousel nav (compact variant, narrow container only) ──────── */
+/* ─── Carousel nav (all variants, narrow container only) ──────────── */
 .ak-card-grid__carousel {
   /* Without this, the non-shrinking cards (flex-shrink: 0) blow out this
      grid item's width instead of being clipped by overflow-x: auto. */
@@ -375,6 +375,32 @@
   }
 
   .ak-card-grid--icon .ak-card-grid__carousel-nav {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--bp-space-2, 0.5rem);
+    margin-top: var(--bp-space-4, 1rem);
+  }
+
+  /* Same JS-controlled horizontal-scroll carousel as compact/icon. */
+  .ak-card-grid--pillar .ak-card-grid__cards {
+    display: flex;
+    grid-template-columns: unset;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--bp-space-4, 1rem);
+    scrollbar-width: none;
+  }
+
+  .ak-card-grid--pillar .ak-card-grid__cards::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ak-card-grid--pillar .ak-card-grid__card {
+    flex: 0 0 85%;
+    scroll-snap-align: start;
+  }
+
+  .ak-card-grid--pillar .ak-card-grid__carousel-nav {
     display: flex;
     justify-content: flex-end;
     gap: var(--bp-space-2, 0.5rem);
