@@ -18,10 +18,35 @@
   gap: var(--bp-space-4);
 }
 
+/* Level 2 overrides on the shared SectionHeader — this block's eyebrow/title
+   spec (Figma: for-brands cases section) differs from the SectionHeader
+   default (muted slate-400 eyebrow vs. the shared navy-500, larger/lighter
+   title weight). Color goes through the component's public --section-*-color
+   slots; size/weight/letter-spacing aren't exposed as slots, so they're set
+   directly here, scoped to this block. */
+.ak-projects-showcase .ak-section-header__eyebrow {
+  --section-eyebrow-color: var(--brand-cases-eyebrow-color, var(--brand-color-palette-slate-400));
+  font-size: 0.75rem; /* 12px */
+  font-weight: 700;
+  line-height: 1.5; /* 18/12 */
+  letter-spacing: 0.08em;
+}
+
+.ak-projects-showcase .ak-section-header__heading {
+  --section-heading-color: var(--brand-cases-heading-color, var(--ak-color-heading));
+  font-size: 2.125rem; /* 34px */
+  font-weight: 500;
+  line-height: 1.294; /* 44/34 */
+  letter-spacing: 0;
+}
+
 .ak-projects-showcase__body {
-  --_color: var(--brand-cases-body-color, var(--ak-color-muted));
-  font-size: var(--bp-text-base);
-  line-height: 1.65;
+  --_color: var(
+    --brand-cases-body-color,
+    color-mix(in srgb, var(--ak-color-heading) 72%, transparent)
+  );
+  font-size: 0.9375rem; /* 15px */
+  line-height: 1.667; /* 25/15 */
   color: var(--_color);
 }
 
@@ -34,13 +59,13 @@
 
 .ak-projects-showcase__card {
   --_card-background: var(--brand-cases-card-bg, var(--ak-color-surface));
-  --_card-border: var(--brand-cases-card-border, var(--ak-color-border));
   --_card-radius: var(--brand-cases-card-radius, var(--bp-radius-xl));
+  --_card-shadow: var(--brand-cases-card-shadow, var(--ak-card-shadow-md));
   display: flex;
   flex-direction: column;
   background: var(--_card-background);
-  border: var(--md-semantic-border-width-default) solid var(--_card-border);
   border-radius: var(--_card-radius);
+  box-shadow: var(--_card-shadow);
   overflow: hidden;
 }
 
@@ -69,11 +94,12 @@
 }
 
 .ak-projects-showcase__card-eyebrow {
-  --_color: var(--brand-cases-eyebrow-color, var(--ak-eyebrow-color));
+  --_color: var(--brand-cases-eyebrow-color, var(--brand-color-palette-slate-400));
   margin: 0;
-  font-size: var(--bp-text-xs);
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-size: 0.6875rem; /* 11px */
+  font-weight: 700;
+  line-height: 1.4545; /* 16/11 */
+  letter-spacing: 0;
   text-transform: uppercase;
   color: var(--_color);
 }
@@ -81,17 +107,17 @@
 .ak-projects-showcase__card-title {
   --_color: var(--brand-cases-card-title-color, var(--ak-color-heading));
   margin: 0;
-  font-size: var(--bp-text-lg);
+  font-size: 1.375rem; /* 22px */
   font-weight: 600;
-  line-height: 1.25;
+  line-height: 1.2727; /* 28/22 */
   color: var(--_color);
 }
 
 .ak-projects-showcase__card-desc {
   --_color: var(--brand-cases-card-desc-color, var(--ak-color-muted));
   margin: 0;
-  font-size: var(--bp-text-sm);
-  line-height: 1.6;
+  font-size: 0.8125rem; /* 13px */
+  line-height: 1.4615; /* 19/13 */
   color: var(--_color);
   flex: 1;
 }
@@ -99,7 +125,9 @@
 .ak-projects-showcase__card-link {
   align-self: flex-start;
   margin-top: var(--bp-space-2);
-  --btn-color: var(--ak-color-heading);
+  /* btn/primary-outline/text/default (Figma) resolves to brand primary #0B2A47,
+     which matches --brand-color-palette-navy-800 exactly. */
+  --btn-color: var(--brand-color-palette-navy-800);
   --btn-border: var(--md-semantic-border-width-default) solid var(--ak-color-border);
 }
 
