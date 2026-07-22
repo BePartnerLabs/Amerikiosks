@@ -1,6 +1,7 @@
 import configPromise from '@payload-config'
 import type { Metadata } from 'next'
 import { draftMode } from 'next/headers'
+import { notFound } from 'next/navigation'
 import { getPayload, type RequiredDataFromCollectionSlug } from 'payload'
 import { cache } from 'react'
 import { RenderBlocks } from '@/blocks/RenderBlocks'
@@ -47,6 +48,14 @@ type Args = {
 export default async function Page({ params: paramsPromise }: Args) {
   const { isEnabled: draft } = await draftMode()
   const { slug = 'home', locale } = await paramsPromise
+
+  // Browsers/crawlers probe well-known paths (e.g. apple-touch-icon-precomposed.png) that
+  // don't exist as static files — those land here with the probed path as `locale`, which
+  // isn't a valid Postgres enum value for the locale column. Bail before querying.
+  if (!routing.locales.includes(locale as (typeof routing.locales)[number])) {
+    notFound()
+  }
+
   // Decode to support slugs with special characters
   const decodedSlug = decodeURIComponent(slug)
   const url = `/${decodedSlug}`
@@ -90,6 +99,11 @@ export default async function Page({ params: paramsPromise }: Args) {
 
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
   const { slug = 'home', locale } = await paramsPromise
+
+  if (!routing.locales.includes(locale as (typeof routing.locales)[number])) {
+    return generateMeta({ doc: null })
+  }
+
   // Decode to support slugs with special characters
   const decodedSlug = decodeURIComponent(slug)
   const page = await queryPageBySlug({ slug: decodedSlug, locale })
