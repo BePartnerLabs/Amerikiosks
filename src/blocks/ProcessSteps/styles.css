@@ -74,6 +74,36 @@
   margin-top: var(--bp-space-10, 2.5rem);
 }
 
+/* ─── Carousel nav (mobile only) ─────────────────────────────────── */
+.ak-process-steps__carousel {
+  /* Without this, the non-shrinking items (flex-shrink: 0) blow out this
+     flex item's width instead of being clipped by overflow-x: auto. */
+  min-width: 0;
+}
+
+.ak-process-steps__carousel-nav {
+  display: none;
+}
+
+.ak-process-steps__carousel-btn {
+  --_border-color: var(--carousel-btn-border-color, var(--ak-color-border));
+  --_background: var(--carousel-btn-background, var(--ak-color-surface));
+  --_color: var(--carousel-btn-color, var(--ak-color-heading));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--_border-color);
+  background-color: var(--_background);
+  color: var(--_color);
+}
+
+.ak-process-steps__carousel-btn:hover {
+  background-color: var(--_border-color);
+}
+
 @media (max-width: 1023px) {
   .ak-process-steps__list {
     grid-template-columns: repeat(3, 1fr);
@@ -81,7 +111,30 @@
 }
 
 @media (max-width: 639px) {
+  /* JS-controlled carousel — same horizontal-scroll pattern as CardGrid's
+     compact/icon/pillar variants. */
   .ak-process-steps__list {
-    grid-template-columns: 1fr;
+    display: flex;
+    grid-template-columns: unset;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--bp-space-4, 1rem);
+    scrollbar-width: none;
+  }
+
+  .ak-process-steps__list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ak-process-steps__item {
+    flex: 0 0 85%;
+    scroll-snap-align: start;
+  }
+
+  .ak-process-steps__carousel-nav {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--bp-space-2, 0.5rem);
+    margin-top: var(--bp-space-4, 1rem);
   }
 }
