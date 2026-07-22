@@ -245,6 +245,84 @@ textarea.bp-input {
   field-sizing: content;
 }
 
+/* ─── DS: Checkbox ─────────────────────────────────────────────
+   Public API: --checkbox-size, --checkbox-radius, --checkbox-border,
+   --checkbox-background, --checkbox-color, --checkbox-check-color,
+   --checkbox-gap, --checkbox-label-color, --checkbox-error-color */
+.bp-checkbox {
+  --_size: var(--checkbox-size, 1.125rem);
+  --_radius: var(--checkbox-radius, var(--bp-radius-sm));
+  --_border: var(--checkbox-border, 1px solid var(--bp-color-border));
+  --_background: var(--checkbox-background, var(--bp-color-bg-elevated));
+  --_color: var(--checkbox-color, var(--bp-primary));
+  --_gap: var(--checkbox-gap, var(--bp-space-2));
+  --_label-color: var(--checkbox-label-color, var(--bp-color-text));
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--_gap);
+  cursor: pointer;
+  color: var(--_label-color);
+  font-size: var(--bp-text-base);
+  line-height: var(--bp-leading-normal);
+}
+
+.bp-checkbox__input {
+  appearance: none;
+  -webkit-appearance: none;
+  flex-shrink: 0;
+  width: var(--_size);
+  height: var(--_size);
+  border: var(--_border);
+  border-radius: var(--_radius);
+  background-color: var(--_background);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 70%;
+  cursor: pointer;
+  transition:
+    border-color var(--bp-duration-fast) var(--bp-ease),
+    background-color var(--bp-duration-fast) var(--bp-ease),
+    box-shadow var(--bp-duration-fast) var(--bp-ease);
+}
+
+.bp-checkbox__input:checked {
+  background-color: var(--_color);
+  border-color: var(--_color);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M2 6l3 3 5-5' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.bp-checkbox__input:focus-visible {
+  outline: none;
+  box-shadow: var(--bp-focus-ring);
+}
+
+.bp-checkbox__input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.bp-checkbox:has(.bp-checkbox__input:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.bp-checkbox__input[aria-invalid="true"] {
+  --checkbox-border: 1px solid var(--checkbox-error-color, var(--bp-color-error));
+}
+
+.bp-checkbox-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bp-space-1);
+}
+
+.bp-checkbox-field__error {
+  font-size: var(--bp-text-xs);
+  color: var(--checkbox-error-color, var(--bp-color-error));
+  margin: 0;
+}
+
 /* ─── Section scroll reveal ────────────────────────────────── */
 /* opacity-only — no translateY to avoid gaps between full-bleed sections */
 @keyframes ak-section-reveal {
