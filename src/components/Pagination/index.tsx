@@ -23,6 +23,7 @@ export const Pagination: React.FC<{
             aria-label="Go to previous page"
             className="bp-pagination__link"
             href={hasPrevPage ? `/insights/page/${page - 1}` : '#'}
+            tabIndex={hasPrevPage ? undefined : -1}
           >
             ← Prev
           </Link>
@@ -78,6 +79,7 @@ export const Pagination: React.FC<{
             aria-label="Go to next page"
             className="bp-pagination__link"
             href={hasNextPage ? `/insights/page/${page + 1}` : '#'}
+            tabIndex={hasNextPage ? undefined : -1}
           >
             Next →
           </Link>

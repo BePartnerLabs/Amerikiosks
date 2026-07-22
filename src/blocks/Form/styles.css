@@ -66,8 +66,7 @@
   --input-radius: var(--_radius);
 }
 
-.ak-form__field input.bp-input,
-.ak-form__field select.bp-input {
+.ak-form__field input.bp-input {
   --_height: var(--form-input-height, var(--ak-input-height));
   height: var(--_height);
 }
