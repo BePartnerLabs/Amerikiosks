@@ -30,7 +30,17 @@ One PR, covering:
 - A new "Phone" form-builder field type with `type="tel"`/`inputMode="tel"`.
 - A new "Switch/Toggle" field type using the DS's `.bp-toggle`.
 
-After this migration, `src/components/ui/{input,label,textarea,select,checkbox,button,pagination}.tsx` become dead code and should be deleted in the same PR (verify with a repo-wide grep for `@/components/ui/` before deleting each).
+After this migration, `src/components/ui/{input,label,textarea,select,checkbox,pagination}.tsx` become dead code and should be deleted in the same PR. **`button.tsx` stays** — `src/blocks/ClaimForm/Component.tsx` and `src/blocks/Code/CopyButton.tsx` also import it and are out of scope here (verified by grep; both only use `Button`, nothing else from `ui/`).
+
+## Level 1 gap: base CSS doesn't exist yet
+
+The BPL DS is **not** an npm/CDN dependency of this project — every `.bp-*` component used so far (`.bp-btn`, `.bp-card`, `.bp-nav`, etc.) was hand-authored locally in `src/app/(frontend)/frontend.css`, following the DS's public class/variable contract but adapted to this project's own token set, not copy-pasted verbatim (confirmed by diffing the local `.bp-btn` against the DS source `button.css` — different internals, same public API).
+
+`.bp-field`, `.bp-input`, `.bp-checkbox` (+ `-field`/`-group`), and `.bp-pagination` **do not exist anywhere in this codebase yet** — only `.bp-btn` is implemented. This migration therefore isn't a pure class-rename on top of an existing base; it requires **authoring these four components' Level 1 CSS for the first time**, ported from the DS source (`internal-projects/bpl-ds/src/styles/components/{input,checkbox,pagination}.css`) into `frontend.css`, adapted to this project's `--bp-*` token set — then layering the brand Level 2 overrides on top, same as originally planned.
+
+Five `--bp-*` base tokens the ported CSS needs don't exist in `tokens.css`/`frontend.css` yet either: `--bp-color-error`, `--bp-color-success`, `--bp-font-weight-medium`, `--bp-leading-normal`, `--bp-focus-ring`. Add them to the "DS bp-* surface mapping" block in `tokens.css`. `--bp-color-error` maps to `var(--ak-accent)` (matches the current `.ak-form__error` color and keeps the "preserve current look" requirement); the other four take the DS's own default values (`--bp-color-success: #2e9e72`, `--bp-font-weight-medium: 500`, `--bp-leading-normal: 1.5`, `--bp-focus-ring: 0 0 0 3px color-mix(in srgb, var(--bp-primary) 40%, transparent)` — this one composes from `--bp-primary`, already brand-mapped, so it's automatically coral).
+
+The DS source's `pagination.css` references `--bp-font-medium` (inconsistent with `checkbox.css`'s `--bp-font-weight-medium` for the same concept) — treated as a typo in the DS source; the ported version uses `--bp-font-weight-medium` for consistency.
 
 ## DS contract (confirmed against the local `bpl-ds` repo)
 
@@ -101,4 +111,4 @@ Same `.bp-field`/`.bp-input` wrapper as the Text field, applied to the single se
 
 ## Cleanup
 
-Once every consumer is migrated, delete `src/components/ui/{input,label,textarea,select,checkbox,button,pagination}.tsx` (and their now-unused Radix/shadcn npm dependencies if nothing else in the repo imports them — grep first).
+Once every consumer is migrated, delete `src/components/ui/{input,label,textarea,select,checkbox,pagination}.tsx` (`button.tsx` stays, see above). Their Radix npm dependencies (`@radix-ui/react-label`, `@radix-ui/react-checkbox`, `@radix-ui/react-select`) have no other consumers in the repo (verified by grep) and can be removed from `package.json`. `@radix-ui/react-slot` and `class-variance-authority` stay — `button.tsx` still uses both.
