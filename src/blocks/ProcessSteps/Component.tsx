@@ -4,6 +4,7 @@ import RichText from '@/components/RichText'
 import { SectionHeader } from '@/components/SectionHeader'
 import type { ProcessStepsBlock as ProcessStepsBlockType } from '@/payload-types'
 import { toSnakeCase } from '@/utilities/toSnakeCase'
+import { ProcessStepsCarousel } from './CarouselNav'
 import './styles.css'
 
 export const ProcessStepsBlock: React.FC<ProcessStepsBlockType> = ({
@@ -43,7 +44,7 @@ export const ProcessStepsBlock: React.FC<ProcessStepsBlockType> = ({
           />
 
           {steps && steps.length > 0 && (
-            <ol className="ak-process-steps__list">
+            <ProcessStepsCarousel>
               {steps.map((step, index) => (
                 <li
                   key={step.id ?? index}
@@ -68,7 +69,7 @@ export const ProcessStepsBlock: React.FC<ProcessStepsBlockType> = ({
                   </div>
                 </li>
               ))}
-            </ol>
+            </ProcessStepsCarousel>
           )}
 
           {ctaLink && (
