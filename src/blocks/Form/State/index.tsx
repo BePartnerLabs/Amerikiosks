@@ -1,72 +1,66 @@
 import type { StateField } from '@payloadcms/plugin-form-builder/types'
 import type React from 'react'
-import type { Control, FieldErrorsImpl } from 'react-hook-form'
-import { Controller } from 'react-hook-form'
-import { Label } from '@/components/ui/label'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import type { FieldErrorsImpl, FieldValues, UseFormRegister } from 'react-hook-form'
 
 import { FormError } from '../Error'
+import '../Select/select.css'
 import { Width } from '../Width'
 import { stateOptions } from './options'
 
 export const State: React.FC<
   StateField & {
-    control: Control
     errors: Partial<FieldErrorsImpl>
+    register: UseFormRegister<FieldValues>
   }
-> = ({ name, control, errors, label, required, width }) => {
+> = ({ name, defaultValue, errors, label, register, required, width }) => {
+  const hasError = Boolean(errors[name])
+  const errorId = `${name}-error`
+
   return (
-    <Width width={width}>
-      <Label htmlFor={name}>
+    <Width
+      width={width}
+      className="bp-field"
+    >
+      <label
+        className="bp-field__label"
+        htmlFor={name}
+      >
         {label}
         {required && (
           <span className="required">
             * <span className="sr-only">(required)</span>
           </span>
         )}
-      </Label>
-      <Controller
-        control={control}
-        defaultValue=""
-        name={name}
-        render={({ field: { onChange, value } }) => {
-          const controlledValue = stateOptions.find((t) => t.value === value)
-
-          return (
-            <Select
-              onValueChange={(val) => onChange(val)}
-              value={controlledValue?.value}
-            >
-              <SelectTrigger
-                className="w-full"
-                id={name}
-              >
-                <SelectValue placeholder={label} />
-              </SelectTrigger>
-              <SelectContent>
-                {stateOptions.map(({ label, value }) => {
-                  return (
-                    <SelectItem
-                      key={value}
-                      value={value}
-                    >
-                      {label}
-                    </SelectItem>
-                  )
-                })}
-              </SelectContent>
-            </Select>
-          )
-        }}
-        rules={{ required }}
-      />
-      {errors[name] && <FormError name={name} />}
+      </label>
+      <select
+        className="ak-form__native-select"
+        defaultValue={defaultValue ?? ''}
+        id={name}
+        aria-invalid={hasError}
+        aria-describedby={hasError ? errorId : undefined}
+        {...register(name, { required })}
+      >
+        <option
+          disabled
+          value=""
+        >
+          {label}
+        </option>
+        {stateOptions.map(({ label: optionLabel, value }) => (
+          <option
+            key={value}
+            value={value}
+          >
+            {optionLabel}
+          </option>
+        ))}
+      </select>
+      {hasError && (
+        <FormError
+          id={errorId}
+          name={name}
+        />
+      )}
     </Width>
   )
 }

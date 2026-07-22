@@ -3,8 +3,6 @@ import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import type React from 'react'
 import { useEffect, useState } from 'react'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { useDebounce } from '@/utilities/useDebounce'
 
 export const Search: React.FC = () => {
@@ -25,22 +23,25 @@ export const Search: React.FC = () => {
           e.preventDefault()
         }}
       >
-        <Label
-          htmlFor="search"
-          className=""
-        >
-          {t('heading')}
-        </Label>
-        <Input
-          id="search"
-          onChange={(event) => {
-            setValue(event.target.value)
-          }}
-          placeholder={t('placeholder')}
-        />
+        <div className="bp-field">
+          <label
+            className="bp-field__label"
+            htmlFor="search"
+          >
+            {t('heading')}
+          </label>
+          <input
+            className="bp-input"
+            id="search"
+            onChange={(event) => {
+              setValue(event.target.value)
+            }}
+            placeholder={t('placeholder')}
+          />
+        </div>
         <button
+          className="bp-btn"
           type="submit"
-          className=""
         >
           submit
         </button>

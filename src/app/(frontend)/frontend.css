@@ -167,6 +167,242 @@ img {
   );
 }
 
+/* ─── DS: Field (label + input/textarea wrapper) ─────────────
+   Public API: none of its own — see .bp-input below. */
+.bp-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bp-space-2);
+}
+
+.bp-field__label {
+  font-size: var(--bp-text-sm);
+  font-weight: var(--bp-font-weight-medium);
+  color: var(--bp-color-text);
+}
+
+.bp-field__hint {
+  font-size: var(--bp-text-xs);
+  color: var(--bp-color-text-muted);
+}
+
+.bp-field__error {
+  font-size: var(--bp-text-xs);
+  color: var(--bp-color-error);
+  margin: 0;
+}
+
+/* ─── DS: Input (applies to <input> and <textarea>) ───────────
+   Public API: --input-background, --input-color, --input-radius,
+   --input-padding, --input-border */
+.bp-input {
+  --_background: var(--input-background, var(--bp-color-bg-elevated));
+  --_color: var(--input-color, var(--bp-color-text));
+  --_radius: var(--input-radius, var(--bp-radius-md));
+  --_padding: var(--input-padding, var(--bp-space-3) var(--bp-space-4));
+  --_border: var(--input-border, 1px solid var(--bp-color-border));
+
+  display: block;
+  width: 100%;
+  padding: var(--_padding);
+  background-color: var(--_background);
+  color: var(--_color);
+  border: var(--_border);
+  border-radius: var(--_radius);
+  font-size: var(--bp-text-base);
+  line-height: var(--bp-leading-normal);
+  transition: border-color var(--bp-duration-fast) var(--bp-ease);
+}
+
+.bp-input::placeholder {
+  color: var(--bp-color-text-muted);
+  opacity: 0.7;
+}
+
+.bp-input:hover {
+  --input-border: 1px solid var(--bp-color-text-muted);
+}
+
+.bp-input:focus-visible {
+  outline: none;
+  box-shadow: var(--bp-focus-ring);
+  --input-border: 1px solid var(--bp-primary);
+}
+
+.bp-input[aria-invalid="true"] {
+  --input-border: 1px solid var(--bp-color-error);
+}
+
+.bp-input:disabled {
+  cursor: not-allowed;
+  background-color: var(--bp-color-bg-subtle);
+  color: var(--bp-color-text-muted);
+}
+
+textarea.bp-input {
+  resize: vertical;
+  min-height: 6rem;
+  field-sizing: content;
+}
+
+/* ─── DS: Checkbox ─────────────────────────────────────────────
+   Public API: --checkbox-size, --checkbox-radius, --checkbox-border,
+   --checkbox-background, --checkbox-color, --checkbox-check-color,
+   --checkbox-gap, --checkbox-label-color, --checkbox-error-color */
+.bp-checkbox {
+  --_size: var(--checkbox-size, 1.125rem);
+  --_radius: var(--checkbox-radius, var(--bp-radius-sm));
+  --_border: var(--checkbox-border, 1px solid var(--bp-color-border));
+  --_background: var(--checkbox-background, var(--bp-color-bg-elevated));
+  --_color: var(--checkbox-color, var(--bp-primary));
+  --_gap: var(--checkbox-gap, var(--bp-space-2));
+  --_label-color: var(--checkbox-label-color, var(--bp-color-text));
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--_gap);
+  cursor: pointer;
+  color: var(--_label-color);
+  font-size: var(--bp-text-base);
+  line-height: var(--bp-leading-normal);
+}
+
+.bp-checkbox__input {
+  appearance: none;
+  -webkit-appearance: none;
+  flex-shrink: 0;
+  width: var(--_size);
+  height: var(--_size);
+  border: var(--_border);
+  border-radius: var(--_radius);
+  background-color: var(--_background);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 70%;
+  cursor: pointer;
+  transition:
+    border-color var(--bp-duration-fast) var(--bp-ease),
+    background-color var(--bp-duration-fast) var(--bp-ease),
+    box-shadow var(--bp-duration-fast) var(--bp-ease);
+}
+
+.bp-checkbox__input:checked {
+  background-color: var(--_color);
+  border-color: var(--_color);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M2 6l3 3 5-5' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.bp-checkbox__input:focus-visible {
+  outline: none;
+  box-shadow: var(--bp-focus-ring);
+}
+
+.bp-checkbox__input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.bp-checkbox:has(.bp-checkbox__input:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.bp-checkbox__input[aria-invalid="true"] {
+  --checkbox-border: 1px solid var(--checkbox-error-color, var(--bp-color-error));
+}
+
+.bp-checkbox-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bp-space-1);
+}
+
+.bp-checkbox-field__error {
+  font-size: var(--bp-text-xs);
+  color: var(--checkbox-error-color, var(--bp-color-error));
+  margin: 0;
+}
+
+/* ─── DS: Pagination ───────────────────────────────────────────
+   Public API: --pagination-color, --pagination-background,
+   --pagination-border, --pagination-radius, --pagination-size,
+   --pagination-gap */
+.bp-pagination {
+  --_color: var(--pagination-color, var(--bp-color-text));
+  --_border: var(--pagination-border, 1px solid var(--bp-color-border));
+  --_radius: var(--pagination-radius, var(--bp-radius-md));
+  --_size: var(--pagination-size, 2.25rem);
+  --_gap: var(--pagination-gap, var(--bp-space-1));
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--_gap);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bp-pagination__item {
+  display: flex;
+}
+
+.bp-pagination__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--_size);
+  min-height: var(--_size);
+  padding-inline: var(--bp-space-2);
+  border: var(--_border);
+  border-radius: var(--_radius);
+  color: var(--_color);
+  text-decoration: none;
+  font-size: var(--bp-text-sm);
+  font-weight: var(--bp-font-weight-medium);
+  background-color: transparent;
+  cursor: pointer;
+  transition:
+    background-color var(--bp-duration-fast) var(--bp-ease),
+    color var(--bp-duration-fast) var(--bp-ease),
+    border-color var(--bp-duration-fast) var(--bp-ease);
+}
+
+.bp-pagination__link:hover:not([aria-current]):not([aria-disabled="true"]) {
+  background-color: var(--bp-color-bg-subtle);
+  border-color: var(--bp-primary);
+}
+
+.bp-pagination__link:focus-visible {
+  outline: 2px solid var(--bp-primary);
+  outline-offset: 2px;
+}
+
+.bp-pagination__link[aria-current="page"] {
+  --pagination-background: var(--bp-primary);
+  background-color: var(--pagination-background);
+  color: var(--bp-color-bg);
+  border-color: var(--pagination-background);
+  pointer-events: none;
+}
+
+.bp-pagination__link[aria-disabled="true"] {
+  opacity: 0.4;
+  pointer-events: none;
+  cursor: default;
+}
+
+.bp-pagination__ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--_size);
+  min-height: var(--_size);
+  color: var(--bp-color-text-muted);
+  font-size: var(--bp-text-sm);
+  user-select: none;
+}
+
 /* ─── Section scroll reveal ────────────────────────────────── */
 /* opacity-only — no translateY to avoid gaps between full-bleed sections */
 @keyframes ak-section-reveal {

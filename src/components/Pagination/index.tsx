@@ -1,100 +1,90 @@
-'use client'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import type React from 'react'
-import {
-  Pagination as PaginationComponent,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination'
 
 export const Pagination: React.FC<{
   className?: string
   page: number
   totalPages: number
-}> = (props) => {
-  const router = useRouter()
-
-  const { page, totalPages } = props
+}> = ({ className, page, totalPages }) => {
   const hasNextPage = page < totalPages
   const hasPrevPage = page > 1
-
   const hasExtraPrevPages = page - 1 > 1
   const hasExtraNextPages = page + 1 < totalPages
 
   return (
-    <div className="">
-      <PaginationComponent>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              disabled={!hasPrevPage}
-              onClick={() => {
-                router.push(`/insights/page/${page - 1}`)
-              }}
-            />
-          </PaginationItem>
+    <nav
+      aria-label="Pagination"
+      className={className}
+    >
+      <ol className="bp-pagination">
+        <li className="bp-pagination__item">
+          <Link
+            aria-disabled={!hasPrevPage}
+            aria-label="Go to previous page"
+            className="bp-pagination__link"
+            href={hasPrevPage ? `/insights/page/${page - 1}` : '#'}
+            tabIndex={hasPrevPage ? undefined : -1}
+          >
+            ← Prev
+          </Link>
+        </li>
 
-          {hasExtraPrevPages && (
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-          )}
+        {hasExtraPrevPages && (
+          <li className="bp-pagination__item">
+            <span className="bp-pagination__ellipsis">…</span>
+          </li>
+        )}
 
-          {hasPrevPage && (
-            <PaginationItem>
-              <PaginationLink
-                onClick={() => {
-                  router.push(`/insights/page/${page - 1}`)
-                }}
-              >
-                {page - 1}
-              </PaginationLink>
-            </PaginationItem>
-          )}
-
-          <PaginationItem>
-            <PaginationLink
-              isActive
-              onClick={() => {
-                router.push(`/insights/page/${page}`)
-              }}
+        {hasPrevPage && (
+          <li className="bp-pagination__item">
+            <Link
+              className="bp-pagination__link"
+              href={`/insights/page/${page - 1}`}
             >
-              {page}
-            </PaginationLink>
-          </PaginationItem>
+              {page - 1}
+            </Link>
+          </li>
+        )}
 
-          {hasNextPage && (
-            <PaginationItem>
-              <PaginationLink
-                onClick={() => {
-                  router.push(`/insights/page/${page + 1}`)
-                }}
-              >
-                {page + 1}
-              </PaginationLink>
-            </PaginationItem>
-          )}
+        <li className="bp-pagination__item">
+          <Link
+            aria-current="page"
+            className="bp-pagination__link"
+            href={`/insights/page/${page}`}
+          >
+            {page}
+          </Link>
+        </li>
 
-          {hasExtraNextPages && (
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-          )}
+        {hasNextPage && (
+          <li className="bp-pagination__item">
+            <Link
+              className="bp-pagination__link"
+              href={`/insights/page/${page + 1}`}
+            >
+              {page + 1}
+            </Link>
+          </li>
+        )}
 
-          <PaginationItem>
-            <PaginationNext
-              disabled={!hasNextPage}
-              onClick={() => {
-                router.push(`/insights/page/${page + 1}`)
-              }}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </PaginationComponent>
-    </div>
+        {hasExtraNextPages && (
+          <li className="bp-pagination__item">
+            <span className="bp-pagination__ellipsis">…</span>
+          </li>
+        )}
+
+        <li className="bp-pagination__item">
+          <Link
+            aria-disabled={!hasNextPage}
+            aria-label="Go to next page"
+            className="bp-pagination__link"
+            href={hasNextPage ? `/insights/page/${page + 1}` : '#'}
+            tabIndex={hasNextPage ? undefined : -1}
+          >
+            Next →
+          </Link>
+        </li>
+      </ol>
+    </nav>
   )
 }

@@ -28,12 +28,6 @@ vi.mock('@/components/RichText', () => ({
   ),
 }))
 
-vi.mock('@/components/ui/button', () => ({
-  Button: ({ children, ...rest }: React.ComponentPropsWithoutRef<'button'>) => (
-    <button {...rest}>{children}</button>
-  ),
-}))
-
 vi.mock('@/blocks/Form/fields', () => ({
   fields: {
     text: ({ name }: { name: string }) => (

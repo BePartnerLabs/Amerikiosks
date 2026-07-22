@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════
-   Form block — placeholder styles, ready for DS migration
-   Replace shadcn primitives with DS components when available.
+   Form block — BPL DS field styling (.bp-field/.bp-input/.bp-checkbox
+   from frontend.css), with brand-specific Level 2 overrides here.
    ═══════════════════════════════════════════════════════════════ */
 
 .ak-form {
@@ -44,7 +44,7 @@
   }
 }
 
-.ak-form__field label {
+.ak-form__field .bp-field__label {
   --_color: var(--form-label-color, var(--ak-color-heading));
   --_font-family: var(--form-label-font-family, var(--ak-font-base));
   --_font-size: var(--form-label-font-size, var(--bp-text-xs));
@@ -57,34 +57,31 @@
   line-height: var(--_line-height);
 }
 
-.ak-form__field [data-slot="input"],
-.ak-form__field [data-slot="textarea"],
-.ak-form__field [data-slot="select-trigger"] {
+.ak-form__field .bp-input {
   --_background: var(--form-input-background, var(--ak-input-background));
   --_border-color: var(--form-input-border-color, var(--ak-input-border));
-  --_border-radius: var(--form-input-radius, var(--ak-input-radius));
-  background-color: var(--_background);
-  border: 1px solid var(--_border-color);
-  border-radius: var(--_border-radius);
+  --_radius: var(--form-input-radius, var(--ak-input-radius));
+  --input-background: var(--_background);
+  --input-border: 1px solid var(--_border-color);
+  --input-radius: var(--_radius);
 }
 
-.ak-form__field [data-slot="input"],
-.ak-form__field [data-slot="select-trigger"] {
+.ak-form__field input.bp-input {
   --_height: var(--form-input-height, var(--ak-input-height));
   height: var(--_height);
 }
 
-.ak-form__checkbox-row {
-  display: flex;
-  align-items: center;
-  gap: var(--bp-space-2, 0.5rem);
-}
-
-.ak-form__error {
-  --_color: var(--ak-accent);
-  margin-top: var(--bp-space-2, 0.5rem);
-  font-size: var(--bp-text-sm, 0.875rem);
-  color: var(--_color);
+.ak-form__field .bp-checkbox {
+  --_color: var(--form-label-color, var(--ak-color-heading));
+  --_font-family: var(--form-label-font-family, var(--ak-font-base));
+  --_font-size: var(--form-label-font-size, var(--bp-text-xs));
+  --_font-weight: var(--form-label-font-weight, 700);
+  --_line-height: var(--form-label-line-height, 1.125rem);
+  --checkbox-label-color: var(--_color);
+  font-family: var(--_font-family);
+  font-size: var(--_font-size);
+  font-weight: var(--_font-weight);
+  line-height: var(--_line-height);
 }
 
 .ak-form__status {
@@ -113,8 +110,4 @@
 
 .ak-form__message-block {
   margin-block: var(--bp-space-12, 3rem);
-}
-
-.ak-form__select-trigger {
-  width: 100%;
 }

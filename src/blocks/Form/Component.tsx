@@ -7,7 +7,6 @@ import type React from 'react'
 import { useCallback, useEffect, useRef } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import RichText from '@/components/RichText'
-import { Button } from '@/components/ui/button'
 import { FormsRepository } from '@/repositories'
 import { fields } from './fields'
 import './styles.css'
@@ -145,14 +144,13 @@ export const FormBlock: React.FC<
                 })}
               </div>
 
-              <Button
+              <button
+                className="bp-btn bp-btn--dark ak-form__submit"
                 form={formID}
                 type="submit"
-                variant="default"
-                className="bp-btn bp-btn--dark ak-form__submit"
               >
                 {submitButtonLabel}
-              </Button>
+              </button>
             </form>
           )}
         </FormProvider>

@@ -148,6 +148,11 @@
   --bp-primary: var(--ak-accent);
   --bp-primary-fg: var(--ak-white);
   --bp-color-bg-elevated: var(--ak-white);
+  --bp-color-error: var(--ak-accent);
+  --bp-color-success: #2e9e72;
+  --bp-font-weight-medium: 500;
+  --bp-leading-normal: 1.5;
+  --bp-focus-ring: 0 0 0 3px color-mix(in srgb, var(--bp-primary) 40%, transparent);
 
   /* Title-1 typography (Figma: md/semantic/type/text/title/title-1) */
   --ak-title-1-font-family: var(--brand-font-family);
