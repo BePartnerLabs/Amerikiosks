@@ -2,17 +2,48 @@
 
 import { ChevronDown } from 'lucide-react'
 import type React from 'react'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { CMSLink } from '@/components/Link'
 import type { Header as HeaderType } from '@/payload-types'
 import { MegaMenu } from './MegaMenu'
 
+type PopoverEl = HTMLElement & { showPopover?: () => void; hidePopover?: () => void }
+
+// Keep in sync with the megamenu fade duration (--bp-duration-normal in megamenu.css)
+// so switching panels reads as a clean fade-out-then-fade-in.
+const MEGAMENU_SWITCH_DELAY = 220
+
 export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
   const navItems = (data?.navItems || []).filter((item) => !item.hidden)
   const [openId, setOpenId] = useState<string | null>(null)
+  const panelRefs = useRef<Map<string, PopoverEl>>(new Map())
+  const navRef = useRef<HTMLElement>(null)
+
+  // popover="manual" opts out of native light-dismiss, so re-implement
+  // outside-click and Escape-to-close ourselves.
+  useEffect(() => {
+    if (!openId) return
+
+    const close = () => panelRefs.current.get(openId)?.hidePopover?.()
+
+    const onPointerDown = (e: PointerEvent) => {
+      if (!navRef.current?.contains(e.target as Node)) close()
+    }
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close()
+    }
+
+    document.addEventListener('pointerdown', onPointerDown)
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown)
+      document.removeEventListener('keydown', onKeyDown)
+    }
+  }, [openId])
 
   return (
     <nav
+      ref={navRef}
       className="bp-header__nav"
       aria-label="Main"
     >
@@ -31,12 +62,32 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
                 <button
                   type="button"
                   className="bp-nav__megamenu-btn"
-                  popoverTarget={panelId}
                   aria-expanded={isOpen}
                   aria-controls={panelId}
                   data-ga-event="navigation_click"
                   data-ga-section="header"
                   data-ga-label={link.label ?? ''}
+                  onClick={() => {
+                    const target = panelRefs.current.get(itemId)
+                    if (!target) return
+
+                    if (isOpen) {
+                      target.hidePopover?.()
+                      return
+                    }
+
+                    // Close whatever panel is currently open first so its exit
+                    // transition can run, then open the new one on the next
+                    // frame — switching popovers in the same tick skips both
+                    // transitions.
+                    const currentlyOpen = openId ? panelRefs.current.get(openId) : null
+                    if (currentlyOpen) {
+                      currentlyOpen.hidePopover?.()
+                      setTimeout(() => target.showPopover?.(), MEGAMENU_SWITCH_DELAY)
+                    } else {
+                      target.showPopover?.()
+                    }
+                  }}
                 >
                   {link.label}
                   <ChevronDown
@@ -46,12 +97,21 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
                   />
                 </button>
                 <div
+                  ref={(el) => {
+                    if (el) panelRefs.current.set(itemId, el)
+                    else panelRefs.current.delete(itemId)
+                  }}
                   id={panelId}
                   className="bp-nav__megamenu"
-                  popover="auto"
+                  popover="manual"
                   onToggle={(e) => {
                     const open = (e.currentTarget as HTMLElement).matches(':popover-open')
                     setOpenId(open ? itemId : null)
+                  }}
+                  onClickCapture={(e) => {
+                    if ((e.target as HTMLElement).closest('a, button')) {
+                      ;(e.currentTarget as PopoverEl).hidePopover?.()
+                    }
                   }}
                 >
                   <MegaMenu

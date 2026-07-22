@@ -3009,6 +3009,8 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
+ * Site-wide header: navigation, mega menus, and the CTA button.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header".
  */
@@ -3092,6 +3094,8 @@ export interface Header {
   createdAt?: string | null;
 }
 /**
+ * Site-wide footer: nav columns, contact info, and CTA.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "footer".
  */

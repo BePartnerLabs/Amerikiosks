@@ -5,6 +5,9 @@ import { revalidateHeader } from './hooks/revalidateHeader'
 
 export const Header: GlobalConfig = {
   slug: 'header',
+  admin: {
+    description: 'Site-wide header: navigation, mega menus, and the CTA button.',
+  },
   access: {
     read: () => true,
   },

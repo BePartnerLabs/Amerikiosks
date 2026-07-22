@@ -5,6 +5,9 @@ import { revalidateFooter } from './hooks/revalidateFooter'
 
 export const Footer: GlobalConfig = {
   slug: 'footer',
+  admin: {
+    description: 'Site-wide footer: nav columns, contact info, and CTA.',
+  },
   access: {
     read: () => true,
   },

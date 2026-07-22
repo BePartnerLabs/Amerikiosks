@@ -23,14 +23,12 @@
    so the card keeps its designed proportions at any grid width. */
 .ak-audience-showcase__card {
   --_background: var(--audience-card-background, var(--ak-dark-background));
-  --_border-color: var(--md-card-border-color, #5e7882);
   position: relative;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   aspect-ratio: 656 / 500;
   border-radius: var(--bp-radius-lg, 0.75rem);
-  border: 1px solid var(--_border-color);
   overflow: hidden;
   text-decoration: none;
   background-color: var(--_background);
@@ -44,10 +42,6 @@
 @media (prefers-reduced-motion: no-preference) {
   .ak-audience-showcase__card {
     transition: transform var(--ak-transition-fast);
-  }
-
-  .ak-audience-showcase__card:hover {
-    transform: translateY(-3px);
   }
 
   .ak-audience-showcase__card-img {

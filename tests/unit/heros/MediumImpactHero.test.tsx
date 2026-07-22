@@ -86,14 +86,14 @@ describe('MediumImpactHero', () => {
     expect(screen.getByRole('link', { name: 'Get Started' })).toHaveAttribute('href', '/contact')
   })
 
-  it('renders tags when present', () => {
+  it('does not render tags even when present', () => {
     render(
       <MediumImpactHero
         {...baseHero}
         tags={[{ label: 'Retail' }]}
       />,
     )
-    expect(screen.getByText('Retail')).toBeInTheDocument()
+    expect(screen.queryByText('Retail')).toBeNull()
   })
 
   it('renders the media column when media is a populated object', () => {
