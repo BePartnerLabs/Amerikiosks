@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Fix 4 UX issues found in the live `/customer-service` and `/customer-service/request-a-refund` flows: missing "Previous" button on `ClaimForm`'s first step, a broken accent-color CSS variable on its active option cards, too little vertical space before the footer, and cramped button spacing on `SupportHub`.
+**Goal:** Fix 5 UX issues found in the live `/customer-service` and `/customer-service/request-a-refund` flows: missing "Previous" button on `ClaimForm`'s first step, a broken accent-color CSS variable on its active option cards, too little vertical space before the footer, cramped button spacing on `SupportHub`, and vertically-misaligned button text on `SupportHub`.
 
 **Architecture:** All four fixes are localized to `src/blocks/ClaimForm/Component.tsx`, `src/blocks/ClaimForm/styles.css`, and `src/blocks/SupportHub/styles.css` — no schema, seed, or data changes. Each fix is independently testable/verifiable and ships as its own commit.
 
@@ -290,7 +290,58 @@ git commit -m "fix: increase spacing on SupportHub's button list"
 
 ---
 
-### Task 5: Full verification
+### Task 5: Fix vertical text alignment on `SupportHub` buttons
+
+**Files:**
+- Modify: `src/blocks/SupportHub/styles.css`
+
+**Root cause:** `.ak-support-hub__link` sets `display: block`, which overrides `.bp-btn`'s own `display: inline-flex; align-items: center` (the mechanism the DS button uses to vertically center its label). With the label's `display` forced to `block` and `.bp-btn`'s fixed `height: var(--_height, var(--ak-btn-height))` (3.125rem), any label that wraps to two lines (e.g. "Chat with a live agent on WhatsApp") overflows the fixed height without being centered inside it — the visible line sits top-anchored rather than centered.
+
+No unit test — pure layout/visual change, verified manually.
+
+- [ ] **Step 1: Update `src/blocks/SupportHub/styles.css`**
+
+Change:
+
+```css
+.ak-support-hub__link {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+```
+
+to:
+
+```css
+.ak-support-hub__link {
+  --btn-height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: var(--ak-btn-height);
+  text-align: center;
+}
+```
+
+`--btn-height: auto` overrides `.bp-btn`'s own height (its public Level 2 API — see `frontend.css`'s `.bp-btn` rule) so two-line labels can grow the button instead of overflowing it; `min-height: var(--ak-btn-height)` keeps single-line buttons at their original height. `display: flex` + `align-items/justify-content: center` restores the centering that `display: block` had removed, for both single- and multi-line labels.
+
+- [ ] **Step 2: Manual verification**
+
+Run: `pnpm dev`, open `/customer-service`.
+Expected: text in all four buttons (including the two-line "Chat with a live agent on WhatsApp") is vertically centered inside its button.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add src/blocks/SupportHub/styles.css
+git commit -m "fix: vertically center SupportHub button text, including wrapped labels"
+```
+
+---
+
+### Task 6: Full verification
 
 - [ ] **Step 1: Run the full unit test suite**
 
