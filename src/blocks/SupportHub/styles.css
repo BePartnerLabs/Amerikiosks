@@ -3,7 +3,7 @@
    ═══════════════════════════════════════════════════════════════ */
 
 .ak-support-hub {
-  padding: var(--bp-space-12, 3rem) var(--bp-space-6, 1.5rem);
+  padding: var(--bp-space-16, 4rem) var(--bp-space-6, 1.5rem) var(--bp-space-12, 3rem);
 }
 
 .ak-support-hub__inner {
@@ -15,14 +15,18 @@
 .ak-support-hub__list {
   display: flex;
   flex-direction: column;
-  gap: var(--bp-space-3, 0.75rem);
+  gap: var(--bp-space-4, 1rem);
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
 .ak-support-hub__link {
-  display: block;
+  --btn-height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
+  min-height: var(--ak-btn-height);
   text-align: center;
 }

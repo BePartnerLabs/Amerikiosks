@@ -4,7 +4,14 @@
 .ak-consent-card {
   position: fixed;
   right: var(--bp-space-6, 1.5rem);
-  bottom: var(--bp-space-6, 1.5rem);
+  /* calc() + env() instead of a plain value: on mobile Safari/Chrome, a
+     `position: fixed` element anchored with `bottom` can be laid out below
+     the browser's own collapsible toolbar (part of the *layout* viewport
+     but outside the *visual* one), so it paints in what looks like the
+     right spot but taps land on browser chrome instead of the button.
+     env(safe-area-inset-bottom) pulls it up above that chrome/the home
+     indicator on notched devices. */
+  bottom: calc(var(--bp-space-6, 1.5rem) + env(safe-area-inset-bottom, 0px));
   z-index: var(--consent-banner-z-index, 50);
   width: min(23rem, calc(100vw - 2 * var(--bp-space-4, 1rem)));
   background: var(--consent-banner-background, var(--bp-color-surface, #fff));

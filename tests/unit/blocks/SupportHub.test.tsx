@@ -36,4 +36,12 @@ describe('SupportHub block', () => {
     const link = screen.getByRole('link', { name: /request a refund/i })
     expect(link).toHaveAttribute('href', '/customer-service/request-a-refund')
   })
+
+  it('renders an icon inside each action button', () => {
+    render(<SupportHubBlock {...baseProps} />)
+    for (const name of [/call/i, /text/i, /whatsapp/i, /request a refund/i]) {
+      const link = screen.getByRole('link', { name })
+      expect(link.querySelector('svg')).toBeInTheDocument()
+    }
+  })
 })

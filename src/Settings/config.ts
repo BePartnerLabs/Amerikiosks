@@ -11,7 +11,7 @@ const authenticatedFieldAccess: FieldAccess = ({ req: { user } }) => Boolean(use
 export const Settings: GlobalConfig = {
   slug: 'settings',
   admin: {
-    group: 'Config',
+    group: { en: 'Config', es: 'Configuración' },
   },
   access: {
     read: () => true,
