@@ -1,13 +1,20 @@
 import type { CollectionConfig } from 'payload'
 import { anyone } from '../../access/anyone'
 import { authenticated } from '../../access/authenticated'
+import { photoUrlEndpoint } from './endpoints/photoUrl'
 import { syncClaim } from './hooks/syncClaim'
 
 export const Claims: CollectionConfig = {
   slug: 'claims',
   admin: {
-    defaultColumns: ['customerName', 'claimReason', 'syncStatus', 'createdAt'],
-    useAsTitle: 'customerName',
+    defaultColumns: [
+      'customerFirstName',
+      'customerLastName',
+      'claimReason',
+      'syncStatus',
+      'createdAt',
+    ],
+    useAsTitle: 'customerFirstName',
     description:
       'Refund/complaint claims submitted from the customer-service QR flow on deployed kiosks.',
   },
@@ -19,6 +26,7 @@ export const Claims: CollectionConfig = {
     update: authenticated,
     delete: authenticated,
   },
+  endpoints: [photoUrlEndpoint],
   hooks: {
     afterChange: [syncClaim],
   },
@@ -44,7 +52,12 @@ export const Claims: CollectionConfig = {
       ],
     },
     {
-      name: 'customerName',
+      name: 'customerFirstName',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'customerLastName',
       type: 'text',
       required: true,
     },
@@ -68,15 +81,12 @@ export const Claims: CollectionConfig = {
     },
     {
       name: 'location',
-      type: 'group',
+      type: 'text',
+      required: true,
       admin: {
-        description: 'Structured location — avoid free-text so downstream systems get clean data.',
+        description:
+          'Free-text reference for where the issue happened (state, city, property name) — not a structured address.',
       },
-      fields: [
-        { name: 'state', type: 'text', required: true },
-        { name: 'city', type: 'text', required: true },
-        { name: 'propertyName', type: 'text', required: true },
-      ],
     },
     {
       name: 'claimReason',
@@ -130,7 +140,17 @@ export const Claims: CollectionConfig = {
       relationTo: 'media',
       admin: {
         description:
-          "Optional staff-attached photo (authenticated admin only). Public claim submissions don't populate this — the photo, if provided, is forwarded straight to JotForm without being stored here (see syncClaim.ts).",
+          'Optional staff-attached photo (authenticated admin only). Public claim submissions never populate this field — see photoKey below for the customer-submitted photo.',
+      },
+    },
+    {
+      name: 'photoKey',
+      type: 'text',
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+        description:
+          'Object key of the customer-submitted photo in the private R2 bucket (see src/utilities/privateUpload.ts) — never a public URL. Fetch GET /api/claims/:id/photo-url (authenticated) to view it; the URL that returns expires in 15 minutes.',
       },
     },
     {

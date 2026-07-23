@@ -1334,6 +1334,30 @@ export interface FAQWithFormBlock {
  * via the `definition` "ClaimFormBlock".
  */
 export interface ClaimFormBlock {
+  introContent?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Shown to cash-refund customers who confirm the machine still shows an available credit — no refund is needed yet.
+   */
+  creditsAvailableYesMessage?: string | null;
+  /**
+   * Shown to cash-refund customers who confirm the credit is gone, before they continue into the refund form.
+   */
+  creditsAvailableNoMessage?: string | null;
+  additionalInfoHint?: string | null;
   submitButtonLabel?: string | null;
   id?: string | null;
   blockName?: string | null;
@@ -1495,18 +1519,15 @@ export interface Claim {
    */
   kioskBrand: number | Brand;
   paymentMethod: 'card' | 'cash' | 'google_pay' | 'apple_pay';
-  customerName: string;
+  customerFirstName: string;
+  customerLastName: string;
   customerEmail: string;
   customerPhone: string;
   transactionDateTime: string;
   /**
-   * Structured location — avoid free-text so downstream systems get clean data.
+   * Free-text reference for where the issue happened (state, city, property name) — not a structured address.
    */
-  location: {
-    state: string;
-    city: string;
-    propertyName: string;
-  };
+  location: string;
   claimReason: 'partial_dispense' | 'damaged_product' | 'wrong_product' | 'no_product';
   additionalInfo?: string | null;
   /**
@@ -1522,9 +1543,13 @@ export interface Claim {
    */
   refundAccount?: string | null;
   /**
-   * Optional staff-attached photo (authenticated admin only). Public claim submissions don't populate this — the photo, if provided, is forwarded straight to JotForm without being stored here (see syncClaim.ts).
+   * Optional staff-attached photo (authenticated admin only). Public claim submissions never populate this field — see photoKey below for the customer-submitted photo.
    */
   photo?: (number | null) | Media;
+  /**
+   * Object key of the customer-submitted photo in the private R2 bucket (see src/utilities/privateUpload.ts) — never a public URL. Fetch GET /api/claims/:id/photo-url (authenticated) to view it; the URL that returns expires in 15 minutes.
+   */
+  photoKey?: string | null;
   /**
    * Captured from the QR code scan (machine_id query param), for internal reference.
    */
@@ -2295,6 +2320,10 @@ export interface FAQWithFormBlockSelect<T extends boolean = true> {
  * via the `definition` "ClaimFormBlock_select".
  */
 export interface ClaimFormBlockSelect<T extends boolean = true> {
+  introContent?: T;
+  creditsAvailableYesMessage?: T;
+  creditsAvailableNoMessage?: T;
+  additionalInfoHint?: T;
   submitButtonLabel?: T;
   id?: T;
   blockName?: T;
@@ -2640,23 +2669,19 @@ export interface BrandsSelect<T extends boolean = true> {
 export interface ClaimsSelect<T extends boolean = true> {
   kioskBrand?: T;
   paymentMethod?: T;
-  customerName?: T;
+  customerFirstName?: T;
+  customerLastName?: T;
   customerEmail?: T;
   customerPhone?: T;
   transactionDateTime?: T;
-  location?:
-    | T
-    | {
-        state?: T;
-        city?: T;
-        propertyName?: T;
-      };
+  location?: T;
   claimReason?: T;
   additionalInfo?: T;
   lastFourCardDigits?: T;
   refundMethod?: T;
   refundAccount?: T;
   photo?: T;
+  photoKey?: T;
   machineId?: T;
   integrationTarget?: T;
   syncStatus?: T;
@@ -3199,6 +3224,10 @@ export interface Setting {
    * API key for the JotForm submissions API (used by the Claims refund flow). Only visible to logged-in admin users — never exposed in the public Settings API response.
    */
   jotformApiKey?: string | null;
+  /**
+   * Target JotForm form ID for the Claims refund flow. Leave empty to use the production "Amerikiosks - Refund Request" form (230405763622148) — override here to point at a clone/test form in local or staging.
+   */
+  jotformFormId?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -3326,6 +3355,7 @@ export interface SettingsSelect<T extends boolean = true> {
   llmsIncludePages?: T;
   llmsIncludeInsights?: T;
   jotformApiKey?: T;
+  jotformFormId?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

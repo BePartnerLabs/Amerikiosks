@@ -3,11 +3,12 @@ import { apiClient } from './clients/ApiClient'
 export interface ClaimFormData {
   kioskBrand: string | number
   paymentMethod: string
-  customerName: string
+  customerFirstName: string
+  customerLastName: string
   customerEmail: string
   customerPhone: string
   transactionDateTime: string
-  location: { state: string; city: string; propertyName: string }
+  location: string
   claimReason: string
   additionalInfo?: string
   lastFourCardDigits?: string
@@ -22,11 +23,12 @@ export const ClaimsRepository = {
     const formData = new FormData()
     formData.set('kioskBrand', String(data.kioskBrand))
     formData.set('paymentMethod', data.paymentMethod)
-    formData.set('customerName', data.customerName)
+    formData.set('customerFirstName', data.customerFirstName)
+    formData.set('customerLastName', data.customerLastName)
     formData.set('customerEmail', data.customerEmail)
     formData.set('customerPhone', data.customerPhone)
     formData.set('transactionDateTime', data.transactionDateTime)
-    formData.set('location', JSON.stringify(data.location))
+    formData.set('location', data.location)
     formData.set('claimReason', data.claimReason)
     if (data.additionalInfo) formData.set('additionalInfo', data.additionalInfo)
     if (data.lastFourCardDigits) formData.set('lastFourCardDigits', data.lastFourCardDigits)

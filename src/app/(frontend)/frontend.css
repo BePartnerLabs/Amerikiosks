@@ -323,6 +323,120 @@ textarea.bp-input {
   margin: 0;
 }
 
+/* ─── DS: File Upload ────────────────────────────────────────
+   Public API: --file-upload-border, --file-upload-border-radius,
+   --file-upload-background, --file-upload-padding, --file-upload-gap,
+   --file-upload-accent */
+.bp-file-upload__dropzone {
+  --_border: var(--file-upload-border, 2px dashed var(--bp-color-border));
+  --_radius: var(--file-upload-border-radius, var(--bp-radius-lg));
+  --_background: var(--file-upload-background, var(--bp-color-bg-subtle));
+  --_padding: var(--file-upload-padding, var(--bp-space-8));
+  --_gap: var(--file-upload-gap, var(--bp-space-2));
+  --_accent: var(--file-upload-accent, var(--bp-primary));
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--_gap);
+  padding: var(--_padding);
+  border: var(--_border);
+  border-radius: var(--_radius);
+  background-color: var(--_background);
+  cursor: pointer;
+  text-align: center;
+  transition:
+    border-color var(--bp-duration-fast) var(--bp-ease),
+    background-color var(--bp-duration-fast) var(--bp-ease);
+}
+
+.bp-file-upload__dropzone[data-dragover] {
+  border-color: var(--_accent);
+  background-color: color-mix(in srgb, var(--_accent) 6%, var(--_background));
+}
+
+.bp-file-upload__dropzone:has(.bp-file-upload__input:focus-visible) {
+  outline: none;
+  box-shadow: var(--bp-focus-ring);
+}
+
+.bp-file-upload__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.bp-file-upload__icon {
+  font-size: var(--bp-text-2xl, 1.5rem);
+  color: var(--_accent);
+}
+
+.bp-file-upload__copy {
+  font-size: var(--bp-text-sm);
+  color: var(--bp-color-text-muted);
+}
+
+.bp-file-upload__browse {
+  color: var(--_accent);
+  font-weight: var(--bp-font-weight-medium);
+  text-decoration: underline;
+}
+
+.bp-file-upload__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--_gap);
+  list-style: none;
+  padding: 0;
+  margin: var(--bp-space-3) 0 0;
+}
+
+.bp-file-upload__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bp-space-3);
+  padding: var(--bp-space-2) var(--bp-space-3);
+  border-radius: var(--bp-radius-md);
+  background-color: var(--bp-color-bg-elevated);
+  border: 1px solid var(--bp-color-border);
+  font-size: var(--bp-text-sm);
+}
+
+.bp-file-upload__item[data-state="error"] {
+  border-color: var(--bp-color-error);
+  color: var(--bp-color-error);
+}
+
+.bp-file-upload__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bp-file-upload__size {
+  color: var(--bp-color-text-muted);
+  flex-shrink: 0;
+}
+
+.bp-file-upload__retry {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+  font-size: var(--bp-text-sm);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 /* ─── DS: Pagination ───────────────────────────────────────────
    Public API: --pagination-color, --pagination-background,
    --pagination-border, --pagination-radius, --pagination-size,

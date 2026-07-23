@@ -1,20 +1,20 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 const postFormMock = vi.fn()
-const postMultipartMock = vi.fn()
 
 vi.mock('@/repositories/clients/ServerHttpClient', () => ({
-  serverHttpClient: { postForm: postFormMock, postMultipart: postMultipartMock },
+  serverHttpClient: { postForm: postFormMock },
 }))
 
 const baseClaim = {
   kioskBrand: "Carlo's Bakery",
   paymentMethod: 'card',
-  customerName: 'Test Prueba',
+  customerFirstName: 'Test',
+  customerLastName: 'Prueba',
   customerEmail: 'hola@bepartnerlabs.com',
   customerPhone: '3055550100',
   transactionDateTime: '2026-07-08T09:23:00.000Z',
-  location: { state: 'FL', city: 'Doral', propertyName: 'BePartnerLabs Test Property' },
+  location: 'BePartnerLabs Test Property, Doral, FL',
   claimReason: 'partial_dispense',
   additionalInfo: 'Test note',
   lastFourCardDigits: '0000',
@@ -49,7 +49,7 @@ describe('JotFormRepository', () => {
     expect(url).not.toContain('apiKey=')
   })
 
-  it('splits the compound Name field into submission[3_first] / submission[3_last]', async () => {
+  it('sends customerFirstName/customerLastName as submission[3_first] / submission[3_last]', async () => {
     postFormMock.mockResolvedValue({ responseCode: 200, message: 'success' })
     const { JotFormRepository } = await import('@/repositories/JotFormRepository')
     await JotFormRepository.submit(baseClaim, fakeReq())
@@ -120,32 +120,6 @@ describe('JotFormRepository', () => {
     const [, fieldsWithoutRefund] = postFormMock.mock.calls[0]
     expect(fieldsWithoutRefund['submission[20]']).toBeUndefined()
     expect(fieldsWithoutRefund['submission[21]']).toBeUndefined()
-  })
-
-  it('submits multipart with the photo attached to submission[12] when a photo is present, still via the APIKEY header', async () => {
-    postMultipartMock.mockResolvedValue({ responseCode: 200, message: 'success' })
-    const { JotFormRepository } = await import('@/repositories/JotFormRepository')
-
-    await JotFormRepository.submit(
-      {
-        ...baseClaim,
-        photo: {
-          buffer: Buffer.from([0xff, 0xd8, 0xff]),
-          filename: 'issue.jpg',
-          contentType: 'image/jpeg',
-        },
-      },
-      fakeReq('test-key'),
-    )
-
-    expect(postMultipartMock).toHaveBeenCalledTimes(1)
-    expect(postFormMock).not.toHaveBeenCalled()
-    const [url, formData, headers] = postMultipartMock.mock.calls[0]
-    expect(url).toContain('api.jotform.com/form/230405763622148/submissions')
-    expect(url).not.toContain('apiKey=')
-    expect(headers).toEqual({ APIKEY: 'test-key' })
-    expect(formData).toBeInstanceOf(FormData)
-    expect(formData.get('submission[12]')).toBeInstanceOf(Blob)
   })
 
   it('propagates an error when the underlying HTTP call fails, so the sync hook can record it', async () => {

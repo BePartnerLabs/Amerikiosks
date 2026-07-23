@@ -24,6 +24,10 @@ export const ClaimFormServer: React.FC<ClaimFormBlockProps> = async (props) => {
   return (
     <ClaimFormBlock
       id={props.id ? String(props.id) : undefined}
+      introContent={props.introContent ?? undefined}
+      creditsAvailableYesMessage={props.creditsAvailableYesMessage ?? undefined}
+      creditsAvailableNoMessage={props.creditsAvailableNoMessage ?? undefined}
+      additionalInfoHint={props.additionalInfoHint ?? undefined}
       submitButtonLabel={props.submitButtonLabel ?? undefined}
       brands={brands}
     />
