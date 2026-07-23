@@ -22,7 +22,11 @@
 }
 
 .ak-support-hub__link {
-  display: block;
+  --btn-height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
+  min-height: var(--ak-btn-height);
   text-align: center;
 }
