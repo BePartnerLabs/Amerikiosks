@@ -165,6 +165,16 @@ export const Settings: GlobalConfig = {
                   'API key for the JotForm submissions API (used by the Claims refund flow). Only visible to logged-in admin users — never exposed in the public Settings API response.',
               },
             },
+            {
+              name: 'jotformFormId',
+              type: 'text',
+              label: 'JotForm Form ID',
+              admin: {
+                description:
+                  'Target JotForm form ID for the Claims refund flow. Leave empty to use the production "Amerikiosks - Refund Request" form (230405763622148) — override here to point at a clone/test form in local or staging.',
+                placeholder: '230405763622148',
+              },
+            },
           ],
         },
       ],

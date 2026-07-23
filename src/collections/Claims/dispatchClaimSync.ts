@@ -3,17 +3,9 @@ import type { Claim } from '@/payload-types'
 import { JotFormRepository, OdooRepository } from '@/repositories'
 import type { ClaimSubmission } from '@/repositories/JotFormRepository'
 
-type PhotoContext = { buffer: Buffer; filename: string; contentType: string }
-
-// Shared by both dispatch paths: syncClaim.ts (synchronous — used only when a
-// photo is present, since the photo only exists in-memory for the original
-// request) and syncClaimTask.ts (queued job — used for the common no-photo
-// case, so the user isn't stuck waiting on JotForm's round trip).
-export async function dispatchClaimSync(
-  claim: Claim,
-  req: PayloadRequest,
-  photo?: PhotoContext,
-): Promise<void> {
+// Called from syncClaimTask.ts (the queued job every claim goes through —
+// see syncClaim.ts).
+export async function dispatchClaimSync(claim: Claim, req: PayloadRequest): Promise<void> {
   // kioskBrand is a relationship — JotForm's radio question needs the brand's
   // display name ("Carlo's Bakery"), not the Brands doc's row id.
   const kioskBrandId =
@@ -27,20 +19,29 @@ export async function dispatchClaimSync(
     req,
   })
 
+  // The raw R2 object key isn't useful to staff (it's meaningless outside
+  // our own bucket credentials), so instead of sending it we append a
+  // human-readable pointer to Additional Information — staff can look up
+  // the claim by id in our own /admin and view the photo via the
+  // authenticated GET /api/claims/:id/photo-url endpoint.
+  const additionalInfo = claim.photoKey
+    ? `${claim.additionalInfo ?? ''}\n\n[Photo attached — view in admin: Claim #${claim.id}]`.trim()
+    : (claim.additionalInfo ?? undefined)
+
   const submission: ClaimSubmission = {
     kioskBrand: brand.name,
     paymentMethod: claim.paymentMethod,
-    customerName: claim.customerName,
+    customerFirstName: claim.customerFirstName,
+    customerLastName: claim.customerLastName,
     customerEmail: claim.customerEmail,
     customerPhone: claim.customerPhone,
     transactionDateTime: claim.transactionDateTime,
     location: claim.location,
     claimReason: claim.claimReason,
-    additionalInfo: claim.additionalInfo ?? undefined,
+    additionalInfo,
     lastFourCardDigits: claim.lastFourCardDigits ?? undefined,
     refundMethod: claim.refundMethod ?? undefined,
     refundAccount: claim.refundAccount ?? undefined,
-    photo,
   }
 
   const repository = claim.integrationTarget === 'odoo' ? OdooRepository : JotFormRepository

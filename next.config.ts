@@ -21,6 +21,9 @@ const nextConfig: NextConfig = {
       {
         pathname: '/api/media/file/**',
       },
+      {
+        pathname: '/claim-form/**',
+      },
     ],
     qualities: [100],
     remotePatterns: [
