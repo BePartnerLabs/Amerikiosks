@@ -13,7 +13,6 @@ The home page needs a "stats" section (heading + a row of key numbers + optional
 ## Non-goals
 
 - Icon or image support per stat (not requested; can be added later as a variant if needed).
-- Animated counters / count-up-on-scroll (not requested).
 
 ## Decisions (from brainstorming)
 
@@ -51,6 +50,25 @@ Explored 4 layout directions with the user via visual mockups (flat row, big-num
 - `@container ak-metrics (max-width: 40rem)` (mobile breakpoint, matching `CardGrid`'s existing 40rem threshold): `.ak-metrics__stats` switches to `grid-template-columns: repeat(2, 1fr)`; vertical dividers replaced with a bottom border on rows except the last row (exact selector TBD at implementation time based on real item counts).
 - CTA button: reuse `.ak-card-grid__cta-btn` visual spec (border, radius, hover-fill) as a new `.ak-metrics__cta-btn` class — same declarations, not a shared class, to keep blocks independently stylable per project convention (each block owns its CSS file).
 - Follows the DS 3-level variable rule: `--ak-*` tokens only referenced through `--_*`/Level 2 overrides inside `.bp-*` selectors (n/a here — no `.bp-*` DS components used directly), direct `--ak-*` usage is fine in `.ak-metrics-*` selectors per the existing `check-component-docs`-adjacent convention seen in `CardGrid/styles.css`.
+
+## Micro-animations
+
+Added after initial review — user wants the stats to feel alive on scroll, not just appear.
+
+### Count-up
+
+- `value` is a short string ("10+", "1000+", "20+", "30"). Parse the leading numeric run with a regex (`/^(\d+)(.*)$/`); the captured digits animate, the remainder (`+`, or nothing) is appended statically. If the field doesn't start with a digit (edge case, e.g. a future non-numeric value), skip counting and render as static text.
+- Implemented as a small client component (`src/blocks/Metrics/MetricsCounter.tsx`), same pattern as `CardGrid`'s `CarouselNav.tsx` — the rest of the block stays a server component.
+- Triggered once via `IntersectionObserver` when the stats row enters the viewport (no re-trigger on repeated scroll in/out).
+- Animated with `requestAnimationFrame` over ~1200ms using an ease-out curve (fast start, decelerating into the final value) — e.g. `1 - (1 - t) ** 3`.
+- Start value is not always 0: numbers with 3+ digits (≥100) start at 60% of the target and count up the remaining 40%, so large numbers (e.g. "1000+") don't take unnaturally long to read; numbers with 1-2 digits start at 0.
+- Respects `prefers-reduced-motion: reduce` — renders the final value immediately, no animation, no observer.
+
+### Scroll-in stagger
+
+- Pure CSS, no JS: native CSS scroll-driven animations (`animation-timeline: view()`), each `.ak-metrics__stat` gets `animation: metrics-rise ease-out; animation-timeline: view(); animation-range: entry 0% entry 40%;` plus a small `animation-delay` staggered per `nth-child` (e.g. 60ms increments) so stats rise in order left-to-right / row-by-row.
+- Wrapped in `@supports (animation-timeline: view())` so it's a progressive enhancement — browsers without support (current Safari/Firefox) just render the stats statically with no animation, no layout shift, no broken state.
+- Also gated behind `@media (prefers-reduced-motion: no-preference)`, matching the existing pattern in `CardGrid/styles.css`.
 
 ## Registration
 
