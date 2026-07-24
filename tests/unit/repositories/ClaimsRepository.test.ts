@@ -19,11 +19,12 @@ describe('ClaimsRepository', () => {
     const data: ClaimFormData = {
       kioskBrand: 'brand-1',
       paymentMethod: 'card',
-      customerName: 'Test Prueba',
+      customerFirstName: 'Test',
+      customerLastName: 'Prueba',
       customerEmail: 'hola@bepartnerlabs.com',
       customerPhone: '3055550100',
       transactionDateTime: '2026-07-08T09:23:00.000Z',
-      location: { state: 'FL', city: 'Doral', propertyName: 'BePartnerLabs Test Property' },
+      location: 'BePartnerLabs Test Property, Doral, FL',
       claimReason: 'partial_dispense',
       machineId: 'AK-0231',
     }
@@ -35,7 +36,7 @@ describe('ClaimsRepository', () => {
     expect(url).toContain('/next/claims-submit')
     expect(options.body).toBeInstanceOf(FormData)
     expect(options.body.get('machineId')).toBe('AK-0231')
-    expect(options.body.get('location')).toBe(JSON.stringify(data.location))
+    expect(options.body.get('location')).toBe(data.location)
     // Never set Content-Type explicitly on a FormData body — the fetch runtime
     // derives the multipart boundary from the FormData instance itself.
     expect(options.headers).toBeUndefined()
@@ -53,11 +54,12 @@ describe('ClaimsRepository', () => {
     const data: ClaimFormData = {
       kioskBrand: 'brand-1',
       paymentMethod: 'cash',
-      customerName: 'Test Prueba',
+      customerFirstName: 'Test',
+      customerLastName: 'Prueba',
       customerEmail: 'hola@bepartnerlabs.com',
       customerPhone: '3055550100',
       transactionDateTime: '2026-07-08T09:23:00.000Z',
-      location: { state: 'FL', city: 'Doral', propertyName: 'BePartnerLabs Test Property' },
+      location: 'BePartnerLabs Test Property, Doral, FL',
       claimReason: 'partial_dispense',
       refundMethod: 'Zelle',
       refundAccount: 'test@example.com',

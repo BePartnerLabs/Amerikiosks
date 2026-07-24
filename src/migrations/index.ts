@@ -22,6 +22,11 @@ import * as migration_20260720_214945_add_claims_refund_fields from './20260720_
 import * as migration_20260720_220130_fix_exports_imports_drift from './20260720_220130_fix_exports_imports_drift';
 import * as migration_20260721_003126_add_sync_claim_task from './20260721_003126_add_sync_claim_task';
 import * as migration_20260721_012312_add_consent_logs from './20260721_012312_add_consent_logs';
+import * as migration_20260723_025917_add_claim_form_intro_content from './20260723_025917_add_claim_form_intro_content';
+import * as migration_20260723_041027_rename_claims_customer_name_to_first_last from './20260723_041027_rename_claims_customer_name_to_first_last';
+import * as migration_20260723_043715_simplify_claims_location_and_add_claim_form_messages from './20260723_043715_simplify_claims_location_and_add_claim_form_messages';
+import * as migration_20260723_170023_add_jotform_form_id_setting from './20260723_170023_add_jotform_form_id_setting';
+import * as migration_20260723_211756_add_claims_photo_key from './20260723_211756_add_claims_photo_key';
 
 export const migrations = [
   {
@@ -143,5 +148,30 @@ export const migrations = [
     up: migration_20260721_012312_add_consent_logs.up,
     down: migration_20260721_012312_add_consent_logs.down,
     name: '20260721_012312_add_consent_logs',
+  },
+  {
+    up: migration_20260723_025917_add_claim_form_intro_content.up,
+    down: migration_20260723_025917_add_claim_form_intro_content.down,
+    name: '20260723_025917_add_claim_form_intro_content',
+  },
+  {
+    up: migration_20260723_041027_rename_claims_customer_name_to_first_last.up,
+    down: migration_20260723_041027_rename_claims_customer_name_to_first_last.down,
+    name: '20260723_041027_rename_claims_customer_name_to_first_last',
+  },
+  {
+    up: migration_20260723_043715_simplify_claims_location_and_add_claim_form_messages.up,
+    down: migration_20260723_043715_simplify_claims_location_and_add_claim_form_messages.down,
+    name: '20260723_043715_simplify_claims_location_and_add_claim_form_messages',
+  },
+  {
+    up: migration_20260723_170023_add_jotform_form_id_setting.up,
+    down: migration_20260723_170023_add_jotform_form_id_setting.down,
+    name: '20260723_170023_add_jotform_form_id_setting',
+  },
+  {
+    up: migration_20260723_211756_add_claims_photo_key.up,
+    down: migration_20260723_211756_add_claims_photo_key.down,
+    name: '20260723_211756_add_claims_photo_key'
   },
 ];

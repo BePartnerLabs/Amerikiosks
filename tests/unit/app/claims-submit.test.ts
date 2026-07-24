@@ -3,6 +3,9 @@ import { describe, expect, it, vi } from 'vitest'
 vi.mock('@payload-config', () => ({ default: {} }))
 vi.mock('payload', () => ({ getPayload: vi.fn() }))
 
+const uploadPrivateFileMock = vi.fn()
+vi.mock('@/utilities/privateUpload', () => ({ uploadPrivateFile: uploadPrivateFileMock }))
+
 import { getPayload } from 'payload'
 
 const mockGetPayload = vi.mocked(getPayload)
@@ -10,15 +13,12 @@ const mockGetPayload = vi.mocked(getPayload)
 const validFields: Record<string, string> = {
   kioskBrand: 'brand-1',
   paymentMethod: 'card',
-  customerName: 'Test Prueba',
+  customerFirstName: 'Test',
+  customerLastName: 'Prueba',
   customerEmail: 'hola@bepartnerlabs.com',
   customerPhone: '3055550100',
   transactionDateTime: '2026-07-08T09:23:00.000Z',
-  location: JSON.stringify({
-    state: 'FL',
-    city: 'Doral',
-    propertyName: 'BePartnerLabs Test Property',
-  }),
+  location: 'BePartnerLabs Test Property, Doral, FL',
   claimReason: 'partial_dispense',
   machineId: 'AK-0231',
 }
@@ -44,11 +44,19 @@ function fakeFile(bytes: Uint8Array, name: string): FakeFile {
   }
 }
 
+// Each call gets its own fake IP — the route's in-memory rate limiter keys
+// on x-forwarded-for, and its Map persists across tests in this file since
+// the route module is only imported/evaluated once.
+let requestCounter = 0
+
 function fakeRequest(fields: Record<string, string>, photo?: FakeFile) {
   const store = new Map<string, string | FakeFile>(Object.entries(fields))
   if (photo) store.set('photo', photo)
+  requestCounter += 1
+  const ip = `10.0.0.${requestCounter}`
 
   return {
+    headers: { get: (name: string) => (name === 'x-forwarded-for' ? ip : null) },
     formData: async () => ({
       get: (name: string) => store.get(name) ?? null,
     }),
@@ -73,7 +81,11 @@ describe('POST /next/claims-submit', () => {
     expect(create).toHaveBeenCalledWith(
       expect.objectContaining({
         collection: 'claims',
-        data: expect.objectContaining({ customerName: 'Test Prueba', machineId: 'AK-0231' }),
+        data: expect.objectContaining({
+          customerFirstName: 'Test',
+          customerLastName: 'Prueba',
+          machineId: 'AK-0231',
+        }),
         overrideAccess: false,
       }),
     )
@@ -97,7 +109,7 @@ describe('POST /next/claims-submit', () => {
     expect(typeof call[0].data.kioskBrand).toBe('number')
   })
 
-  it('parses the location field back into a structured object', async () => {
+  it('passes the location field through as a plain string', async () => {
     const create = vi.fn().mockResolvedValue({ id: 1 })
     mockGetPayload.mockResolvedValue({ create } as unknown as Awaited<
       ReturnType<typeof getPayload>
@@ -107,9 +119,7 @@ describe('POST /next/claims-submit', () => {
 
     expect(create).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: expect.objectContaining({
-          location: { state: 'FL', city: 'Doral', propertyName: 'BePartnerLabs Test Property' },
-        }),
+        data: expect.objectContaining({ location: validFields.location }),
       }),
     )
   })
@@ -127,24 +137,24 @@ describe('POST /next/claims-submit', () => {
     expect(res.status).toBe(400)
   })
 
-  it('accepts a valid image photo and passes it through req.context, never as claim data', async () => {
+  it('accepts a valid image photo, uploads it to private storage, and stores only the returned key on the claim', async () => {
     const create = vi.fn().mockResolvedValue({ id: 1 })
     mockGetPayload.mockResolvedValue({ create } as unknown as Awaited<
       ReturnType<typeof getPayload>
     >)
+    uploadPrivateFileMock.mockResolvedValue('abc123.jpg')
 
     const photo = fakeFile(FAKE_JPEG_BYTES, 'issue.jpg')
     const res = await callPOST(validFields, photo)
 
     expect(res.status).toBe(201)
-    expect(create).toHaveBeenCalledWith(
-      expect.objectContaining({
-        context: {
-          photoFile: expect.objectContaining({ filename: 'issue.jpg', contentType: 'image/jpeg' }),
-        },
-      }),
+    expect(uploadPrivateFileMock).toHaveBeenCalledWith(
+      expect.any(Buffer),
+      'image/jpeg',
+      'issue.jpg',
     )
     const [call] = create.mock.calls
+    expect(call[0].data.photoKey).toBe('abc123.jpg')
     expect(call[0].data.photo).toBeUndefined()
   })
 

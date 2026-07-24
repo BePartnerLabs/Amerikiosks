@@ -5,23 +5,35 @@ import { serverHttpClient } from './clients/ServerHttpClient'
 export type ClaimSubmission = {
   kioskBrand: string
   paymentMethod: string
-  customerName: string
+  customerFirstName: string
+  customerLastName: string
   customerEmail: string
   customerPhone: string
   transactionDateTime: string
-  location: { state: string; city: string; propertyName: string }
+  location: string
   claimReason: string
   additionalInfo?: string
   lastFourCardDigits?: string
   refundMethod?: string
   refundAccount?: string
   amount?: number
-  photo?: { buffer: Buffer; filename: string; contentType: string }
+  // No photo field here on purpose — JotForm's public Submissions REST API
+  // (this repository's endpoint) cannot attach a real file: tried multipart,
+  // a plain URL, and a base64 data URI, all confirmed empirically against
+  // JotForm's live API to leave the file-upload answer empty or store the
+  // raw string as a garbage filename, never the actual image. Real file
+  // delivery only works through JotForm's internal, undocumented
+  // upload.jotform.com + submit.jotform.com widget protocol, which this
+  // project deliberately does not replicate (see Claims.photoKey instead —
+  // the photo lives in our own private R2 bucket, viewed on demand via
+  // GET /api/claims/:id/photo-url, not delivered into JotForm at all).
 }
 
 // Amerikiosks' existing "Amerikiosks - Refund Request" JotForm, audited at
 // https://form.jotform.com/form/230405763622148 (see docs/analytics-migration-report.md).
-const JOTFORM_FORM_ID = '230405763622148'
+// Overridable via Settings.jotformFormId (e.g. to point at a clone/test form
+// locally) — see src/Settings/config.ts.
+const DEFAULT_JOTFORM_FORM_ID = '230405763622148'
 
 // Verified 2026-07-20 directly against the live form's HTML (no API key available
 // yet) — every qid and its field structure (simple vs. compound) was confirmed by
@@ -54,7 +66,6 @@ const QUESTION_ID = {
   lastFourCardDigits: '11',
   refundMethod: '20',
   refundAccount: '21',
-  photo: '12',
 } as const
 
 // JotForm dropdown/radio questions store their exact option text as the submitted
@@ -69,16 +80,7 @@ const QUESTION_ID = {
 // Paypal, Venmo) since that select was added specifically to mirror qid 20 — no
 // mapping needed, unlike paymentMethod/claimReason above.
 
-function splitName(fullName: string): { first: string; last: string } {
-  const trimmed = fullName.trim()
-  const spaceIndex = trimmed.indexOf(' ')
-  if (spaceIndex === -1) return { first: trimmed, last: '' }
-  return { first: trimmed.slice(0, spaceIndex), last: trimmed.slice(spaceIndex + 1) }
-}
-
 function toJotFormFields(claim: ClaimSubmission): Record<string, string> {
-  const location = `${claim.location.state}, ${claim.location.city}, ${claim.location.propertyName}`
-  const { first, last } = splitName(claim.customerName)
   const date = new Date(claim.transactionDateTime)
   const hour24 = date.getHours()
   const hour12 = ((hour24 + 11) % 12) + 1
@@ -87,8 +89,8 @@ function toJotFormFields(claim: ClaimSubmission): Record<string, string> {
     [`submission[${QUESTION_ID.kioskBrand}]`]: claim.kioskBrand,
     [`submission[${QUESTION_ID.paymentMethod}]`]:
       PAYMENT_METHOD_LABEL[claim.paymentMethod] ?? claim.paymentMethod,
-    [`submission[${QUESTION_ID.customerNameFirst}]`]: first,
-    [`submission[${QUESTION_ID.customerNameLast}]`]: last,
+    [`submission[${QUESTION_ID.customerNameFirst}]`]: claim.customerFirstName,
+    [`submission[${QUESTION_ID.customerNameLast}]`]: claim.customerLastName,
     [`submission[${QUESTION_ID.customerEmail}]`]: claim.customerEmail,
     [`submission[${QUESTION_ID.customerPhone}]`]: claim.customerPhone,
     [`submission[${QUESTION_ID.transactionDate.month}]`]: String(date.getMonth() + 1),
@@ -97,7 +99,7 @@ function toJotFormFields(claim: ClaimSubmission): Record<string, string> {
     [`submission[${QUESTION_ID.transactionDate.hour}]`]: String(hour12),
     [`submission[${QUESTION_ID.transactionDate.min}]`]: String(date.getMinutes()).padStart(2, '0'),
     [`submission[${QUESTION_ID.transactionDate.ampm}]`]: hour24 < 12 ? 'AM' : 'PM',
-    [`submission[${QUESTION_ID.location}]`]: location,
+    [`submission[${QUESTION_ID.location}]`]: claim.location,
     [`submission[${QUESTION_ID.claimReason}]`]:
       CLAIM_REASON_LABEL[claim.claimReason] ?? claim.claimReason,
     [`submission[${QUESTION_ID.additionalInfo}]`]: claim.additionalInfo ?? '',
@@ -125,26 +127,14 @@ export const JotFormRepository = {
     // src/Settings/config.ts).
     const settings = await req.payload.findGlobal({ slug: 'settings', req })
     const apiKey = settings.jotformApiKey
+    const formId = settings.jotformFormId || DEFAULT_JOTFORM_FORM_ID
 
     // APIKEY header instead of the ?apiKey= query param — JotForm supports
     // both, but the header keeps the key out of server access logs, proxy
     // logs, and any URL that gets cached or forwarded.
-    const url = `https://api.jotform.com/form/${JOTFORM_FORM_ID}/submissions`
+    const url = `https://api.jotform.com/form/${formId}/submissions`
     const headers = { APIKEY: apiKey ?? '' }
     const fields = toJotFormFields(claim)
-
-    if (claim.photo) {
-      const formData = new FormData()
-      for (const [key, value] of Object.entries(fields)) {
-        formData.append(key, value)
-      }
-      formData.append(
-        `submission[${QUESTION_ID.photo}]`,
-        new Blob([new Uint8Array(claim.photo.buffer)], { type: claim.photo.contentType }),
-        claim.photo.filename,
-      )
-      return serverHttpClient.postMultipart(url, formData, headers)
-    }
 
     return serverHttpClient.postForm(url, fields, headers)
   },

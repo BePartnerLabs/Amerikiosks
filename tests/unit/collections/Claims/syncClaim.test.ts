@@ -19,11 +19,12 @@ const baseDoc = {
   id: 'claim-1',
   kioskBrand: 'brand-1',
   paymentMethod: 'card',
-  customerName: 'Test Prueba',
+  customerFirstName: 'Test',
+  customerLastName: 'Prueba',
   customerEmail: 'hola@bepartnerlabs.com',
   customerPhone: '3055550100',
   transactionDateTime: '2026-07-08T09:23:00.000Z',
-  location: { state: 'FL', city: 'Doral', propertyName: 'BePartnerLabs Test Property' },
+  location: 'BePartnerLabs Test Property, Doral, FL',
   claimReason: 'partial_dispense',
   integrationTarget: 'jotform',
   syncStatus: 'pending',
@@ -68,30 +69,6 @@ describe('syncClaim', () => {
         headers: expect.objectContaining({ Authorization: expect.any(String) }),
       }),
     )
-    vi.unstubAllGlobals()
-  })
-
-  it('photo present: dispatches synchronously (dispatchClaimSync) instead of queuing a job, since the photo only exists in memory for this request', async () => {
-    vi.stubGlobal('fetch', fetchMock)
-    const { syncClaim } = await import('@/collections/Claims/hooks/syncClaim')
-    const photo = {
-      buffer: Buffer.from([1, 2, 3]),
-      filename: 'issue.jpg',
-      contentType: 'image/jpeg',
-    }
-    const req = makeReq({ context: { photoFile: photo } })
-
-    const result = await syncClaim({
-      doc: baseDoc,
-      previousDoc: undefined,
-      operation: 'create',
-      req,
-    } as never)
-
-    expect(result).toBe(baseDoc)
-    expect(dispatchClaimSyncMock).toHaveBeenCalledWith(baseDoc, req, photo)
-    expect(req.payload.jobs.queue).not.toHaveBeenCalled()
-    expect(fetchMock).not.toHaveBeenCalled()
     vi.unstubAllGlobals()
   })
 

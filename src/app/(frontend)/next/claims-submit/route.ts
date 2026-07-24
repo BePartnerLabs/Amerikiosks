@@ -2,8 +2,30 @@ import configPromise from '@payload-config'
 import type { RequiredDataFromCollectionSlug } from 'payload'
 import { getPayload } from 'payload'
 import { detectImageMimeType } from '@/utilities/detectImageMimeType'
+import { uploadPrivateFile } from '@/utilities/privateUpload'
 
 const MAX_PHOTO_BYTES = 8 * 1024 * 1024 // 8MB
+
+// Basic in-memory sliding-window rate limit — resets on redeploy/cold start,
+// which is an accepted tradeoff for a low-effort abuse guard on a public,
+// unauthenticated POST endpoint. Not a substitute for a shared store (e.g.
+// Redis) if this ever needs to hold across instances/regions.
+const RATE_LIMIT_WINDOW_MS = 60_000
+const RATE_LIMIT_MAX_REQUESTS = 5
+const requestLog = new Map<string, number[]>()
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now()
+  const timestamps = (requestLog.get(ip) ?? []).filter((t) => now - t < RATE_LIMIT_WINDOW_MS)
+  timestamps.push(now)
+  requestLog.set(ip, timestamps)
+  return timestamps.length > RATE_LIMIT_MAX_REQUESTS
+}
+
+function getClientIp(req: Request): string {
+  const forwardedFor = req.headers.get('x-forwarded-for')
+  return forwardedFor?.split(',')[0]?.trim() || 'unknown'
+}
 
 function stringField(formData: FormData, name: string): string | undefined {
   const value = formData.get(name)
@@ -25,11 +47,12 @@ function isFileLike(value: unknown): value is File {
 }
 
 export async function POST(req: Request) {
+  if (isRateLimited(getClientIp(req))) {
+    return Response.json({ error: 'Too many requests. Please try again shortly.' }, { status: 429 })
+  }
+
   const formData = await req.formData()
   const payload = await getPayload({ config: configPromise })
-
-  const locationRaw = stringField(formData, 'location')
-  const location = locationRaw ? JSON.parse(locationRaw) : undefined
 
   const kioskBrandRaw = stringField(formData, 'kioskBrand')
 
@@ -40,11 +63,12 @@ export async function POST(req: Request) {
     // switched to multipart for the photo upload.
     kioskBrand: kioskBrandRaw ? Number(kioskBrandRaw) : undefined,
     paymentMethod: stringField(formData, 'paymentMethod'),
-    customerName: stringField(formData, 'customerName'),
+    customerFirstName: stringField(formData, 'customerFirstName'),
+    customerLastName: stringField(formData, 'customerLastName'),
     customerEmail: stringField(formData, 'customerEmail'),
     customerPhone: stringField(formData, 'customerPhone'),
     transactionDateTime: stringField(formData, 'transactionDateTime'),
-    location,
+    location: stringField(formData, 'location'),
     claimReason: stringField(formData, 'claimReason'),
     additionalInfo: stringField(formData, 'additionalInfo'),
     lastFourCardDigits: stringField(formData, 'lastFourCardDigits'),
@@ -53,11 +77,13 @@ export async function POST(req: Request) {
     machineId: stringField(formData, 'machineId'),
   }
 
-  // The photo is deliberately never written to Claims.photo or Payload Media for
-  // a public submission (see that field's admin description) — it's validated
-  // here, then handed to the afterChange hook via req.context so it can be
-  // forwarded straight to JotForm, and never touches our own storage.
-  let photoContext: { buffer: Buffer; filename: string; contentType: string } | undefined
+  // The photo is uploaded to a private (non-public) R2 bucket under a random
+  // key, never to Claims.photo/Payload Media — see that field's admin
+  // description. Its key is stored directly on the claim (Claims.photoKey);
+  // viewing it later happens on demand via the authenticated
+  // GET /api/claims/:id/photo-url endpoint, which mints a short-lived
+  // presigned URL — the object itself is never reachable by a public URL.
+  let photoKey: string | undefined
   const photoFile = formData.get('photo')
   if (isFileLike(photoFile)) {
     if (photoFile.size > MAX_PHOTO_BYTES) {
@@ -72,19 +98,18 @@ export async function POST(req: Request) {
         { status: 400 },
       )
     }
-    photoContext = {
-      buffer: Buffer.from(arrayBuffer),
-      filename: photoFile.name || 'claim-photo',
-      contentType: detectedType,
-    }
+    photoKey = await uploadPrivateFile(
+      Buffer.from(arrayBuffer),
+      detectedType,
+      photoFile.name || 'claim-photo',
+    )
   }
 
   try {
     const claim = await payload.create({
       collection: 'claims',
-      data: data as unknown as RequiredDataFromCollectionSlug<'claims'>,
+      data: { ...data, photoKey } as unknown as RequiredDataFromCollectionSlug<'claims'>,
       overrideAccess: false,
-      context: photoContext ? { photoFile: photoContext } : undefined,
     })
 
     return Response.json(claim, { status: 201 })

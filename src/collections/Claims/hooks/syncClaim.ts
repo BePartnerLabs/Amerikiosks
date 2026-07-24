@@ -1,9 +1,6 @@
 import type { CollectionAfterChangeHook } from 'payload'
 import type { Claim } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
-import { dispatchClaimSync } from '../dispatchClaimSync'
-
-type PhotoContext = { buffer: Buffer; filename: string; contentType: string }
 
 /**
  * Dispatches a newly created claim to the configured integration target
@@ -11,28 +8,17 @@ type PhotoContext = { buffer: Buffer; filename: string; contentType: string }
  * the outcome on the same doc. Uses the same `context.<flag>` recursion guard
  * as `revalidatePage.ts`'s `context.disableRevalidate`.
  *
- * Two paths, split on whether a photo is present:
- * - No photo (the common case): queue a job (syncClaimToIntegration) and
- *   immediately trigger it via an internal "webhook" call to
- *   /api/payload-jobs/run, without awaiting that call. The job runs in a
- *   separate request, so the customer's submit doesn't wait on JotForm's
- *   round trip (or, on a cold Neon compute, stack that latency on top of the
- *   DB wake-up).
- * - Photo present: stays synchronous, dispatched directly here. The photo
- *   only exists in memory for this one request (next/claims-submit/route.ts
- *   stashes it on req.context, never persisted to Claims.photo or Media —
- *   see that field's admin description for why) — a queued job running later
- *   in a different request has no way to reach it.
+ * Always queues a job (syncClaimToIntegration) and immediately triggers it
+ * via an internal "webhook" call to /api/payload-jobs/run, without awaiting
+ * that call — the job runs in a separate request, so the customer's submit
+ * doesn't wait on JotForm's round trip (or, on a cold Neon compute, stack
+ * that latency on top of the DB wake-up). A submitted photo (if any) is
+ * already durably stored by the time this hook runs — Claims.photoKey
+ * points at the private R2 object — so there's no in-memory-only data this
+ * hook needs to hand off; the job can look everything up from the doc.
  */
 export const syncClaim: CollectionAfterChangeHook<Claim> = async ({ doc, operation, req }) => {
   if (operation !== 'create' || req.context?.skipClaimsSync) {
-    return doc
-  }
-
-  const photo = req.context?.photoFile as PhotoContext | undefined
-
-  if (photo) {
-    await dispatchClaimSync(doc, req, photo)
     return doc
   }
 

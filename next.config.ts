@@ -21,6 +21,9 @@ const nextConfig: NextConfig = {
       {
         pathname: '/api/media/file/**',
       },
+      {
+        pathname: '/claim-form/**',
+      },
     ],
     qualities: [100],
     remotePatterns: [
@@ -86,6 +89,13 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(dirname),
   },
+  // Next 15+ rejects dev-server HMR/RSC requests whose Origin isn't
+  // localhost by default (CSRF hardening) — silently breaking hydration and
+  // client-side navigation, not just HMR, when the dev server is reached
+  // over a LAN IP (e.g. testing on a phone via `pnpm dev`'s printed Network
+  // URL). Harmless in production (this key is dev-only). Update the IP here
+  // if your machine's LAN address changes (DHCP).
+  allowedDevOrigins: ['192.168.100.23'],
 }
 
 export default withPayload(withNextIntl(nextConfig), { devBundleServerPackages: false })

@@ -5,11 +5,12 @@ import { OdooRepository } from '@/repositories/OdooRepository'
 const baseClaim: ClaimSubmission = {
   kioskBrand: 'brand-1',
   paymentMethod: 'card',
-  customerName: 'Test Prueba',
+  customerFirstName: 'Test',
+  customerLastName: 'Prueba',
   customerEmail: 'hola@bepartnerlabs.com',
   customerPhone: '3055550100',
   transactionDateTime: '2026-07-08T09:23:00.000Z',
-  location: { state: 'FL', city: 'Doral', propertyName: 'BePartnerLabs Test Property' },
+  location: 'BePartnerLabs Test Property, Doral, FL',
   claimReason: 'partial_dispense',
 }
 

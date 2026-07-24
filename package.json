@@ -27,6 +27,8 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "3.1079.0",
+    "@aws-sdk/s3-request-presigner": "3.1079.0",
     "@img/sharp-linux-x64": "^0.35.3",
     "@payloadcms/admin-bar": "3.86.0",
     "@payloadcms/db-postgres": "3.86.0",

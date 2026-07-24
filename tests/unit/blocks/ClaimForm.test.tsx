@@ -43,19 +43,18 @@ function clickNext() {
   fireEvent.click(screen.getByRole('button', { name: /next/i }))
 }
 
+// kioskBrand and paymentMethod auto-advance on click — no Next button is
+// rendered on those steps (see isAutoAdvanceStep in Component.tsx).
 async function completeAllSteps() {
   fireEvent.click(screen.getByRole('button', { name: /start/i }))
 
   fireEvent.click(await screen.findByRole('radio', { name: "Carlo's Bakery" }))
-  clickNext()
 
   fireEvent.click(await screen.findByRole('radio', { name: /credit\/debit card/i }))
-  clickNext()
 
-  fireEvent.change(await screen.findByLabelText(/^name$/i), { target: { value: 'Test Prueba' } })
-  clickNext()
-
-  fireEvent.change(await screen.findByLabelText(/email/i), {
+  fireEvent.change(await screen.findByLabelText(/first name/i), { target: { value: 'Test' } })
+  fireEvent.change(screen.getByLabelText(/last name/i), { target: { value: 'Prueba' } })
+  fireEvent.change(screen.getByLabelText(/email/i), {
     target: { value: 'hola@bepartnerlabs.com' },
   })
   clickNext()
@@ -67,10 +66,8 @@ async function completeAllSteps() {
   await screen.findByLabelText(/date and time/i)
   clickNext()
 
-  fireEvent.change(await screen.findByLabelText(/state/i), { target: { value: 'FL' } })
-  fireEvent.change(screen.getByLabelText(/city/i), { target: { value: 'Doral' } })
-  fireEvent.change(screen.getByLabelText(/property/i), {
-    target: { value: 'BePartnerLabs Test Property' },
+  fireEvent.change(await screen.findByLabelText(/where did the issue happen/i), {
+    target: { value: 'BePartnerLabs Test Property, Doral, FL' },
   })
   clickNext()
 
@@ -87,8 +84,12 @@ async function completeAllSteps() {
   await screen.findByLabelText(/last 4 digits/i)
   clickNext()
 
-  // photo (optional) — last step, submit
-  await screen.findByLabelText(/attach a picture/i)
+  // photo (optional) — skip
+  await screen.findByText(/attach a picture/i)
+  clickNext()
+
+  // confirm step — last step, submit
+  await screen.findByText(/review your information/i)
   fireEvent.click(screen.getByRole('button', { name: /submit/i }))
 }
 
@@ -99,11 +100,41 @@ describe('ClaimForm block', () => {
     mutationState = { isPending: false, isSuccess: false, error: null, variables: undefined }
   })
 
+  const introContent = {
+    root: {
+      type: 'root',
+      version: 1,
+      direction: null,
+      format: '',
+      indent: 0,
+      children: [
+        {
+          type: 'heading',
+          tag: 'h2',
+          version: 1,
+          children: [{ type: 'text', version: 1, text: 'Request a Refund' }],
+        },
+      ],
+    },
+    // biome-ignore lint/suspicious/noExplicitAny: minimal lexical fixture, not the full SerializedTextNode shape
+  } as any
+
   it('shows an intro screen with a Start button before the first field', () => {
-    render(<ClaimFormBlock brands={brands} />)
+    render(
+      <ClaimFormBlock
+        brands={brands}
+        introContent={introContent}
+      />,
+    )
     expect(screen.getByRole('heading', { name: /request a refund/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /start/i })).toBeInTheDocument()
     expect(screen.queryByRole('group', { name: /kiosk brand/i })).toBeNull()
+  })
+
+  it('renders no intro heading/copy when introContent is not provided', () => {
+    render(<ClaimFormBlock brands={brands} />)
+    expect(screen.queryByRole('heading')).toBeNull()
+    expect(screen.getByRole('button', { name: /start/i })).toBeInTheDocument()
   })
 
   it('is multi-step: only one field group is visible per screen', () => {
@@ -124,9 +155,13 @@ describe('ClaimForm block', () => {
     render(<ClaimFormBlock brands={brands} />)
     fireEvent.click(screen.getByRole('button', { name: /start/i }))
 
+    fireEvent.click(await screen.findByRole('radio', { name: "Carlo's Bakery" }))
+    fireEvent.click(await screen.findByRole('radio', { name: /credit\/debit card/i }))
+
+    await screen.findByLabelText(/first name/i)
     clickNext()
 
-    expect(await screen.findByRole('group', { name: /kiosk brand/i })).toBeInTheDocument()
+    expect(await screen.findByLabelText(/first name/i)).toBeInTheDocument()
   })
 
   it('completes the full flow and includes machineId (from the URL query param) in the submitted payload', async () => {
@@ -135,7 +170,11 @@ describe('ClaimForm block', () => {
 
     await waitFor(() => {
       expect(mutate).toHaveBeenCalledWith(
-        expect.objectContaining({ machineId: 'AK-0231', customerName: 'Test Prueba' }),
+        expect.objectContaining({
+          machineId: 'AK-0231',
+          customerFirstName: 'Test',
+          customerLastName: 'Prueba',
+        }),
       )
     })
   })
@@ -145,14 +184,17 @@ describe('ClaimForm block', () => {
     fireEvent.click(screen.getByRole('button', { name: /start/i }))
 
     fireEvent.click(await screen.findByRole('radio', { name: "Carlo's Bakery" }))
-    clickNext()
-
     fireEvent.click(await screen.findByRole('radio', { name: /^cash$/i }))
+
+    // Cash-only branch: "Did you see credits available?" — choose No to
+    // continue into the regular refund flow instead of the terminal message.
+    fireEvent.click(await screen.findByRole('radio', { name: /^no$/i }))
+    await screen.findByText(/sorry to hear that/i)
     clickNext()
 
-    fireEvent.change(await screen.findByLabelText(/^name$/i), { target: { value: 'Test Prueba' } })
-    clickNext()
-    fireEvent.change(await screen.findByLabelText(/email/i), {
+    fireEvent.change(await screen.findByLabelText(/first name/i), { target: { value: 'Test' } })
+    fireEvent.change(screen.getByLabelText(/last name/i), { target: { value: 'Prueba' } })
+    fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: 'hola@bepartnerlabs.com' },
     })
     clickNext()
@@ -160,10 +202,8 @@ describe('ClaimForm block', () => {
     clickNext()
     await screen.findByLabelText(/date and time/i)
     clickNext()
-    fireEvent.change(await screen.findByLabelText(/state/i), { target: { value: 'FL' } })
-    fireEvent.change(screen.getByLabelText(/city/i), { target: { value: 'Doral' } })
-    fireEvent.change(screen.getByLabelText(/property/i), {
-      target: { value: 'BePartnerLabs Test Property' },
+    fireEvent.change(await screen.findByLabelText(/where did the issue happen/i), {
+      target: { value: 'BePartnerLabs Test Property, Doral, FL' },
     })
     clickNext()
     fireEvent.change(await screen.findByLabelText(/what happened/i), {
@@ -175,16 +215,17 @@ describe('ClaimForm block', () => {
 
     // Cash branch: refund method + account instead of card digits.
     expect(screen.queryByLabelText(/last 4 digits/i)).toBeNull()
-    fireEvent.change(await screen.findByLabelText(/select a refund method/i), {
-      target: { value: 'Zelle' },
-    })
-    clickNext()
+    fireEvent.click(await screen.findByRole('radio', { name: /zelle/i }))
+
     fireEvent.change(await screen.findByLabelText(/username\/email\/phone/i), {
       target: { value: 'refund@example.com' },
     })
     clickNext()
 
-    await screen.findByLabelText(/attach a picture/i)
+    await screen.findByText(/attach a picture/i)
+    clickNext()
+
+    await screen.findByText(/review your information/i)
     fireEvent.click(screen.getByRole('button', { name: /submit/i }))
 
     await waitFor(() => {
@@ -228,5 +269,27 @@ describe('ClaimForm block', () => {
     const successNode = screen.getByTestId('claim-form-success')
     expect(successNode).toHaveAttribute('data-ga-event', 'claim_submit')
     expect(successNode).toHaveAttribute('data-ga-machine-id', 'AK-0231')
+  })
+})
+
+describe('Previous button on the first step', () => {
+  afterEach(cleanup)
+
+  it('is visible on step 0 and returns to the intro screen', async () => {
+    render(
+      <ClaimFormBlock
+        brands={brands}
+        submitButtonLabel="Submit"
+      />,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: /start/i }))
+
+    expect(await screen.findByRole('radio', { name: "Carlo's Bakery" })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /previous/i })).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: /previous/i }))
+
+    expect(await screen.findByRole('button', { name: /start/i })).toBeInTheDocument()
   })
 })

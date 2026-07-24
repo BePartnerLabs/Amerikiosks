@@ -22,5 +22,15 @@ export default function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!admin|api|next|_next/static|_next/image|favicon|seed-assets|.*\\..*).*)'],
+  // `_next` (not just `_next/static`/`_next/image`) — Next's own internal
+  // routes, including the dev HMR websocket at `/_next/webpack-hmr`, must
+  // never go through this middleware. That path has no file extension and
+  // isn't `_next/static`/`_next/image`, so a narrower exclusion let
+  // next-intl's locale-redirect logic run on the HMR upgrade request,
+  // corrupting the WebSocket handshake — reproduced as "cannot parse
+  // response" errors when the dev server is reached over a LAN IP instead
+  // of localhost (found live-debugging a mobile Safari session where every
+  // client component's event handlers appeared dead: the corrupted HMR
+  // connection broke hydration for the whole page, not just one component).
+  matcher: ['/((?!admin|api|next|_next|favicon|seed-assets|.*\\..*).*)'],
 }

@@ -3,10 +3,7 @@ import { dispatchClaimSync } from '../dispatchClaimSync'
 
 // Runs in a separate request from the one that created the claim (triggered
 // via the internal /api/payload-jobs/run "webhook" call in syncClaim.ts), so
-// the customer submitting the form never waits on JotForm's round trip. Only
-// used for claims with no photo — a photo only exists in-memory for the
-// original request and can't reach a job that runs later, in a different
-// request (see syncClaim.ts for the photo case, which stays synchronous).
+// the customer submitting the form never waits on JotForm's round trip.
 export const syncClaimTask: TaskConfig<'syncClaimToIntegration'> = {
   slug: 'syncClaimToIntegration',
   inputSchema: [{ name: 'claimId', type: 'number', required: true }],
