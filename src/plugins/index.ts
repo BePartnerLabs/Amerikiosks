@@ -48,6 +48,14 @@ export const plugins: Plugin[] = [
         s3Storage({
           collections: { media: true },
           bucket: process.env.S3_BUCKET,
+          // Uploads go browser → R2 directly via a presigned URL, bypassing
+          // the Vercel serverless function entirely — without this, any file
+          // over ~4.5MB hits FUNCTION_PAYLOAD_TOO_LARGE, since the upload
+          // would otherwise be proxied through the Payload API function.
+          // Requires CORS on the R2 bucket to allow PUT from the site's
+          // origin(s) — Cloudflare R2 dashboard → bucket → Settings → CORS
+          // Policy (not something this repo's code can configure).
+          clientUploads: true,
           config: {
             endpoint: process.env.S3_ENDPOINT,
             region: process.env.S3_REGION ?? 'auto',
