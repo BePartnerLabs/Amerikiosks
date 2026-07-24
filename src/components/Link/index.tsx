@@ -9,7 +9,7 @@ import type { Form, Insight, Page } from '@/payload-types'
 import './link-drawer.css'
 
 type CMSLinkType = {
-  appearance?: 'inline' | 'default' | 'outline' | 'link' | 'ghost' | null
+  appearance?: 'inline' | 'default' | 'outline' | 'link' | 'ghost' | 'dark' | null
   children?: React.ReactNode
   className?: string
   label?: string | null
@@ -28,6 +28,7 @@ type CMSLinkType = {
 const appearanceClass: Record<string, string> = {
   default: 'bp-btn bp-btn--primary',
   outline: 'bp-btn bp-btn--outline',
+  dark: 'bp-btn bp-btn--dark',
   ghost: 'bp-btn bp-btn--ghost',
 }
 
