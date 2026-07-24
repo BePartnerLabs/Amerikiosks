@@ -17,10 +17,10 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
     CREATE INDEX "tags_updated_at_idx" ON "tags" USING btree ("updated_at");
     CREATE INDEX "tags_created_at_idx" ON "tags" USING btree ("created_at");
 
-    DROP TABLE "machines_tags" CASCADE;
-    DROP TABLE "_machines_v_version_tags" CASCADE;
-    DROP TABLE "pages_blocks_formats_grid_filter_tags" CASCADE;
-    DROP TABLE "_pages_v_blocks_formats_grid_filter_tags" CASCADE;
+    DROP TABLE IF EXISTS "machines_tags" CASCADE;
+    DROP TABLE IF EXISTS "_machines_v_version_tags" CASCADE;
+    DROP TABLE IF EXISTS "pages_blocks_formats_grid_filter_tags" CASCADE;
+    DROP TABLE IF EXISTS "_pages_v_blocks_formats_grid_filter_tags" CASCADE;
 
     CREATE TABLE "machines_rels" (
       "id" serial PRIMARY KEY NOT NULL,
@@ -57,11 +57,19 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
     ALTER TABLE "_pages_v_rels" ADD COLUMN "tags_id" integer;
     ALTER TABLE "_pages_v_rels" ADD CONSTRAINT "_pages_v_rels_tags_fk" FOREIGN KEY ("tags_id") REFERENCES "public"."tags"("id") ON DELETE cascade ON UPDATE no action;
     CREATE INDEX "_pages_v_rels_tags_id_idx" ON "_pages_v_rels" USING btree ("tags_id");
+
+    -- payload_locked_documents_rels needs a column for every collection —
+    -- any doc can be "locked" while being edited in admin.
+    ALTER TABLE "payload_locked_documents_rels" ADD COLUMN "tags_id" integer;
+    ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_tags_fk" FOREIGN KEY ("tags_id") REFERENCES "public"."tags"("id") ON DELETE cascade ON UPDATE no action;
+    CREATE INDEX "payload_locked_documents_rels_tags_id_idx" ON "payload_locked_documents_rels" USING btree ("tags_id");
   `)
 }
 
 export async function down({ db, payload, req }: MigrateDownArgs): Promise<void> {
   await db.execute(sql`
+    ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT "payload_locked_documents_rels_tags_fk";
+    ALTER TABLE "payload_locked_documents_rels" DROP COLUMN "tags_id";
     ALTER TABLE "pages_rels" DROP CONSTRAINT "pages_rels_tags_fk";
     ALTER TABLE "pages_rels" DROP COLUMN "tags_id";
     ALTER TABLE "_pages_v_rels" DROP CONSTRAINT "_pages_v_rels_tags_fk";
