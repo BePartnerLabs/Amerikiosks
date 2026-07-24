@@ -15,7 +15,12 @@ export const ProcessStepsCarousel: React.FC<{ children: ReactNode }> = ({ childr
     const item = track.querySelector<HTMLElement>(ITEM_SELECTOR)
     const gap = Number.parseFloat(getComputedStyle(track).columnGap || '0') || 0
     const amount = item ? item.getBoundingClientRect().width + gap : track.clientWidth
-    track.scrollBy({ left: amount * direction, behavior: 'smooth' })
+    // Clamp to the real scrollable range — a fixed per-click increment can
+    // request a target past the last item (or before the first), leaving
+    // blank overscroll space instead of settling on the final item.
+    const maxScrollLeft = track.scrollWidth - track.clientWidth
+    const target = Math.min(Math.max(track.scrollLeft + amount * direction, 0), maxScrollLeft)
+    track.scrollTo({ left: target, behavior: 'smooth' })
   }
 
   return (
