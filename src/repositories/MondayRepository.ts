@@ -27,6 +27,10 @@ function formatTransactionTime(transactionDateTime: string): string {
   return `${hour12}:${minutes} ${hour24 < 12 ? 'AM' : 'PM'}`
 }
 
+// Monday's `phone` column rejects any formatting characters — "(569)
+// 403-0359" throws a ColumnValueException, only raw digits are accepted.
+const digitsOnly = (value: string) => value.replace(/[^0-9]/g, '')
+
 function buildAdditionalInfo(claim: ClaimSubmission): string {
   const lines = [
     claim.additionalInfo,
@@ -45,7 +49,7 @@ function buildColumnValues(claim: ClaimSubmission): Record<string, unknown> {
     // { label: "..." } here throws a ColumnValueException at submit time.
     dropdown: { labels: [PAYMENT_METHOD_LABEL[claim.paymentMethod] ?? claim.paymentMethod] },
     email: { email: claim.customerEmail, text: claim.customerEmail },
-    phone: { phone: claim.customerPhone, countryShortName: 'US' },
+    phone: { phone: digitsOnly(claim.customerPhone), countryShortName: 'US' },
     date4: { date: new Date(claim.transactionDateTime).toISOString().slice(0, 10) },
     dropdown0: { labels: [CLAIM_REASON_LABEL[claim.claimReason] ?? claim.claimReason] },
     long_text6: { text: buildAdditionalInfo(claim) },
