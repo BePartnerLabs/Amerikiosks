@@ -1632,6 +1632,7 @@ export interface Brand {
   logo?: (number | null) | Media;
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * Refund/complaint claims submitted from the customer-service QR flow on deployed kiosks.
@@ -2852,6 +2853,7 @@ export interface BrandsSelect<T extends boolean = true> {
   logo?: T;
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
