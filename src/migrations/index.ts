@@ -31,6 +31,7 @@ import * as migration_20260724_001423_add_monday_integration from './20260724_00
 import * as migration_20260724_012544_add_default_claim_integration_target from './20260724_012544_add_default_claim_integration_target';
 import * as migration_20260724_034405_add_generic_form_monday_sync from './20260724_034405_add_generic_form_monday_sync';
 import * as migration_20260724_192519_metrics_block from './20260724_192519_metrics_block';
+import * as migration_20260724_194612_trust_strip_subheading from './20260724_194612_trust_strip_subheading';
 
 export const migrations = [
   {
@@ -196,6 +197,11 @@ export const migrations = [
   {
     up: migration_20260724_192519_metrics_block.up,
     down: migration_20260724_192519_metrics_block.down,
-    name: '20260724_192519_metrics_block'
+    name: '20260724_192519_metrics_block',
+  },
+  {
+    up: migration_20260724_194612_trust_strip_subheading.up,
+    down: migration_20260724_194612_trust_strip_subheading.down,
+    name: '20260724_194612_trust_strip_subheading'
   },
 ];

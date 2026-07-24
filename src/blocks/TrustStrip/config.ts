@@ -31,6 +31,15 @@ export const TrustStrip: Block = {
       },
     },
     {
+      name: 'subheading',
+      type: 'textarea',
+      label: 'Subheading',
+      localized: true,
+      admin: {
+        description: 'Optional text below the heading.',
+      },
+    },
+    {
       name: 'limit',
       type: 'number',
       label: 'Limit',

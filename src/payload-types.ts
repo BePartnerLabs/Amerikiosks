@@ -1077,6 +1077,10 @@ export interface TrustStripBlock {
    */
   heading: string;
   /**
+   * Optional text below the heading.
+   */
+  subheading?: string | null;
+  /**
    * Max number of partners to show. 0 = show all.
    */
   limit?: number | null;
@@ -2370,6 +2374,7 @@ export interface MetricsBlockSelect<T extends boolean = true> {
 export interface TrustStripBlockSelect<T extends boolean = true> {
   eyebrow?: T;
   heading?: T;
+  subheading?: T;
   limit?: T;
   id?: T;
   blockName?: T;

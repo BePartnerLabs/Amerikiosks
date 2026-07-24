@@ -31,6 +31,7 @@ const buildJsonLd = (heading: string, partners: TrustStripPartner[]) => ({
 export const TrustStripBlock: React.FC<Props> = ({
   eyebrow,
   heading,
+  subheading,
   partners,
   blockName,
   blockType,
@@ -58,6 +59,7 @@ export const TrustStripBlock: React.FC<Props> = ({
       <SectionHeader
         eyebrow={eyebrow}
         heading={heading}
+        subtitle={subheading}
         align="center"
       />
       <TrustStripCarousel partners={carouselPartners} />
