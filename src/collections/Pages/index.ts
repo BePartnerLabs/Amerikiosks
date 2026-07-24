@@ -22,6 +22,7 @@ import { FormatsGrid } from '../../blocks/FormatsGrid/config'
 import { InsightsShowcase } from '../../blocks/InsightsShowcase/config'
 import { MachinesListing } from '../../blocks/MachinesListing/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
+import { Metrics } from '../../blocks/Metrics/config'
 import { ProcessSteps } from '../../blocks/ProcessSteps/config'
 import { ProjectsShowcase } from '../../blocks/ProjectsShowcase/config'
 import { SupportHub } from '../../blocks/SupportHub/config'
@@ -89,6 +90,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 Archive,
                 FormBlock,
                 CardGrid,
+                Metrics,
                 TrustStrip,
                 AudienceShowcase,
                 InsightsShowcase,

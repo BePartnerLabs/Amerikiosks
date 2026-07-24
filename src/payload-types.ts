@@ -264,6 +264,7 @@ export interface Page {
         | ArchiveBlock
         | FormBlock
         | CardGridBlock
+        | MetricsBlock
         | TrustStripBlock
         | AudienceShowcaseBlock
         | InsightsShowcaseBlock
@@ -947,7 +948,7 @@ export interface CardGridBlock {
    */
   heading: string;
   /**
-   * Optional text below the heading. Used in pillar variant.
+   * Optional text below the heading. Used in compact and pillar variants.
    */
   subheading?: string | null;
   /**
@@ -1004,6 +1005,45 @@ export interface CardGridBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'cardGrid';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MetricsBlock".
+ */
+export interface MetricsBlock {
+  /**
+   * Small label above the heading, e.g. "WHY AMERIKIOSKS"
+   */
+  eyebrow?: string | null;
+  /**
+   * Para destacar una palabra o frase en negrita, envuélvela en asteriscos dobles: **texto**
+   */
+  heading: string;
+  items?:
+    | {
+        /**
+         * e.g. "10+", "1000+", "30"
+         */
+        value: string;
+        /**
+         * e.g. "Years of Industry Experience"
+         */
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Optional button shown below the stats.
+   */
+  link?: {
+    label?: string | null;
+    url?: string | null;
+    type?: ('custom' | 'reference') | null;
+    reference?: (number | null) | Page;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'metrics';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2114,6 +2154,7 @@ export interface PagesSelect<T extends boolean = true> {
         archive?: T | ArchiveBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
         cardGrid?: T | CardGridBlockSelect<T>;
+        metrics?: T | MetricsBlockSelect<T>;
         trustStrip?: T | TrustStripBlockSelect<T>;
         audienceShowcase?: T | AudienceShowcaseBlockSelect<T>;
         insightsShowcase?: T | InsightsShowcaseBlockSelect<T>;
@@ -2268,6 +2309,31 @@ export interface CardGridBlockSelect<T extends boolean = true> {
               reference?: T;
             };
         id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MetricsBlock_select".
+ */
+export interface MetricsBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  items?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        id?: T;
+      };
+  link?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        type?: T;
+        reference?: T;
       };
   id?: T;
   blockName?: T;
