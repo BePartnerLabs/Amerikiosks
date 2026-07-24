@@ -92,6 +92,11 @@ describe('MetricsCounter', () => {
     expect(screen.getByText('N/A')).toBeInTheDocument()
   })
 
+  it('does not crash when value is undefined (e.g. a freshly-added admin array row)', () => {
+    const { container } = render(<MetricsCounter value={undefined as unknown as string} />)
+    expect(container.querySelector('span')).toBeInTheDocument()
+  })
+
   it('renders the final value immediately when prefers-reduced-motion is set', () => {
     vi.stubGlobal(
       'matchMedia',
