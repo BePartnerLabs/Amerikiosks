@@ -2009,6 +2009,210 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.pages_blocks_metrics_links": {
+      "name": "pages_blocks_metrics_links",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "link_type": {
+          "name": "link_type",
+          "type": "enum_pages_blocks_metrics_links_link_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'reference'"
+        },
+        "link_new_tab": {
+          "name": "link_new_tab",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "link_modal_form_id": {
+          "name": "link_modal_form_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "pages_blocks_metrics_links_order_idx": {
+          "name": "pages_blocks_metrics_links_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "pages_blocks_metrics_links_parent_id_idx": {
+          "name": "pages_blocks_metrics_links_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "pages_blocks_metrics_links_link_link_modal_form_idx": {
+          "name": "pages_blocks_metrics_links_link_link_modal_form_idx",
+          "columns": [
+            {
+              "expression": "link_modal_form_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "pages_blocks_metrics_links_link_modal_form_id_forms_id_fk": {
+          "name": "pages_blocks_metrics_links_link_modal_form_id_forms_id_fk",
+          "tableFrom": "pages_blocks_metrics_links",
+          "tableTo": "forms",
+          "columnsFrom": [
+            "link_modal_form_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "pages_blocks_metrics_links_parent_id_fk": {
+          "name": "pages_blocks_metrics_links_parent_id_fk",
+          "tableFrom": "pages_blocks_metrics_links",
+          "tableTo": "pages_blocks_metrics",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.pages_blocks_metrics_links_locales": {
+      "name": "pages_blocks_metrics_links_locales",
+      "schema": "",
+      "columns": {
+        "link_url": {
+          "name": "link_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "link_label": {
+          "name": "link_label",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "_locale": {
+          "name": "_locale",
+          "type": "_locales",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "pages_blocks_metrics_links_locales_locale_parent_id_unique": {
+          "name": "pages_blocks_metrics_links_locales_locale_parent_id_unique",
+          "columns": [
+            {
+              "expression": "_locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "pages_blocks_metrics_links_locales_parent_id_fk": {
+          "name": "pages_blocks_metrics_links_locales_parent_id_fk",
+          "tableFrom": "pages_blocks_metrics_links_locales",
+          "tableTo": "pages_blocks_metrics_links",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.pages_blocks_metrics": {
       "name": "pages_blocks_metrics",
       "schema": "",
@@ -2036,26 +2240,6 @@
           "type": "varchar",
           "primaryKey": true,
           "notNull": true
-        },
-        "link_url": {
-          "name": "link_url",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "link_type": {
-          "name": "link_type",
-          "type": "enum_pages_blocks_metrics_link_type",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'custom'"
-        },
-        "link_reference_id": {
-          "name": "link_reference_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
         },
         "block_name": {
           "name": "block_name",
@@ -2109,37 +2293,9 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
-        },
-        "pages_blocks_metrics_link_link_reference_idx": {
-          "name": "pages_blocks_metrics_link_link_reference_idx",
-          "columns": [
-            {
-              "expression": "link_reference_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
         }
       },
       "foreignKeys": {
-        "pages_blocks_metrics_link_reference_id_pages_id_fk": {
-          "name": "pages_blocks_metrics_link_reference_id_pages_id_fk",
-          "tableFrom": "pages_blocks_metrics",
-          "tableTo": "pages",
-          "columnsFrom": [
-            "link_reference_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        },
         "pages_blocks_metrics_parent_id_fk": {
           "name": "pages_blocks_metrics_parent_id_fk",
           "tableFrom": "pages_blocks_metrics",
@@ -2172,12 +2328,6 @@
         },
         "heading": {
           "name": "heading",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "link_label": {
-          "name": "link_label",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
@@ -7708,6 +7858,216 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public._pages_v_blocks_metrics_links": {
+      "name": "_pages_v_blocks_metrics_links",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "link_type": {
+          "name": "link_type",
+          "type": "enum__pages_v_blocks_metrics_links_link_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'reference'"
+        },
+        "link_new_tab": {
+          "name": "link_new_tab",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "link_modal_form_id": {
+          "name": "link_modal_form_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "_uuid": {
+          "name": "_uuid",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "_pages_v_blocks_metrics_links_order_idx": {
+          "name": "_pages_v_blocks_metrics_links_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_pages_v_blocks_metrics_links_parent_id_idx": {
+          "name": "_pages_v_blocks_metrics_links_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_pages_v_blocks_metrics_links_link_link_modal_form_idx": {
+          "name": "_pages_v_blocks_metrics_links_link_link_modal_form_idx",
+          "columns": [
+            {
+              "expression": "link_modal_form_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "_pages_v_blocks_metrics_links_link_modal_form_id_forms_id_fk": {
+          "name": "_pages_v_blocks_metrics_links_link_modal_form_id_forms_id_fk",
+          "tableFrom": "_pages_v_blocks_metrics_links",
+          "tableTo": "forms",
+          "columnsFrom": [
+            "link_modal_form_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "_pages_v_blocks_metrics_links_parent_id_fk": {
+          "name": "_pages_v_blocks_metrics_links_parent_id_fk",
+          "tableFrom": "_pages_v_blocks_metrics_links",
+          "tableTo": "_pages_v_blocks_metrics",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public._pages_v_blocks_metrics_links_locales": {
+      "name": "_pages_v_blocks_metrics_links_locales",
+      "schema": "",
+      "columns": {
+        "link_url": {
+          "name": "link_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "link_label": {
+          "name": "link_label",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "_locale": {
+          "name": "_locale",
+          "type": "_locales",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "_pages_v_blocks_metrics_links_locales_locale_parent_id_uniqu": {
+          "name": "_pages_v_blocks_metrics_links_locales_locale_parent_id_uniqu",
+          "columns": [
+            {
+              "expression": "_locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "_pages_v_blocks_metrics_links_locales_parent_id_fk": {
+          "name": "_pages_v_blocks_metrics_links_locales_parent_id_fk",
+          "tableFrom": "_pages_v_blocks_metrics_links_locales",
+          "tableTo": "_pages_v_blocks_metrics_links",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public._pages_v_blocks_metrics": {
       "name": "_pages_v_blocks_metrics",
       "schema": "",
@@ -7735,26 +8095,6 @@
           "type": "serial",
           "primaryKey": true,
           "notNull": true
-        },
-        "link_url": {
-          "name": "link_url",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "link_type": {
-          "name": "link_type",
-          "type": "enum__pages_v_blocks_metrics_link_type",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'custom'"
-        },
-        "link_reference_id": {
-          "name": "link_reference_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
         },
         "_uuid": {
           "name": "_uuid",
@@ -7814,37 +8154,9 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
-        },
-        "_pages_v_blocks_metrics_link_link_reference_idx": {
-          "name": "_pages_v_blocks_metrics_link_link_reference_idx",
-          "columns": [
-            {
-              "expression": "link_reference_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
         }
       },
       "foreignKeys": {
-        "_pages_v_blocks_metrics_link_reference_id_pages_id_fk": {
-          "name": "_pages_v_blocks_metrics_link_reference_id_pages_id_fk",
-          "tableFrom": "_pages_v_blocks_metrics",
-          "tableTo": "pages",
-          "columnsFrom": [
-            "link_reference_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        },
         "_pages_v_blocks_metrics_parent_id_fk": {
           "name": "_pages_v_blocks_metrics_parent_id_fk",
           "tableFrom": "_pages_v_blocks_metrics",
@@ -7877,12 +8189,6 @@
         },
         "heading": {
           "name": "heading",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "link_label": {
-          "name": "link_label",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
@@ -25765,12 +26071,13 @@
         "reference"
       ]
     },
-    "public.enum_pages_blocks_metrics_link_type": {
-      "name": "enum_pages_blocks_metrics_link_type",
+    "public.enum_pages_blocks_metrics_links_link_type": {
+      "name": "enum_pages_blocks_metrics_links_link_type",
       "schema": "public",
       "values": [
+        "reference",
         "custom",
-        "reference"
+        "modal"
       ]
     },
     "public.enum_pages_blocks_process_steps_cta_link_type": {
@@ -25911,12 +26218,13 @@
         "reference"
       ]
     },
-    "public.enum__pages_v_blocks_metrics_link_type": {
-      "name": "enum__pages_v_blocks_metrics_link_type",
+    "public.enum__pages_v_blocks_metrics_links_link_type": {
+      "name": "enum__pages_v_blocks_metrics_links_link_type",
       "schema": "public",
       "values": [
+        "reference",
         "custom",
-        "reference"
+        "modal"
       ]
     },
     "public.enum__pages_v_blocks_process_steps_cta_link_type": {
@@ -26212,6 +26520,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "37773cc8-dc38-49ac-82e6-013c3c6ca1ff",
+  "id": "bd928f30-f3ab-4c4b-8f05-ba14c0e1f873",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }

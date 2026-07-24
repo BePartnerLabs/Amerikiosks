@@ -1,7 +1,16 @@
 import { cleanup, render, screen } from '@testing-library/react'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: vi.fn() }),
+}))
+
+vi.mock('@tanstack/react-query', () => ({
+  useMutation: () => ({ mutate: vi.fn(), isPending: false, isSuccess: false, error: null }),
+}))
+
 import { MetricsBlock } from '@/blocks/Metrics/Component'
-import type { MetricsBlock as MetricsBlockType } from '@/payload-types'
+import type { Form, MetricsBlock as MetricsBlockType } from '@/payload-types'
 
 const base: MetricsBlockType = {
   blockType: 'metrics',
@@ -68,21 +77,49 @@ describe('MetricsBlock', () => {
     expect(container.firstChild).toBeNull()
   })
 
-  it('does not render a CTA button when link label/url are missing', () => {
+  it('does not render a CTA button when no links are provided', () => {
     render(<MetricsBlock {...base} />)
     expect(screen.queryByRole('link')).not.toBeInTheDocument()
+    expect(screen.queryByRole('button')).not.toBeInTheDocument()
   })
 
-  it('renders the CTA button when link label and url are present', () => {
+  it('renders the CTA button when a custom URL link is present', () => {
     render(
       <MetricsBlock
         {...base}
-        link={{ label: 'Build Your Retail Experience', url: '/contact', type: 'custom' }}
+        links={[
+          {
+            link: { label: 'Build Your Retail Experience', url: '/contact', type: 'custom' },
+          },
+        ]}
       />,
     )
     expect(screen.getByRole('link', { name: /build your retail experience/i })).toHaveAttribute(
       'href',
       '/contact',
     )
+  })
+
+  it('renders a button that opens a modal form when the link type is modal', () => {
+    render(
+      <MetricsBlock
+        {...base}
+        links={[
+          {
+            link: {
+              label: 'Get a Quote',
+              type: 'modal',
+              modalForm: {
+                id: 1,
+                title: 'Get a Quote',
+                createdAt: '',
+                updatedAt: '',
+              } as Form,
+            },
+          },
+        ]}
+      />,
+    )
+    expect(screen.getByRole('button', { name: /get a quote/i })).toBeInTheDocument()
   })
 })

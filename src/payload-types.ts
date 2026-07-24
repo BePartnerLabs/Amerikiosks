@@ -1033,14 +1033,32 @@ export interface MetricsBlock {
       }[]
     | null;
   /**
-   * Optional button shown below the stats.
+   * Optional CTA button shown below the stats. Can link to a page, a custom URL, or open a form in a modal.
    */
-  link?: {
-    label?: string | null;
-    url?: string | null;
-    type?: ('custom' | 'reference') | null;
-    reference?: (number | null) | Page;
-  };
+  links?:
+    | {
+        link: {
+          type?: ('reference' | 'custom' | 'modal') | null;
+          newTab?: boolean | null;
+          reference?:
+            | ({
+                relationTo: 'pages';
+                value: number | Page;
+              } | null)
+            | ({
+                relationTo: 'insights';
+                value: number | Insight;
+              } | null);
+          url?: string | null;
+          /**
+           * Opens this form in a modal drawer instead of navigating.
+           */
+          modalForm?: (number | null) | Form;
+          label: string;
+        };
+        id?: string | null;
+      }[]
+    | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'metrics';
@@ -2327,13 +2345,20 @@ export interface MetricsBlockSelect<T extends boolean = true> {
         label?: T;
         id?: T;
       };
-  link?:
+  links?:
     | T
     | {
-        label?: T;
-        url?: T;
-        type?: T;
-        reference?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              modalForm?: T;
+              label?: T;
+            };
+        id?: T;
       };
   id?: T;
   blockName?: T;

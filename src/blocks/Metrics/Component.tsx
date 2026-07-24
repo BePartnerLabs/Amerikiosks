@@ -1,29 +1,21 @@
-import Link from 'next/link'
 import type React from 'react'
+import { CMSLink } from '@/components/Link'
 import { SectionHeader } from '@/components/SectionHeader'
-import type { MetricsBlock as MetricsBlockProps, Page } from '@/payload-types'
+import type { MetricsBlock as MetricsBlockProps } from '@/payload-types'
 import { toSnakeCase } from '@/utilities/toSnakeCase'
 import { MetricsCounter } from './MetricsCounter'
 import './styles.css'
-
-function resolveUrl(link: MetricsBlockProps['link']): string | null {
-  if (!link) return null
-  if (link.type === 'reference' && link.reference && typeof link.reference === 'object') {
-    return `/${(link.reference as Page).slug}`
-  }
-  return link.url ?? null
-}
 
 export const MetricsBlock: React.FC<MetricsBlockProps> = ({
   eyebrow,
   heading,
   items,
-  link,
+  links,
   blockType,
 }) => {
   if (!heading && (!items || items.length === 0)) return null
 
-  const ctaUrl = resolveUrl(link)
+  const cta = links?.[0]?.link
 
   return (
     <section
@@ -57,15 +49,13 @@ export const MetricsBlock: React.FC<MetricsBlockProps> = ({
             </div>
           )}
 
-          {ctaUrl && link?.label && (
+          {cta?.label && (
             <div className="ak-metrics__cta">
-              <Link
-                href={ctaUrl}
+              <CMSLink
+                {...cta}
                 className="ak-metrics__cta-btn"
                 data-ga-event="metrics_cta_click"
-              >
-                {link.label}
-              </Link>
+              />
             </div>
           )}
         </div>

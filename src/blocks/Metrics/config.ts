@@ -1,4 +1,5 @@
 import type { Block } from 'payload'
+import { linkGroup } from '@/fields/linkGroup'
 
 export const Metrics: Block = {
   slug: 'metrics',
@@ -50,32 +51,16 @@ export const Metrics: Block = {
         },
       ],
     },
-    {
-      name: 'link',
-      type: 'group',
-      label: 'CTA Button',
-      admin: {
-        description: 'Optional button shown below the stats.',
+    linkGroup({
+      appearances: false,
+      overrides: {
+        maxRows: 1,
+        admin: {
+          initCollapsed: true,
+          description:
+            'Optional CTA button shown below the stats. Can link to a page, a custom URL, or open a form in a modal.',
+        },
       },
-      fields: [
-        { name: 'label', type: 'text', localized: true },
-        { name: 'url', type: 'text' },
-        {
-          name: 'type',
-          type: 'radio',
-          defaultValue: 'custom',
-          options: [
-            { label: 'Custom URL', value: 'custom' },
-            { label: 'Internal page', value: 'reference' },
-          ],
-        },
-        {
-          name: 'reference',
-          type: 'relationship',
-          relationTo: 'pages',
-          admin: { condition: (_, siblingData) => siblingData?.type === 'reference' },
-        },
-      ],
-    },
+    }),
   ],
 }
