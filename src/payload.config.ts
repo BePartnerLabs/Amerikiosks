@@ -14,6 +14,7 @@ import { ConsentLogs } from './collections/ConsentLogs'
 import { FAQItems } from './collections/FAQItems'
 import { Insights } from './collections/Insights'
 import { Machines } from './collections/Machines'
+import { MachineTags } from './collections/MachineTags'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Partners } from './collections/Partners'
@@ -95,6 +96,7 @@ export default buildConfig({
     Users,
     Partners,
     Machines,
+    MachineTags,
     FAQItems,
     Projects,
     Brands,

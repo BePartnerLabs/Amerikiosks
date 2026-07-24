@@ -28,10 +28,10 @@ export const FormatsGridServer: React.FC<FormatsGridBlockProps> = async (props) 
     )
     machines = resolved.filter((m): m is Machine => m !== null)
   } else {
-    const tags = (filterTags ?? []).map((t) => t.tag).filter(Boolean) as string[]
+    const tagIds = (filterTags ?? []).map((t) => (typeof t === 'object' ? t.id : t)).filter(Boolean)
     const result = await payload.find({
       collection: 'machines',
-      ...(tags.length > 0 ? { where: { 'tags.label': { in: tags } } } : {}),
+      ...(tagIds.length > 0 ? { where: { tags: { in: tagIds } } } : {}),
       depth: 1,
       overrideAccess: false,
       locale: locale as 'en' | 'es',

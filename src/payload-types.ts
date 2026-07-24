@@ -75,6 +75,7 @@ export interface Config {
     users: User;
     partners: Partner;
     machines: Machine;
+    'machine-tags': MachineTag;
     faqItems: FaqItem;
     projects: Project;
     brands: Brand;
@@ -93,6 +94,9 @@ export interface Config {
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {
+    'machine-tags': {
+      machines: 'machines';
+    };
     'payload-folders': {
       documentsAndFolders: 'payload-folders' | 'media';
     };
@@ -105,6 +109,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     partners: PartnersSelect<false> | PartnersSelect<true>;
     machines: MachinesSelect<false> | MachinesSelect<true>;
+    'machine-tags': MachineTagsSelect<false> | MachineTagsSelect<true>;
     faqItems: FaqItemsSelect<false> | FaqItemsSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     brands: BrandsSelect<false> | BrandsSelect<true>;
@@ -1204,12 +1209,7 @@ export interface FormatsGridBlock {
   /**
    * Show machines matching these tags. Leave empty to show all. Ignored if items are set.
    */
-  filterTags?:
-    | {
-        tag: string;
-        id?: string | null;
-      }[]
-    | null;
+  filterTags?: (number | MachineTag)[] | null;
   /**
    * Explicit machine picks. Overrides filterTags.
    */
@@ -1222,6 +1222,26 @@ export interface FormatsGridBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'formatsGrid';
+}
+/**
+ * Reusable tags for filtering — used by Machines and the Formats Grid block.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "machine-tags".
+ */
+export interface MachineTag {
+  id: number;
+  label: string;
+  /**
+   * Machines currently using this tag — read-only, for spotting unused tags.
+   */
+  machines?: {
+    docs?: (number | Machine)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1247,12 +1267,7 @@ export interface Machine {
   /**
    * e.g. full-size, compact, campaign, premium — used for block-level filtering
    */
-  tags?:
-    | {
-        label: string;
-        id?: string | null;
-      }[]
-    | null;
+  tags?: (number | MachineTag)[] | null;
   gallery?:
     | {
         image: number | Media;
@@ -2041,6 +2056,10 @@ export interface PayloadLockedDocument {
         value: number | Machine;
       } | null)
     | ({
+        relationTo: 'machine-tags';
+        value: number | MachineTag;
+      } | null)
+    | ({
         relationTo: 'faqItems';
         value: number | FaqItem;
       } | null)
@@ -2435,12 +2454,7 @@ export interface FormatsGridBlockSelect<T extends boolean = true> {
   eyebrow?: T;
   heading?: T;
   subheading?: T;
-  filterTags?:
-    | T
-    | {
-        tag?: T;
-        id?: T;
-      };
+  filterTags?: T;
   items?:
     | T
     | {
@@ -2726,12 +2740,7 @@ export interface MachinesSelect<T extends boolean = true> {
   tagline?: T;
   heroEyebrow?: T;
   image?: T;
-  tags?:
-    | T
-    | {
-        label?: T;
-        id?: T;
-      };
+  tags?: T;
   gallery?:
     | T
     | {
@@ -2801,6 +2810,16 @@ export interface MachinesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "machine-tags_select".
+ */
+export interface MachineTagsSelect<T extends boolean = true> {
+  label?: T;
+  machines?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
