@@ -33,6 +33,7 @@ import * as migration_20260724_034405_add_generic_form_monday_sync from './20260
 import * as migration_20260724_192519_metrics_block from './20260724_192519_metrics_block';
 import * as migration_20260724_194612_trust_strip_subheading from './20260724_194612_trust_strip_subheading';
 import * as migration_20260724_214459_brands_drafts from './20260724_214459_brands_drafts';
+import * as migration_20260724_215447_brands_order from './20260724_215447_brands_order';
 
 export const migrations = [
   {
@@ -208,6 +209,11 @@ export const migrations = [
   {
     up: migration_20260724_214459_brands_drafts.up,
     down: migration_20260724_214459_brands_drafts.down,
-    name: '20260724_214459_brands_drafts'
+    name: '20260724_214459_brands_drafts',
+  },
+  {
+    up: migration_20260724_215447_brands_order.up,
+    down: migration_20260724_215447_brands_order.down,
+    name: '20260724_215447_brands_order'
   },
 ];
