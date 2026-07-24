@@ -12,6 +12,7 @@ import { FormatsGridServer } from '@/blocks/FormatsGrid/Server'
 import { InsightsShowcaseBlock } from '@/blocks/InsightsShowcase/Component'
 import { MachinesListingServer } from '@/blocks/MachinesListing/Server'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
+import { MetricsBlock } from '@/blocks/Metrics/Component'
 import { ProcessStepsBlock } from '@/blocks/ProcessSteps/Component'
 import { ProjectsShowcaseBlock } from '@/blocks/ProjectsShowcase/Component'
 import { SupportHubBlock } from '@/blocks/SupportHub/Component'
@@ -27,6 +28,7 @@ const blockComponents = {
   formBlock: FormBlock,
   mediaBlock: MediaBlock,
   cardGrid: CardGridBlock,
+  metrics: MetricsBlock,
   insightsShowcase: InsightsShowcaseBlock,
   projectsShowcase: ProjectsShowcaseBlock,
   trustStrip: TrustStripServer,

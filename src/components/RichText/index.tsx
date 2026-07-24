@@ -15,12 +15,14 @@ import { CardGridBlock } from '@/blocks/CardGrid/Component'
 import { CodeBlock, type CodeBlockProps } from '@/blocks/Code/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
+import { MetricsBlock } from '@/blocks/Metrics/Component'
 import type {
   BannerBlock as BannerBlockProps,
   CardGridBlock as CardGridBlockProps,
   ContentBlock as ContentBlockProps,
   CallToActionBlock as CTABlockProps,
   MediaBlock as MediaBlockProps,
+  MetricsBlock as MetricsBlockProps,
 } from '@/payload-types'
 
 type NodeTypes =
@@ -30,6 +32,7 @@ type NodeTypes =
       | MediaBlockProps
       | BannerBlockProps
       | CodeBlockProps
+      | MetricsBlockProps
       | ContentBlockProps
       | CardGridBlockProps
     >
@@ -77,6 +80,7 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
     cta: ({ node }) => <CallToActionBlock {...node.fields} />,
     content: ({ node }) => <ContentBlock {...node.fields} />,
     cardGrid: ({ node }) => <CardGridBlock {...node.fields} />,
+    metrics: ({ node }) => <MetricsBlock {...node.fields} />,
   },
 })
 
