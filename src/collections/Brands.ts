@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
-import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
+import { authenticatedOrPublished } from '../access/authenticatedOrPublished'
 
 export const Brands: CollectionConfig = {
   slug: 'brands',
@@ -8,9 +8,10 @@ export const Brands: CollectionConfig = {
     plural: { en: 'Refund Brands', es: 'Marcas de Reembolso' },
     singular: { en: 'Refund Brand', es: 'Marca de Reembolso' },
   },
+  defaultSort: 'order',
   admin: {
     group: { en: 'Config', es: 'Configuración' },
-    defaultColumns: ['name', 'updatedAt'],
+    defaultColumns: ['name', 'order', 'updatedAt'],
     useAsTitle: 'name',
     description: {
       en: "Client brands/product lines sold through Amerikiosks machines (e.g. Carlo's Bakery, Pharmabox by CVS) — referenced by Claims.kioskBrand, populates the brand picker on the refund claim form. Not the machine hardware (see Machines) or homepage trust-strip logos (see Partners).",
@@ -20,8 +21,11 @@ export const Brands: CollectionConfig = {
   access: {
     create: authenticated,
     delete: authenticated,
-    read: anyone,
+    read: authenticatedOrPublished,
     update: authenticated,
+  },
+  versions: {
+    drafts: true,
   },
   fields: [
     {
@@ -33,6 +37,14 @@ export const Brands: CollectionConfig = {
       name: 'logo',
       type: 'upload',
       relationTo: 'media',
+    },
+    {
+      name: 'order',
+      type: 'number',
+      defaultValue: 0,
+      admin: {
+        description: 'Lower number appears first. Use 1, 2, 3… to control display order.',
+      },
     },
   ],
 }

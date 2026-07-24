@@ -1630,8 +1630,13 @@ export interface Brand {
   id: number;
   name: string;
   logo?: (number | null) | Media;
+  /**
+   * Lower number appears first. Use 1, 2, 3… to control display order.
+   */
+  order?: number | null;
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * Refund/complaint claims submitted from the customer-service QR flow on deployed kiosks.
@@ -2850,8 +2855,10 @@ export interface ProjectsSelect<T extends boolean = true> {
 export interface BrandsSelect<T extends boolean = true> {
   name?: T;
   logo?: T;
+  order?: T;
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

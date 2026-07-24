@@ -32,6 +32,8 @@ import * as migration_20260724_012544_add_default_claim_integration_target from 
 import * as migration_20260724_034405_add_generic_form_monday_sync from './20260724_034405_add_generic_form_monday_sync';
 import * as migration_20260724_192519_metrics_block from './20260724_192519_metrics_block';
 import * as migration_20260724_194612_trust_strip_subheading from './20260724_194612_trust_strip_subheading';
+import * as migration_20260724_214459_brands_drafts from './20260724_214459_brands_drafts';
+import * as migration_20260724_215447_brands_order from './20260724_215447_brands_order';
 
 export const migrations = [
   {
@@ -202,6 +204,16 @@ export const migrations = [
   {
     up: migration_20260724_194612_trust_strip_subheading.up,
     down: migration_20260724_194612_trust_strip_subheading.down,
-    name: '20260724_194612_trust_strip_subheading'
+    name: '20260724_194612_trust_strip_subheading',
+  },
+  {
+    up: migration_20260724_214459_brands_drafts.up,
+    down: migration_20260724_214459_brands_drafts.down,
+    name: '20260724_214459_brands_drafts',
+  },
+  {
+    up: migration_20260724_215447_brands_order.up,
+    down: migration_20260724_215447_brands_order.down,
+    name: '20260724_215447_brands_order'
   },
 ];
