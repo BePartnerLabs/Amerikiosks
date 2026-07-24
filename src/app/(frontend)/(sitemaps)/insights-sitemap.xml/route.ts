@@ -3,7 +3,16 @@ import { unstable_cache } from 'next/cache'
 import { getServerSideSitemap } from 'next-sitemap'
 import { getPayload } from 'payload'
 
-const getPostsSitemap = unstable_cache(
+// 'en' is the default locale (see payload.config.ts) and has no URL prefix;
+// every other locale is prefixed (e.g. /es/...) — matches [locale]/[slug]/page.tsx's routing.
+const LOCALES = ['en', 'es'] as const
+const DEFAULT_LOCALE = 'en'
+
+function localizedPath(locale: string, slugPath: string): string {
+  return locale === DEFAULT_LOCALE ? slugPath : `/${locale}${slugPath}`
+}
+
+const getInsightsSitemap = unstable_cache(
   async () => {
     const payload = await getPayload({ config })
     const SITE_URL =
@@ -11,34 +20,37 @@ const getPostsSitemap = unstable_cache(
       process.env.VERCEL_PROJECT_PRODUCTION_URL ||
       'https://example.com'
 
-    const results = await payload.find({
-      collection: 'insights',
-      overrideAccess: false,
-      draft: false,
-      depth: 0,
-      limit: 1000,
-      pagination: false,
-      where: {
-        _status: {
-          equals: 'published',
-        },
-      },
-      select: {
-        slug: true,
-        updatedAt: true,
-      },
-    })
-
     const dateFallback = new Date().toISOString()
+    const sitemap: { loc: string; lastmod: string }[] = []
 
-    const sitemap = results.docs
-      ? results.docs
-          .filter((post) => Boolean(post?.slug))
-          .map((post) => ({
-            loc: `${SITE_URL}/posts/${post?.slug}`,
-            lastmod: post.updatedAt || dateFallback,
-          }))
-      : []
+    for (const locale of LOCALES) {
+      const results = await payload.find({
+        collection: 'insights',
+        overrideAccess: false,
+        draft: false,
+        depth: 0,
+        limit: 1000,
+        pagination: false,
+        locale,
+        where: {
+          _status: {
+            equals: 'published',
+          },
+        },
+        select: {
+          slug: true,
+          updatedAt: true,
+        },
+      })
+
+      for (const post of results.docs ?? []) {
+        if (!post?.slug) continue
+        sitemap.push({
+          loc: `${SITE_URL}${localizedPath(locale, `/insights/${post.slug}`)}`,
+          lastmod: post.updatedAt || dateFallback,
+        })
+      }
+    }
 
     return sitemap
   },
@@ -49,7 +61,7 @@ const getPostsSitemap = unstable_cache(
 )
 
 export async function GET() {
-  const sitemap = await getPostsSitemap()
+  const sitemap = await getInsightsSitemap()
 
   return getServerSideSitemap(sitemap)
 }
