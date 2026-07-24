@@ -1,6 +1,11 @@
 import { cleanup, render, screen } from '@testing-library/react'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { SupportHubBlock } from '@/blocks/SupportHub/Component'
+
+const useSearchParamsMock = vi.fn(() => new URLSearchParams())
+vi.mock('next/navigation', () => ({
+  useSearchParams: () => useSearchParamsMock(),
+}))
 
 const baseProps = {
   phoneNumber: '+18885093699',
@@ -32,6 +37,19 @@ describe('SupportHub block', () => {
   })
 
   it('renders a "Request a refund" link pointing at the claim form URL', () => {
+    render(<SupportHubBlock {...baseProps} />)
+    const link = screen.getByRole('link', { name: /request a refund/i })
+    expect(link).toHaveAttribute('href', '/customer-service/request-a-refund')
+  })
+
+  it('appends machine_id to the refund link when present in the current URL', () => {
+    useSearchParamsMock.mockReturnValueOnce(new URLSearchParams('machine_id=AK-0231'))
+    render(<SupportHubBlock {...baseProps} />)
+    const link = screen.getByRole('link', { name: /request a refund/i })
+    expect(link).toHaveAttribute('href', '/customer-service/request-a-refund?machine_id=AK-0231')
+  })
+
+  it('leaves the refund link unchanged when machine_id is absent', () => {
     render(<SupportHubBlock {...baseProps} />)
     const link = screen.getByRole('link', { name: /request a refund/i })
     expect(link).toHaveAttribute('href', '/customer-service/request-a-refund')

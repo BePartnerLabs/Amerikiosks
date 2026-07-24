@@ -27,6 +27,7 @@ Working outline for the final content-editor usage manual. Each bullet is a topi
 - Content, Media, CTA, Archive — general-purpose blocks
 - Audience Showcase, Formats Grid, Process Steps — structured multi-item blocks
 - FAQ + Form, Claim Form, Support Hub, Machines Listing — specialized blocks
+- **Support Hub → Claim Form: the `machine_id` link** — the kiosk's printed QR code encodes `machine_id` on the Support Hub page's own URL; Support Hub automatically carries it over onto the "Request a refund" button so the claim ends up tagged with the originating kiosk (visible in `/admin` and forwarded to Monday.com's "Kiosk ID" column, if that integration is enabled — see Settings below). Nothing to configure — this is automatic as long as the QR code itself still points at the Support Hub page with `?machine_id=...`.
 - Projects Showcase, Insights Showcase — pull from other collections, not manually authored
 
 ## 4. The Link field — three ways a button/link can behave
@@ -68,6 +69,7 @@ Working outline for the final content-editor usage manual. Each bullet is a topi
 ## 10. Settings (site-wide)
 
 - `noIndex` flag — hiding the entire site from search engines (staging use)
+- **Integrations tab** — API keys/tokens for the refund-claim sync (JotForm, Monday.com). Only visible/editable to logged-in admins; each claim's "Integration target" (in the Claims collection, sidebar) decides which one a given claim is sent to
 - Any other global toggles
 
 ## 10a. Consent Logs (cookie-consent audit trail)

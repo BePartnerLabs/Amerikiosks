@@ -2,6 +2,7 @@ import type { PayloadRequest } from 'payload'
 import type { Claim } from '@/payload-types'
 import { JotFormRepository, MondayRepository, OdooRepository } from '@/repositories'
 import type { ClaimSubmission } from '@/repositories/JotFormRepository'
+import { getPrivateFileBuffer } from '@/utilities/privateUpload'
 
 const REPOSITORIES = {
   jotform: JotFormRepository,
@@ -34,6 +35,21 @@ export async function dispatchClaimSync(claim: Claim, req: PayloadRequest): Prom
     ? `${claim.additionalInfo ?? ''}\n\n[Photo attached — view in admin: Claim #${claim.id}]`.trim()
     : (claim.additionalInfo ?? undefined)
 
+  const repository =
+    REPOSITORIES[claim.integrationTarget as keyof typeof REPOSITORIES] ?? JotFormRepository
+
+  // Only Monday's API can actually receive the real file (see
+  // ClaimSubmission.photo) — fetching it from R2 for the other targets
+  // would be wasted work, since they only get the text pointer below.
+  const photo =
+    repository === MondayRepository && claim.photoKey
+      ? await getPrivateFileBuffer(claim.photoKey).then(({ buffer, contentType }) => ({
+          buffer,
+          contentType,
+          filename: claim.photoKey ?? 'photo',
+        }))
+      : undefined
+
   const submission: ClaimSubmission = {
     kioskBrand: brand.name,
     paymentMethod: claim.paymentMethod,
@@ -48,11 +64,9 @@ export async function dispatchClaimSync(claim: Claim, req: PayloadRequest): Prom
     lastFourCardDigits: claim.lastFourCardDigits ?? undefined,
     refundMethod: claim.refundMethod ?? undefined,
     refundAccount: claim.refundAccount ?? undefined,
-    amount: claim.amount ?? undefined,
+    machineId: claim.machineId ?? undefined,
+    photo,
   }
-
-  const repository =
-    REPOSITORIES[claim.integrationTarget as keyof typeof REPOSITORIES] ?? JotFormRepository
 
   try {
     await repository.submit(submission, req)

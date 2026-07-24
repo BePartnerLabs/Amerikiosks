@@ -1543,10 +1543,6 @@ export interface Claim {
    */
   refundAccount?: string | null;
   /**
-   * Refund amount requested, if known.
-   */
-  amount?: number | null;
-  /**
    * Optional staff-attached photo (authenticated admin only). Public claim submissions never populate this field — see photoKey below for the customer-submitted photo.
    */
   photo?: (number | null) | Media;
@@ -2684,7 +2680,6 @@ export interface ClaimsSelect<T extends boolean = true> {
   lastFourCardDigits?: T;
   refundMethod?: T;
   refundAccount?: T;
-  amount?: T;
   photo?: T;
   photoKey?: T;
   machineId?: T;

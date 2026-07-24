@@ -1,9 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 const postMock = vi.fn()
+const postMultipartMock = vi.fn()
 
 vi.mock('@/repositories/clients/ServerHttpClient', () => ({
-  serverHttpClient: { post: postMock },
+  serverHttpClient: { post: postMock, postMultipart: postMultipartMock },
 }))
 
 const baseClaim = {
@@ -89,18 +90,60 @@ describe('MondayRepository', () => {
     expect(columnValues.long_text6.text).toContain('Refund account: test@example.com')
   })
 
-  it('maps amount to the numbers1 column when present, empty string when absent', async () => {
+  it('does not set numbers1 ("Ammount") — no equivalent claim field, left for the board operator', async () => {
     postMock.mockResolvedValue({ data: { create_item: { id: '1' } } })
     const { MondayRepository } = await import('@/repositories/MondayRepository')
 
-    await MondayRepository.submit({ ...baseClaim, amount: 42.5 }, fakeReq())
-    const [, bodyWithAmount] = postMock.mock.calls[0]
-    expect(JSON.parse(bodyWithAmount.variables.columnValues).numbers1).toBe('42.5')
+    await MondayRepository.submit(baseClaim, fakeReq())
+    const [, body] = postMock.mock.calls[0]
+    expect(JSON.parse(body.variables.columnValues).numbers1).toBeUndefined()
+  })
+
+  it('sets the Kiosk ID column when machineId is present, omits it when absent', async () => {
+    postMock.mockResolvedValue({ data: { create_item: { id: '1' } } })
+    const { MondayRepository } = await import('@/repositories/MondayRepository')
+
+    await MondayRepository.submit({ ...baseClaim, machineId: 'KIOSK-42' }, fakeReq())
+    const [, bodyWithMachineId] = postMock.mock.calls[0]
+    expect(JSON.parse(bodyWithMachineId.variables.columnValues).text_mkve20y8).toBe('KIOSK-42')
 
     postMock.mockClear()
     await MondayRepository.submit(baseClaim, fakeReq())
-    const [, bodyWithoutAmount] = postMock.mock.calls[0]
-    expect(JSON.parse(bodyWithoutAmount.variables.columnValues).numbers1).toBe('')
+    const [, bodyWithoutMachineId] = postMock.mock.calls[0]
+    expect(JSON.parse(bodyWithoutMachineId.variables.columnValues).text_mkve20y8).toBeUndefined()
+  })
+
+  it('uploads the photo via add_file_to_column after item creation, using the created item id', async () => {
+    postMock.mockResolvedValue({ data: { create_item: { id: '999' } } })
+    postMultipartMock.mockResolvedValue({ data: { add_file_to_column: { id: 'file-1' } } })
+
+    const { MondayRepository } = await import('@/repositories/MondayRepository')
+    await MondayRepository.submit(
+      {
+        ...baseClaim,
+        photo: {
+          buffer: Buffer.from([0xff, 0xd8, 0xff]),
+          filename: 'issue.jpg',
+          contentType: 'image/jpeg',
+        },
+      },
+      fakeReq('test-token'),
+    )
+
+    expect(postMultipartMock).toHaveBeenCalledTimes(1)
+    const [url, formData, headers] = postMultipartMock.mock.calls[0]
+    expect(url).toBe('https://api.monday.com/v2')
+    expect(headers).toEqual({ Authorization: 'test-token' })
+    expect(formData).toBeInstanceOf(FormData)
+    expect(String(formData.get('query'))).toContain('item_id: 999')
+    expect(formData.get('variables[file]')).toBeInstanceOf(Blob)
+  })
+
+  it('does not attempt a file upload when no photo is present', async () => {
+    postMock.mockResolvedValue({ data: { create_item: { id: '1' } } })
+    const { MondayRepository } = await import('@/repositories/MondayRepository')
+    await MondayRepository.submit(baseClaim, fakeReq())
+    expect(postMultipartMock).not.toHaveBeenCalled()
   })
 
   it('throws when the Monday API response contains a GraphQL errors array', async () => {

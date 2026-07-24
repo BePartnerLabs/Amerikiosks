@@ -38,7 +38,7 @@ function buildAdditionalInfo(claim: ClaimSubmission): string {
 }
 
 function buildColumnValues(claim: ClaimSubmission): Record<string, unknown> {
-  return {
+  const columnValues: Record<string, unknown> = {
     text7: `${claim.customerFirstName} ${claim.customerLastName}`.trim(),
     dropdown: { label: PAYMENT_METHOD_LABEL[claim.paymentMethod] ?? claim.paymentMethod },
     email: { email: claim.customerEmail, text: claim.customerEmail },
@@ -49,8 +49,42 @@ function buildColumnValues(claim: ClaimSubmission): Record<string, unknown> {
     numbers3: claim.lastFourCardDigits ?? '',
     text__1: claim.kioskBrand,
     text9: claim.location,
-    numbers1: claim.amount != null ? String(claim.amount) : '',
+    // "Ammount" (numbers1) has no equivalent in our claim model — left
+    // unset for the Monday board operator to fill in manually.
   }
+
+  // "Kiosk ID" (text_mkve20y8) — only set when the claim actually has one;
+  // not every claim originates from a QR scan.
+  if (claim.machineId) {
+    columnValues.text_mkve20y8 = claim.machineId
+  }
+
+  return columnValues
+}
+
+async function addFileToColumn(
+  itemId: string,
+  photo: NonNullable<ClaimSubmission['photo']>,
+  apiToken: string,
+): Promise<void> {
+  const query = `mutation ($file: File!) {
+    add_file_to_column (item_id: ${itemId}, column_id: "files3", file: $file) {
+      id
+    }
+  }`
+
+  const formData = new FormData()
+  formData.append('query', query)
+  formData.append(
+    'variables[file]',
+    new Blob([new Uint8Array(photo.buffer)], { type: photo.contentType }),
+    photo.filename,
+  )
+
+  const body = await serverHttpClient.postMultipart<MondayResponse>(MONDAY_API_URL, formData, {
+    Authorization: apiToken,
+  })
+  assertNoGraphQLErrors(body)
 }
 
 export const MondayRepository = {
@@ -84,6 +118,13 @@ export const MondayRepository = {
       { Authorization: apiToken },
     )
     assertNoGraphQLErrors(body)
+
+    if (claim.photo) {
+      const itemId = (body.data?.create_item as { id: string } | undefined)?.id
+      if (itemId) {
+        await addFileToColumn(itemId, claim.photo, apiToken)
+      }
+    }
 
     return { responseCode: 200, message: 'success' }
   },

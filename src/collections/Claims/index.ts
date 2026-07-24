@@ -135,13 +135,6 @@ export const Claims: CollectionConfig = {
       },
     },
     {
-      name: 'amount',
-      type: 'number',
-      admin: {
-        description: 'Refund amount requested, if known.',
-      },
-    },
-    {
       name: 'photo',
       type: 'upload',
       relationTo: 'media',

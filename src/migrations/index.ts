@@ -27,6 +27,7 @@ import * as migration_20260723_041027_rename_claims_customer_name_to_first_last 
 import * as migration_20260723_043715_simplify_claims_location_and_add_claim_form_messages from './20260723_043715_simplify_claims_location_and_add_claim_form_messages';
 import * as migration_20260723_170023_add_jotform_form_id_setting from './20260723_170023_add_jotform_form_id_setting';
 import * as migration_20260723_211756_add_claims_photo_key from './20260723_211756_add_claims_photo_key';
+import * as migration_20260724_001423_add_monday_integration from './20260724_001423_add_monday_integration';
 
 export const migrations = [
   {
@@ -172,6 +173,11 @@ export const migrations = [
   {
     up: migration_20260723_211756_add_claims_photo_key.up,
     down: migration_20260723_211756_add_claims_photo_key.down,
-    name: '20260723_211756_add_claims_photo_key'
+    name: '20260723_211756_add_claims_photo_key',
+  },
+  {
+    up: migration_20260724_001423_add_monday_integration.up,
+    down: migration_20260724_001423_add_monday_integration.down,
+    name: '20260724_001423_add_monday_integration'
   },
 ];
