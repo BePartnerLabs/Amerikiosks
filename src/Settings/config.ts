@@ -175,6 +175,18 @@ export const Settings: GlobalConfig = {
                 placeholder: '230405763622148',
               },
             },
+            {
+              name: 'mondayApiToken',
+              type: 'text',
+              label: 'Monday.com API Token',
+              access: {
+                read: authenticatedFieldAccess,
+              },
+              admin: {
+                description:
+                  'API token for the Monday.com GraphQL API (used by the Claims refund flow). Only visible to logged-in admin users — never exposed in the public Settings API response.',
+              },
+            },
           ],
         },
       ],

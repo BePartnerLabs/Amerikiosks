@@ -1494,7 +1494,7 @@ export interface Project {
   _status?: ('draft' | 'published') | null;
 }
 /**
- * Client brands/product lines sold through Amerikiosks machines (e.g. Carlo's Bakery, Pharmabox by CVS) — used in the refund claim form. Not the machine hardware (see Machines) or homepage trust-strip logos (see Partners).
+ * Client brands/product lines sold through Amerikiosks machines (e.g. Carlo's Bakery, Pharmabox by CVS) — referenced by Claims.kioskBrand, populates the brand picker on the refund claim form. Not the machine hardware (see Machines) or homepage trust-strip logos (see Partners).
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "brands".
@@ -1554,7 +1554,7 @@ export interface Claim {
    * Captured from the QR code scan (machine_id query param), for internal reference.
    */
   machineId?: string | null;
-  integrationTarget?: ('jotform' | 'odoo') | null;
+  integrationTarget?: ('jotform' | 'odoo' | 'monday') | null;
   syncStatus?: ('pending' | 'synced' | 'error') | null;
   syncError?: string | null;
   syncedAt?: string | null;
@@ -3228,6 +3228,10 @@ export interface Setting {
    * Target JotForm form ID for the Claims refund flow. Leave empty to use the production "Amerikiosks - Refund Request" form (230405763622148) — override here to point at a clone/test form in local or staging.
    */
   jotformFormId?: string | null;
+  /**
+   * API token for the Monday.com GraphQL API (used by the Claims refund flow). Only visible to logged-in admin users — never exposed in the public Settings API response.
+   */
+  mondayApiToken?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -3356,6 +3360,7 @@ export interface SettingsSelect<T extends boolean = true> {
   llmsIncludeInsights?: T;
   jotformApiKey?: T;
   jotformFormId?: T;
+  mondayApiToken?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

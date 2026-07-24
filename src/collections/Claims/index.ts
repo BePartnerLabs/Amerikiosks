@@ -169,6 +169,7 @@ export const Claims: CollectionConfig = {
       options: [
         { label: 'JotForm', value: 'jotform' },
         { label: 'Odoo', value: 'odoo' },
+        { label: 'Monday.com', value: 'monday' },
       ],
       admin: {
         position: 'sidebar',

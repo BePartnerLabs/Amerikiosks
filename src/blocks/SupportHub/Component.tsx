@@ -1,3 +1,5 @@
+'use client'
+import { useSearchParams } from 'next/navigation'
 import type React from 'react'
 import { Icon } from '@/components/Icon'
 import './styles.css'
@@ -26,6 +28,16 @@ export type SupportHubBlockType = {
 }
 
 const digitsOnly = (value: string) => value.replace(/[^0-9]/g, '')
+
+// Forwards the machine_id this page itself was scanned into (from the QR
+// code on the kiosk) onto the refund link, so ClaimForm's own
+// `searchParams.get('machine_id')` (Component.tsx) picks it up without the
+// customer having to re-enter it. Left untouched when the param isn't set.
+function withMachineId(url: string, machineId: string | null): string {
+  if (!machineId) return url
+  const separator = url.includes('?') ? '&' : '?'
+  return `${url}${separator}machine_id=${encodeURIComponent(machineId)}`
+}
 
 const OPTIONS = (phoneNumber: string, whatsappNumber: string, refundFormUrl: string) => [
   {
@@ -64,7 +76,9 @@ export const SupportHubBlock: React.FC<SupportHubBlockType> = ({
   refundFormUrl,
   blockName,
 }) => {
-  const options = OPTIONS(phoneNumber, whatsappNumber, refundFormUrl)
+  const searchParams = useSearchParams()
+  const machineId = searchParams?.get('machine_id') ?? null
+  const options = OPTIONS(phoneNumber, whatsappNumber, withMachineId(refundFormUrl, machineId))
 
   return (
     <section

@@ -70,3 +70,26 @@ export async function getPresignedUrlForKey(key: string): Promise<string> {
     expiresIn: PRESIGNED_URL_TTL_SECONDS,
   })
 }
+
+/**
+ * Downloads a key's raw bytes server-side — for forwarding the file itself to
+ * a downstream integration that supports real attachments (e.g. Monday.com's
+ * add_file_to_column), unlike a presigned URL which only lets a browser view
+ * it. Call only from an already access-controlled/trusted server context.
+ */
+export async function getPrivateFileBuffer(
+  key: string,
+): Promise<{ buffer: Buffer; contentType: string }> {
+  const bucket = requireBucket()
+
+  const result = await client.send(new GetObjectCommand({ Bucket: bucket, Key: key }))
+  const chunks: Buffer[] = []
+  for await (const chunk of result.Body as AsyncIterable<Buffer | Uint8Array>) {
+    chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk))
+  }
+
+  return {
+    buffer: Buffer.concat(chunks),
+    contentType: result.ContentType ?? 'application/octet-stream',
+  }
+}

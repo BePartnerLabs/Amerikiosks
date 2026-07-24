@@ -1,4 +1,5 @@
 import type { PayloadRequest } from 'payload'
+import { CLAIM_REASON_LABEL, PAYMENT_METHOD_LABEL } from './claimLabels'
 import { serverHttpClient } from './clients/ServerHttpClient'
 
 export type ClaimSubmission = {
@@ -15,16 +16,23 @@ export type ClaimSubmission = {
   lastFourCardDigits?: string
   refundMethod?: string
   refundAccount?: string
-  // No photo field here on purpose — JotForm's public Submissions REST API
-  // (this repository's endpoint) cannot attach a real file: tried multipart,
-  // a plain URL, and a base64 data URI, all confirmed empirically against
-  // JotForm's live API to leave the file-upload answer empty or store the
-  // raw string as a garbage filename, never the actual image. Real file
-  // delivery only works through JotForm's internal, undocumented
-  // upload.jotform.com + submit.jotform.com widget protocol, which this
-  // project deliberately does not replicate (see Claims.photoKey instead —
-  // the photo lives in our own private R2 bucket, viewed on demand via
-  // GET /api/claims/:id/photo-url, not delivered into JotForm at all).
+  // Captured from the QR code scan (Claims.machineId) — JotForm's form has
+  // no matching question, so JotFormRepository ignores this; only Monday
+  // maps it (to the "Kiosk ID" column) when present.
+  machineId?: string
+  // Populated only when routing to Monday (see dispatchClaimSync.ts) — its
+  // GraphQL API can attach a real file via add_file_to_column. JotForm's
+  // public Submissions REST API (this repository's endpoint) cannot attach
+  // a real file: tried multipart, a plain URL, and a base64 data URI, all
+  // confirmed empirically against JotForm's live API to leave the
+  // file-upload answer empty or store the raw string as a garbage
+  // filename, never the actual image. Real file delivery only works
+  // through JotForm's internal, undocumented upload.jotform.com +
+  // submit.jotform.com widget protocol, which this project deliberately
+  // does not replicate — JotFormRepository below ignores this field
+  // entirely and relies on the "[Photo attached — view in admin]" text
+  // pointer dispatchClaimSync appends to additionalInfo instead.
+  photo?: { buffer: Buffer; filename: string; contentType: string }
 }
 
 // Amerikiosks' existing "Amerikiosks - Refund Request" JotForm, audited at
@@ -71,19 +79,8 @@ const QUESTION_ID = {
 // for our own admin/DB), so every slug needs mapping to the literal JotForm option
 // string before submission. Verified against the live form's <option>/<input value>
 // attributes, including JotForm's own trailing periods on claimReason.
-const PAYMENT_METHOD_LABEL: Record<string, string> = {
-  card: 'Credit/Debit Card',
-  cash: 'Cash',
-  google_pay: 'Google Pay',
-  apple_pay: 'Apple Pay',
-}
-
-const CLAIM_REASON_LABEL: Record<string, string> = {
-  partial_dispense: 'Only part of my order was dispensed.',
-  damaged_product: 'The product was damaged.',
-  wrong_product: 'I received the wrong product.',
-  no_product: "I didn't receive my product.",
-}
+// (PAYMENT_METHOD_LABEL / CLAIM_REASON_LABEL live in ./claimLabels — shared with
+// MondayRepository so the two integrations' option sets can't drift apart.)
 
 // refundMethod values already match JotForm's option text verbatim (Zelle, CashApp,
 // Paypal, Venmo) since that select was added specifically to mirror qid 20 — no
