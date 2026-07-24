@@ -9,7 +9,8 @@ function easeOutCubic(t: number): number {
 }
 
 export const MetricsCounter: React.FC<{ value: string }> = ({ value }) => {
-  const match = value.match(NUMERIC_PREFIX)
+  const safeValue = value ?? ''
+  const match = safeValue.match(NUMERIC_PREFIX)
   const target = match ? Number.parseInt(match[1], 10) : null
   const suffix = match ? match[2] : ''
 
@@ -69,7 +70,7 @@ export const MetricsCounter: React.FC<{ value: string }> = ({ value }) => {
   }, [target, start])
 
   if (target === null) {
-    return <span ref={ref}>{value}</span>
+    return <span ref={ref}>{safeValue}</span>
   }
 
   return <span ref={ref}>{done ? `${target}${suffix}` : `${display}${suffix}`}</span>
