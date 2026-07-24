@@ -541,6 +541,10 @@ export interface Form {
             width?: number | null;
             required?: boolean | null;
             defaultValue?: boolean | null;
+            /**
+             * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
+             */
+            externalId?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'checkbox';
@@ -550,6 +554,10 @@ export interface Form {
             label?: string | null;
             width?: number | null;
             required?: boolean | null;
+            /**
+             * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
+             */
+            externalId?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'country';
@@ -559,6 +567,10 @@ export interface Form {
             label?: string | null;
             width?: number | null;
             required?: boolean | null;
+            /**
+             * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
+             */
+            externalId?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'email';
@@ -587,8 +599,11 @@ export interface Form {
             name: string;
             label?: string | null;
             width?: number | null;
-            defaultValue?: number | null;
             required?: boolean | null;
+            /**
+             * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
+             */
+            externalId?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'number';
@@ -607,6 +622,10 @@ export interface Form {
                 }[]
               | null;
             required?: boolean | null;
+            /**
+             * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
+             */
+            externalId?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'select';
@@ -616,6 +635,10 @@ export interface Form {
             label?: string | null;
             width?: number | null;
             required?: boolean | null;
+            /**
+             * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
+             */
+            externalId?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'state';
@@ -626,6 +649,10 @@ export interface Form {
             width?: number | null;
             defaultValue?: string | null;
             required?: boolean | null;
+            /**
+             * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
+             */
+            externalId?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'text';
@@ -636,9 +663,35 @@ export interface Form {
             width?: number | null;
             defaultValue?: string | null;
             required?: boolean | null;
+            /**
+             * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
+             */
+            externalId?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'textarea';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            uploadCollection: 'media';
+            mimeTypes?:
+              | {
+                  mimeType: string;
+                  id?: string | null;
+                }[]
+              | null;
+            width?: number | null;
+            maxFileSize?: number | null;
+            required?: boolean | null;
+            multiple?: boolean | null;
+            /**
+             * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
+             */
+            externalId?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'upload';
           }
       )[]
     | null;
@@ -688,6 +741,18 @@ export interface Form {
         id?: string | null;
       }[]
     | null;
+  /**
+   * External system this form syncs submissions to. Odoo is not yet implemented — reserved for when that integration is ready.
+   */
+  integrationTarget?: ('none' | 'monday' | 'odoo') | null;
+  /**
+   * The Monday.com board id (or future Odoo record id) this form syncs to.
+   */
+  externalId?: string | null;
+  /**
+   * Monday.com group id within the board (e.g. "topics").
+   */
+  mondayGroupId?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1616,6 +1681,19 @@ export interface FormSubmission {
         id?: string | null;
       }[]
     | null;
+  submissionUploads?:
+    | {
+        field: string;
+        value: {
+          relationTo: 'media';
+          value: number | Media;
+        }[];
+        id?: string | null;
+      }[]
+    | null;
+  syncStatus?: ('pending' | 'synced' | 'error') | null;
+  syncError?: string | null;
+  syncedAt?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1729,6 +1807,20 @@ export interface PayloadMcpApiKey {
      * Allow clients to delete machines.
      */
     delete?: boolean | null;
+  };
+  forms?: {
+    /**
+     * Allow clients to find forms.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create forms.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update forms.
+     */
+    update?: boolean | null;
   };
   updatedAt: string;
   createdAt: string;
@@ -2737,6 +2829,7 @@ export interface FormsSelect<T extends boolean = true> {
               width?: T;
               required?: T;
               defaultValue?: T;
+              externalId?: T;
               id?: T;
               blockName?: T;
             };
@@ -2747,6 +2840,7 @@ export interface FormsSelect<T extends boolean = true> {
               label?: T;
               width?: T;
               required?: T;
+              externalId?: T;
               id?: T;
               blockName?: T;
             };
@@ -2757,6 +2851,7 @@ export interface FormsSelect<T extends boolean = true> {
               label?: T;
               width?: T;
               required?: T;
+              externalId?: T;
               id?: T;
               blockName?: T;
             };
@@ -2773,8 +2868,8 @@ export interface FormsSelect<T extends boolean = true> {
               name?: T;
               label?: T;
               width?: T;
-              defaultValue?: T;
               required?: T;
+              externalId?: T;
               id?: T;
               blockName?: T;
             };
@@ -2794,6 +2889,7 @@ export interface FormsSelect<T extends boolean = true> {
                     id?: T;
                   };
               required?: T;
+              externalId?: T;
               id?: T;
               blockName?: T;
             };
@@ -2804,6 +2900,7 @@ export interface FormsSelect<T extends boolean = true> {
               label?: T;
               width?: T;
               required?: T;
+              externalId?: T;
               id?: T;
               blockName?: T;
             };
@@ -2815,6 +2912,7 @@ export interface FormsSelect<T extends boolean = true> {
               width?: T;
               defaultValue?: T;
               required?: T;
+              externalId?: T;
               id?: T;
               blockName?: T;
             };
@@ -2826,6 +2924,27 @@ export interface FormsSelect<T extends boolean = true> {
               width?: T;
               defaultValue?: T;
               required?: T;
+              externalId?: T;
+              id?: T;
+              blockName?: T;
+            };
+        upload?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              uploadCollection?: T;
+              mimeTypes?:
+                | T
+                | {
+                    mimeType?: T;
+                    id?: T;
+                  };
+              width?: T;
+              maxFileSize?: T;
+              required?: T;
+              multiple?: T;
+              externalId?: T;
               id?: T;
               blockName?: T;
             };
@@ -2850,6 +2969,9 @@ export interface FormsSelect<T extends boolean = true> {
         message?: T;
         id?: T;
       };
+  integrationTarget?: T;
+  externalId?: T;
+  mondayGroupId?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2866,6 +2988,16 @@ export interface FormSubmissionsSelect<T extends boolean = true> {
         value?: T;
         id?: T;
       };
+  submissionUploads?:
+    | T
+    | {
+        field?: T;
+        value?: T;
+        id?: T;
+      };
+  syncStatus?: T;
+  syncError?: T;
+  syncedAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2946,6 +3078,13 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         create?: T;
         update?: T;
         delete?: T;
+      };
+  forms?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
       };
   updatedAt?: T;
   createdAt?: T;

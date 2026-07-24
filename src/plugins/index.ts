@@ -8,6 +8,7 @@ import type { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import { s3Storage } from '@payloadcms/storage-s3'
 import type { Plugin } from 'payload'
+import { dispatchFormSync } from '@/collections/FormSubmissions/hooks/dispatchFormSync'
 import { revalidateRedirects } from '@/hooks/revalidateRedirects'
 import type { Insight, Machine, Page, Project } from '@/payload-types'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
@@ -37,6 +38,7 @@ export const plugins: Plugin[] = [
       projects: { enabled: { find: true } },
       faqItems: { enabled: { find: true } },
       machines: { enabled: { find: true, create: true, update: true, delete: true } },
+      forms: { enabled: { find: true, create: true, update: true } },
     },
   }),
   // Use Cloudflare R2 (S3-compatible) when credentials are set.
@@ -95,26 +97,138 @@ export const plugins: Plugin[] = [
   formBuilderPlugin({
     fields: {
       payment: false,
+      // Not enabled by the plugin's own defaults — required for the
+      // kiosk-development/placement-application forms' photo attachment.
+      upload: true,
+      // Not one of the plugin's builtins — src/blocks/Form/Number already had
+      // an unused frontend renderer prepared for this; registering it here
+      // gives it a real field-block config to attach to.
+      number: {
+        slug: 'number',
+        fields: [
+          { type: 'row', fields: [{ name: 'name', type: 'text', required: true }] },
+          { name: 'label', type: 'text', localized: true },
+          { name: 'width', type: 'number' },
+          { name: 'required', type: 'checkbox' },
+        ],
+        // biome-ignore lint/suspicious/noExplicitAny: matches a Payload Block shape, not the plugin's own narrower FieldConfig type
+      } as any,
     },
+    uploadCollections: ['media'],
     formOverrides: {
       fields: ({ defaultFields }) => {
-        return defaultFields.map((field) => {
-          if ('name' in field && field.name === 'confirmationMessage') {
-            return {
-              ...field,
-              editor: lexicalEditor({
-                features: ({ rootFeatures }) => {
-                  return [
-                    ...rootFeatures,
-                    FixedToolbarFeature(),
-                    HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-                  ]
-                },
-              }),
-            }
+        // Per-field-block "externalId" — the Monday column id that field's
+        // value maps to (see GenericMondayRepository). Added to every block
+        // type except message/payment, which never carry submission data.
+        const fieldsBlocksField = defaultFields.find(
+          (field) => 'name' in field && field.name === 'fields',
+        )
+        if (fieldsBlocksField && 'blocks' in fieldsBlocksField) {
+          for (const block of fieldsBlocksField.blocks) {
+            if (block.slug === 'message' || block.slug === 'payment') continue
+            block.fields.push({
+              name: 'externalId',
+              type: 'text',
+              admin: {
+                description:
+                  'Monday.com column id this field\'s value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.',
+              },
+            })
           }
-          return field
-        })
+        }
+
+        return defaultFields
+          .map((field) => {
+            if ('name' in field && field.name === 'confirmationMessage') {
+              return {
+                ...field,
+                editor: lexicalEditor({
+                  features: ({ rootFeatures }) => {
+                    return [
+                      ...rootFeatures,
+                      FixedToolbarFeature(),
+                      HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
+                    ]
+                  },
+                }),
+              }
+            }
+            return field
+          })
+          .concat([
+            {
+              name: 'integrationTarget',
+              type: 'select',
+              defaultValue: 'none',
+              options: [
+                { label: 'None', value: 'none' },
+                { label: 'Monday.com', value: 'monday' },
+                { label: 'Odoo', value: 'odoo' },
+              ],
+              admin: {
+                position: 'sidebar',
+                description:
+                  'External system this form syncs submissions to. Odoo is not yet implemented — reserved for when that integration is ready.',
+              },
+            },
+            {
+              name: 'externalId',
+              type: 'text',
+              admin: {
+                position: 'sidebar',
+                condition: (data) => data?.integrationTarget && data.integrationTarget !== 'none',
+                description:
+                  'The Monday.com board id (or future Odoo record id) this form syncs to.',
+              },
+            },
+            {
+              name: 'mondayGroupId',
+              type: 'text',
+              admin: {
+                position: 'sidebar',
+                condition: (data) => data?.integrationTarget === 'monday',
+                description: 'Monday.com group id within the board (e.g. "topics").',
+              },
+            },
+          ])
+      },
+    },
+    formSubmissionOverrides: {
+      fields: ({ defaultFields }) => [
+        ...defaultFields,
+        {
+          name: 'syncStatus',
+          type: 'select',
+          defaultValue: 'pending',
+          options: [
+            { label: 'Pending', value: 'pending' },
+            { label: 'Synced', value: 'synced' },
+            { label: 'Error', value: 'error' },
+          ],
+          admin: {
+            position: 'sidebar',
+            readOnly: true,
+          },
+        },
+        {
+          name: 'syncError',
+          type: 'text',
+          admin: {
+            position: 'sidebar',
+            readOnly: true,
+          },
+        },
+        {
+          name: 'syncedAt',
+          type: 'date',
+          admin: {
+            position: 'sidebar',
+            readOnly: true,
+          },
+        },
+      ],
+      hooks: {
+        afterChange: [dispatchFormSync],
       },
     },
   }),
