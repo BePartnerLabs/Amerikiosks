@@ -12,3 +12,18 @@ globalThis.IntersectionObserver = class {
   unobserve() {}
   disconnect() {}
 } as unknown as typeof IntersectionObserver
+
+// window.matchMedia is not available in jsdom
+if (!window.matchMedia) {
+  window.matchMedia = (query: string) =>
+    ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => false,
+    }) as MediaQueryList
+}
