@@ -16,6 +16,14 @@ export const HighImpactHero: React.FC<Page['hero']> = ({
       ? (backgroundVideo.url as string)
       : null
 
+  // Declaring the wrong MIME type (e.g. always "video/mp4" regardless of the
+  // actual uploaded file) makes browsers silently refuse to play it — a
+  // WebM upload would fail even though most browsers support it natively.
+  const videoMimeType =
+    backgroundVideo && typeof backgroundVideo === 'object' && 'mimeType' in backgroundVideo
+      ? ((backgroundVideo.mimeType as string) ?? 'video/mp4')
+      : 'video/mp4'
+
   const _posterUrl =
     media && typeof media === 'object' && 'url' in media ? (media.url as string) : undefined
 
@@ -58,7 +66,7 @@ export const HighImpactHero: React.FC<Page['hero']> = ({
           >
             <source
               src={videoUrl}
-              type="video/mp4"
+              type={videoMimeType}
             />
           </video>
         )}

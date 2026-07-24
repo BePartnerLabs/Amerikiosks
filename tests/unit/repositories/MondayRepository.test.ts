@@ -60,14 +60,14 @@ describe('MondayRepository', () => {
 
     const columnValues = JSON.parse(body.variables.columnValues)
     expect(columnValues.text7).toBe('Test Prueba')
-    expect(columnValues.dropdown).toEqual({ label: 'Credit/Debit Card' })
+    expect(columnValues.dropdown).toEqual({ labels: ['Credit/Debit Card'] })
     expect(columnValues.email).toEqual({
       email: 'hola@bepartnerlabs.com',
       text: 'hola@bepartnerlabs.com',
     })
     expect(columnValues.phone).toEqual({ phone: '3055550100', countryShortName: 'US' })
     expect(columnValues.date4).toEqual({ date: '2026-07-08' })
-    expect(columnValues.dropdown0).toEqual({ label: 'Only part of my order was dispensed.' })
+    expect(columnValues.dropdown0).toEqual({ labels: ['Only part of my order was dispensed.'] })
     expect(columnValues.numbers3).toBe('0000')
     expect(columnValues.text__1).toBe("Carlo's Bakery")
     expect(columnValues.text9).toBe('BePartnerLabs Test Property, Doral, FL')
@@ -88,6 +88,18 @@ describe('MondayRepository', () => {
     expect(columnValues.long_text6.text).toContain('Transaction time:')
     expect(columnValues.long_text6.text).toContain('Refund method: Zelle')
     expect(columnValues.long_text6.text).toContain('Refund account: test@example.com')
+  })
+
+  it("strips formatting characters from customerPhone before sending — Monday's phone column rejects them", async () => {
+    postMock.mockResolvedValue({ data: { create_item: { id: '1' } } })
+    const { MondayRepository } = await import('@/repositories/MondayRepository')
+
+    await MondayRepository.submit({ ...baseClaim, customerPhone: '(305) 555-0100' }, fakeReq())
+    const [, body] = postMock.mock.calls[0]
+    expect(JSON.parse(body.variables.columnValues).phone).toEqual({
+      phone: '3055550100',
+      countryShortName: 'US',
+    })
   })
 
   it('does not set numbers1 ("Ammount") — no equivalent claim field, left for the board operator', async () => {
