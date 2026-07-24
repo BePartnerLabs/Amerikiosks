@@ -22,11 +22,6 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/check-component-docs.sh",
-            "statusMessage": "Checking component docs..."
-          },
-          {
-            "type": "command",
             "command": ".claude/hooks/typecheck.sh",
             "statusMessage": "Running TypeScript check..."
           },
