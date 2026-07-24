@@ -1,0 +1,121 @@
+/* ═══════════════════════════════════════════════════════════════
+   Metrics block — heading + stats row + optional CTA
+   ═══════════════════════════════════════════════════════════════ */
+
+.ak-metrics {
+  container-type: inline-size;
+  container-name: metrics;
+}
+
+.ak-metrics__inner {
+  padding-block: var(--bp-space-16, 4rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ak-metrics__stats {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: var(--bp-space-10, 2.5rem);
+  width: 100%;
+}
+
+.ak-metrics__stat {
+  flex: 1;
+  min-width: 9rem;
+  padding-inline: var(--bp-space-6, 1.5rem);
+  text-align: center;
+  border-left: 1px solid var(--ak-color-border);
+}
+
+.ak-metrics__stat:first-child {
+  border-left: none;
+}
+
+.ak-metrics__stat-value {
+  --_color: var(--metrics-stat-value-color, var(--ak-accent));
+  display: block;
+  font-weight: 700;
+  font-size: 2.75rem;
+  line-height: 1;
+  color: var(--_color);
+}
+
+.ak-metrics__stat-label {
+  --_color: var(--metrics-stat-label-color, var(--ak-color-heading));
+  margin: var(--bp-space-3, 0.75rem) 0 0;
+  font-weight: 600;
+  font-size: var(--bp-text-sm, 0.875rem);
+  color: var(--_color);
+}
+
+.ak-metrics__cta {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--bp-space-10, 2.5rem);
+}
+
+/* ─── Mobile: 2×2 grid instead of a squeezed single row ────────── */
+@container metrics (max-width: 40rem) {
+  .ak-metrics__stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--bp-space-6, 1.5rem) 0;
+  }
+
+  .ak-metrics__stat {
+    border-left: none;
+    border-top: 1px solid var(--ak-color-border);
+    padding-top: var(--bp-space-4, 1rem);
+  }
+
+  /* First row (items 1-2) has no top border to sit on */
+  .ak-metrics__stat:nth-child(1),
+  .ak-metrics__stat:nth-child(2) {
+    border-top: none;
+    padding-top: 0;
+  }
+}
+
+/* ─── Scroll-in stagger — progressive enhancement, no JS ────────── */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    @keyframes metrics-rise {
+      from {
+        opacity: 0;
+        transform: translateY(1rem);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .ak-metrics__stat {
+      animation: metrics-rise ease-out;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+
+    .ak-metrics__stat:nth-child(1) {
+      animation-delay: 0ms;
+    }
+    .ak-metrics__stat:nth-child(2) {
+      animation-delay: 60ms;
+    }
+    .ak-metrics__stat:nth-child(3) {
+      animation-delay: 120ms;
+    }
+    .ak-metrics__stat:nth-child(4) {
+      animation-delay: 180ms;
+    }
+    .ak-metrics__stat:nth-child(5) {
+      animation-delay: 240ms;
+    }
+    .ak-metrics__stat:nth-child(6) {
+      animation-delay: 300ms;
+    }
+  }
+}

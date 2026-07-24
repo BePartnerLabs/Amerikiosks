@@ -37,7 +37,7 @@ export const CardGrid: Block = {
     },
     {
       name: 'heading',
-      type: 'text',
+      type: 'textarea',
       required: true,
       localized: true,
       admin: {
@@ -47,12 +47,12 @@ export const CardGrid: Block = {
     },
     {
       name: 'subheading',
-      type: 'text',
+      type: 'textarea',
       label: 'Subheading',
       localized: true,
       admin: {
-        description: 'Optional text below the heading. Used in pillar variant.',
-        condition: (_, siblingData) => siblingData?.variant === 'pillar',
+        description: 'Optional text below the heading. Used in compact and pillar variants.',
+        condition: (_, siblingData) => siblingData?.variant !== 'icon',
       },
     },
     {

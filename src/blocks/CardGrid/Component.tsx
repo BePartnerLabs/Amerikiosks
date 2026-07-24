@@ -65,7 +65,7 @@ export const CardGridBlock: React.FC<CardGridBlockProps> = ({
       aria-label={heading}
       itemScope
       itemType="https://schema.org/ItemList"
-      data-ga-block={toSnakeCase(blockType)}
+      data-ga-block={`${toSnakeCase(blockType)}_${variant}`}
       data-ga-section={blockName ?? undefined}
     >
       <script
@@ -88,7 +88,7 @@ export const CardGridBlock: React.FC<CardGridBlockProps> = ({
               <SectionHeader
                 eyebrow={eyebrow}
                 heading={heading}
-                subtitle={variant === 'pillar' ? subheading : undefined}
+                subtitle={variant !== 'icon' ? subheading : undefined}
                 align={variant === 'compact' ? 'left' : 'center'}
               />
             </div>
