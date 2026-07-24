@@ -1,4 +1,5 @@
 import type { PayloadRequest } from 'payload'
+import { CLAIM_REASON_LABEL, PAYMENT_METHOD_LABEL } from './claimLabels'
 import { serverHttpClient } from './clients/ServerHttpClient'
 
 export type ClaimSubmission = {
@@ -14,6 +15,7 @@ export type ClaimSubmission = {
   lastFourCardDigits?: string
   refundMethod?: string
   refundAccount?: string
+  amount?: number
   photo?: { buffer: Buffer; filename: string; contentType: string }
 }
 
@@ -60,19 +62,8 @@ const QUESTION_ID = {
 // for our own admin/DB), so every slug needs mapping to the literal JotForm option
 // string before submission. Verified against the live form's <option>/<input value>
 // attributes, including JotForm's own trailing periods on claimReason.
-const PAYMENT_METHOD_LABEL: Record<string, string> = {
-  card: 'Credit/Debit Card',
-  cash: 'Cash',
-  google_pay: 'Google Pay',
-  apple_pay: 'Apple Pay',
-}
-
-const CLAIM_REASON_LABEL: Record<string, string> = {
-  partial_dispense: 'Only part of my order was dispensed.',
-  damaged_product: 'The product was damaged.',
-  wrong_product: 'I received the wrong product.',
-  no_product: "I didn't receive my product.",
-}
+// (PAYMENT_METHOD_LABEL / CLAIM_REASON_LABEL live in ./claimLabels — shared with
+// MondayRepository so the two integrations' option sets can't drift apart.)
 
 // refundMethod values already match JotForm's option text verbatim (Zelle, CashApp,
 // Paypal, Venmo) since that select was added specifically to mirror qid 20 — no

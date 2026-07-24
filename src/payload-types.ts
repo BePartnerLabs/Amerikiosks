@@ -1522,6 +1522,10 @@ export interface Claim {
    */
   refundAccount?: string | null;
   /**
+   * Refund amount requested, if known.
+   */
+  amount?: number | null;
+  /**
    * Optional staff-attached photo (authenticated admin only). Public claim submissions don't populate this — the photo, if provided, is forwarded straight to JotForm without being stored here (see syncClaim.ts).
    */
   photo?: (number | null) | Media;
@@ -1529,7 +1533,7 @@ export interface Claim {
    * Captured from the QR code scan (machine_id query param), for internal reference.
    */
   machineId?: string | null;
-  integrationTarget?: ('jotform' | 'odoo') | null;
+  integrationTarget?: ('jotform' | 'odoo' | 'monday') | null;
   syncStatus?: ('pending' | 'synced' | 'error') | null;
   syncError?: string | null;
   syncedAt?: string | null;
@@ -2656,6 +2660,7 @@ export interface ClaimsSelect<T extends boolean = true> {
   lastFourCardDigits?: T;
   refundMethod?: T;
   refundAccount?: T;
+  amount?: T;
   photo?: T;
   machineId?: T;
   integrationTarget?: T;
@@ -3199,6 +3204,10 @@ export interface Setting {
    * API key for the JotForm submissions API (used by the Claims refund flow). Only visible to logged-in admin users — never exposed in the public Settings API response.
    */
   jotformApiKey?: string | null;
+  /**
+   * API token for the Monday.com GraphQL API (used by the Claims refund flow). Only visible to logged-in admin users — never exposed in the public Settings API response.
+   */
+  mondayApiToken?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -3326,6 +3335,7 @@ export interface SettingsSelect<T extends boolean = true> {
   llmsIncludePages?: T;
   llmsIncludeInsights?: T;
   jotformApiKey?: T;
+  mondayApiToken?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

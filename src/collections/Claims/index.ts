@@ -125,6 +125,13 @@ export const Claims: CollectionConfig = {
       },
     },
     {
+      name: 'amount',
+      type: 'number',
+      admin: {
+        description: 'Refund amount requested, if known.',
+      },
+    },
+    {
       name: 'photo',
       type: 'upload',
       relationTo: 'media',
@@ -149,6 +156,7 @@ export const Claims: CollectionConfig = {
       options: [
         { label: 'JotForm', value: 'jotform' },
         { label: 'Odoo', value: 'odoo' },
+        { label: 'Monday.com', value: 'monday' },
       ],
       admin: {
         position: 'sidebar',

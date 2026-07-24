@@ -1,7 +1,13 @@
 import type { PayloadRequest } from 'payload'
 import type { Claim } from '@/payload-types'
-import { JotFormRepository, OdooRepository } from '@/repositories'
+import { JotFormRepository, MondayRepository, OdooRepository } from '@/repositories'
 import type { ClaimSubmission } from '@/repositories/JotFormRepository'
+
+const REPOSITORIES = {
+  jotform: JotFormRepository,
+  odoo: OdooRepository,
+  monday: MondayRepository,
+} as const
 
 type PhotoContext = { buffer: Buffer; filename: string; contentType: string }
 
@@ -40,10 +46,12 @@ export async function dispatchClaimSync(
     lastFourCardDigits: claim.lastFourCardDigits ?? undefined,
     refundMethod: claim.refundMethod ?? undefined,
     refundAccount: claim.refundAccount ?? undefined,
+    amount: claim.amount ?? undefined,
     photo,
   }
 
-  const repository = claim.integrationTarget === 'odoo' ? OdooRepository : JotFormRepository
+  const repository =
+    REPOSITORIES[claim.integrationTarget as keyof typeof REPOSITORIES] ?? JotFormRepository
 
   try {
     await repository.submit(submission, req)
