@@ -40,11 +40,14 @@ function buildAdditionalInfo(claim: ClaimSubmission): string {
 function buildColumnValues(claim: ClaimSubmission): Record<string, unknown> {
   const columnValues: Record<string, unknown> = {
     text7: `${claim.customerFirstName} ${claim.customerLastName}`.trim(),
-    dropdown: { label: PAYMENT_METHOD_LABEL[claim.paymentMethod] ?? claim.paymentMethod },
+    // Monday's `dropdown` column type takes an array of labels/ids, not a
+    // singular `label` string (that shape is for `status` columns) — sending
+    // { label: "..." } here throws a ColumnValueException at submit time.
+    dropdown: { labels: [PAYMENT_METHOD_LABEL[claim.paymentMethod] ?? claim.paymentMethod] },
     email: { email: claim.customerEmail, text: claim.customerEmail },
     phone: { phone: claim.customerPhone, countryShortName: 'US' },
     date4: { date: new Date(claim.transactionDateTime).toISOString().slice(0, 10) },
-    dropdown0: { label: CLAIM_REASON_LABEL[claim.claimReason] ?? claim.claimReason },
+    dropdown0: { labels: [CLAIM_REASON_LABEL[claim.claimReason] ?? claim.claimReason] },
     long_text6: { text: buildAdditionalInfo(claim) },
     numbers3: claim.lastFourCardDigits ?? '',
     text__1: claim.kioskBrand,

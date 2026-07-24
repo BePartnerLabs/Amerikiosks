@@ -60,14 +60,14 @@ describe('MondayRepository', () => {
 
     const columnValues = JSON.parse(body.variables.columnValues)
     expect(columnValues.text7).toBe('Test Prueba')
-    expect(columnValues.dropdown).toEqual({ label: 'Credit/Debit Card' })
+    expect(columnValues.dropdown).toEqual({ labels: ['Credit/Debit Card'] })
     expect(columnValues.email).toEqual({
       email: 'hola@bepartnerlabs.com',
       text: 'hola@bepartnerlabs.com',
     })
     expect(columnValues.phone).toEqual({ phone: '3055550100', countryShortName: 'US' })
     expect(columnValues.date4).toEqual({ date: '2026-07-08' })
-    expect(columnValues.dropdown0).toEqual({ label: 'Only part of my order was dispensed.' })
+    expect(columnValues.dropdown0).toEqual({ labels: ['Only part of my order was dispensed.'] })
     expect(columnValues.numbers3).toBe('0000')
     expect(columnValues.text__1).toBe("Carlo's Bakery")
     expect(columnValues.text9).toBe('BePartnerLabs Test Property, Doral, FL')
