@@ -1554,6 +1554,9 @@ export interface Claim {
    * Captured from the QR code scan (machine_id query param), for internal reference.
    */
   machineId?: string | null;
+  /**
+   * Where this claim syncs to. Set automatically from Settings → Default Claim Integration Target when the claim is created; changing it here only affects a future re-sync, not one already dispatched.
+   */
   integrationTarget?: ('jotform' | 'odoo' | 'monday') | null;
   syncStatus?: ('pending' | 'synced' | 'error') | null;
   syncError?: string | null;
@@ -3232,6 +3235,10 @@ export interface Setting {
    * API token for the Monday.com GraphQL API (used by the Claims refund flow). Only visible to logged-in admin users — never exposed in the public Settings API response.
    */
   mondayApiToken?: string | null;
+  /**
+   * Where new refund claims sync to by default when submitted from the public ClaimForm. Changing this takes effect immediately for claims created after the change — existing claims keep whatever target they already have. Staff can still override a specific claim's target afterward in Claims → Integration target, but that only affects future re-syncs, not one already dispatched.
+   */
+  defaultClaimIntegrationTarget?: ('jotform' | 'odoo' | 'monday') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -3361,6 +3368,7 @@ export interface SettingsSelect<T extends boolean = true> {
   jotformApiKey?: T;
   jotformFormId?: T;
   mondayApiToken?: T;
+  defaultClaimIntegrationTarget?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

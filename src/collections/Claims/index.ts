@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { anyone } from '../../access/anyone'
 import { authenticated } from '../../access/authenticated'
 import { photoUrlEndpoint } from './endpoints/photoUrl'
+import { setDefaultIntegrationTarget } from './hooks/setDefaultIntegrationTarget'
 import { syncClaim } from './hooks/syncClaim'
 
 export const Claims: CollectionConfig = {
@@ -28,6 +29,7 @@ export const Claims: CollectionConfig = {
   },
   endpoints: [photoUrlEndpoint],
   hooks: {
+    beforeValidate: [setDefaultIntegrationTarget],
     afterChange: [syncClaim],
   },
   fields: [
@@ -165,7 +167,10 @@ export const Claims: CollectionConfig = {
     {
       name: 'integrationTarget',
       type: 'select',
-      defaultValue: 'jotform',
+      // No static defaultValue — set at creation time by
+      // setDefaultIntegrationTarget.ts from Settings.defaultClaimIntegrationTarget,
+      // since by the time a claim already exists it's too late to decide
+      // where it should have gone (the sync hook already dispatched it).
       options: [
         { label: 'JotForm', value: 'jotform' },
         { label: 'Odoo', value: 'odoo' },
@@ -173,6 +178,8 @@ export const Claims: CollectionConfig = {
       ],
       admin: {
         position: 'sidebar',
+        description:
+          'Where this claim syncs to. Set automatically from Settings → Default Claim Integration Target when the claim is created; changing it here only affects a future re-sync, not one already dispatched.',
       },
     },
     {
