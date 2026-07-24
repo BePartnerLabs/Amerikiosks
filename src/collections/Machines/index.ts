@@ -55,7 +55,7 @@ export const Machines: CollectionConfig = {
     {
       name: 'tags',
       type: 'relationship',
-      relationTo: 'tags',
+      relationTo: 'machine-tags',
       hasMany: true,
       admin: {
         description: 'e.g. full-size, compact, campaign, premium — used for block-level filtering',

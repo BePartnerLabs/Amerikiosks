@@ -2,11 +2,11 @@ import type { CollectionConfig } from 'payload'
 import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
 
-export const Tags: CollectionConfig = {
-  slug: 'tags',
+export const MachineTags: CollectionConfig = {
+  slug: 'machine-tags',
   labels: {
-    plural: { en: 'Tags', es: 'Tags' },
-    singular: { en: 'Tag', es: 'Tag' },
+    plural: { en: 'Machine Tags', es: 'Tags de Máquinas' },
+    singular: { en: 'Machine Tag', es: 'Tag de Máquina' },
   },
   admin: {
     group: { en: 'Tags', es: 'Tags' },

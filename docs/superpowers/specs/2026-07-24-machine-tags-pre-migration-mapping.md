@@ -1,10 +1,12 @@
 # Machine tags — pre-migration mapping (reference for manual re-tagging)
 
-Captured from the **local dev DB** on 2026-07-24, right before the `machine-tags-collection` migration dropped the old free-text `tags` array data. The migration does not preserve this automatically — re-tag each machine by hand in `/admin` using this as a reference. Verify against production data if it may have diverged from local/seed data since launch.
+Captured on 2026-07-24, right before the `machine-tags-collection` migration dropped the old free-text `tags` array data. The migration does not preserve this automatically — re-tag each machine by hand in `/admin` using this as a reference.
 
-| Machine ID | Name (EN) | Old tag |
+Cross-checked against a **production DB dump** (2026-07-24) — matches this table exactly except machine 1, which also had an extra tag `home` (not present in the local/seed data). Included below.
+
+| Machine ID | Name (EN) | Old tag(s) |
 |---|---|---|
-| 1 | Full-size branded machine | `full-size` |
+| 1 | Full-size branded machine | `full-size`, `home` |
 | 2 | Campaign activation unit | `campaign` |
 | 3 | Compact footprint machine | `compact` |
 | 4 | Premium venue configuration | `premium` |

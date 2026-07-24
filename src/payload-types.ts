@@ -75,7 +75,7 @@ export interface Config {
     users: User;
     partners: Partner;
     machines: Machine;
-    tags: Tag;
+    'machine-tags': MachineTag;
     faqItems: FaqItem;
     projects: Project;
     brands: Brand;
@@ -94,7 +94,7 @@ export interface Config {
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {
-    tags: {
+    'machine-tags': {
       machines: 'machines';
     };
     'payload-folders': {
@@ -109,7 +109,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     partners: PartnersSelect<false> | PartnersSelect<true>;
     machines: MachinesSelect<false> | MachinesSelect<true>;
-    tags: TagsSelect<false> | TagsSelect<true>;
+    'machine-tags': MachineTagsSelect<false> | MachineTagsSelect<true>;
     faqItems: FaqItemsSelect<false> | FaqItemsSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     brands: BrandsSelect<false> | BrandsSelect<true>;
@@ -1209,7 +1209,7 @@ export interface FormatsGridBlock {
   /**
    * Show machines matching these tags. Leave empty to show all. Ignored if items are set.
    */
-  filterTags?: (number | Tag)[] | null;
+  filterTags?: (number | MachineTag)[] | null;
   /**
    * Explicit machine picks. Overrides filterTags.
    */
@@ -1227,9 +1227,9 @@ export interface FormatsGridBlock {
  * Reusable tags for filtering — used by Machines and the Formats Grid block.
  *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tags".
+ * via the `definition` "machine-tags".
  */
-export interface Tag {
+export interface MachineTag {
   id: number;
   label: string;
   /**
@@ -1267,7 +1267,7 @@ export interface Machine {
   /**
    * e.g. full-size, compact, campaign, premium — used for block-level filtering
    */
-  tags?: (number | Tag)[] | null;
+  tags?: (number | MachineTag)[] | null;
   gallery?:
     | {
         image: number | Media;
@@ -2056,8 +2056,8 @@ export interface PayloadLockedDocument {
         value: number | Machine;
       } | null)
     | ({
-        relationTo: 'tags';
-        value: number | Tag;
+        relationTo: 'machine-tags';
+        value: number | MachineTag;
       } | null)
     | ({
         relationTo: 'faqItems';
@@ -2813,9 +2813,9 @@ export interface MachinesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tags_select".
+ * via the `definition` "machine-tags_select".
  */
-export interface TagsSelect<T extends boolean = true> {
+export interface MachineTagsSelect<T extends boolean = true> {
   label?: T;
   machines?: T;
   updatedAt?: T;

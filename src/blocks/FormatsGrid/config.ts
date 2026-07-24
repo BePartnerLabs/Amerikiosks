@@ -34,7 +34,7 @@ export const FormatsGrid: Block = {
     {
       name: 'filterTags',
       type: 'relationship',
-      relationTo: 'tags',
+      relationTo: 'machine-tags',
       hasMany: true,
       admin: {
         description:
