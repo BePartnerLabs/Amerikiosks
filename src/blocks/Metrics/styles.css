@@ -57,28 +57,6 @@
   margin-top: var(--bp-space-10, 2.5rem);
 }
 
-.ak-metrics__cta-btn {
-  --_color: var(--metrics-cta-btn-color, var(--ak-color-heading));
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 2rem;
-  border: 2px solid currentColor;
-  border-radius: var(--bp-radius-md, 0.75rem);
-  font-weight: 600;
-  font-size: var(--bp-text-sm, 0.875rem);
-  text-decoration: none;
-  color: var(--_color);
-  transition:
-    background-color 0.15s,
-    color 0.15s;
-}
-
-.ak-metrics__cta-btn:hover {
-  background-color: currentColor;
-  color: white;
-}
-
 /* ─── Mobile: 2×2 grid instead of a squeezed single row ────────── */
 @container metrics (max-width: 40rem) {
   .ak-metrics__stats {

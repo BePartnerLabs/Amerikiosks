@@ -53,7 +53,7 @@ export const MetricsBlock: React.FC<MetricsBlockProps> = ({
             <div className="ak-metrics__cta">
               <CMSLink
                 {...cta}
-                className="ak-metrics__cta-btn"
+                appearance="default"
                 data-ga-event="metrics_cta_click"
               />
             </div>
