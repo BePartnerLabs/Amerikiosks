@@ -28,7 +28,9 @@ export const MachinesListingServer: React.FC<MachinesListingBlockProps> = async 
   const machines = result.docs as Machine[]
 
   const presentTags = new Set(
-    machines.flatMap((m) => (m.tags ?? []).map((t) => t.label)).filter(Boolean),
+    machines
+      .flatMap((m) => (m.tags ?? []).map((t) => (typeof t === 'object' ? t.label : null)))
+      .filter(Boolean),
   )
   const allTags = formatTagOrder.filter((tag) => presentTags.has(tag))
 

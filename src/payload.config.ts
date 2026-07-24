@@ -18,6 +18,7 @@ import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Partners } from './collections/Partners'
 import { Projects } from './collections/Projects'
+import { Tags } from './collections/Tags'
 import { Users } from './collections/Users'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
@@ -95,6 +96,7 @@ export default buildConfig({
     Users,
     Partners,
     Machines,
+    Tags,
     FAQItems,
     Projects,
     Brands,

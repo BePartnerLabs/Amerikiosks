@@ -57,7 +57,7 @@ export const MachinesListingClient: React.FC<Props> = ({ machines, allTags, item
   }, [activeTag])
 
   const filtered = activeTag
-    ? machines.filter((m) => m.tags?.some((t) => t.label === activeTag))
+    ? machines.filter((m) => m.tags?.some((t) => typeof t === 'object' && t.label === activeTag))
     : machines
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / itemsPerPage))

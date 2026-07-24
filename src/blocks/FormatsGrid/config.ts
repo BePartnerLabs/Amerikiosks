@@ -33,12 +33,13 @@ export const FormatsGrid: Block = {
     },
     {
       name: 'filterTags',
-      type: 'array',
+      type: 'relationship',
+      relationTo: 'tags',
+      hasMany: true,
       admin: {
         description:
           'Show machines matching these tags. Leave empty to show all. Ignored if items are set.',
       },
-      fields: [{ name: 'tag', type: 'text', required: true }],
     },
     {
       name: 'items',
