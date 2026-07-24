@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { anyone } from '../../access/anyone'
 import { authenticated } from '../../access/authenticated'
 import { photoUrlEndpoint } from './endpoints/photoUrl'
+import { resyncEndpoint } from './endpoints/resync'
 import { setDefaultIntegrationTarget } from './hooks/setDefaultIntegrationTarget'
 import { syncClaim } from './hooks/syncClaim'
 
@@ -18,6 +19,15 @@ export const Claims: CollectionConfig = {
     useAsTitle: 'customerFirstName',
     description:
       'Refund/complaint claims submitted from the customer-service QR flow on deployed kiosks.',
+    components: {
+      beforeListTable: ['@/collections/Claims/components/ResyncListButton#ResyncListButton'],
+      edit: {
+        beforeDocumentControls: [
+          '@/collections/Claims/components/ResyncDocButton#ResyncDocButton',
+          '@/collections/Claims/components/ViewPhotoButton#ViewPhotoButton',
+        ],
+      },
+    },
   },
   access: {
     // Anonymous kiosk visitors must be able to submit a claim without logging in.
@@ -27,7 +37,7 @@ export const Claims: CollectionConfig = {
     update: authenticated,
     delete: authenticated,
   },
-  endpoints: [photoUrlEndpoint],
+  endpoints: [photoUrlEndpoint, resyncEndpoint],
   hooks: {
     beforeValidate: [setDefaultIntegrationTarget],
     afterChange: [syncClaim],

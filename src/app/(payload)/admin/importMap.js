@@ -19,6 +19,9 @@ import { SlugField as SlugField_2b8867833a34864a02ddf429b0728a40 } from '@payloa
 import { HorizontalRuleFeatureClient as HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { FolderTableCell as FolderTableCell_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 import { FolderField as FolderField_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
+import { ResyncListButton as ResyncListButton_5d82853d3000711ed47e64e6cb5f5322 } from '@/collections/Claims/components/ResyncListButton'
+import { ResyncDocButton as ResyncDocButton_cd77d1669fc948221aaa335b049dfd5f } from '@/collections/Claims/components/ResyncDocButton'
+import { ViewPhotoButton as ViewPhotoButton_a5ebcbe60d2bc26f65c5b5759cbd4d99 } from '@/collections/Claims/components/ViewPhotoButton'
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { FolderTypeField as FolderTypeField_2b8867833a34864a02ddf429b0728a40 } from '@payloadcms/next/client'
@@ -54,6 +57,9 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#HorizontalRuleFeatureClient": HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/next/rsc#FolderTableCell": FolderTableCell_f9c02e79a4aed9a3924487c0cd4cafb1,
   "@payloadcms/next/rsc#FolderField": FolderField_f9c02e79a4aed9a3924487c0cd4cafb1,
+  "@/collections/Claims/components/ResyncListButton#ResyncListButton": ResyncListButton_5d82853d3000711ed47e64e6cb5f5322,
+  "@/collections/Claims/components/ResyncDocButton#ResyncDocButton": ResyncDocButton_cd77d1669fc948221aaa335b049dfd5f,
+  "@/collections/Claims/components/ViewPhotoButton#ViewPhotoButton": ViewPhotoButton_a5ebcbe60d2bc26f65c5b5759cbd4d99,
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/next/client#FolderTypeField": FolderTypeField_2b8867833a34864a02ddf429b0728a40,
