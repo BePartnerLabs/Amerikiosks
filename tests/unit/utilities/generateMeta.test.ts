@@ -72,6 +72,6 @@ describe('generateMeta', () => {
       doc: { slug: 'machines', meta: { title: 'Machines' } },
     })
     const images = result.openGraph?.images as { url: string }[] | undefined
-    expect(images?.[0]?.url).toContain('/website-template-OG.webp')
+    expect(images?.[0]?.url).toContain('/logos/logo-1.svg')
   })
 })

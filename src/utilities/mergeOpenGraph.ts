@@ -6,7 +6,7 @@ const defaultOpenGraph: Metadata['openGraph'] = {
   description: 'Retail automation solutions for brands, venues, and agencies.',
   images: [
     {
-      url: `${getServerSideURL()}/website-template-OG.webp`,
+      url: `${getServerSideURL()}/logos/logo-1.svg`,
     },
   ],
   siteName: 'Amerikiosks',

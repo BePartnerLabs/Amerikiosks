@@ -7,7 +7,7 @@ import { mergeOpenGraph } from './mergeOpenGraph'
 const getImageURL = (image?: Media | Config['db']['defaultIDType'] | null) => {
   const serverUrl = getServerSideURL()
 
-  let url = `${serverUrl}/website-template-OG.webp`
+  let url = `${serverUrl}/logos/logo-1.svg`
 
   if (image && typeof image === 'object' && 'url' in image) {
     const ogUrl = image.sizes?.og?.url
