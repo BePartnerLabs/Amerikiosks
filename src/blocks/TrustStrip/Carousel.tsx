@@ -43,6 +43,7 @@ export const TrustStripCarousel: React.FC<{ partners: CarouselPartner[] }> = ({ 
           >
             {repeatedPartners.map((partner, index) => (
               <li
+                // biome-ignore lint/suspicious/noArrayIndexKey: repeatedPartners repeats the same static partners array N times for the marquee effect — partner.id alone duplicates across repetitions, and the list is never reordered/filtered, so index is a safe disambiguator here, not a list-identity risk.
                 key={`${i}-${partner.id}-${index}`}
                 className="ak-trust-strip__card"
               >
