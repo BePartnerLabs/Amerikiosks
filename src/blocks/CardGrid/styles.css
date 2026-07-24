@@ -188,6 +188,23 @@
   color: var(--_color);
 }
 
+/* title-2 desktop scale — the shared SectionHeader clamp only reaches its
+   max size past ~1442px viewport width; lock it in for this container's
+   own desktop breakpoint instead of relying on viewport width. */
+@container card-grid (min-width: 64rem) {
+  .ak-card-grid--compact .ak-section-header__heading {
+    font-size: 2.5rem;
+    line-height: 3.75rem;
+  }
+}
+
+.ak-card-grid--compact .ak-section-header__subtitle {
+  font-size: var(--bp-text-base, 1rem);
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+
 /* ─── icon variant ───────────────────────────────────────────── */
 .ak-card-grid--icon {
   --_background: var(--card-grid-background, var(--ak-section-bg-blue));
