@@ -80,8 +80,8 @@ async function completeAllSteps() {
   await screen.findByLabelText(/additional information/i)
   clickNext()
 
-  // lastFourCardDigits (optional, card-only follow-up)
-  await screen.findByLabelText(/last 4 digits/i)
+  // lastFourCardDigits (required, card-only follow-up)
+  fireEvent.change(await screen.findByLabelText(/last 4 digits/i), { target: { value: '1234' } })
   clickNext()
 
   // photo (optional) — skip
@@ -162,6 +162,46 @@ describe('ClaimForm block', () => {
     clickNext()
 
     expect(await screen.findByLabelText(/first name/i)).toBeInTheDocument()
+  })
+
+  it('does not advance past the last-4-digits step when it is left empty, for a card payment', async () => {
+    render(<ClaimFormBlock brands={brands} />)
+    fireEvent.click(screen.getByRole('button', { name: /start/i }))
+
+    fireEvent.click(await screen.findByRole('radio', { name: "Carlo's Bakery" }))
+    fireEvent.click(await screen.findByRole('radio', { name: /credit\/debit card/i }))
+
+    fireEvent.change(await screen.findByLabelText(/first name/i), { target: { value: 'Test' } })
+    fireEvent.change(screen.getByLabelText(/last name/i), { target: { value: 'Prueba' } })
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: 'hola@bepartnerlabs.com' },
+    })
+    clickNext()
+
+    fireEvent.change(await screen.findByLabelText(/phone/i), { target: { value: '3055550100' } })
+    clickNext()
+
+    await screen.findByLabelText(/date and time/i)
+    clickNext()
+
+    fireEvent.change(await screen.findByLabelText(/where did the issue happen/i), {
+      target: { value: 'BePartnerLabs Test Property, Doral, FL' },
+    })
+    clickNext()
+
+    fireEvent.change(await screen.findByLabelText(/what happened/i), {
+      target: { value: 'partial_dispense' },
+    })
+    clickNext()
+
+    await screen.findByLabelText(/additional information/i)
+    clickNext()
+
+    await screen.findByLabelText(/last 4 digits/i)
+    clickNext()
+
+    expect(await screen.findByLabelText(/last 4 digits/i)).toBeInTheDocument()
+    expect(screen.getByText(/this field is required/i)).toBeInTheDocument()
   })
 
   it('completes the full flow and includes machineId (from the URL query param) in the submitted payload', async () => {

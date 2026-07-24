@@ -295,7 +295,7 @@ const AFTER_CREDIT_CHECK_STEPS: Step[] = [
 // mirrors the branching audited on the live JotForm (qid 18/20/21), condensed
 // into two straightforward extra steps instead of cloning its image+yes/no flow.
 const CARD_STEPS: Step[] = [
-  { key: 'lastFourCardDigits', fields: ['lastFourCardDigits'], required: false },
+  { key: 'lastFourCardDigits', fields: ['lastFourCardDigits'], required: true },
 ]
 const CASH_STEPS: Step[] = [
   { key: 'refundMethod', fields: ['refundMethod'], required: true },
@@ -776,8 +776,11 @@ export const ClaimFormBlock: React.FC<{ id?: string; brands: Brand[] } & ClaimFo
                 inputMode="numeric"
                 autoComplete="off"
                 maxLength={4}
-                {...register('lastFourCardDigits')}
+                {...register('lastFourCardDigits', { required: true })}
               />
+              {errors.lastFourCardDigits && (
+                <p className="ak-claim-form__error">This field is required.</p>
+              )}
             </div>
           )}
 
