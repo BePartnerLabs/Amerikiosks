@@ -37,6 +37,7 @@ export const plugins: Plugin[] = [
       projects: { enabled: { find: true } },
       faqItems: { enabled: { find: true } },
       machines: { enabled: { find: true, create: true, update: true, delete: true } },
+      forms: { enabled: { find: true, create: true, update: true } },
     },
   }),
   // Use Cloudflare R2 (S3-compatible) when credentials are set.
