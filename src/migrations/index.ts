@@ -29,6 +29,7 @@ import * as migration_20260723_170023_add_jotform_form_id_setting from './202607
 import * as migration_20260723_211756_add_claims_photo_key from './20260723_211756_add_claims_photo_key';
 import * as migration_20260724_001423_add_monday_integration from './20260724_001423_add_monday_integration';
 import * as migration_20260724_012544_add_default_claim_integration_target from './20260724_012544_add_default_claim_integration_target';
+import * as migration_20260724_034405_add_generic_form_monday_sync from './20260724_034405_add_generic_form_monday_sync';
 
 export const migrations = [
   {
@@ -184,6 +185,11 @@ export const migrations = [
   {
     up: migration_20260724_012544_add_default_claim_integration_target.up,
     down: migration_20260724_012544_add_default_claim_integration_target.down,
-    name: '20260724_012544_add_default_claim_integration_target'
+    name: '20260724_012544_add_default_claim_integration_target',
+  },
+  {
+    up: migration_20260724_034405_add_generic_form_monday_sync.up,
+    down: migration_20260724_034405_add_generic_form_monday_sync.down,
+    name: '20260724_034405_add_generic_form_monday_sync'
   },
 ];
