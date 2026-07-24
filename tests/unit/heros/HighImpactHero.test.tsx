@@ -124,6 +124,23 @@ describe('HighImpactHero', () => {
     expect(container.querySelector('source')).toHaveAttribute('src', '/hero.mp4')
   })
 
+  it("uses the uploaded file's real mimeType, not a hardcoded video/mp4 — a WebM upload declared as mp4 fails to play", () => {
+    const heroWithWebm: HeroProps = {
+      ...baseHero,
+      backgroundVideo: {
+        id: 2,
+        url: '/hero.webm',
+        updatedAt: '',
+        createdAt: '',
+        filename: 'hero.webm',
+        mimeType: 'video/webm',
+        filesize: 5000,
+      },
+    }
+    const { container } = render(<HighImpactHero {...heroWithWebm} />)
+    expect(container.querySelector('source')).toHaveAttribute('type', 'video/webm')
+  })
+
   it('video has aria-hidden when present', () => {
     const heroWithVideo: HeroProps = {
       ...baseHero,
