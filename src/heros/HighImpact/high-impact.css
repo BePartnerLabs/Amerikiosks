@@ -36,7 +36,7 @@
     --hero-overlay,
     linear-gradient(
       97.22deg,
-      color-mix(in srgb, var(--_bg) 90%, transparent) 11.65%,
+      color-mix(in srgb, var(--_bg) 20%, transparent) 11.65%,
       transparent 96.46%
     )
   );
