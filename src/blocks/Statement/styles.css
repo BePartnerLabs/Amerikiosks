@@ -1,0 +1,166 @@
+/* ═══════════════════════════════════════════════════════════════
+   Statement block
+   ═══════════════════════════════════════════════════════════════ */
+
+.ak-statement {
+  --_background: var(--statement-bg, var(--ak-color-dark));
+  --_color: var(--statement-color, var(--ak-white));
+  position: relative;
+  overflow: hidden;
+  background-color: var(--_background);
+  color: var(--_color);
+  text-align: center;
+}
+
+/* ─── Brand pattern overlays (same assets/animation as CallToAction) ──── */
+
+.ak-statement__patterns {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ak-statement__pattern {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 206px;
+  display: block;
+  background-repeat: repeat-y;
+  background-size: 206px 146px;
+  opacity: 0.25;
+  filter: grayscale(1) blur(0.5px);
+}
+
+.ak-statement__pattern--left {
+  left: 0;
+  background-image: url("/brand-patterns/pattern-left.svg");
+  background-position: left top;
+  animation: ak-statement-breathe 8s ease-in-out infinite;
+}
+
+.ak-statement__pattern--right {
+  right: 0;
+  width: 266px;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: ak-statement-breathe 9s ease-in-out infinite 1s;
+}
+
+.ak-statement__pattern--right .ak-statement__pattern-tile {
+  flex: none;
+  width: 266px;
+  height: 146px;
+  background-image: url("/brand-patterns/pattern-right.svg");
+  background-repeat: no-repeat;
+  background-size: 266px 146px;
+}
+
+@keyframes ak-statement-breathe {
+  0%,
+  100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-8px) scale(1.06) rotate(1deg);
+  }
+  66% {
+    transform: translateY(6px) scale(1.03) rotate(-0.5deg);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  .ak-statement__pattern--left {
+    animation:
+      ak-statement-scroll-left linear both,
+      ak-statement-breathe 8s ease-in-out infinite;
+    animation-timeline: view(), auto;
+    animation-range:
+      entry 0% entry 60%,
+      auto;
+  }
+
+  .ak-statement__pattern--right {
+    animation:
+      ak-statement-scroll-right linear both,
+      ak-statement-breathe 9s ease-in-out infinite 1s;
+    animation-timeline: view(), auto;
+    animation-range:
+      entry 0% entry 60%,
+      auto;
+  }
+
+  @keyframes ak-statement-scroll-left {
+    from {
+      transform: translateY(0) scale(0.92) translateX(-12px);
+      opacity: 0.6;
+    }
+    to {
+      transform: translateY(0) scale(1) translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes ak-statement-scroll-right {
+    from {
+      transform: translateY(0) scale(0.92) translateX(12px);
+      opacity: 0.6;
+    }
+    to {
+      transform: translateY(0) scale(1) translateX(0);
+      opacity: 1;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ak-statement__pattern--left,
+  .ak-statement__pattern--right {
+    animation: none;
+    transform: translateY(0);
+  }
+}
+
+/* ─── Layout ─────────────────────────────────────────────────── */
+
+.ak-statement__inner {
+  position: relative;
+  z-index: 1;
+  padding-block: var(--bp-space-16, 5rem);
+}
+
+/* Level 2 overrides on the shared SectionHeader — Statement always sits on a
+   dark (navy) background, so its eyebrow/heading/subtitle need the light
+   variant instead of the SectionHeader default (dark navy on light bg). */
+.ak-statement .ak-section-header__eyebrow {
+  --section-eyebrow-color: var(--statement-eyebrow-color, var(--ak-color-border));
+}
+
+.ak-statement .ak-section-header__heading {
+  --section-heading-color: var(--statement-heading-color, var(--ak-white));
+  font-size: clamp(1.8rem, 1.4rem + 2vw, 3.2rem);
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.ak-statement .ak-section-header__heading strong {
+  font-weight: 700;
+}
+
+.ak-statement .ak-section-header__subtitle {
+  --section-subtitle-color: var(--statement-subheading-color, var(--ak-color-border));
+}
+
+@media (max-width: 64rem) {
+  .ak-statement__pattern {
+    opacity: 0.4;
+  }
+}
+
+@media (max-width: 40rem) {
+  .ak-statement__patterns {
+    display: none;
+  }
+}

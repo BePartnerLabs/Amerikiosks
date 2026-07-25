@@ -25,6 +25,7 @@ import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { Metrics } from '../../blocks/Metrics/config'
 import { ProcessSteps } from '../../blocks/ProcessSteps/config'
 import { ProjectsShowcase } from '../../blocks/ProjectsShowcase/config'
+import { Statement } from '../../blocks/Statement/config'
 import { SupportHub } from '../../blocks/SupportHub/config'
 import { TrustStrip } from '../../blocks/TrustStrip/config'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
@@ -98,6 +99,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 FormatsGrid,
                 MachinesListing,
                 ProcessSteps,
+                Statement,
                 FAQWithForm,
                 ClaimForm,
                 SupportHub,
