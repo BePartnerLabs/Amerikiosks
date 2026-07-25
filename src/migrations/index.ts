@@ -35,6 +35,7 @@ import * as migration_20260724_194612_trust_strip_subheading from './20260724_19
 import * as migration_20260724_214459_brands_drafts from './20260724_214459_brands_drafts';
 import * as migration_20260724_215447_brands_order from './20260724_215447_brands_order';
 import * as migration_20260724_230900_machine_tags_collection from './20260724_230900_machine_tags_collection';
+import * as migration_20260725_000904_add_users_api_key from './20260725_000904_add_users_api_key';
 
 export const migrations = [
   {
@@ -215,11 +216,16 @@ export const migrations = [
   {
     up: migration_20260724_215447_brands_order.up,
     down: migration_20260724_215447_brands_order.down,
-    name: '20260724_215447_brands_order'
+    name: '20260724_215447_brands_order',
   },
   {
     up: migration_20260724_230900_machine_tags_collection.up,
     down: migration_20260724_230900_machine_tags_collection.down,
     name: '20260724_230900_machine_tags_collection',
+  },
+  {
+    up: migration_20260725_000904_add_users_api_key.up,
+    down: migration_20260725_000904_add_users_api_key.down,
+    name: '20260725_000904_add_users_api_key'
   },
 ];
