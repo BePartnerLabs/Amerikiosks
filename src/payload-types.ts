@@ -515,9 +515,6 @@ export interface User {
   name?: string | null;
   updatedAt: string;
   createdAt: string;
-  enableAPIKey?: boolean | null;
-  apiKey?: string | null;
-  apiKeyIndex?: string | null;
   email: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
@@ -1833,48 +1830,6 @@ export interface PayloadMcpApiKey {
    * The purpose of the API key.
    */
   description?: string | null;
-  pages?: {
-    /**
-     * Allow clients to find pages.
-     */
-    find?: boolean | null;
-  };
-  insights?: {
-    /**
-     * Allow clients to find insights.
-     */
-    find?: boolean | null;
-  };
-  media?: {
-    /**
-     * Allow clients to find media.
-     */
-    find?: boolean | null;
-  };
-  categories?: {
-    /**
-     * Allow clients to find categories.
-     */
-    find?: boolean | null;
-  };
-  partners?: {
-    /**
-     * Allow clients to find partners.
-     */
-    find?: boolean | null;
-  };
-  projects?: {
-    /**
-     * Allow clients to find projects.
-     */
-    find?: boolean | null;
-  };
-  faqItems?: {
-    /**
-     * Allow clients to find faqItems.
-     */
-    find?: boolean | null;
-  };
   machines?: {
     /**
      * Allow clients to find machines.
@@ -1892,20 +1847,6 @@ export interface PayloadMcpApiKey {
      * Allow clients to delete machines.
      */
     delete?: boolean | null;
-  };
-  forms?: {
-    /**
-     * Allow clients to find forms.
-     */
-    find?: boolean | null;
-    /**
-     * Allow clients to create forms.
-     */
-    create?: boolean | null;
-    /**
-     * Allow clients to update forms.
-     */
-    update?: boolean | null;
   };
   updatedAt: string;
   createdAt: string;
@@ -2706,9 +2647,6 @@ export interface UsersSelect<T extends boolean = true> {
   name?: T;
   updatedAt?: T;
   createdAt?: T;
-  enableAPIKey?: T;
-  apiKey?: T;
-  apiKeyIndex?: T;
   email?: T;
   resetPasswordToken?: T;
   resetPasswordExpiration?: T;
@@ -3164,41 +3102,6 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
   user?: T;
   label?: T;
   description?: T;
-  pages?:
-    | T
-    | {
-        find?: T;
-      };
-  insights?:
-    | T
-    | {
-        find?: T;
-      };
-  media?:
-    | T
-    | {
-        find?: T;
-      };
-  categories?:
-    | T
-    | {
-        find?: T;
-      };
-  partners?:
-    | T
-    | {
-        find?: T;
-      };
-  projects?:
-    | T
-    | {
-        find?: T;
-      };
-  faqItems?:
-    | T
-    | {
-        find?: T;
-      };
   machines?:
     | T
     | {
@@ -3206,13 +3109,6 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         create?: T;
         update?: T;
         delete?: T;
-      };
-  forms?:
-    | T
-    | {
-        find?: T;
-        create?: T;
-        update?: T;
       };
   updatedAt?: T;
   createdAt?: T;
