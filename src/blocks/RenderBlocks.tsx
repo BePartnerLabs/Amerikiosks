@@ -15,6 +15,7 @@ import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { MetricsBlock } from '@/blocks/Metrics/Component'
 import { ProcessStepsBlock } from '@/blocks/ProcessSteps/Component'
 import { ProjectsShowcaseBlock } from '@/blocks/ProjectsShowcase/Component'
+import { StatementBlock } from '@/blocks/Statement/Component'
 import { SupportHubBlock } from '@/blocks/SupportHub/Component'
 import { TrustStripServer } from '@/blocks/TrustStrip/Server'
 import type { Page } from '@/payload-types'
@@ -36,6 +37,7 @@ const blockComponents = {
   processSteps: ProcessStepsBlock,
   faqWithForm: FAQWithFormServer,
   machinesListing: MachinesListingServer,
+  statement: StatementBlock,
   supportHub: SupportHubBlock,
 }
 

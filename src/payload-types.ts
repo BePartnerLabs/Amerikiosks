@@ -277,6 +277,7 @@ export interface Page {
         | FormatsGridBlock
         | MachinesListingBlock
         | ProcessStepsBlock
+        | StatementBlock
         | FAQWithFormBlock
         | ClaimFormBlock
         | SupportHubBlock
@@ -1447,6 +1448,27 @@ export interface ProcessStepsBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "StatementBlock".
+ */
+export interface StatementBlock {
+  /**
+   * Small label above the statement, e.g. "Our Philosophy"
+   */
+  eyebrow?: string | null;
+  /**
+   * The single sentence shown large, e.g. "The right brand, in the right place, at the right moment." Para destacar una palabra en negrita, envuélvela en asteriscos dobles: **texto**
+   */
+  statement: string;
+  /**
+   * Optional supporting text below the statement.
+   */
+  subheading?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'statement';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "FAQWithFormBlock".
  */
 export interface FAQWithFormBlock {
@@ -2211,6 +2233,7 @@ export interface PagesSelect<T extends boolean = true> {
         formatsGrid?: T | FormatsGridBlockSelect<T>;
         machinesListing?: T | MachinesListingBlockSelect<T>;
         processSteps?: T | ProcessStepsBlockSelect<T>;
+        statement?: T | StatementBlockSelect<T>;
         faqWithForm?: T | FAQWithFormBlockSelect<T>;
         claimForm?: T | ClaimFormBlockSelect<T>;
         supportHub?: T | SupportHubBlockSelect<T>;
@@ -2507,6 +2530,17 @@ export interface ProcessStepsBlockSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "StatementBlock_select".
+ */
+export interface StatementBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  statement?: T;
+  subheading?: T;
   id?: T;
   blockName?: T;
 }

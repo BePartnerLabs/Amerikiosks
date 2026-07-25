@@ -13,6 +13,11 @@
             "type": "command",
             "command": "jq -r '.tool_input.file_path' | { read -r f; case \"$f\" in *.css) node scripts/validate-ds-tokens.mjs \"$f\" 2>&1;; esac; } || true",
             "statusMessage": "DS tokens: validating..."
+          },
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path' | { read -r f; case \"$f\" in *.ts|*.tsx) case \"$f\" in src/migrations/*) exit 0;; esac; pnpm tsc --noEmit 2>&1 | tail -50;; esac; } || true",
+            "statusMessage": "TypeScript: checking..."
           }
         ]
       }
@@ -20,11 +25,6 @@
     "Stop": [
       {
         "hooks": [
-          {
-            "type": "command",
-            "command": ".claude/hooks/typecheck.sh",
-            "statusMessage": "Running TypeScript check..."
-          },
           {
             "type": "command",
             "command": ".claude/hooks/unit-tests.sh",

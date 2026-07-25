@@ -28,11 +28,12 @@
 }
 
 .ak-section-header__subtitle {
+  --_color: var(--section-subtitle-color, var(--bp-color-text-muted));
   margin: var(--md-size-space-24) 0 0;
   font-size: var(--bp-text-base);
   font-weight: 400;
   line-height: 1.6;
-  color: var(--bp-color-text-muted);
+  color: var(--_color);
   max-width: 60ch;
 }
 
