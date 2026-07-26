@@ -149,6 +149,21 @@ export const Settings: GlobalConfig = {
           label: 'Integrations',
           fields: [
             {
+              name: 'defaultClaimIntegrationTarget',
+              type: 'select',
+              label: 'Default Claim Integration Target',
+              defaultValue: 'monday',
+              options: [
+                { label: 'JotForm', value: 'jotform' },
+                { label: 'Odoo', value: 'odoo' },
+                { label: 'Monday.com', value: 'monday' },
+              ],
+              admin: {
+                description:
+                  "Where new refund claims sync to by default when submitted from the public ClaimForm. Changing this takes effect immediately for claims created after the change — existing claims keep whatever target they already have. Staff can still override a specific claim's target afterward in Claims → Integration target, but that only affects future re-syncs, not one already dispatched.",
+              },
+            },
+            {
               name: 'jotformApiKey',
               type: 'text',
               label: 'JotForm API Key',
@@ -221,21 +236,6 @@ export const Settings: GlobalConfig = {
                 components: {
                   Field: '@/Settings/components/MondayConnectedForms#MondayConnectedForms',
                 },
-              },
-            },
-            {
-              name: 'defaultClaimIntegrationTarget',
-              type: 'select',
-              label: 'Default Claim Integration Target',
-              defaultValue: 'monday',
-              options: [
-                { label: 'JotForm', value: 'jotform' },
-                { label: 'Odoo', value: 'odoo' },
-                { label: 'Monday.com', value: 'monday' },
-              ],
-              admin: {
-                description:
-                  "Where new refund claims sync to by default when submitted from the public ClaimForm. Changing this takes effect immediately for claims created after the change — existing claims keep whatever target they already have. Staff can still override a specific claim's target afterward in Claims → Integration target, but that only affects future re-syncs, not one already dispatched.",
               },
             },
           ],
