@@ -203,6 +203,15 @@ export const Settings: GlobalConfig = {
               },
             },
             {
+              name: 'mondayBoardsSyncUi',
+              type: 'ui',
+              admin: {
+                components: {
+                  Field: '@/Settings/components/MondayBoardsSync#MondayBoardsSync',
+                },
+              },
+            },
+            {
               name: 'defaultClaimIntegrationTarget',
               type: 'select',
               label: 'Default Claim Integration Target',
