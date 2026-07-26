@@ -1,7 +1,4 @@
 {
-  "worktree": {
-    "symlinkDirectories": ["node_modules"]
-  },
   "hooks": {
     "PostToolUse": [
       {
