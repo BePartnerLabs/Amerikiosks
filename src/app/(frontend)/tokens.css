@@ -18,6 +18,7 @@
   --brand-color-palette-navy-800: hsla(209, 73%, 16%, 1); /* card background */
   --brand-color-palette-navy-500: hsla(207, 45%, 32%, 1); /* #2D5677 — section eyebrow */
   --brand-color-palette-slate-400: hsla(196, 17%, 54%, 1); /* megamenu eyebrow */
+  --brand-color-palette-slate-300: rgba(148, 170, 179, 0.495); /* megamenu eyebrow */
   --brand-color-palette-steel-600: hsla(204, 43%, 39%, 1); /* section eyebrow */
   --brand-color-palette-steel-100: hsla(197, 21%, 71%, 1); /* #A6BCC5 — trust-strip card border */
   --brand-color-palette-steel-50: hsla(
@@ -29,7 +30,6 @@
   --brand-color-palette-coral-600: hsla(347, 76%, 48%, 1); /* #D41A3A */
   --brand-color-palette-white: hsla(0, 0%, 100%, 1); /* #FFFFFF */
   --md-primitives-color-blue-100: hsla(221, 100%, 96%, 1); /* #ECF2FF */
-
   /* 02 Semantic — Border */
   --md-semantic-border-width-default: 1px;
 
