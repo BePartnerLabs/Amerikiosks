@@ -230,6 +230,28 @@ export const Settings: GlobalConfig = {
               },
             },
             {
+              name: 'mondayVisibleBoardIds',
+              type: 'json',
+              label: 'Monday.com Visible Board Ids',
+              admin: {
+                // Hidden from the raw field UI — edited exclusively through
+                // MondayVisibleBoardsSelect below.
+                hidden: true,
+                description:
+                  'Curated allowlist of Monday.com board ids shown in the Form board picker. Empty = show every synced board.',
+              },
+            },
+            {
+              name: 'mondayVisibleBoardsUi',
+              type: 'ui',
+              admin: {
+                components: {
+                  Field:
+                    '@/Settings/components/MondayVisibleBoardsSelect#MondayVisibleBoardsSelect',
+                },
+              },
+            },
+            {
               name: 'mondayConnectedFormsUi',
               type: 'ui',
               admin: {

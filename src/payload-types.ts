@@ -3421,6 +3421,10 @@ export interface Setting {
    */
   llmsIncludeInsights?: boolean | null;
   /**
+   * Where new refund claims sync to by default when submitted from the public ClaimForm. Changing this takes effect immediately for claims created after the change — existing claims keep whatever target they already have. Staff can still override a specific claim's target afterward in Claims → Integration target, but that only affects future re-syncs, not one already dispatched.
+   */
+  defaultClaimIntegrationTarget?: ('jotform' | 'odoo' | 'monday') | null;
+  /**
    * API key for the JotForm submissions API (used by the Claims refund flow). Only visible to logged-in admin users — never exposed in the public Settings API response.
    */
   jotformApiKey?: string | null;
@@ -3432,9 +3436,6 @@ export interface Setting {
    * API token for the Monday.com GraphQL API (used by the Claims refund flow). Only visible to logged-in admin users — never exposed in the public Settings API response.
    */
   mondayApiToken?: string | null;
-  /**
-   * Cached snapshot of Monday.com boards/groups/columns, refreshed via the button above. Only visible to logged-in admin users.
-   */
   mondayBoardsCache?:
     | {
         [k: string]: unknown;
@@ -3445,9 +3446,17 @@ export interface Setting {
     | boolean
     | null;
   /**
-   * Where new refund claims sync to by default when submitted from the public ClaimForm. Changing this takes effect immediately for claims created after the change — existing claims keep whatever target they already have. Staff can still override a specific claim's target afterward in Claims → Integration target, but that only affects future re-syncs, not one already dispatched.
+   * Curated allowlist of Monday.com board ids shown in the Form board picker. Empty = show every synced board.
    */
-  defaultClaimIntegrationTarget?: ('jotform' | 'odoo' | 'monday') | null;
+  mondayVisibleBoardIds?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -3574,11 +3583,12 @@ export interface SettingsSelect<T extends boolean = true> {
   llmsSiteDescription?: T;
   llmsIncludePages?: T;
   llmsIncludeInsights?: T;
+  defaultClaimIntegrationTarget?: T;
   jotformApiKey?: T;
   jotformFormId?: T;
   mondayApiToken?: T;
   mondayBoardsCache?: T;
-  defaultClaimIntegrationTarget?: T;
+  mondayVisibleBoardIds?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

@@ -179,6 +179,9 @@ export const plugins: Plugin[] = [
                 condition: (data) => data?.integrationTarget && data.integrationTarget !== 'none',
                 description:
                   'The Monday.com board id (or future Odoo record id) this form syncs to.',
+                components: {
+                  Field: '@/plugins/components/MondayBoardPicker#MondayBoardPicker',
+                },
               },
             },
             {

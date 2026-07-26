@@ -39,6 +39,7 @@ import * as migration_20260725_000904_add_users_api_key from './20260725_000904_
 import * as migration_20260725_192423_statement_block from './20260725_192423_statement_block';
 import * as migration_20260725_225632_remove_users_api_key_scope_mcp_to_machines from './20260725_225632_remove_users_api_key_scope_mcp_to_machines';
 import * as migration_20260726_005747_add_monday_boards_cache from './20260726_005747_add_monday_boards_cache';
+import * as migration_20260726_014101_add_monday_visible_board_ids from './20260726_014101_add_monday_visible_board_ids';
 
 export const migrations = [
   {
@@ -244,6 +245,11 @@ export const migrations = [
   {
     up: migration_20260726_005747_add_monday_boards_cache.up,
     down: migration_20260726_005747_add_monday_boards_cache.down,
-    name: '20260726_005747_add_monday_boards_cache'
+    name: '20260726_005747_add_monday_boards_cache',
+  },
+  {
+    up: migration_20260726_014101_add_monday_visible_board_ids.up,
+    down: migration_20260726_014101_add_monday_visible_board_ids.down,
+    name: '20260726_014101_add_monday_visible_board_ids'
   },
 ];
