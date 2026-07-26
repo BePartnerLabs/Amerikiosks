@@ -8,13 +8,17 @@ import { vtName } from '@/utilities/viewTransitionName'
 type Props = {
   familySlug: string
   models: Machine[]
+  // Required so the server-rendered Link below never falls back to next-intl's
+  // own getLocale() — that reads headers and breaks static generation for this
+  // page (see the machines pages' DYNAMIC_SERVER_USAGE fix).
+  locale: 'en' | 'es'
 }
 
 // Reuses the exact ak-model-lines panel styling from the home page's
 // "explore our systems" carousel, scoped to models within a family.
 const ACCENTS = ['#ff6b3d', '#3fb0ff', '#7cd992', '#c58cff', '#ffd166', '#ff8fb1']
 
-export const ModelsCarousel: React.FC<Props> = ({ familySlug, models }) => {
+export const ModelsCarousel: React.FC<Props> = ({ familySlug, models, locale }) => {
   if (models.length === 0) return null
 
   return (
@@ -33,6 +37,7 @@ export const ModelsCarousel: React.FC<Props> = ({ familySlug, models }) => {
                     pathname: '/machines/[family]/[slug]',
                     params: { family: familySlug, slug: machine.slug ?? '' },
                   }}
+                  locale={locale}
                   className="ak-model-lines__panel"
                   style={{ '--_accent': accent } as React.CSSProperties}
                   data-ga-event="machine_model_click"

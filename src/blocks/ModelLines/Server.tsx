@@ -21,6 +21,7 @@ export const ModelLinesServer: React.FC<ModelLinesBlockProps> = async (props) =>
     <ModelLinesBlock
       {...props}
       families={result.docs as MachineFamily[]}
+      locale={locale as 'en' | 'es'}
     />
   )
 }

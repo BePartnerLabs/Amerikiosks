@@ -33,6 +33,7 @@ export const RelatedMachines: React.FC<Props> = async ({ currentFamilyId, locale
       eyebrow="Explore more models"
       heading="Find the right kiosk for your space."
       families={families}
+      locale={locale}
     />
   )
 }
