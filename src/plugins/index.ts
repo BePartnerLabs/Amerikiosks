@@ -30,15 +30,7 @@ export const generateURL: GenerateURL<Insight | Page | Project | Machine> = ({ d
 export const plugins: Plugin[] = [
   mcpPlugin({
     collections: {
-      pages: { enabled: { find: true } },
-      insights: { enabled: { find: true } },
-      media: { enabled: { find: true } },
-      categories: { enabled: { find: true } },
-      partners: { enabled: { find: true } },
-      projects: { enabled: { find: true } },
-      faqItems: { enabled: { find: true } },
       machines: { enabled: { find: true, create: true, update: true, delete: true } },
-      forms: { enabled: { find: true, create: true, update: true } },
     },
   }),
   // Use Cloudflare R2 (S3-compatible) when credentials are set.

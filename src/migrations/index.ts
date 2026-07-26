@@ -36,6 +36,7 @@ import * as migration_20260724_214459_brands_drafts from './20260724_214459_bran
 import * as migration_20260724_215447_brands_order from './20260724_215447_brands_order';
 import * as migration_20260724_230900_machine_tags_collection from './20260724_230900_machine_tags_collection';
 import * as migration_20260725_000904_add_users_api_key from './20260725_000904_add_users_api_key';
+import * as migration_20260725_225632_remove_users_api_key_scope_mcp_to_machines from './20260725_225632_remove_users_api_key_scope_mcp_to_machines';
 import * as migration_20260725_192423_statement_block from './20260725_192423_statement_block';
 
 export const migrations = [
@@ -230,6 +231,9 @@ export const migrations = [
     name: '20260725_000904_add_users_api_key',
   },
   {
+    up: migration_20260725_225632_remove_users_api_key_scope_mcp_to_machines.up,
+    down: migration_20260725_225632_remove_users_api_key_scope_mcp_to_machines.down,
+    name: '20260725_225632_remove_users_api_key_scope_mcp_to_machines'
     up: migration_20260725_192423_statement_block.up,
     down: migration_20260725_192423_statement_block.down,
     name: '20260725_192423_statement_block'
