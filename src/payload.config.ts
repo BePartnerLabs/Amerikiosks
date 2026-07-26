@@ -13,6 +13,8 @@ import { syncClaimTask } from './collections/Claims/tasks/syncClaimTask'
 import { ConsentLogs } from './collections/ConsentLogs'
 import { FAQItems } from './collections/FAQItems'
 import { Insights } from './collections/Insights'
+import { MachineFamilies } from './collections/MachineFamilies'
+import { MachineInstallations } from './collections/MachineInstallations'
 import { Machines } from './collections/Machines'
 import { MachineTags } from './collections/MachineTags'
 import { Media } from './collections/Media'
@@ -97,6 +99,8 @@ export default buildConfig({
     Partners,
     Machines,
     MachineTags,
+    MachineFamilies,
+    MachineInstallations,
     FAQItems,
     Projects,
     Brands,

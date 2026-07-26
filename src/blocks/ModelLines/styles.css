@@ -1,0 +1,13 @@
+.ak-model-lines {
+  --_background: var(--model-lines-background, var(--bp-color-bg));
+  background: var(--_background);
+}
+
+.ak-model-lines__inner {
+  padding-block: var(--bp-space-16, 4rem);
+}
+
+.ak-model-lines__inner .ak-model-lines-row {
+  justify-content: center;
+  margin-top: var(--bp-space-10, 2.5rem);
+}

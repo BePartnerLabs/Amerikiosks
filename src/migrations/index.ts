@@ -41,6 +41,8 @@ import * as migration_20260725_225632_remove_users_api_key_scope_mcp_to_machines
 import * as migration_20260726_005747_add_monday_boards_cache from './20260726_005747_add_monday_boards_cache';
 import * as migration_20260726_014101_add_monday_visible_board_ids from './20260726_014101_add_monday_visible_board_ids';
 import * as migration_20260726_023618_remove_jotform_integration from './20260726_023618_remove_jotform_integration';
+import * as migration_20260726_112453_machine_families from './20260726_112453_machine_families';
+import * as migration_20260726_125125_model_lines_block from './20260726_125125_model_lines_block';
 
 export const migrations = [
   {
@@ -256,6 +258,16 @@ export const migrations = [
   {
     up: migration_20260726_023618_remove_jotform_integration.up,
     down: migration_20260726_023618_remove_jotform_integration.down,
-    name: '20260726_023618_remove_jotform_integration'
+    name: '20260726_023618_remove_jotform_integration',
+  },
+  {
+    up: migration_20260726_112453_machine_families.up,
+    down: migration_20260726_112453_machine_families.down,
+    name: '20260726_112453_machine_families',
+  },
+  {
+    up: migration_20260726_125125_model_lines_block.up,
+    down: migration_20260726_125125_model_lines_block.down,
+    name: '20260726_125125_model_lines_block'
   },
 ];

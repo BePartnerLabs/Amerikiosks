@@ -244,6 +244,15 @@
   margin: 0 0 var(--bp-space-8, 2rem);
 }
 
+.ak-machine-detail__related-inner .ak-model-lines-row {
+  justify-content: center;
+}
+
+.ak-machine-detail__related-cta {
+  text-align: center;
+  margin-top: var(--bp-space-8, 2rem);
+}
+
 .ak-machine-detail__related-grid {
   display: grid;
   grid-template-columns: 1fr;
