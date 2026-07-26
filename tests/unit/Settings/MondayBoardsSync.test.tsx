@@ -1,10 +1,28 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import type React from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 const setValueMock = vi.fn()
 const useFieldMock = vi.fn()
 vi.mock('@payloadcms/ui', () => ({
   useField: (...args: unknown[]) => useFieldMock(...args),
+  Button: ({
+    children,
+    onClick,
+    disabled,
+  }: {
+    children?: React.ReactNode
+    onClick?: () => void
+    disabled?: boolean
+  }) => (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+    >
+      {children}
+    </button>
+  ),
 }))
 
 import { MondayBoardsSync } from '@/Settings/components/MondayBoardsSync'

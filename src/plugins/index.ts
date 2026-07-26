@@ -7,12 +7,13 @@ import { seoPlugin } from '@payloadcms/plugin-seo'
 import type { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import { s3Storage } from '@payloadcms/storage-s3'
-import type { Plugin } from 'payload'
+import type { Plugin, TextFieldValidation } from 'payload'
 import { dispatchFormSync } from '@/collections/FormSubmissions/hooks/dispatchFormSync'
 import { revalidateRedirects } from '@/hooks/revalidateRedirects'
 import type { Insight, Machine, Page, Project } from '@/payload-types'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
 import { searchFields } from '@/search/fieldOverrides'
+import { type MondayBoardsCache, validateMondayColumnId } from '@/utilities/detectMondayDrift'
 import { getServerSideURL } from '@/utilities/getURL'
 
 export const generateTitle: GenerateTitle<Insight | Page | Project | Machine> = ({ doc }) => {
@@ -133,6 +134,16 @@ export const plugins: Plugin[] = [
                 description:
                   'Monday.com column id this field\'s value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.',
               },
+              validate: (async (value: string | null | undefined, { data, req }) => {
+                const boardId = (data as { externalId?: string })?.externalId
+                if (!boardId) return true
+                const settings = await req.payload.findGlobal({ slug: 'settings', req })
+                return validateMondayColumnId(
+                  value,
+                  boardId,
+                  settings.mondayBoardsCache as MondayBoardsCache | undefined,
+                )
+              }) as TextFieldValidation,
             })
           }
         }
@@ -185,6 +196,18 @@ export const plugins: Plugin[] = [
               },
             },
             {
+              name: 'mondayGroupId',
+              type: 'text',
+              admin: {
+                position: 'sidebar',
+                condition: (data) => data?.integrationTarget === 'monday',
+                description: 'Monday.com group id within the board (e.g. "topics").',
+                components: {
+                  Field: '@/plugins/components/MondayGroupPicker#MondayGroupPicker',
+                },
+              },
+            },
+            {
               name: 'mondayColumnsReferenceUi',
               type: 'ui',
               admin: {
@@ -193,15 +216,6 @@ export const plugins: Plugin[] = [
                 components: {
                   Field: '@/plugins/components/MondayColumnsReference#MondayColumnsReference',
                 },
-              },
-            },
-            {
-              name: 'mondayGroupId',
-              type: 'text',
-              admin: {
-                position: 'sidebar',
-                condition: (data) => data?.integrationTarget === 'monday',
-                description: 'Monday.com group id within the board (e.g. "topics").',
               },
             },
           ])

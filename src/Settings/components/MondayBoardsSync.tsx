@@ -1,6 +1,6 @@
 'use client'
 
-import { useField } from '@payloadcms/ui'
+import { Button, useField } from '@payloadcms/ui'
 import type React from 'react'
 import { useState } from 'react'
 import type { MondayBoardsCache } from '@/utilities/detectMondayDrift'
@@ -41,14 +41,13 @@ export const MondayBoardsSync: React.FC = () => {
           ? `Last synced: ${new Date(value.syncedAt).toLocaleString()}`
           : 'Never synced'}
       </p>
-      <button
-        type="button"
+      <Button
+        buttonStyle="secondary"
         onClick={refresh}
         disabled={status === 'loading'}
-        className="btn btn--style-secondary"
       >
         {status === 'loading' ? 'Refreshing…' : 'Refresh Monday Boards'}
-      </button>
+      </Button>
       {errorMessage && <p style={{ marginTop: '0.5rem', color: '#b91c1c' }}>{errorMessage}</p>}
       {value?.boards && value.boards.length > 0 && (
         <details style={{ marginTop: '0.5rem' }}>

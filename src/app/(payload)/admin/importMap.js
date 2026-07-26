@@ -23,6 +23,7 @@ import { ResyncListButton as ResyncListButton_5d82853d3000711ed47e64e6cb5f5322 }
 import { ResyncDocButton as ResyncDocButton_cd77d1669fc948221aaa335b049dfd5f } from '@/collections/Claims/components/ResyncDocButton'
 import { ViewPhotoButton as ViewPhotoButton_a5ebcbe60d2bc26f65c5b5759cbd4d99 } from '@/collections/Claims/components/ViewPhotoButton'
 import { MondayBoardPicker as MondayBoardPicker_c2aaa73f5cd9d1f756c6201b3ca5ae5a } from '@/plugins/components/MondayBoardPicker'
+import { MondayGroupPicker as MondayGroupPicker_c2baa8ef80b258ef1470bf62c2896b44 } from '@/plugins/components/MondayGroupPicker'
 import { MondayColumnsReference as MondayColumnsReference_95f847eafd6912a2696cfbfe6d063868 } from '@/plugins/components/MondayColumnsReference'
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
@@ -67,6 +68,7 @@ export const importMap = {
   "@/collections/Claims/components/ResyncDocButton#ResyncDocButton": ResyncDocButton_cd77d1669fc948221aaa335b049dfd5f,
   "@/collections/Claims/components/ViewPhotoButton#ViewPhotoButton": ViewPhotoButton_a5ebcbe60d2bc26f65c5b5759cbd4d99,
   "@/plugins/components/MondayBoardPicker#MondayBoardPicker": MondayBoardPicker_c2aaa73f5cd9d1f756c6201b3ca5ae5a,
+  "@/plugins/components/MondayGroupPicker#MondayGroupPicker": MondayGroupPicker_c2baa8ef80b258ef1470bf62c2896b44,
   "@/plugins/components/MondayColumnsReference#MondayColumnsReference": MondayColumnsReference_95f847eafd6912a2696cfbfe6d063868,
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
