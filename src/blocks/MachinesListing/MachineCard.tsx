@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { Link } from '@/i18n/routing'
-import type { Machine, Media } from '@/payload-types'
+import type { Machine, MachineFamily, Media } from '@/payload-types'
 import { useInView } from '@/utilities/useInView'
 
 type Props = {
@@ -13,12 +13,19 @@ type Props = {
 export const MachineCard: React.FC<Props> = ({ machine, index = 0 }) => {
   const { ref, inView } = useInView<HTMLAnchorElement>()
   const image = typeof machine.image === 'object' ? (machine.image as Media) : null
+  const familySlug =
+    typeof machine.family === 'object' ? (machine.family as MachineFamily).slug : null
   const delay = (index % 6) * 70
+
+  if (!familySlug) return null
 
   return (
     <Link
       ref={ref}
-      href={{ pathname: '/machines/[slug]', params: { slug: machine.slug } }}
+      href={{
+        pathname: '/machines/[family]/[slug]',
+        params: { family: familySlug, slug: machine.slug },
+      }}
       className={`bp-card bp-card--interactive ak-machines-listing__card${inView ? ' ak-machines-listing__card--in-view' : ''}`}
       style={{ transitionDelay: `${delay}ms` } as React.CSSProperties}
       data-ga-event="machine_card_click"

@@ -20,7 +20,7 @@ export const ModelLinesRow: React.FC<Props> = ({ families, activeSlug }) => {
         return (
           <Link
             key={family.id}
-            href={{ pathname: '/machines/[slug]', params: { slug: family.slug ?? '' } }}
+            href={{ pathname: '/machines/[family]', params: { family: family.slug ?? '' } }}
             className={`ak-model-lines-row__item${isActive ? ' ak-model-lines-row__item--active' : ''}`}
             data-ga-event="machine_family_click"
             data-ga-label={family.name}

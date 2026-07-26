@@ -40,7 +40,7 @@ describe('RelatedMachines', () => {
     })
 
     const { RelatedMachines } = await import(
-      '@/app/(frontend)/[locale]/machines/[slug]/RelatedMachines'
+      '@/app/(frontend)/[locale]/machines/[family]/[slug]/RelatedMachines'
     )
     const ui = await RelatedMachines({ currentFamilyId: 5, locale: 'en' })
     render(ui)

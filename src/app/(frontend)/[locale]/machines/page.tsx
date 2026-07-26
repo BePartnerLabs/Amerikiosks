@@ -5,12 +5,14 @@ import { getPayload } from 'payload'
 import { ModelLinesRow } from '@/components/ModelLinesRow'
 import { Link } from '@/i18n/routing'
 import type { MachineFamily } from '@/payload-types'
-import './[slug]/machines-catalog.css'
+import { getServerSideURL } from '@/utilities/getURL'
+import './machines-catalog.css'
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: 'Model Lines — Amerikiosks',
     description: 'Discover our kiosk model lines, from premium hot-food to ultra-compact retail.',
+    alternates: { canonical: '/machines' },
   }
 }
 
@@ -28,8 +30,28 @@ export default async function MachinesLandingPage() {
 
   const families = result.docs as MachineFamily[]
 
+  const siteUrl = getServerSideURL()
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Model Lines',
+    url: `${siteUrl}/machines`,
+    hasPart: families.map((family) => ({
+      '@type': 'Thing',
+      name: family.name,
+      description: family.tagline || family.description || undefined,
+      url: `${siteUrl}/machines/${family.slug}`,
+    })),
+  }
+
   return (
     <main className="ak-machines-landing">
+      <script
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD is server-generated structured data, not user input
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       <section className="ak-machines-landing__nav">
         <div className="bp-content-grid">
           <div className="breakout">
@@ -68,7 +90,7 @@ export default async function MachinesLandingPage() {
                   </div>
 
                   <Link
-                    href={{ pathname: '/machines/[slug]', params: { slug: family.slug ?? '' } }}
+                    href={{ pathname: '/machines/[family]', params: { family: family.slug ?? '' } }}
                     className="bp-btn bp-btn--secondary"
                   >
                     {family.ctaLabel || 'Know more'}

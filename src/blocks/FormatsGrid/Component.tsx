@@ -2,7 +2,12 @@ import Image from 'next/image'
 import type React from 'react'
 import { SectionHeader } from '@/components/SectionHeader'
 import { Link } from '@/i18n/routing'
-import type { FormatsGridBlock as FormatsGridBlockProps, Machine, Media } from '@/payload-types'
+import type {
+  FormatsGridBlock as FormatsGridBlockProps,
+  Machine,
+  MachineFamily,
+  Media,
+} from '@/payload-types'
 import { toSnakeCase } from '@/utilities/toSnakeCase'
 import './styles.css'
 
@@ -38,11 +43,17 @@ export const FormatsGridBlock: React.FC<Props> = ({
             <div className="ak-formats-grid__grid">
               {resolvedMachines.map((machine) => {
                 const image = typeof machine.image === 'object' ? (machine.image as Media) : null
+                const familySlug =
+                  typeof machine.family === 'object' ? (machine.family as MachineFamily).slug : null
+                if (!familySlug) return null
 
                 return (
                   <Link
                     key={machine.id}
-                    href={{ pathname: '/machines/[slug]', params: { slug: machine.slug } }}
+                    href={{
+                      pathname: '/machines/[family]/[slug]',
+                      params: { family: familySlug, slug: machine.slug },
+                    }}
                     className="bp-card bp-card--interactive ak-formats-grid__card"
                     data-ga-event="machine_card_click"
                     data-ga-label={machine.name}

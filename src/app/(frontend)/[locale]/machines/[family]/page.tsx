@@ -1,5 +1,7 @@
 import config from '@payload-config'
 import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
+import { getLocale } from 'next-intl/server'
 import { getPayload } from 'payload'
 import { MachineCard } from '@/blocks/MachinesListing/MachineCard'
 import { Icon } from '@/components/Icon'
@@ -7,8 +9,13 @@ import { ModelLinesRow } from '@/components/ModelLinesRow'
 import { Link } from '@/i18n/routing'
 import type { Machine, MachineFamily, MachineInstallation } from '@/payload-types'
 import { generateMeta } from '@/utilities/generateMeta'
+import { getServerSideURL } from '@/utilities/getURL'
 import { InstallationsGallery } from './InstallationsGallery'
-import './machines-catalog.css'
+import '../machines-catalog.css'
+
+type Props = {
+  params: Promise<{ family: string }>
+}
 
 export async function getFamilyBySlug(slug: string, locale: 'en' | 'es') {
   const payload = await getPayload({ config })
@@ -23,7 +30,26 @@ export async function getFamilyBySlug(slug: string, locale: 'en' | 'es') {
   return (result.docs[0] as MachineFamily) ?? null
 }
 
-export async function generateFamilyMetadata(family: MachineFamily): Promise<Metadata> {
+export async function generateStaticParams() {
+  const payload = await getPayload({ config })
+  const result = await payload.find({
+    collection: 'machine-families',
+    depth: 0,
+    overrideAccess: false,
+    limit: 100,
+  })
+
+  return (result.docs as MachineFamily[])
+    .filter((family) => Boolean(family.slug))
+    .map((family) => ({ family: family.slug as string }))
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { family: familySlug } = await params
+  const locale = (await getLocale()) as 'en' | 'es'
+  const family = await getFamilyBySlug(familySlug, locale)
+  if (!family) return {}
+
   return generateMeta({
     doc: {
       ...family,
@@ -36,13 +62,13 @@ export async function generateFamilyMetadata(family: MachineFamily): Promise<Met
   })
 }
 
-type Props = {
-  family: MachineFamily
-  locale: 'en' | 'es'
-}
-
-export const FamilyDetail: React.FC<Props> = async ({ family, locale }) => {
+export default async function FamilyDetailPage({ params }: Props) {
+  const { family: familySlug } = await params
+  const locale = (await getLocale()) as 'en' | 'es'
   const payload = await getPayload({ config })
+
+  const family = await getFamilyBySlug(familySlug, locale)
+  if (!family) notFound()
 
   const [allFamilies, modelsResult] = await Promise.all([
     payload.find({
@@ -78,8 +104,44 @@ export const FamilyDetail: React.FC<Props> = async ({ family, locale }) => {
   const installations = (installationsResult?.docs ?? []) as MachineInstallation[]
   const highlightItems = family.highlights?.items ?? []
 
+  const siteUrl = getServerSideURL()
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Machines', item: `${siteUrl}/machines` },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: family.name,
+            item: `${siteUrl}/machines/${familySlug}`,
+          },
+        ],
+      },
+      {
+        '@type': 'CollectionPage',
+        name: family.name,
+        description: family.description || family.tagline || undefined,
+        url: `${siteUrl}/machines/${familySlug}`,
+        hasPart: models.map((machine) => ({
+          '@type': 'Product',
+          name: machine.name,
+          url: `${siteUrl}/machines/${familySlug}/${machine.slug}`,
+        })),
+      },
+    ],
+  }
+
   return (
     <main className="ak-family-detail">
+      <script
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD is server-generated structured data, not user input
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       <section className="ak-family-detail__nav">
         <div className="bp-content-grid">
           <div className="breakout">

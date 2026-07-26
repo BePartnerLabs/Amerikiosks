@@ -13,7 +13,7 @@ vi.mock('@/i18n/routing', () => ({
     href: { pathname: string; params?: Record<string, string> }
   } & React.ComponentPropsWithoutRef<'a'>) => (
     <a
-      href={`/machines/${href.params?.slug}`}
+      href={`/machines/${href.params?.family}/${href.params?.slug}`}
       {...rest}
     >
       {children}
@@ -32,6 +32,7 @@ const makeMachine = (slug: string, name: string): Machine =>
     tagline: `${name} tagline`,
     image: makeMedia(`/${slug}.jpg`),
     tags: [{ label: 'full-size', id: 't1' }],
+    family: { id: 'fam-1', slug: 'gamma', name: 'Gamma' },
     layout: [],
     updatedAt: '',
     createdAt: '',
@@ -73,8 +74,8 @@ describe('FormatsGridBlock', () => {
     render(<FormatsGridBlock {...base} />)
     const links = screen.getAllByRole('link')
     expect(links).toHaveLength(2)
-    expect(links[0]).toHaveAttribute('href', '/machines/full-size')
-    expect(links[1]).toHaveAttribute('href', '/machines/compact')
+    expect(links[0]).toHaveAttribute('href', '/machines/gamma/full-size')
+    expect(links[1]).toHaveAttribute('href', '/machines/gamma/compact')
   })
 
   it('renders machine name as card title', () => {

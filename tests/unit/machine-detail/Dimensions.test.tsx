@@ -1,6 +1,6 @@
 import { cleanup, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
-import { Dimensions } from '@/app/(frontend)/[locale]/machines/[slug]/Dimensions'
+import { Dimensions } from '@/app/(frontend)/[locale]/machines/[family]/[slug]/Dimensions'
 
 describe('Dimensions', () => {
   afterEach(cleanup)

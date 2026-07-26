@@ -21,7 +21,7 @@ vi.mock('@/i18n/routing', () => ({
     href: { pathname: string; params?: Record<string, string> }
   } & React.ComponentPropsWithoutRef<'a'>) => (
     <a
-      href={`/machines/${href.params?.slug}`}
+      href={`/machines/${href.params?.family}/${href.params?.slug}`}
       {...rest}
     >
       {children}
@@ -41,6 +41,7 @@ const makeMachine = (slug: string, name: string, tag: string): Machine =>
     tagline: `${name} tagline`,
     image: { id: slug, url: `/${slug}.jpg`, width: 800, height: 600 },
     tags: [{ label: tag, id: `${slug}-tag` }],
+    family: { id: 'fam-1', slug: 'gamma', name: 'Gamma' },
     layout: [],
     updatedAt: '',
     createdAt: '',

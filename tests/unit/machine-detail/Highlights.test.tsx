@@ -1,6 +1,6 @@
 import { cleanup, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
-import { Highlights } from '@/app/(frontend)/[locale]/machines/[slug]/Highlights'
+import { Highlights } from '@/app/(frontend)/[locale]/machines/[family]/[slug]/Highlights'
 
 describe('Highlights', () => {
   afterEach(cleanup)
