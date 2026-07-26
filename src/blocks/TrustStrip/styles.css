@@ -49,6 +49,7 @@
 
 .ak-trust-strip__card img {
   object-fit: contain;
+  max-height: 100%;
 }
 
 .ak-trust-strip__viewport:hover .ak-trust-strip__track,

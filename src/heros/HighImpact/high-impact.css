@@ -53,6 +53,7 @@
 
 /* Content */
 .ak-hero-home__content {
+  text-shadow: 5px 5px 10px var(--ak-border-on-inverse);
   position: relative;
   z-index: 2;
   max-width: 72ch;
