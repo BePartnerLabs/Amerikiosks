@@ -1,7 +1,7 @@
 import type { PayloadRequest } from 'payload'
 import { CLAIM_REASON_LABEL, PAYMENT_METHOD_LABEL } from './claimLabels'
+import type { ClaimSubmission } from './claimTypes'
 import { serverHttpClient } from './clients/ServerHttpClient'
-import type { ClaimSubmission } from './JotFormRepository'
 
 export const MONDAY_BOARD_ID = 4498706759
 export const MONDAY_GROUP_ID = 'topics'
@@ -101,7 +101,7 @@ export const MondayRepository = {
   ): Promise<{ responseCode: number; message: string }> {
     // Local API call — overrideAccess defaults to true, so this reads the token
     // regardless of the field's own access.read: authenticatedFieldAccess
-    // restriction (same pattern as JotFormRepository reading jotformApiKey).
+    // restriction (that gate is for external REST/GraphQL requests only).
     const settings = await req.payload.findGlobal({ slug: 'settings', req })
     const apiToken = settings.mondayApiToken ?? ''
 

@@ -1,7 +1,6 @@
-// Shared between JotFormRepository and MondayRepository — our Payload `select`
-// fields store short internal slugs, but both external systems' dropdown
-// options expect the human-readable label text. Kept in one place so the two
-// integrations' option sets can't drift out of sync with each other.
+// Used by MondayRepository — our Payload `select` fields store short
+// internal slugs, but Monday's dropdown columns expect the human-readable
+// label text.
 export const PAYMENT_METHOD_LABEL: Record<string, string> = {
   card: 'Credit/Debit Card',
   cash: 'Cash',

@@ -1,6 +1,5 @@
 export { ClaimsRepository } from './ClaimsRepository'
 export { FormsRepository } from './FormsRepository'
-export { JotFormRepository } from './JotFormRepository'
 export { MondayRepository } from './MondayRepository'
 export { OdooRepository } from './OdooRepository'
 export { PagesRepository } from './PagesRepository'

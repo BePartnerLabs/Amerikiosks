@@ -154,45 +154,12 @@ export const Settings: GlobalConfig = {
               label: 'Default Claim Integration Target',
               defaultValue: 'monday',
               options: [
-                { label: 'JotForm', value: 'jotform' },
                 { label: 'Odoo', value: 'odoo' },
                 { label: 'Monday.com', value: 'monday' },
               ],
               admin: {
                 description:
                   "Where new refund claims sync to by default when submitted from the public ClaimForm. Changing this takes effect immediately for claims created after the change — existing claims keep whatever target they already have. Staff can still override a specific claim's target afterward in Claims → Integration target, but that only affects future re-syncs, not one already dispatched.",
-              },
-            },
-            {
-              name: 'jotformApiKey',
-              type: 'text',
-              label: 'JotForm API Key',
-              access: {
-                // The global's own access.read is public (see above) — this
-                // field overrides that with its own stricter gate, since it's
-                // a secret. Local API calls from server-side code (e.g.
-                // JotFormRepository reading this to build a request) default
-                // to overrideAccess: true and bypass this entirely, same as
-                // any other Payload access control — only external
-                // REST/GraphQL requests are actually gated by this.
-                read: authenticatedFieldAccess,
-              },
-              admin: {
-                description:
-                  'API key for the JotForm submissions API (used by the Claims refund flow). Only visible to logged-in admin users — never exposed in the public Settings API response.',
-                components: {
-                  Field: '@payloadcms/ui#PasswordField',
-                },
-              },
-            },
-            {
-              name: 'jotformFormId',
-              type: 'text',
-              label: 'JotForm Form ID',
-              admin: {
-                description:
-                  'Target JotForm form ID for the Claims refund flow. Leave empty to use the production "Amerikiosks - Refund Request" form (230405763622148) — override here to point at a clone/test form in local or staging.',
-                placeholder: '230405763622148',
               },
             },
             {

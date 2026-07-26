@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { ClaimSubmission } from '@/repositories/JotFormRepository'
+import type { ClaimSubmission } from '@/repositories/claimTypes'
 import { OdooRepository } from '@/repositories/OdooRepository'
 
 const baseClaim: ClaimSubmission = {

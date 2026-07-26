@@ -19,7 +19,7 @@ describe('setDefaultIntegrationTarget', () => {
     expect(result?.integrationTarget).toBe('monday')
   })
 
-  it('falls back to jotform when Settings has no value configured', async () => {
+  it('falls back to monday when Settings has no value configured', async () => {
     const { payload } = fakeReq(undefined)
     const result = await setDefaultIntegrationTarget({
       data: { customerFirstName: 'Test' },
@@ -27,7 +27,7 @@ describe('setDefaultIntegrationTarget', () => {
       req: { payload } as never,
     } as never)
 
-    expect(result?.integrationTarget).toBe('jotform')
+    expect(result?.integrationTarget).toBe('monday')
   })
 
   it('does not override an explicitly provided integrationTarget', async () => {

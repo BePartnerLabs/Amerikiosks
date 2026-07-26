@@ -4,14 +4,14 @@ import { getServerSideURL } from '@/utilities/getURL'
 
 /**
  * Dispatches a newly created claim to the configured integration target
- * (JotForm today, Odoo once its REST API is ready — see Phase B) and records
- * the outcome on the same doc. Uses the same `context.<flag>` recursion guard
- * as `revalidatePage.ts`'s `context.disableRevalidate`.
+ * (Monday.com today, Odoo once its REST API is ready — see Phase B) and
+ * records the outcome on the same doc. Uses the same `context.<flag>`
+ * recursion guard as `revalidatePage.ts`'s `context.disableRevalidate`.
  *
  * Always queues a job (syncClaimToIntegration) and immediately triggers it
  * via an internal "webhook" call to /api/payload-jobs/run, without awaiting
  * that call — the job runs in a separate request, so the customer's submit
- * doesn't wait on JotForm's round trip (or, on a cold Neon compute, stack
+ * doesn't wait on the integration's round trip (or, on a cold Neon compute, stack
  * that latency on top of the DB wake-up). A submitted photo (if any) is
  * already durably stored by the time this hook runs — Claims.photoKey
  * points at the private R2 object — so there's no in-memory-only data this
