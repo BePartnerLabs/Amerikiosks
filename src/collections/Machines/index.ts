@@ -63,6 +63,16 @@ export const Machines: CollectionConfig = {
       type: 'upload',
       relationTo: 'media',
       required: true,
+      admin: { description: 'Front view — shown in the model carousel cards.' },
+    },
+    {
+      name: 'hoverImage',
+      type: 'upload',
+      relationTo: 'media',
+      admin: {
+        description:
+          'Optional side view — swaps in on hover/focus/active over the card. Leave empty to keep showing the front view only.',
+      },
     },
     {
       name: 'tags',

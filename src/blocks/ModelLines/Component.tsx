@@ -50,6 +50,8 @@ export const ModelLinesBlock: React.FC<Props> = ({
             {families.map((family, i) => {
               const thumbnail =
                 typeof family.thumbnail === 'object' ? (family.thumbnail as Media) : null
+              const hoverThumbnail =
+                typeof family.hoverThumbnail === 'object' ? (family.hoverThumbnail as Media) : null
               const accent = ACCENTS[i % ACCENTS.length]
 
               return (
@@ -64,16 +66,25 @@ export const ModelLinesBlock: React.FC<Props> = ({
                 >
                   {thumbnail?.url && (
                     <div
-                      className="ak-model-lines__panel-art"
+                      className={`ak-model-lines__panel-art${hoverThumbnail?.url ? ' ak-model-lines__panel-art--has-hover' : ''}`}
                       style={vtName('family-image', family.slug)}
                     >
                       <Image
                         src={thumbnail.url}
                         alt=""
                         fill
-                        className="ak-model-lines__panel-img"
+                        className="ak-model-lines__panel-img ak-model-lines__panel-img--front"
                         sizes="(max-width: 640px) 78vw, 23rem"
                       />
+                      {hoverThumbnail?.url && (
+                        <Image
+                          src={hoverThumbnail.url}
+                          alt=""
+                          fill
+                          className="ak-model-lines__panel-img ak-model-lines__panel-img--hover"
+                          sizes="(max-width: 640px) 78vw, 23rem"
+                        />
+                      )}
                     </div>
                   )}
                   <div className="ak-model-lines__panel-body">

@@ -1269,7 +1269,14 @@ export interface Machine {
    * Small kicker above the hero title, e.g. "NEXT GENERATION"
    */
   heroEyebrow?: string | null;
+  /**
+   * Front view — shown in the model carousel cards.
+   */
   image: number | Media;
+  /**
+   * Optional side view — swaps in on hover/focus/active over the card. Leave empty to keep showing the front view only.
+   */
+  hoverImage?: (number | null) | Media;
   /**
    * e.g. full-size, compact, campaign, premium — used for block-level filtering
    */
@@ -1461,9 +1468,13 @@ export interface MachineFamily {
    */
   description?: string | null;
   /**
-   * Shown in the "Discover our model lines" row
+   * Front view — shown in the model-lines carousel cards.
    */
   thumbnail: number | Media;
+  /**
+   * Optional side view — swaps in on hover/focus/active over the card. Leave empty to keep showing the front view only.
+   */
+  hoverThumbnail?: (number | null) | Media;
   ctaLabel?: string | null;
   highlights?: {
     eyebrow?: string | null;
@@ -2908,6 +2919,7 @@ export interface MachinesSelect<T extends boolean = true> {
   tagline?: T;
   heroEyebrow?: T;
   image?: T;
+  hoverImage?: T;
   tags?: T;
   family?: T;
   gallery?:
@@ -3018,6 +3030,7 @@ export interface MachineFamiliesSelect<T extends boolean = true> {
   heroLineupImage?: T;
   description?: T;
   thumbnail?: T;
+  hoverThumbnail?: T;
   ctaLabel?: T;
   highlights?:
     | T

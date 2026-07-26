@@ -95,7 +95,16 @@ export const MachineFamilies: CollectionConfig = {
       type: 'upload',
       relationTo: 'media',
       required: true,
-      admin: { description: 'Shown in the "Discover our model lines" row' },
+      admin: { description: 'Front view — shown in the model-lines carousel cards.' },
+    },
+    {
+      name: 'hoverThumbnail',
+      type: 'upload',
+      relationTo: 'media',
+      admin: {
+        description:
+          'Optional side view — swaps in on hover/focus/active over the card. Leave empty to keep showing the front view only.',
+      },
     },
     {
       name: 'ctaLabel',

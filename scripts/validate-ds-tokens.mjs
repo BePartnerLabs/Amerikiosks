@@ -12,6 +12,14 @@
  *      to ALL files including primitives, since px there breaks browser text-zoom
  *      for anything referencing the token (border-width and shadow offsets are exempt,
  *      those are conventionally px).
+ *   6. Box-model/typography property (padding, height, width, border-radius, font-size,
+ *      font-weight, line-height, letter-spacing...) set with a raw literal inside a
+ *      .bp-* selector — shared components expose their own --<component>-* slots for
+ *      this (e.g. --btn-height, --btn-padding); redeclaring the property directly
+ *      shadows the component's real base styles instead of overriding through its
+ *      contract, and silently drifts once the DS itself changes. Caught live: a block
+ *      reimplemented .bp-btn's entire box model (min-width/height/padding/font-size/
+ *      line-height/letter-spacing) instead of picking an existing appearance modifier.
  */
 
 import { readFileSync } from 'node:fs'
@@ -32,6 +40,12 @@ const CSS_PROPERTY_WITH_AK = /^\s*(?!--[\w-]+\s*:)[\w-]+\s*:[^;{]*var\(--ak-/
 
 // Files where hardcoded values and shorthand aliases are allowed
 const PRIMITIVES_FILES = new Set(['tokens.css', 'frontend.css', 'globals.css'])
+
+// Rule 6 — box-model/typography properties a shared .bp-* component already owns.
+// Flags a raw literal value; var(...)-only values (the component's own slot, or a
+// design token) are the correct override path and are exempt.
+const BOX_TYPOGRAPHY_PROPERTY =
+  /^\s*(padding(?:-(?:top|right|bottom|left|inline|block)(?:-(?:start|end))?)?|margin(?:-(?:top|right|bottom|left|inline|block)(?:-(?:start|end))?)?|height|width|min-width|max-width|min-height|max-height|border-radius|font-size|font-weight|line-height|letter-spacing)\s*:\s*(.+?);?\s*$/i
 
 // Rule 5 — custom property declarations for spacing/typography must use rem, not px.
 // Matches the *declaration* of a token (--foo-space-8: 8px;), not usages (padding: var(--foo)).
@@ -57,6 +71,24 @@ for (const file of files) {
   let braceDepth = 0
   let bpSelectorDepth = 0
 
+  // Selector context tracking for Rule 6 — deliberately narrower than Rule 4's
+  // insideBpSelector (which also matches merely being nested inside a .bp-*
+  // layout wrapper like .bp-content-grid, far too broad for this check). Rule 6
+  // only cares about a COMPOUND selector — a local class glued directly onto
+  // .bp-btn with no combinator (.foo.bp-btn or .bp-btn.foo) — because that's a
+  // custom class styling the *same element* as the shared component, not a
+  // descendant. Extend BP_COMPOUND_COMPONENTS if this needs to cover more
+  // components later (.bp-card, .bp-input, ...); kept to .bp-btn for now since
+  // that's the pattern actually caught in the wild.
+  const BP_COMPOUND_COMPONENTS = ['btn']
+  const compoundPattern = new RegExp(
+    BP_COMPOUND_COMPONENTS.map(
+      (c) => `\\.[A-Za-z][\\w-]*\\.bp-${c}(?![\\w-])|\\.bp-${c}\\.[A-Za-z][\\w-]*`,
+    ).join('|'),
+  )
+  let insideBpCompound = false
+  let bpCompoundDepth = 0
+
   lines.forEach((line, i) => {
     const loc = `${file}:${i + 1}`
     const trimmed = line.trim()
@@ -74,6 +106,10 @@ for (const file of files) {
         insideBpSelector = true
         bpSelectorDepth = braceDepth
       }
+      if (compoundPattern.test(currentSelector)) {
+        insideBpCompound = true
+        bpCompoundDepth = braceDepth
+      }
       selectorBuffer = ''
     }
 
@@ -81,6 +117,10 @@ for (const file of files) {
       if (insideBpSelector && braceDepth <= bpSelectorDepth) {
         insideBpSelector = false
         bpSelectorDepth = 0
+      }
+      if (insideBpCompound && braceDepth <= bpCompoundDepth) {
+        insideBpCompound = false
+        bpCompoundDepth = 0
       }
       braceDepth = Math.max(0, braceDepth - trimmed.split('}').length + 1)
     }
@@ -146,6 +186,29 @@ for (const file of files) {
       console.error(`[DS] Rule 5 — spacing/typography token declared in px, use rem: ${loc}`)
       console.error(`     ${trimmed}\n`)
       hasError = true
+    }
+
+    // Rule 6 — raw box-model/typography literal inside a .bp-* selector. Strip every
+    // var(...) call from the value; a keyword-only or fully-var value is a legitimate
+    // override, anything left over (a number, unit, or literal) means the component's
+    // own box model is being reimplemented instead of overridden through its slots.
+    if (!isPrimitivesFile && insideBpCompound && !PRIVATE_VAR_DECL.test(line)) {
+      const match = line.match(BOX_TYPOGRAPHY_PROPERTY)
+      if (match) {
+        const property = match[1]
+        const value = match[2]
+        const stripped = value
+          .replace(/var\([^()]*(?:\([^()]*\)[^()]*)*\)/g, '')
+          .replace(/[,\s]/g, '')
+        const isSafeKeyword = /^(inherit|initial|unset|revert|auto|none|0)$/i.test(value.trim())
+        if (stripped !== '' && !isSafeKeyword) {
+          console.error(
+            `[DS] Rule 6 — "${property}" set with a raw value inside a .bp-* selector (use the component's --<component>-${property} slot or an existing modifier instead): ${loc}`,
+          )
+          console.error(`     ${trimmed}\n`)
+          hasError = true
+        }
+      }
     }
   })
 }

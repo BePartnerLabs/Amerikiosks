@@ -28,6 +28,8 @@ export const ModelsCarousel: React.FC<Props> = ({ familySlug, models, locale }) 
           <ModelLinesCarousel>
             {models.map((machine, i) => {
               const image = typeof machine.image === 'object' ? (machine.image as Media) : null
+              const hoverImage =
+                typeof machine.hoverImage === 'object' ? (machine.hoverImage as Media) : null
               const accent = ACCENTS[i % ACCENTS.length]
 
               return (
@@ -45,16 +47,25 @@ export const ModelsCarousel: React.FC<Props> = ({ familySlug, models, locale }) 
                 >
                   {image?.url && (
                     <div
-                      className="ak-model-lines__panel-art"
+                      className={`ak-model-lines__panel-art${hoverImage?.url ? ' ak-model-lines__panel-art--has-hover' : ''}`}
                       style={vtName('machine-image', machine.slug)}
                     >
                       <Image
                         src={image.url}
                         alt=""
                         fill
-                        className="ak-model-lines__panel-img"
+                        className="ak-model-lines__panel-img ak-model-lines__panel-img--front"
                         sizes="(max-width: 640px) 78vw, 23rem"
                       />
+                      {hoverImage?.url && (
+                        <Image
+                          src={hoverImage.url}
+                          alt=""
+                          fill
+                          className="ak-model-lines__panel-img ak-model-lines__panel-img--hover"
+                          sizes="(max-width: 640px) 78vw, 23rem"
+                        />
+                      )}
                     </div>
                   )}
                   <div className="ak-model-lines__panel-body">

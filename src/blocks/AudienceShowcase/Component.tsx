@@ -83,7 +83,7 @@ export const AudienceShowcaseBlock: React.FC<AudienceShowcaseBlockProps> = ({
                         <p className="ak-audience-showcase__card-description">{description}</p>
                       )}
                       {item.cta && (
-                        <span className="ak-audience-showcase__card-cta bp-btn bp-btn--outline">
+                        <span className="ak-audience-showcase__card-cta bp-btn bp-btn--ghost">
                           {item.cta}
                         </span>
                       )}
