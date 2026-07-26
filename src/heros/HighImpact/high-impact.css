@@ -53,8 +53,12 @@
 
 /* Content */
 .ak-hero-home__content {
+  background: var(--brand-color-palette-slate-300);
+  backdrop-filter: blur(10px);
+  padding: 60px;
   text-shadow: 5px 5px 10px var(--ak-border-on-inverse);
   position: relative;
+  border-radius: 40px;
   z-index: 2;
   max-width: 72ch;
   padding-block: 5rem;
