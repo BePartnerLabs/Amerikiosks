@@ -33,6 +33,7 @@ export function ConsentManager({ initialConsent }: Props) {
     const consentId =
       typeof crypto.randomUUID === 'function' ? crypto.randomUUID() : Date.now().toString(36)
 
+    // biome-ignore lint/suspicious/noDocumentCookie: Cookie Store API isn't supported in Safari/Firefox yet — document.cookie is the only cross-browser way to set this
     document.cookie = `${CONSENT_COOKIE_NAME}=${encodeURIComponent(
       serializeConsentCookie(analytics, consentId),
     )}; path=/; max-age=${CONSENT_COOKIE_MAX_AGE}; SameSite=Lax`

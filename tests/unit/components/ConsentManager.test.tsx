@@ -30,6 +30,7 @@ describe('ConsentManager', () => {
     cleanup()
     refresh.mockClear()
     vi.unstubAllGlobals()
+    // biome-ignore lint/suspicious/noDocumentCookie: matches the production code path this test exercises
     document.cookie = 'ak_consent=; path=/; max-age=0'
   })
 
