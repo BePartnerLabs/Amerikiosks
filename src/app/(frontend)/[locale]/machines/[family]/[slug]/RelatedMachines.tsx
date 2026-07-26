@@ -1,8 +1,7 @@
 import config from '@payload-config'
 import { getPayload } from 'payload'
 import type React from 'react'
-import { ModelLinesRow } from '@/components/ModelLinesRow'
-import { Link } from '@/i18n/routing'
+import { ModelLinesBlock } from '@/blocks/ModelLines/Component'
 import type { MachineFamily } from '@/payload-types'
 
 type Props = {
@@ -10,6 +9,9 @@ type Props = {
   locale: 'en' | 'es'
 }
 
+// Reuses the exact home-page "explore our systems" carousel (ModelLinesBlock)
+// instead of the smaller circle-thumbnail row, per feedback that this
+// section should look the same as home's model lines.
 export const RelatedMachines: React.FC<Props> = async ({ currentFamilyId, locale }) => {
   const payload = await getPayload({ config })
 
@@ -26,24 +28,11 @@ export const RelatedMachines: React.FC<Props> = async ({ currentFamilyId, locale
   if (families.length === 0) return null
 
   return (
-    <section className="ak-machine-detail__related">
-      <div className="bp-content-grid">
-        <div className="content ak-machine-detail__related-inner">
-          <p className="ak-machine-detail__related-eyebrow">EXPLORE MORE MODELS</p>
-          <h2 className="ak-machine-detail__related-heading">
-            Find the right kiosk for your space.
-          </h2>
-          <ModelLinesRow families={families} />
-          <div className="ak-machine-detail__related-cta">
-            <Link
-              href="/machines"
-              className="bp-btn"
-            >
-              View all models
-            </Link>
-          </div>
-        </div>
-      </div>
-    </section>
+    <ModelLinesBlock
+      blockType="modelLines"
+      eyebrow="Explore more models"
+      heading="Find the right kiosk for your space."
+      families={families}
+    />
   )
 }

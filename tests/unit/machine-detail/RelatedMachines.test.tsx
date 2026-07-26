@@ -10,8 +10,8 @@ vi.mock('@/i18n/routing', () => ({
   }: {
     href: unknown
   } & React.ComponentPropsWithoutRef<'a'>) => {
-    const params = (href as { params?: { slug?: string } } | undefined)?.params
-    const resolved = typeof href === 'string' ? href : `/machines/${params?.slug}`
+    const params = (href as { params?: { slug?: string; family?: string } } | undefined)?.params
+    const resolved = typeof href === 'string' ? href : `/machines/${params?.family ?? params?.slug}`
     return (
       <a
         href={resolved}
@@ -30,6 +30,7 @@ const makeFamily = (slug: string, name: string) => ({
   id: slug,
   slug,
   name,
+  tagline: `${name} tagline`,
   thumbnail: { id: slug, url: `/${slug}.jpg`, width: 800, height: 600 },
 })
 
@@ -54,9 +55,8 @@ describe('RelatedMachines', () => {
     )
     expect(screen.getByText('Delta')).toBeInTheDocument()
     expect(screen.getByText('Kappa')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'View all models' })).toHaveAttribute(
-      'href',
-      '/machines',
-    )
+    // Reuses the home page's ModelLinesBlock carousel — each family panel
+    // links to its own /machines/[family] page; there's no aggregate link.
+    expect(screen.getByRole('link', { name: /Delta/ })).toHaveAttribute('href', '/machines/delta')
   })
 })

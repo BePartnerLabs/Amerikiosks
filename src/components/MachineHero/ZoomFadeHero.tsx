@@ -1,8 +1,7 @@
-'use client'
-
-import Image from 'next/image'
-import { useRef } from 'react'
-import { useScrollProgress } from './useScrollProgress'
+import { ComposedHero } from '@/components/ComposedHero'
+import { CMSLink } from '@/components/Link'
+import type { Machine } from '@/payload-types'
+import { vtName } from '@/utilities/viewTransitionName'
 
 type Props = {
   imageUrl: string
@@ -11,10 +10,13 @@ type Props = {
   heading: string
   subtitle?: string | null
   brochureUrl?: string | null
-  ctaLabel: string
-  ctaUrl: string
+  cta: Machine['cta']
+  slug?: string | null
 }
 
+// Same composition as the family hero (ComposedHero) — no scroll-driven
+// animation. Used for any model without a real 360° turntable asset set
+// (see RotationScrubHero for that case).
 export const ZoomFadeHero: React.FC<Props> = ({
   imageUrl,
   alt,
@@ -22,20 +24,20 @@ export const ZoomFadeHero: React.FC<Props> = ({
   heading,
   subtitle,
   brochureUrl,
-  ctaLabel,
-  ctaUrl,
+  cta,
+  slug,
 }) => {
-  const wrapperRef = useRef<HTMLDivElement | null>(null)
-  const progress = useScrollProgress(wrapperRef)
-  const scale = 1 + progress * 0.12
-
   return (
-    <div className="ak-machine-hero">
-      <div className="ak-machine-hero__text">
-        {eyebrow && <p className="ak-machine-hero__eyebrow">{eyebrow}</p>}
-        <h1 className="ak-machine-hero__heading">{heading}</h1>
-        {subtitle && <p className="ak-machine-hero__subtitle">{subtitle}</p>}
-        <div className="ak-machine-hero__actions">
+    <ComposedHero
+      eyebrow={eyebrow}
+      heading={heading}
+      headingStyle={vtName('machine-name', slug)}
+      description={subtitle}
+      imageUrl={imageUrl}
+      imageAlt={alt}
+      imageWrapStyle={vtName('machine-image', slug)}
+      actions={
+        <>
           {brochureUrl && (
             <a
               href={brochureUrl}
@@ -45,35 +47,12 @@ export const ZoomFadeHero: React.FC<Props> = ({
               Download brochure
             </a>
           )}
-          <a
-            href={ctaUrl}
-            className="bp-btn bp-btn--outline"
-          >
-            {ctaLabel}
-          </a>
-        </div>
-      </div>
-
-      <div
-        ref={wrapperRef}
-        className="ak-machine-hero__image-pin-wrapper"
-      >
-        <div className="ak-machine-hero__sticky">
-          <div
-            className="ak-machine-hero__image-wrap"
-            style={{ transform: `scale(${scale})` }}
-          >
-            <Image
-              src={imageUrl}
-              alt={alt}
-              fill
-              priority
-              className="ak-machine-hero__image"
-              sizes="100vw"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
+          <CMSLink
+            {...cta}
+            appearance={cta?.appearance ?? 'outline'}
+          />
+        </>
+      }
+    />
   )
 }

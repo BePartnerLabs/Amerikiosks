@@ -3,15 +3,19 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getLocale } from 'next-intl/server'
 import { getPayload } from 'payload'
-import { MachineCard } from '@/blocks/MachinesListing/MachineCard'
-import { Icon } from '@/components/Icon'
+import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { ModelLinesRow } from '@/components/ModelLinesRow'
-import { Link } from '@/i18n/routing'
+import { SectionHeader } from '@/components/SectionHeader'
 import type { Machine, MachineFamily, MachineInstallation } from '@/payload-types'
 import { generateMeta } from '@/utilities/generateMeta'
 import { getServerSideURL } from '@/utilities/getURL'
+import { FamilyHero } from './FamilyHero'
+import { FamilyHighlights } from './FamilyHighlights'
 import { InstallationsGallery } from './InstallationsGallery'
 import '../machines-catalog.css'
+import './[slug]/machine-detail.css'
+import { ModelsCarousel } from './ModelsCarousel'
+import { SpecsCompare } from './SpecsCompare'
 
 type Props = {
   params: Promise<{ family: string }>
@@ -153,88 +157,77 @@ export default async function FamilyDetailPage({ params }: Props) {
         </div>
       </section>
 
-      <section className="ak-family-detail__hero">
-        <div className="bp-content-grid">
-          <div className="content ak-family-detail__hero-inner">
-            {family.tagline && <p className="ak-family-detail__eyebrow">{family.tagline}</p>}
-            <h1 className="ak-family-detail__heading">{family.name}</h1>
-            {family.description && (
-              <p className="ak-family-detail__description">{family.description}</p>
-            )}
-          </div>
-        </div>
-      </section>
+      <FamilyHero family={family} />
 
-      {highlightItems.length > 0 && (
-        <section className="ak-machine-detail__highlights">
-          <div className="bp-content-grid">
-            <div className="content ak-machine-detail__highlights-inner">
-              {family.highlights?.eyebrow && (
-                <p className="ak-machine-detail__highlights-eyebrow">{family.highlights.eyebrow}</p>
-              )}
-              {family.highlights?.heading && (
-                <h2 className="ak-machine-detail__highlights-heading">
-                  {family.highlights.heading}
-                </h2>
-              )}
-              <div className="ak-machine-detail__highlights-strip">
-                {highlightItems.map((item, i) => (
-                  <div
-                    key={item.id ?? i}
-                    className="ak-machine-detail__highlight-card"
-                  >
-                    {item.icon && (
-                      <Icon
-                        name={item.icon}
-                        className="ak-machine-detail__highlight-icon"
-                      />
-                    )}
-                    <p className="ak-machine-detail__highlight-title">{item.title}</p>
-                    {item.description && (
-                      <p className="ak-machine-detail__highlight-description">{item.description}</p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
+      {family.highlights && highlightItems.length > 0 && (
+        <FamilyHighlights highlights={family.highlights} />
       )}
+
+      <SpecsCompare models={models} />
 
       {models.length > 0 && (
         <section className="ak-family-detail__models">
           <div className="bp-content-grid">
             <div className="content ak-family-detail__models-inner">
-              <p className="ak-machine-detail__related-eyebrow">MODELS</p>
-              <h2 className="ak-machine-detail__related-heading">{`Explore the ${family.name} line.`}</h2>
-              <div className="ak-machines-listing__grid">
-                {models.map((machine, i) => (
-                  <MachineCard
-                    key={machine.id}
-                    machine={machine}
-                    index={i}
-                  />
-                ))}
-              </div>
+              <SectionHeader
+                eyebrow="Models"
+                heading={`Explore the ${family.name} line.`}
+              />
             </div>
           </div>
+          <ModelsCarousel
+            familySlug={family.slug ?? ''}
+            models={models}
+          />
         </section>
       )}
 
       <InstallationsGallery installations={installations} />
 
-      <section className="ak-family-detail__footer-cta">
-        <div className="bp-content-grid">
-          <div className="content ak-family-detail__footer-cta-inner">
-            <Link
-              href="/machines"
-              className="bp-btn"
-            >
-              View all lines
-            </Link>
-          </div>
-        </div>
-      </section>
+      <CallToActionBlock
+        blockType="cta"
+        richText={{
+          root: {
+            type: 'root',
+            children: [
+              {
+                type: 'heading',
+                tag: 'h2',
+                version: 1,
+                children: [
+                  {
+                    type: 'text',
+                    version: 1,
+                    text: `Not sure which ${family.name} model fits your location?`,
+                  },
+                ],
+              },
+            ],
+            direction: null,
+            format: '',
+            indent: 0,
+            version: 1,
+          },
+        }}
+        links={[
+          {
+            link: {
+              label: 'Talk to sales',
+              type: 'custom',
+              url: '/contact',
+              appearance: 'default',
+            },
+          },
+          {
+            link: {
+              label: 'View all lines',
+              type: 'custom',
+              url: '/machines',
+              appearance: 'outline',
+            },
+          },
+        ]}
+      />
     </main>
   )
 }

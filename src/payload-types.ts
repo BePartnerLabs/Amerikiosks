@@ -1284,9 +1284,31 @@ export interface Machine {
         id?: string | null;
       }[]
     | null;
-  cta?: {
-    label?: string | null;
+  /**
+   * Hero call-to-action. Supports linking to a page, a custom URL, or opening a form in a modal (e.g. "Contact Sales" opening a lead form instead of navigating away).
+   */
+  cta: {
+    type?: ('reference' | 'custom' | 'modal') | null;
+    newTab?: boolean | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: number | Page;
+        } | null)
+      | ({
+          relationTo: 'insights';
+          value: number | Insight;
+        } | null);
     url?: string | null;
+    /**
+     * Opens this form in a modal drawer instead of navigating.
+     */
+    modalForm?: (number | null) | Form;
+    label: string;
+    /**
+     * Choose how the link should be rendered.
+     */
+    appearance?: ('default' | 'outline') | null;
   };
   /**
    * Optional downloadable brochure (PDF). Hides the "Download brochure" hero button when empty.
@@ -1318,9 +1340,20 @@ export interface Machine {
      * e.g. "Built for scale. Designed for ease."
      */
     heading?: string | null;
+    /**
+     * Each item can render as a full-bleed alternating story band (image + heading + text) or, if left without an image, as a plain bullet.
+     */
     items?:
       | {
+          /**
+           * Optional short claim, e.g. "Cold, all day."
+           */
+          heading?: string | null;
           text: string;
+          /**
+           * Optional. When set, this item renders as a full-bleed story band.
+           */
+          image?: (number | null) | Media;
           id?: string | null;
         }[]
       | null;
@@ -1339,6 +1372,22 @@ export interface Machine {
      */
     depth?: string | null;
   };
+  /**
+   * Structured spec rows (capacity, power, screen, refrigeration, etc.) sourced from the vendor spec sheet. Drives the family-page comparison table and the model-page spec list. Order here is the display order; use the same "label" text across models in a family so rows line up in the comparison table.
+   */
+  specs?:
+    | {
+        /**
+         * e.g. "Storage capacity"
+         */
+        label: string;
+        /**
+         * e.g. "420–560 units"
+         */
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
   /**
    * Labeled technical line-drawings (e.g. front, side, isometric views)
    */
@@ -1392,9 +1441,24 @@ export interface MachineFamily {
   generateSlug?: boolean | null;
   slug: string;
   /**
-   * e.g. "Explore our premium line"
+   * e.g. "Explore our premium line" — used as the blurb on the home model-lines card
    */
   tagline?: string | null;
+  /**
+   * Small kicker above the family hero heading, e.g. "Next generation"
+   */
+  heroEyebrow?: string | null;
+  /**
+   * Secondary heading on the family hero, below the family name, e.g. "Hot food, ready in about 50 seconds."
+   */
+  heroHeading?: string | null;
+  /**
+   * Composed, no-background render of every model in this family, used as the family hero visual (text sits over it).
+   */
+  heroLineupImage?: (number | null) | Media;
+  /**
+   * Hero sub-copy (the "bajada") shown below heroHeading.
+   */
   description?: string | null;
   /**
    * Shown in the "Discover our model lines" row
@@ -1410,6 +1474,9 @@ export interface MachineFamily {
            * Material Symbols icon name, e.g. "inventory_2"
            */
           icon?: string | null;
+          /**
+           * When set, this item renders as a full-width featured card. Suggested: at least 1200×960px (5:4), landscape, since it fills the card edge-to-edge.
+           */
           image?: (number | null) | Media;
           title: string;
           description?: string | null;
@@ -2852,8 +2919,13 @@ export interface MachinesSelect<T extends boolean = true> {
   cta?:
     | T
     | {
-        label?: T;
+        type?: T;
+        newTab?: T;
+        reference?: T;
         url?: T;
+        modalForm?: T;
+        label?: T;
+        appearance?: T;
       };
   brochure?: T;
   highlights?:
@@ -2877,7 +2949,9 @@ export interface MachinesSelect<T extends boolean = true> {
         items?:
           | T
           | {
+              heading?: T;
               text?: T;
+              image?: T;
               id?: T;
             };
       };
@@ -2887,6 +2961,13 @@ export interface MachinesSelect<T extends boolean = true> {
         height?: T;
         width?: T;
         depth?: T;
+      };
+  specs?:
+    | T
+    | {
+        label?: T;
+        value?: T;
+        id?: T;
       };
   dimensionDiagrams?:
     | T
@@ -2932,6 +3013,9 @@ export interface MachineFamiliesSelect<T extends boolean = true> {
   generateSlug?: T;
   slug?: T;
   tagline?: T;
+  heroEyebrow?: T;
+  heroHeading?: T;
+  heroLineupImage?: T;
   description?: T;
   thumbnail?: T;
   ctaLabel?: T;

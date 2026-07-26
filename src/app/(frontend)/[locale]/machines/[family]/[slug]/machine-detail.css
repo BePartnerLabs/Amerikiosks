@@ -53,37 +53,49 @@
   margin: 0 auto var(--bp-space-8, 2rem);
 }
 
+/* Slim inline stat strip — replaces the icon-circle cards, which read as
+   generic and duplicated what the Capabilities story bands say right after. */
 .ak-machine-detail__highlights-strip {
   display: flex;
-  gap: var(--bp-space-4, 1rem);
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding-block: var(--bp-space-2, 0.5rem);
+  flex-wrap: wrap;
 }
 
 .ak-machine-detail__highlight-card {
-  flex: 0 0 15rem;
-  scroll-snap-align: start;
-  padding: var(--bp-space-5, 1.25rem);
-  border: 1px solid var(--ak-surface-border);
-  border-radius: var(--bp-radius-lg, 0.75rem);
-  background: var(--ak-surface-background);
+  flex: 1;
+  min-width: 10rem;
+  padding-inline: var(--bp-space-6, 1.5rem);
+  border-left: 1px solid var(--ak-surface-border);
 }
 
-.ak-machine-detail__highlight-icon {
-  --_icon-color: var(--ak-accent);
-  font-size: 1.75rem;
-  color: var(--_icon-color);
+.ak-machine-detail__highlight-card:first-child {
+  border-left: none;
+  padding-left: 0;
 }
 
 .ak-machine-detail__highlight-title {
+  font-size: var(--bp-font-size-xl, 1.375rem);
   font-weight: var(--bp-font-weight-semibold, 600);
-  margin: var(--bp-space-2, 0.5rem) 0 var(--bp-space-1, 0.25rem);
+  font-variant-numeric: tabular-nums;
+  margin: 0 0 var(--bp-space-1, 0.25rem);
 }
 
 .ak-machine-detail__highlight-description {
   font-size: var(--bp-font-size-sm, 0.875rem);
   color: var(--bp-color-text-muted);
+  margin: 0;
+}
+
+@media (max-width: 40rem) {
+  .ak-machine-detail__highlight-card {
+    flex: 1 1 45%;
+    border-left: none;
+    border-top: 1px solid var(--ak-surface-border);
+    padding: var(--bp-space-3, 0.75rem) 0;
+  }
+
+  .ak-machine-detail__highlight-card:first-child {
+    border-top: none;
+  }
 }
 
 .ak-machine-detail__capabilities {

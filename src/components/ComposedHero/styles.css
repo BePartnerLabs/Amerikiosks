@@ -1,0 +1,83 @@
+.ak-composed-hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.ak-composed-hero__stage {
+  position: relative;
+  min-height: 32rem;
+  display: flex;
+  flex-direction: column;
+  padding-block: var(--bp-space-16, 4rem) 0;
+  background: var(--ak-color-surface);
+}
+
+.ak-composed-hero__text {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.ak-composed-hero__eyebrow {
+  --_eyebrow-color: var(--ak-accent);
+  font-size: var(--bp-font-size-sm, 0.875rem);
+  font-weight: var(--bp-font-weight-semibold, 600);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--_eyebrow-color);
+  margin: 0 0 var(--bp-space-2, 0.5rem);
+}
+
+.ak-composed-hero__heading {
+  font-size: clamp(3rem, 6vw, 4.5rem);
+  font-weight: var(--bp-font-weight-bold, 700);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin: 0;
+}
+
+.ak-composed-hero__subheading {
+  font-size: var(--bp-font-size-xl, 1.375rem);
+  font-weight: var(--bp-font-weight-medium, 500);
+  margin: var(--bp-space-4, 1rem) 0 var(--bp-space-2, 0.5rem);
+}
+
+.ak-composed-hero__description {
+  max-width: 40rem;
+  margin: var(--bp-space-4, 1rem) auto 0;
+  color: var(--bp-color-text-muted);
+}
+
+.ak-composed-hero__subheading + .ak-composed-hero__description {
+  margin-top: 0;
+}
+
+.ak-composed-hero__actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--bp-space-3, 0.75rem);
+  flex-wrap: wrap;
+  margin-top: var(--bp-space-6, 1.5rem);
+}
+
+.ak-composed-hero__image-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 18rem;
+  margin-top: var(--bp-space-8, 2rem);
+}
+
+.ak-composed-hero__image {
+  object-fit: contain;
+  object-position: center bottom;
+}
+
+.ak-composed-hero__scrim {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 30%;
+  background: linear-gradient(180deg, transparent, var(--ak-color-surface) 92%);
+  pointer-events: none;
+}

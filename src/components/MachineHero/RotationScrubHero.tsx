@@ -1,6 +1,9 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { CMSLink } from '@/components/Link'
+import type { Machine } from '@/payload-types'
+import { vtName } from '@/utilities/viewTransitionName'
 import { usePrefersReducedMotion } from './usePrefersReducedMotion'
 import { useScrollProgress } from './useScrollProgress'
 
@@ -11,8 +14,8 @@ type Props = {
   heading: string
   subtitle?: string | null
   brochureUrl?: string | null
-  ctaLabel: string
-  ctaUrl: string
+  cta: Machine['cta']
+  slug?: string | null
 }
 
 export const RotationScrubHero: React.FC<Props> = ({
@@ -22,8 +25,8 @@ export const RotationScrubHero: React.FC<Props> = ({
   heading,
   subtitle,
   brochureUrl,
-  ctaLabel,
-  ctaUrl,
+  cta,
+  slug,
 }) => {
   const wrapperRef = useRef<HTMLDivElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -72,7 +75,12 @@ export const RotationScrubHero: React.FC<Props> = ({
     <div className="ak-machine-hero">
       <div className="ak-machine-hero__text">
         {eyebrow && <p className="ak-machine-hero__eyebrow">{eyebrow}</p>}
-        <h1 className="ak-machine-hero__heading">{heading}</h1>
+        <h1
+          className="ak-machine-hero__heading"
+          style={vtName('machine-name', slug)}
+        >
+          {heading}
+        </h1>
         {subtitle && <p className="ak-machine-hero__subtitle">{subtitle}</p>}
         <div className="ak-machine-hero__actions">
           {brochureUrl && (
@@ -84,18 +92,17 @@ export const RotationScrubHero: React.FC<Props> = ({
               Download brochure
             </a>
           )}
-          <a
-            href={ctaUrl}
-            className="bp-btn bp-btn--outline"
-          >
-            {ctaLabel}
-          </a>
+          <CMSLink
+            {...cta}
+            appearance={cta?.appearance ?? 'outline'}
+          />
         </div>
       </div>
 
       <div
         ref={wrapperRef}
         className="ak-machine-hero__image-pin-wrapper"
+        style={vtName('machine-image', slug)}
       >
         <div className="ak-machine-hero__sticky">
           {!framesReady && (

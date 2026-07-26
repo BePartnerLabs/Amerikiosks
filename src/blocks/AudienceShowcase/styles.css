@@ -19,29 +19,30 @@
   gap: var(--bp-space-4, 1rem);
 }
 
-/* 656:500 (Figma) — height follows width instead of a fixed rem value,
-   so the card keeps its designed proportions at any grid width. */
+/* Card is no longer just the photo: photo / floating label / body now stack,
+   so the image can show uncropped instead of sitting under a dark overlay. */
 .ak-audience-showcase__card {
-  --_background: var(--audience-card-background, var(--ak-dark-background));
+  --_background: var(--audience-card-background, var(--ak-color-surface));
   position: relative;
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  aspect-ratio: 656 / 500;
+  flex-direction: column;
   border-radius: var(--bp-radius-lg, 0.75rem);
-  overflow: hidden;
+  overflow: visible;
   text-decoration: none;
   background-color: var(--_background);
   box-shadow: var(--ak-card-shadow-subtle);
 }
 
-.ak-audience-showcase__card-img {
-  object-fit: cover;
-}
-
 @media (prefers-reduced-motion: no-preference) {
   .ak-audience-showcase__card {
-    transition: transform var(--ak-transition-fast);
+    transition:
+      transform var(--ak-transition-fast),
+      box-shadow var(--ak-transition-fast);
+  }
+
+  .ak-audience-showcase__card:hover {
+    transform: translateY(-0.25rem);
+    box-shadow: var(--ak-surface-shadow-md-hover);
   }
 
   .ak-audience-showcase__card-img {
@@ -53,57 +54,70 @@
   }
 }
 
-/* Bottom-heavy gradient (Figma: 180deg, transparent 0% -> dark 100%) — text
-   now sits at the bottom of the card, so the darkest part of the overlay
-   concentrates there for legibility while the top of the photo stays clear. */
-.ak-audience-showcase__card-overlay {
-  --_overlay-color: var(--audience-card-overlay, var(--ak-dark-background));
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, transparent 0%, var(--_overlay-color) 100%);
+/* 656:500 (Figma) — height follows width instead of a fixed rem value,
+   so the card keeps its designed proportions at any grid width. */
+.ak-audience-showcase__card-photo {
+  position: relative;
+  aspect-ratio: 656 / 500;
+  border-radius: var(--bp-radius-lg, 0.75rem) var(--bp-radius-lg, 0.75rem) 0 0;
+  overflow: hidden;
 }
 
-.ak-audience-showcase__card-content {
+.ak-audience-showcase__card-img {
+  object-fit: cover;
+}
+
+/* Label overlaps the bottom edge of the photo instead of an overlay
+   sitting on top of it, so the image stays fully visible. */
+.ak-audience-showcase__card-label-row {
   position: relative;
-  z-index: 1;
+  padding-inline: var(--bp-space-4, 1rem);
+}
+
+.ak-audience-showcase__card-label {
+  --_background: var(--audience-card-label-background, var(--ak-color-surface));
+  --_color: var(--audience-card-label-color, var(--ak-color-heading));
+  --_accent: var(--audience-card-label-accent, var(--ak-accent));
+  position: absolute;
+  top: -1.1rem;
+  left: var(--bp-space-4, 1rem);
+  max-width: calc(100% - 2 * var(--bp-space-4, 1rem));
+  background-color: var(--_background);
+  color: var(--_color);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.3;
+  padding: var(--bp-space-2, 0.5rem) var(--bp-space-4, 1rem);
+  border-radius: var(--bp-radius-md, 0.5rem);
+  border-left: 3px solid var(--_accent);
+  box-shadow: var(--ak-surface-shadow-sm);
+}
+
+.ak-audience-showcase__card-body {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  width: 100%;
-  padding: var(--card-padding-y, 1.25rem) var(--card-padding-x, 1.25rem);
-  gap: var(--bp-space-4, 1rem);
-}
-
-.ak-audience-showcase__card-title {
-  --_color: var(--audience-card-title-color, var(--ak-dark-foreground));
-  margin: 0;
-  font-size: 2rem;
-  font-weight: 600;
-  color: var(--_color);
-  line-height: 1.5;
-  letter-spacing: 0;
-  text-align: center;
+  align-items: flex-start;
+  text-align: left;
+  padding: 1.75rem var(--bp-space-4, 1rem) var(--bp-space-4, 1rem);
+  gap: var(--bp-space-3, 0.75rem);
 }
 
 .ak-audience-showcase__card-description {
-  --_color: var(--audience-card-description-color, var(--ak-dark-foreground));
+  --_color: var(--audience-card-description-color, var(--ak-color-muted));
   margin: 0;
   font-size: 1rem;
   font-weight: 400;
   color: var(--_color);
   line-height: 1.5;
   letter-spacing: 0;
-  text-align: center;
-  opacity: 0.85;
+  text-align: left;
   max-width: 50ch;
 }
 
 .ak-audience-showcase__card-cta.bp-btn {
-  --outline-color: var(--ak-white);
-  --outline-border: 1px solid var(--ak-white);
-  --outline-background: var(--audience-card-cta-background, hsla(0, 0%, 0%, 0.55));
-  margin-top: var(--bp-space-2, 0.5rem);
+  --outline-color: var(--ak-color-heading);
+  --outline-border: 1px solid var(--audience-card-cta-border, var(--ak-color-border));
+  --outline-background: transparent;
   min-width: 7.5rem;
   height: 3rem;
   padding: 0.75rem 2rem;
@@ -115,9 +129,7 @@
 }
 
 .ak-audience-showcase__card-cta.bp-btn:hover {
-  --outline-background: color-mix(
-    in srgb,
-    var(--ak-white) 15%,
-    var(--audience-card-cta-background, hsla(0, 0%, 0%, 0.55))
-  );
+  --outline-color: var(--ak-white);
+  --outline-background: var(--ak-accent);
+  --outline-border: 1px solid var(--ak-accent);
 }

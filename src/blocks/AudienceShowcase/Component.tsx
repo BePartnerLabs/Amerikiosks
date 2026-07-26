@@ -66,19 +66,19 @@ export const AudienceShowcaseBlock: React.FC<AudienceShowcaseBlockProps> = ({
                     data-ga-event="audience_card_click"
                     data-ga-label={item.page.title}
                   >
-                    <Image
-                      src={item.image.url ?? ''}
-                      alt={item.image.alt ?? title}
-                      fill
-                      className="ak-audience-showcase__card-img"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                    />
-                    <div
-                      className="ak-audience-showcase__card-overlay"
-                      aria-hidden="true"
-                    />
-                    <div className="ak-audience-showcase__card-content">
-                      <p className="ak-audience-showcase__card-title">{title}</p>
+                    <div className="ak-audience-showcase__card-photo">
+                      <Image
+                        src={item.image.url ?? ''}
+                        alt={item.image.alt ?? title}
+                        fill
+                        className="ak-audience-showcase__card-img"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      />
+                    </div>
+                    <div className="ak-audience-showcase__card-label-row">
+                      <span className="ak-audience-showcase__card-label">{title}</span>
+                    </div>
+                    <div className="ak-audience-showcase__card-body">
                       {description && (
                         <p className="ak-audience-showcase__card-description">{description}</p>
                       )}

@@ -43,6 +43,9 @@ import * as migration_20260726_014101_add_monday_visible_board_ids from './20260
 import * as migration_20260726_023618_remove_jotform_integration from './20260726_023618_remove_jotform_integration';
 import * as migration_20260726_112453_machine_families from './20260726_112453_machine_families';
 import * as migration_20260726_125125_model_lines_block from './20260726_125125_model_lines_block';
+import * as migration_20260726_164753_add_machine_specs_and_capability_images from './20260726_164753_add_machine_specs_and_capability_images';
+import * as migration_20260726_170546_add_family_hero_fields from './20260726_170546_add_family_hero_fields';
+import * as migration_20260726_174801_machine_cta_link_field from './20260726_174801_machine_cta_link_field';
 
 export const migrations = [
   {
@@ -268,6 +271,21 @@ export const migrations = [
   {
     up: migration_20260726_125125_model_lines_block.up,
     down: migration_20260726_125125_model_lines_block.down,
-    name: '20260726_125125_model_lines_block'
+    name: '20260726_125125_model_lines_block',
+  },
+  {
+    up: migration_20260726_164753_add_machine_specs_and_capability_images.up,
+    down: migration_20260726_164753_add_machine_specs_and_capability_images.down,
+    name: '20260726_164753_add_machine_specs_and_capability_images',
+  },
+  {
+    up: migration_20260726_170546_add_family_hero_fields.up,
+    down: migration_20260726_170546_add_family_hero_fields.down,
+    name: '20260726_170546_add_family_hero_fields',
+  },
+  {
+    up: migration_20260726_174801_machine_cta_link_field.up,
+    down: migration_20260726_174801_machine_cta_link_field.down,
+    name: '20260726_174801_machine_cta_link_field'
   },
 ];
