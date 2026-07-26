@@ -46,6 +46,7 @@ import * as migration_20260726_125125_model_lines_block from './20260726_125125_
 import * as migration_20260726_164753_add_machine_specs_and_capability_images from './20260726_164753_add_machine_specs_and_capability_images';
 import * as migration_20260726_170546_add_family_hero_fields from './20260726_170546_add_family_hero_fields';
 import * as migration_20260726_174801_machine_cta_link_field from './20260726_174801_machine_cta_link_field';
+import * as migration_20260726_230615_machine_hover_images from './20260726_230615_machine_hover_images';
 
 export const migrations = [
   {
@@ -286,6 +287,11 @@ export const migrations = [
   {
     up: migration_20260726_174801_machine_cta_link_field.up,
     down: migration_20260726_174801_machine_cta_link_field.down,
-    name: '20260726_174801_machine_cta_link_field'
+    name: '20260726_174801_machine_cta_link_field',
+  },
+  {
+    up: migration_20260726_230615_machine_hover_images.up,
+    down: migration_20260726_230615_machine_hover_images.down,
+    name: '20260726_230615_machine_hover_images'
   },
 ];
