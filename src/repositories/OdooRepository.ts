@@ -1,10 +1,11 @@
 import type { PayloadRequest } from 'payload'
-import type { ClaimSubmission } from './JotFormRepository'
+import type { ClaimSubmission } from './claimTypes'
 
 /**
  * Phase B — stubbed until Amerikiosks' Odoo REST API spec is available.
- * Kept in the same shape as JotFormRepository so `syncClaim` can dispatch to
- * either one via a config toggle without a rewrite when Odoo is ready.
+ * Kept in the same shape as MondayRepository so `dispatchClaimSync` can
+ * dispatch to either one via a config toggle without a rewrite when Odoo is
+ * ready.
  */
 export const OdooRepository = {
   async submit(_claim: ClaimSubmission, _req: PayloadRequest): Promise<never> {

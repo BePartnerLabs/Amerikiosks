@@ -69,7 +69,7 @@ Working outline for the final content-editor usage manual. Each bullet is a topi
 ## 10. Settings (site-wide)
 
 - `noIndex` flag — hiding the entire site from search engines (staging use)
-- **Integrations tab** — API keys/tokens for the refund-claim sync (JotForm, Monday.com). Only visible/editable to logged-in admins; each claim's "Integration target" (in the Claims collection, sidebar) decides which one a given claim is sent to
+- **Integrations tab** — API keys/tokens for the refund-claim sync (Monday.com). Only visible/editable to logged-in admins; each claim's "Integration target" (in the Claims collection, sidebar) decides which one a given claim is sent to
 - Any other global toggles
 
 ## 10a. Consent Logs (cookie-consent audit trail)

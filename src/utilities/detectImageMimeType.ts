@@ -1,7 +1,7 @@
 // Sniffs the real file type from its magic bytes — never trust a client-supplied
 // filename extension or `File.type`, both are trivially spoofable. Used to gate
 // the claim-photo upload (src/app/(frontend)/next/claims-submit/route.ts) to a
-// fixed image allowlist before the bytes ever leave our server toward JotForm.
+// fixed image allowlist before the bytes ever leave our server.
 const MAX_SIGNATURE_LENGTH = 12
 
 export function detectImageMimeType(bytes: Uint8Array): string | null {

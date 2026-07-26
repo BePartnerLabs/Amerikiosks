@@ -3,7 +3,7 @@ import { dispatchClaimSync } from '../dispatchClaimSync'
 
 // Runs in a separate request from the one that created the claim (triggered
 // via the internal /api/payload-jobs/run "webhook" call in syncClaim.ts), so
-// the customer submitting the form never waits on JotForm's round trip.
+// the customer submitting the form never waits on the integration's round trip.
 export const syncClaimTask: TaskConfig<'syncClaimToIntegration'> = {
   slug: 'syncClaimToIntegration',
   inputSchema: [{ name: 'claimId', type: 'number', required: true }],

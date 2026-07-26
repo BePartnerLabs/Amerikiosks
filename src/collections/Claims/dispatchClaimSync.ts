@@ -1,11 +1,10 @@
 import type { PayloadRequest } from 'payload'
 import type { Claim } from '@/payload-types'
-import { JotFormRepository, MondayRepository, OdooRepository } from '@/repositories'
-import type { ClaimSubmission } from '@/repositories/JotFormRepository'
+import { MondayRepository, OdooRepository } from '@/repositories'
+import type { ClaimSubmission } from '@/repositories/claimTypes'
 import { getPrivateFileBuffer } from '@/utilities/privateUpload'
 
 const REPOSITORIES = {
-  jotform: JotFormRepository,
   odoo: OdooRepository,
   monday: MondayRepository,
 } as const
@@ -13,8 +12,8 @@ const REPOSITORIES = {
 // Called from syncClaimTask.ts (the queued job every claim goes through —
 // see syncClaim.ts).
 export async function dispatchClaimSync(claim: Claim, req: PayloadRequest): Promise<void> {
-  // kioskBrand is a relationship — JotForm's radio question needs the brand's
-  // display name ("Carlo's Bakery"), not the Brands doc's row id.
+  // kioskBrand is a relationship — the integration's brand column needs the
+  // brand's display name ("Carlo's Bakery"), not the Brands doc's row id.
   const kioskBrandId =
     typeof claim.kioskBrand === 'object' && claim.kioskBrand !== null
       ? claim.kioskBrand.id
@@ -36,7 +35,7 @@ export async function dispatchClaimSync(claim: Claim, req: PayloadRequest): Prom
     : (claim.additionalInfo ?? undefined)
 
   const repository =
-    REPOSITORIES[claim.integrationTarget as keyof typeof REPOSITORIES] ?? JotFormRepository
+    REPOSITORIES[claim.integrationTarget as keyof typeof REPOSITORIES] ?? MondayRepository
 
   // Only Monday's API can actually receive the real file (see
   // ClaimSubmission.photo) — fetching it from R2 for the other targets

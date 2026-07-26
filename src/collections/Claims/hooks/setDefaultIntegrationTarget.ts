@@ -14,5 +14,5 @@ export const setDefaultIntegrationTarget: CollectionBeforeValidateHook = async (
 
   const settings = await req.payload.findGlobal({ slug: 'settings', req })
 
-  return { ...data, integrationTarget: settings.defaultClaimIntegrationTarget ?? 'jotform' }
+  return { ...data, integrationTarget: settings.defaultClaimIntegrationTarget ?? 'monday' }
 }

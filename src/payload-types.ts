@@ -1704,7 +1704,7 @@ export interface Claim {
    */
   lastFourCardDigits?: string | null;
   /**
-   * Only relevant for cash refunds (card refunds go back to the card automatically). Values match JotForm's "Select a refund method" options verbatim.
+   * Only relevant for cash refunds (card refunds go back to the card automatically).
    */
   refundMethod?: ('Zelle' | 'CashApp' | 'Paypal' | 'Venmo') | null;
   /**
@@ -1726,7 +1726,7 @@ export interface Claim {
   /**
    * Where this claim syncs to. Set automatically from Settings → Default Claim Integration Target when the claim is created; changing it here only affects a future re-sync, not one already dispatched.
    */
-  integrationTarget?: ('jotform' | 'odoo' | 'monday') | null;
+  integrationTarget?: ('odoo' | 'monday') | null;
   syncStatus?: ('pending' | 'synced' | 'error') | null;
   syncError?: string | null;
   syncedAt?: string | null;
@@ -3423,15 +3423,7 @@ export interface Setting {
   /**
    * Where new refund claims sync to by default when submitted from the public ClaimForm. Changing this takes effect immediately for claims created after the change — existing claims keep whatever target they already have. Staff can still override a specific claim's target afterward in Claims → Integration target, but that only affects future re-syncs, not one already dispatched.
    */
-  defaultClaimIntegrationTarget?: ('jotform' | 'odoo' | 'monday') | null;
-  /**
-   * API key for the JotForm submissions API (used by the Claims refund flow). Only visible to logged-in admin users — never exposed in the public Settings API response.
-   */
-  jotformApiKey?: string | null;
-  /**
-   * Target JotForm form ID for the Claims refund flow. Leave empty to use the production "Amerikiosks - Refund Request" form (230405763622148) — override here to point at a clone/test form in local or staging.
-   */
-  jotformFormId?: string | null;
+  defaultClaimIntegrationTarget?: ('odoo' | 'monday') | null;
   /**
    * API token for the Monday.com GraphQL API (used by the Claims refund flow). Only visible to logged-in admin users — never exposed in the public Settings API response.
    */
@@ -3584,8 +3576,6 @@ export interface SettingsSelect<T extends boolean = true> {
   llmsIncludePages?: T;
   llmsIncludeInsights?: T;
   defaultClaimIntegrationTarget?: T;
-  jotformApiKey?: T;
-  jotformFormId?: T;
   mondayApiToken?: T;
   mondayBoardsCache?: T;
   mondayVisibleBoardIds?: T;

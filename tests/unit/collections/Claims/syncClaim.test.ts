@@ -26,7 +26,7 @@ const baseDoc = {
   transactionDateTime: '2026-07-08T09:23:00.000Z',
   location: 'BePartnerLabs Test Property, Doral, FL',
   claimReason: 'partial_dispense',
-  integrationTarget: 'jotform',
+  integrationTarget: 'monday',
   syncStatus: 'pending',
 }
 

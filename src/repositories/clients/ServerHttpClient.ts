@@ -19,21 +19,6 @@ export class ServerHttpClient {
     return res.json() as Promise<T>
   }
 
-  /** application/x-www-form-urlencoded — what JotForm's submissions API actually expects. */
-  async postForm<T>(
-    url: string,
-    fields: Record<string, string>,
-    headers?: Record<string, string>,
-  ): Promise<T> {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded', ...headers },
-      body: new URLSearchParams(fields).toString(),
-    })
-    if (!res.ok) throw new Error(`ServerHttpClient: POST ${url} failed with ${res.status}`)
-    return res.json() as Promise<T>
-  }
-
   /**
    * multipart/form-data. Never set Content-Type explicitly — fetch derives the
    * boundary from the FormData instance itself; a hardcoded header breaks parsing.

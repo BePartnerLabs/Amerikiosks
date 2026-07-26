@@ -134,7 +134,7 @@ export const Claims: CollectionConfig = {
       ],
       admin: {
         description:
-          'Only relevant for cash refunds (card refunds go back to the card automatically). Values match JotForm\'s "Select a refund method" options verbatim.',
+          'Only relevant for cash refunds (card refunds go back to the card automatically).',
         condition: (data) => data?.paymentMethod === 'cash',
       },
     },
@@ -182,7 +182,6 @@ export const Claims: CollectionConfig = {
       // since by the time a claim already exists it's too late to decide
       // where it should have gone (the sync hook already dispatched it).
       options: [
-        { label: 'JotForm', value: 'jotform' },
         { label: 'Odoo', value: 'odoo' },
         { label: 'Monday.com', value: 'monday' },
       ],
