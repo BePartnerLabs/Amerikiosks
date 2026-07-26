@@ -212,6 +212,15 @@ export const Settings: GlobalConfig = {
               },
             },
             {
+              name: 'mondayConnectedFormsUi',
+              type: 'ui',
+              admin: {
+                components: {
+                  Field: '@/Settings/components/MondayConnectedForms#MondayConnectedForms',
+                },
+              },
+            },
+            {
               name: 'defaultClaimIntegrationTarget',
               type: 'select',
               label: 'Default Claim Integration Target',
