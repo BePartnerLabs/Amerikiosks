@@ -11,16 +11,19 @@ vi.mock('@payloadcms/ui', () => ({
     value,
     onChange,
     placeholder,
+    readOnly,
   }: {
     value?: string
     onChange?: (e: { target: { value: string } }) => void
     placeholder?: string
+    readOnly?: boolean
   }) => (
     <input
       type="text"
       value={value ?? ''}
       onChange={(e) => onChange?.(e)}
       placeholder={placeholder}
+      readOnly={readOnly}
     />
   ),
   SelectInput: ({
@@ -109,7 +112,7 @@ describe('MondayGroupPicker', () => {
     expect(setValueMock).toHaveBeenCalledWith('new_group')
   })
 
-  it('keeps the text input editable as a manual fallback', async () => {
+  it('locks the text input and shows a "Change group" button once a cached group is set', async () => {
     mockFields({ boardId: '4042731281', groupId: 'topics' })
     vi.stubGlobal(
       'fetch',
@@ -121,7 +124,21 @@ describe('MondayGroupPicker', () => {
 
     const input = screen.getByRole('textbox') as HTMLInputElement
     expect(input.value).toBe('topics')
-    fireEvent.change(input, { target: { value: 'custom_group' } })
-    expect(setValueMock).toHaveBeenCalledWith('custom_group')
+    expect(input.readOnly).toBe(true)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Change group' }))
+    expect(setValueMock).toHaveBeenCalledWith('')
+  })
+
+  it('keeps the text input editable when there is no board selected (no groups to pick from)', () => {
+    mockFields({ boardId: '', groupId: 'custom_group' })
+    vi.stubGlobal('fetch', vi.fn())
+
+    render(<MondayGroupPicker />)
+
+    const input = screen.getByRole('textbox') as HTMLInputElement
+    expect(input.readOnly).toBe(false)
+    fireEvent.change(input, { target: { value: 'another_group' } })
+    expect(setValueMock).toHaveBeenCalledWith('another_group')
   })
 })

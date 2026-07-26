@@ -26,6 +26,8 @@ export const MondayGroupPicker: React.FC = () => {
   }, [boardId])
 
   const groups = (boardId && cache?.boards.find((b) => b.id === boardId)?.groups) || []
+  const currentValueIsCached = value ? groups.some((g) => g.id === value) : true
+  const isLocked = groups.length > 0 && Boolean(value) && currentValueIsCached
 
   return (
     <div>
@@ -36,7 +38,7 @@ export const MondayGroupPicker: React.FC = () => {
             name="mondayGroupId__mondayGroupPicker"
             label="Pick a group"
             options={groups.map((group) => ({ label: group.title, value: group.id }))}
-            value={value}
+            value={currentValueIsCached ? value : undefined}
             onChange={(option) => {
               if (option && !Array.isArray(option)) setValue(option.value as string)
             }}
@@ -45,11 +47,21 @@ export const MondayGroupPicker: React.FC = () => {
       )}
       <TextInput
         path="mondayGroupId"
-        label="Or enter the group id manually"
+        label={isLocked ? 'Group id' : 'Or enter the group id manually'}
         value={value ?? ''}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}
         placeholder='e.g. "topics"'
+        readOnly={isLocked}
       />
+      {isLocked && (
+        <button
+          type="button"
+          onClick={() => setValue('')}
+          style={{ marginTop: '0.25rem' }}
+        >
+          Change group
+        </button>
+      )}
     </div>
   )
 }
