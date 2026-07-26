@@ -24,6 +24,7 @@ vi.mock('@/blocks/ProcessSteps/Component', () => ({
 vi.mock('@/blocks/ProjectsShowcase/Component', () => ({
   ProjectsShowcaseBlock: () => <div>projectsShowcase</div>,
 }))
+vi.mock('@/blocks/Statement/Component', () => ({ StatementBlock: () => <div>statement</div> }))
 vi.mock('@/blocks/TrustStrip/Server', () => ({ TrustStripServer: () => <div>trustStrip</div> }))
 
 import { RenderBlocks } from '@/blocks/RenderBlocks'
