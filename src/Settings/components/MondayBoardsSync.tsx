@@ -50,6 +50,20 @@ export const MondayBoardsSync: React.FC = () => {
         {status === 'loading' ? 'Refreshing…' : 'Refresh Monday Boards'}
       </button>
       {errorMessage && <p style={{ marginTop: '0.5rem', color: '#b91c1c' }}>{errorMessage}</p>}
+      {value?.boards && value.boards.length > 0 && (
+        <details style={{ marginTop: '0.5rem' }}>
+          <summary>{value.boards.length} board(s) synced</summary>
+          <ul style={{ margin: '0.5rem 0 0', paddingLeft: '1.25rem' }}>
+            {[...value.boards]
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map((board) => (
+                <li key={board.id}>
+                  {board.name} <code>({board.id})</code>
+                </li>
+              ))}
+          </ul>
+        </details>
+      )}
     </div>
   )
 }

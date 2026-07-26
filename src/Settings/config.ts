@@ -198,8 +198,11 @@ export const Settings: GlobalConfig = {
               },
               admin: {
                 readOnly: true,
-                description:
-                  'Cached snapshot of Monday.com boards/groups/columns, refreshed via the button above. Only visible to logged-in admin users.',
+                // Hidden from the raw field UI — with ~90 boards this would
+                // render as a huge, unreadable JSON blob. MondayBoardsSync
+                // (below) shows a readable summary (synced board names)
+                // instead; other components consume this value programmatically.
+                hidden: true,
               },
             },
             {

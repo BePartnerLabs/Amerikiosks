@@ -31,6 +31,29 @@ describe('MondayBoardsSync', () => {
     expect(screen.getByText(/Last synced/)).toBeInTheDocument()
   })
 
+  it('lists the synced board names instead of raw JSON', () => {
+    useFieldMock.mockReturnValue({
+      value: {
+        syncedAt: '2026-07-25T12:00:00.000Z',
+        boards: [
+          { id: '2', name: 'Zebra Board', groups: [], columns: [] },
+          { id: '1', name: 'Alpha Board', groups: [], columns: [] },
+        ],
+      },
+      setValue: setValueMock,
+    })
+    render(<MondayBoardsSync />)
+    expect(screen.getByText('2 board(s) synced')).toBeInTheDocument()
+    expect(screen.getByText('Alpha Board', { exact: false })).toBeInTheDocument()
+    expect(screen.getByText('Zebra Board', { exact: false })).toBeInTheDocument()
+  })
+
+  it('does not show the board list when there are no boards yet', () => {
+    useFieldMock.mockReturnValue({ value: undefined, setValue: setValueMock })
+    render(<MondayBoardsSync />)
+    expect(screen.queryByText(/board\(s\) synced/)).toBeNull()
+  })
+
   it('refreshes boards and updates the field value on success', async () => {
     useFieldMock.mockReturnValue({ value: undefined, setValue: setValueMock })
     const newCache = { syncedAt: '2026-07-25T13:00:00.000Z', boards: [] }
