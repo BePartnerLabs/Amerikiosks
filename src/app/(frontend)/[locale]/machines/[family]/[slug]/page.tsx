@@ -39,23 +39,8 @@ async function getMachine(familySlug: string, slug: string, locale: 'en' | 'es')
   return machine
 }
 
-export async function generateStaticParams() {
-  const payload = await getPayload({ config })
-  const result = await payload.find({
-    collection: 'machines',
-    depth: 1,
-    overrideAccess: false,
-    limit: 200,
-  })
-
-  return (result.docs as Machine[])
-    .map((machine) => {
-      const family = typeof machine.family === 'object' ? (machine.family as MachineFamily) : null
-      if (!family?.slug || !machine.slug) return null
-      return { family: family.slug, slug: machine.slug }
-    })
-    .filter((p): p is { family: string; slug: string } => p !== null)
-}
+// See the matching comment in ../page.tsx — dropped generateStaticParams,
+// same DYNAMIC_SERVER_USAGE fix, same pattern as every other content route.
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { family, slug, locale: rawLocale } = await params

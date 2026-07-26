@@ -161,6 +161,12 @@ Reference: `https://www.giorgiosaud.io/notebook/repository-pattern.md`
 
 `docs/CLIENT-MANUAL.md` is one of the final project deliverables — a self-management usage guide handed off to the client so their content editors can run the site in `/admin` without a developer. It's currently an outline (punteo). As features land that a content editor would need to know about (new block, new admin convention like the `hidden` blockName trick, a new collection), add or update the relevant bullet there — don't let it drift out of sync with what's actually shippable. It gets fleshed out into full step-by-step sections and validated with the client at the end of the project, not written all at once.
 
+## Known gotchas (learned the hard way)
+
+**Don't use `generateStaticParams` on frontend content routes.** It was tried on `/machines/[family]` and `/machines/[family]/[slug]` and caused a production 500 (`DYNAMIC_SERVER_USAGE`) the first time those pages needed to regenerate after a content edit — SSG (`generateStaticParams`) combined with this app's next-intl plugin setup throws on regeneration, even though the initial build succeeds. Reproduced locally via `next build && next start` (not `next dev` — dev mode doesn't hit this). Every other content-driven route (`insights/[slug]`, `projects/[slug]`, `pages/[slug]`) is server-rendered on demand (`ƒ`, no `generateStaticParams`) and works fine — match that pattern instead of trying to statically generate a machines-style route again.
+
+**Writing a `specs: [...]` — including an array field with `localized: true` subfields (e.g. `machines.specs`, `highlights.items`, `capabilities.items`) via a REST `PATCH ...?locale=es` request that doesn't include each existing item's `id` silently wipes that same field's content in every OTHER locale.** The array rows get recreated instead of updated in place, orphaning the sibling locale's data — the request itself returns 200 OK, so nothing looks wrong until you check the other locale. Always fetch the current doc first, and pass the existing `id` back for every array item you're touching, in every locale-scoped write. This bit an entire batch of machines during the `feat/machine-pages-v2` rollout (see `docs/machines-data-population.md`).
+
 ## Spec Workflow
 
 Living specs live in `openspec/specs/[feature]/spec.md`. Read the relevant spec before touching a feature.

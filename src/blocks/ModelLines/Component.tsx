@@ -8,7 +8,13 @@ import { vtName } from '@/utilities/viewTransitionName'
 import { ModelLinesCarousel } from './CarouselNav'
 import './styles.css'
 
-type Props = ModelLinesBlockProps & { families: MachineFamily[] }
+type Props = ModelLinesBlockProps & {
+  families: MachineFamily[]
+  // Required so the server-rendered Link below never falls back to next-intl's
+  // own getLocale() — that reads headers and breaks static generation for any
+  // page using this block (see the machines pages' DYNAMIC_SERVER_USAGE fix).
+  locale: 'en' | 'es'
+}
 
 // Cycled by index, not tied to a specific family — new families just pick up the next hue.
 const ACCENTS = ['#ff6b3d', '#3fb0ff', '#7cd992', '#c58cff', '#ffd166', '#ff8fb1']
@@ -20,6 +26,7 @@ export const ModelLinesBlock: React.FC<Props> = ({
   blockName,
   blockType,
   families,
+  locale,
 }) => {
   if (!heading || families.length === 0) return null
 
@@ -49,6 +56,7 @@ export const ModelLinesBlock: React.FC<Props> = ({
                 <Link
                   key={family.id}
                   href={{ pathname: '/machines/[family]', params: { family: family.slug ?? '' } }}
+                  locale={locale}
                   className="ak-model-lines__panel"
                   style={{ '--_accent': accent } as React.CSSProperties}
                   data-ga-event="machine_family_click"

@@ -56,7 +56,10 @@ export default async function MachinesLandingPage() {
         <div className="bp-content-grid">
           <div className="breakout">
             <h1 className="ak-machines-landing__title">Discover our model lines</h1>
-            <ModelLinesRow families={families} />
+            <ModelLinesRow
+              families={families}
+              locale={locale}
+            />
           </div>
         </div>
       </section>

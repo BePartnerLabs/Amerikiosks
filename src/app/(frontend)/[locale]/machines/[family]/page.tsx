@@ -33,20 +33,14 @@ export async function getFamilyBySlug(slug: string, locale: 'en' | 'es') {
   return (result.docs[0] as MachineFamily) ?? null
 }
 
-export async function generateStaticParams() {
-  const payload = await getPayload({ config })
-  const result = await payload.find({
-    collection: 'machine-families',
-    depth: 0,
-    overrideAccess: false,
-    limit: 100,
-  })
-
-  return (result.docs as MachineFamily[])
-    .filter((family) => Boolean(family.slug))
-    .map((family) => ({ family: family.slug as string }))
-}
-
+// No generateStaticParams: this route was the only one in the app using it,
+// and that combination (App Router SSG + next-intl's plugin wrapping)
+// throws DYNAMIC_SERVER_USAGE the moment Next tries to regenerate the page
+// after a content edit — reproduced locally via `next build && next start`,
+// confirmed fixed by dropping static generation. Every other content-driven
+// route in this app (insights/[slug], projects/[slug], pages/[slug]) is
+// already server-rendered on demand the same way; this just matches that
+// proven-working pattern instead of being the one exception.
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { family: familySlug, locale: rawLocale } = await params
   const locale = rawLocale as 'en' | 'es'
@@ -151,6 +145,7 @@ export default async function FamilyDetailPage({ params }: Props) {
             <ModelLinesRow
               families={allFamilies.docs as MachineFamily[]}
               activeSlug={family.slug ?? undefined}
+              locale={locale}
             />
           </div>
         </div>
@@ -177,6 +172,7 @@ export default async function FamilyDetailPage({ params }: Props) {
           <ModelsCarousel
             familySlug={family.slug ?? ''}
             models={models}
+            locale={locale}
           />
         </section>
       )}
