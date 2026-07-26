@@ -17,18 +17,20 @@ export const LanguageSwitcher: React.FC = () => {
   const router = useRouter()
   const [active, setActive] = useState<Locale>(locale)
 
-  // /machines and /machines/[slug] have their own pathnames mapping
-  // (-> /maquinas) and aren't CMS Pages, so they're handled separately
-  // from the generic translate-slug flow used by `/[slug]` pages.
+  // /machines, /machines/[family] and /machines/[family]/[slug] have their own
+  // pathnames mapping (-> /maquinas/...) and aren't CMS Pages, so they're
+  // handled separately from the generic translate-slug flow used by `/[slug]` pages.
   const unprefixedPath =
     typeof window !== 'undefined' ? window.location.pathname.replace(/^\/(en|es)/, '') || '/' : ''
   const isMachinesListing = /^\/(machines|maquinas)\/?$/.test(unprefixedPath)
-  const isMachineDetail = /^\/(machines|maquinas)\/[^/]+\/?$/.test(unprefixedPath)
+  const isFamilyDetail = /^\/(machines|maquinas)\/[^/]+\/?$/.test(unprefixedPath)
+  const isMachineDetail = /^\/(machines|maquinas)\/[^/]+\/[^/]+\/?$/.test(unprefixedPath)
+  const familySlug = isFamilyDetail || isMachineDetail ? (params?.family as string) : undefined
   const machineSlug = isMachineDetail ? (params?.slug as string) : undefined
 
   const currentSlug = (params?.slug as string) ?? 'home'
   const targetLocale: Locale = active === 'en' ? 'es' : 'en'
-  const isMachinesRoute = isMachinesListing || isMachineDetail
+  const isMachinesRoute = isMachinesListing || isFamilyDetail || isMachineDetail
 
   // Prefetch the translated slug for the opposite locale so the first toggle is instant
   const { data: translatedSlug } = useQuery({
@@ -43,9 +45,17 @@ export const LanguageSwitcher: React.FC = () => {
 
     const update = () => {
       setActive(target)
-      if (isMachineDetail && machineSlug) {
+      if (isMachineDetail && familySlug && machineSlug) {
         router.replace(
-          { pathname: '/machines/[slug]', params: { slug: machineSlug } },
+          {
+            pathname: '/machines/[family]/[slug]',
+            params: { family: familySlug, slug: machineSlug },
+          },
+          { locale: target },
+        )
+      } else if (isFamilyDetail && familySlug) {
+        router.replace(
+          { pathname: '/machines/[family]', params: { family: familySlug } },
           { locale: target },
         )
       } else if (isMachinesListing) {

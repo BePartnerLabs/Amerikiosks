@@ -8,52 +8,55 @@ vi.mock('@/i18n/routing', () => ({
     children,
     ...rest
   }: {
-    href: { pathname: string; params?: Record<string, string> }
-  } & React.ComponentPropsWithoutRef<'a'>) => (
-    <a
-      href={`/machines/${href.params?.slug}`}
-      {...rest}
-    >
-      {children}
-    </a>
-  ),
-}))
-vi.mock('@/utilities/useInView', () => ({
-  useInView: () => ({ ref: vi.fn(), inView: true }),
+    href: unknown
+  } & React.ComponentPropsWithoutRef<'a'>) => {
+    const params = (href as { params?: { slug?: string } } | undefined)?.params
+    const resolved = typeof href === 'string' ? href : `/machines/${params?.slug}`
+    return (
+      <a
+        href={resolved}
+        {...rest}
+      >
+        {children}
+      </a>
+    )
+  },
 }))
 
 const find = vi.fn()
 vi.mock('payload', () => ({ getPayload: vi.fn().mockResolvedValue({ find }) }))
 
-const makeMachine = (slug: string, name: string) => ({
+const makeFamily = (slug: string, name: string) => ({
   id: slug,
   slug,
   name,
-  tagline: `${name} tagline`,
-  image: { id: slug, url: `/${slug}.jpg`, width: 800, height: 600 },
-  tags: [],
+  thumbnail: { id: slug, url: `/${slug}.jpg`, width: 800, height: 600 },
 })
 
 describe('RelatedMachines', () => {
-  it('excludes the current machine and renders up to 3 others', async () => {
+  it('excludes the current family and renders sibling families', async () => {
     find.mockResolvedValue({
-      docs: [makeMachine('compact', 'Compact'), makeMachine('campaign', 'Campaign')],
+      docs: [makeFamily('delta', 'Delta'), makeFamily('kappa', 'Kappa')],
     })
 
     const { RelatedMachines } = await import(
-      '@/app/(frontend)/[locale]/machines/[slug]/RelatedMachines'
+      '@/app/(frontend)/[locale]/machines/[family]/[slug]/RelatedMachines'
     )
-    const ui = await RelatedMachines({ currentSlug: 'gamma-13', locale: 'en' })
+    const ui = await RelatedMachines({ currentFamilyId: 5, locale: 'en' })
     render(ui)
 
     expect(find).toHaveBeenCalledWith(
       expect.objectContaining({
-        collection: 'machines',
-        where: { slug: { not_equals: 'gamma-13' } },
-        limit: 3,
+        collection: 'machine-families',
+        where: { id: { not_equals: 5 } },
+        limit: 5,
       }),
     )
-    expect(screen.getByText('Compact')).toBeInTheDocument()
-    expect(screen.getByText('Campaign')).toBeInTheDocument()
+    expect(screen.getByText('Delta')).toBeInTheDocument()
+    expect(screen.getByText('Kappa')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'View all models' })).toHaveAttribute(
+      'href',
+      '/machines',
+    )
   })
 })

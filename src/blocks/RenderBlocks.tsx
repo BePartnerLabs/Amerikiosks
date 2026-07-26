@@ -13,6 +13,7 @@ import { InsightsShowcaseBlock } from '@/blocks/InsightsShowcase/Component'
 import { MachinesListingServer } from '@/blocks/MachinesListing/Server'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { MetricsBlock } from '@/blocks/Metrics/Component'
+import { ModelLinesServer } from '@/blocks/ModelLines/Server'
 import { ProcessStepsBlock } from '@/blocks/ProcessSteps/Component'
 import { ProjectsShowcaseBlock } from '@/blocks/ProjectsShowcase/Component'
 import { StatementBlock } from '@/blocks/Statement/Component'
@@ -37,6 +38,7 @@ const blockComponents = {
   processSteps: ProcessStepsBlock,
   faqWithForm: FAQWithFormServer,
   machinesListing: MachinesListingServer,
+  modelLines: ModelLinesServer,
   statement: StatementBlock,
   supportHub: SupportHubBlock,
 }

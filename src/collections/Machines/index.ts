@@ -62,6 +62,15 @@ export const Machines: CollectionConfig = {
       },
     },
     {
+      name: 'family',
+      type: 'relationship',
+      relationTo: 'machine-families',
+      required: true,
+      admin: {
+        description: 'Product series this model belongs to (e.g. Alpha, Gamma)',
+      },
+    },
+    {
       name: 'gallery',
       type: 'array',
       fields: [{ name: 'image', type: 'upload', relationTo: 'media', required: true }],

@@ -12,7 +12,11 @@ export const routing = defineRouting({
   localeDetection: false,
   pathnames: {
     '/machines': { en: '/machines', es: '/maquinas' },
-    '/machines/[slug]': { en: '/machines/[slug]', es: '/maquinas/[slug]' },
+    '/machines/[family]': { en: '/machines/[family]', es: '/maquinas/[family]' },
+    '/machines/[family]/[slug]': {
+      en: '/machines/[family]/[slug]',
+      es: '/maquinas/[family]/[slug]',
+    },
   },
 })
 

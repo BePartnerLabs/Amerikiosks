@@ -1,28 +1,29 @@
 import config from '@payload-config'
 import { getPayload } from 'payload'
 import type React from 'react'
-import { MachineCard } from '@/blocks/MachinesListing/MachineCard'
-import type { Machine } from '@/payload-types'
+import { ModelLinesRow } from '@/components/ModelLinesRow'
+import { Link } from '@/i18n/routing'
+import type { MachineFamily } from '@/payload-types'
 
 type Props = {
-  currentSlug: string
+  currentFamilyId: number
   locale: 'en' | 'es'
 }
 
-export const RelatedMachines: React.FC<Props> = async ({ currentSlug, locale }) => {
+export const RelatedMachines: React.FC<Props> = async ({ currentFamilyId, locale }) => {
   const payload = await getPayload({ config })
 
   const result = await payload.find({
-    collection: 'machines',
-    where: { slug: { not_equals: currentSlug } },
+    collection: 'machine-families',
+    where: { id: { not_equals: currentFamilyId } },
     depth: 1,
     overrideAccess: false,
     locale,
-    limit: 3,
+    limit: 5,
   })
 
-  const machines = result.docs as Machine[]
-  if (machines.length === 0) return null
+  const families = result.docs as MachineFamily[]
+  if (families.length === 0) return null
 
   return (
     <section className="ak-machine-detail__related">
@@ -32,14 +33,14 @@ export const RelatedMachines: React.FC<Props> = async ({ currentSlug, locale }) 
           <h2 className="ak-machine-detail__related-heading">
             Find the right kiosk for your space.
           </h2>
-          <div className="ak-machine-detail__related-grid">
-            {machines.map((machine, i) => (
-              <MachineCard
-                key={machine.id}
-                machine={machine}
-                index={i}
-              />
-            ))}
+          <ModelLinesRow families={families} />
+          <div className="ak-machine-detail__related-cta">
+            <Link
+              href="/machines"
+              className="bp-btn"
+            >
+              View all models
+            </Link>
           </div>
         </div>
       </div>

@@ -76,6 +76,8 @@ export interface Config {
     partners: Partner;
     machines: Machine;
     'machine-tags': MachineTag;
+    'machine-families': MachineFamily;
+    'machine-installations': MachineInstallation;
     faqItems: FaqItem;
     projects: Project;
     brands: Brand;
@@ -110,6 +112,8 @@ export interface Config {
     partners: PartnersSelect<false> | PartnersSelect<true>;
     machines: MachinesSelect<false> | MachinesSelect<true>;
     'machine-tags': MachineTagsSelect<false> | MachineTagsSelect<true>;
+    'machine-families': MachineFamiliesSelect<false> | MachineFamiliesSelect<true>;
+    'machine-installations': MachineInstallationsSelect<false> | MachineInstallationsSelect<true>;
     faqItems: FaqItemsSelect<false> | FaqItemsSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     brands: BrandsSelect<false> | BrandsSelect<true>;
@@ -276,6 +280,7 @@ export interface Page {
         | ProjectsShowcaseBlock
         | FormatsGridBlock
         | MachinesListingBlock
+        | ModelLinesBlock
         | ProcessStepsBlock
         | StatementBlock
         | FAQWithFormBlock
@@ -1269,6 +1274,10 @@ export interface Machine {
    * e.g. full-size, compact, campaign, premium — used for block-level filtering
    */
   tags?: (number | MachineTag)[] | null;
+  /**
+   * Product series this model belongs to (e.g. Alpha, Gamma)
+   */
+  family: number | MachineFamily;
   gallery?:
     | {
         image: number | Media;
@@ -1366,6 +1375,61 @@ export interface Machine {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * Product series/lines (e.g. Alpha, Gamma, Delta) shown on /machines.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "machine-families".
+ */
+export interface MachineFamily {
+  id: number;
+  /**
+   * e.g. "Alpha"
+   */
+  name: string;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  /**
+   * e.g. "Explore our premium line"
+   */
+  tagline?: string | null;
+  description?: string | null;
+  /**
+   * Shown in the "Discover our model lines" row
+   */
+  thumbnail: number | Media;
+  ctaLabel?: string | null;
+  highlights?: {
+    eyebrow?: string | null;
+    heading?: string | null;
+    items?:
+      | {
+          /**
+           * Material Symbols icon name, e.g. "inventory_2"
+           */
+          icon?: string | null;
+          image?: (number | null) | Media;
+          title: string;
+          description?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "MachinesListingBlock".
  */
@@ -1377,6 +1441,21 @@ export interface MachinesListingBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'machinesListing';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ModelLinesBlock".
+ */
+export interface ModelLinesBlock {
+  /**
+   * Small label above heading, e.g. "OUR RANGE"
+   */
+  eyebrow?: string | null;
+  heading: string;
+  subheading?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'modelLines';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1559,6 +1638,30 @@ export interface Partner {
    * Lower number appears first. Use 1, 2, 3… to control display order.
    */
   order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Real client installations (photos only) for a specific machine — shown as social proof on its /machines/[family] page.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "machine-installations".
+ */
+export interface MachineInstallation {
+  id: number;
+  /**
+   * Uses the partner's existing name and logo
+   */
+  client: number | Partner;
+  /**
+   * Which model was installed (its family is derived from here)
+   */
+  machine: number | Machine;
+  location?: string | null;
+  photos: {
+    image: number | Media;
+    id?: string | null;
+  }[];
   updatedAt: string;
   createdAt: string;
 }
@@ -2026,6 +2129,14 @@ export interface PayloadLockedDocument {
         value: number | MachineTag;
       } | null)
     | ({
+        relationTo: 'machine-families';
+        value: number | MachineFamily;
+      } | null)
+    | ({
+        relationTo: 'machine-installations';
+        value: number | MachineInstallation;
+      } | null)
+    | ({
         relationTo: 'faqItems';
         value: number | FaqItem;
       } | null)
@@ -2173,6 +2284,7 @@ export interface PagesSelect<T extends boolean = true> {
         projectsShowcase?: T | ProjectsShowcaseBlockSelect<T>;
         formatsGrid?: T | FormatsGridBlockSelect<T>;
         machinesListing?: T | MachinesListingBlockSelect<T>;
+        modelLines?: T | ModelLinesBlockSelect<T>;
         processSteps?: T | ProcessStepsBlockSelect<T>;
         statement?: T | StatementBlockSelect<T>;
         faqWithForm?: T | FAQWithFormBlockSelect<T>;
@@ -2437,6 +2549,17 @@ export interface FormatsGridBlockSelect<T extends boolean = true> {
  */
 export interface MachinesListingBlockSelect<T extends boolean = true> {
   itemsPerPage?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ModelLinesBlock_select".
+ */
+export interface ModelLinesBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  subheading?: T;
   id?: T;
   blockName?: T;
 }
@@ -2719,6 +2842,7 @@ export interface MachinesSelect<T extends boolean = true> {
   heroEyebrow?: T;
   image?: T;
   tags?: T;
+  family?: T;
   gallery?:
     | T
     | {
@@ -2796,6 +2920,61 @@ export interface MachinesSelect<T extends boolean = true> {
 export interface MachineTagsSelect<T extends boolean = true> {
   label?: T;
   machines?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "machine-families_select".
+ */
+export interface MachineFamiliesSelect<T extends boolean = true> {
+  name?: T;
+  generateSlug?: T;
+  slug?: T;
+  tagline?: T;
+  description?: T;
+  thumbnail?: T;
+  ctaLabel?: T;
+  highlights?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        items?:
+          | T
+          | {
+              icon?: T;
+              image?: T;
+              title?: T;
+              description?: T;
+              id?: T;
+            };
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "machine-installations_select".
+ */
+export interface MachineInstallationsSelect<T extends boolean = true> {
+  client?: T;
+  machine?: T;
+  location?: T;
+  photos?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

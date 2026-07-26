@@ -59,13 +59,24 @@ describe('LanguageSwitcher', () => {
     expect(replace).toHaveBeenCalledWith({ pathname: '/machines' }, { locale: 'es' })
   })
 
-  it('navigates to the machine detail pathname with slug when on /machines/[slug]', () => {
-    window.history.replaceState({}, '', '/machines/gamma-13')
-    paramsValue = { slug: 'gamma-13' }
+  it('navigates to the family pathname when on /machines/[family]', () => {
+    window.history.replaceState({}, '', '/machines/gamma')
+    paramsValue = { family: 'gamma' }
     render(<LanguageSwitcher />)
     screen.getByRole('button', { name: 'ES' }).click()
     expect(replace).toHaveBeenCalledWith(
-      { pathname: '/machines/[slug]', params: { slug: 'gamma-13' } },
+      { pathname: '/machines/[family]', params: { family: 'gamma' } },
+      { locale: 'es' },
+    )
+  })
+
+  it('navigates to the machine detail pathname with family and slug when on /machines/[family]/[slug]', () => {
+    window.history.replaceState({}, '', '/machines/gamma/gamma-13')
+    paramsValue = { family: 'gamma', slug: 'gamma-13' }
+    render(<LanguageSwitcher />)
+    screen.getByRole('button', { name: 'ES' }).click()
+    expect(replace).toHaveBeenCalledWith(
+      { pathname: '/machines/[family]/[slug]', params: { family: 'gamma', slug: 'gamma-13' } },
       { locale: 'es' },
     )
   })

@@ -23,6 +23,7 @@ import { InsightsShowcase } from '../../blocks/InsightsShowcase/config'
 import { MachinesListing } from '../../blocks/MachinesListing/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { Metrics } from '../../blocks/Metrics/config'
+import { ModelLines } from '../../blocks/ModelLines/config'
 import { ProcessSteps } from '../../blocks/ProcessSteps/config'
 import { ProjectsShowcase } from '../../blocks/ProjectsShowcase/config'
 import { Statement } from '../../blocks/Statement/config'
@@ -30,6 +31,7 @@ import { SupportHub } from '../../blocks/SupportHub/config'
 import { TrustStrip } from '../../blocks/TrustStrip/config'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
+import { reservedSlug } from './hooks/reservedSlug'
 import { revalidateDelete, revalidatePage } from './hooks/revalidatePage'
 
 export const Pages: CollectionConfig<'pages'> = {
@@ -98,6 +100,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 ProjectsShowcase,
                 FormatsGrid,
                 MachinesListing,
+                ModelLines,
                 ProcessSteps,
                 Statement,
                 FAQWithForm,
@@ -150,6 +153,7 @@ export const Pages: CollectionConfig<'pages'> = {
     slugField({ useAsSlug: 'title', localized: true }),
   ],
   hooks: {
+    beforeValidate: [reservedSlug],
     afterChange: [revalidatePage],
     beforeChange: [populatePublishedAt],
     afterDelete: [revalidateDelete],
