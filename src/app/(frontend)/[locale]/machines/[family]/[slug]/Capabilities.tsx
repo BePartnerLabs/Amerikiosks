@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import type { Machine, Media } from '@/payload-types'
+import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 
 type Props = {
   capabilities: NonNullable<Machine['capabilities']>
@@ -48,7 +49,7 @@ export const Capabilities: React.FC<Props> = ({ capabilities, gallery }) => {
                     className="ak-machine-detail__capabilities-photo"
                   >
                     <Image
-                      src={image.url}
+                      src={getBestMediaUrl(image, 600) ?? image.url}
                       alt=""
                       fill
                       className="ak-machine-detail__capabilities-photo-img"

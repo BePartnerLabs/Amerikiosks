@@ -7,6 +7,7 @@ import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { MachineHero } from '@/components/MachineHero'
 import type { Machine, MachineFamily, Media } from '@/payload-types'
 import { generateMeta } from '@/utilities/generateMeta'
+import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 import { getServerSideURL } from '@/utilities/getURL'
 import { Capabilities } from './Capabilities'
 import { Dimensions } from './Dimensions'
@@ -148,7 +149,7 @@ export default async function MachineDetailPage({ params }: Props) {
                   className="ak-machine-detail__gallery-item"
                 >
                   <Image
-                    src={galleryImage.url}
+                    src={getBestMediaUrl(galleryImage, 900) ?? galleryImage.url}
                     alt={`${machine.name} gallery image ${i + 1}`}
                     fill
                     className="ak-machine-detail__gallery-img"

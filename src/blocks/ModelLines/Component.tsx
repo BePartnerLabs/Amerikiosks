@@ -3,6 +3,7 @@ import type React from 'react'
 import { SectionHeader } from '@/components/SectionHeader'
 import { Link } from '@/i18n/routing'
 import type { MachineFamily, Media, ModelLinesBlock as ModelLinesBlockProps } from '@/payload-types'
+import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 import { toSnakeCase } from '@/utilities/toSnakeCase'
 import { vtName } from '@/utilities/viewTransitionName'
 import { ModelLinesCarousel } from './CarouselNav'
@@ -70,7 +71,7 @@ export const ModelLinesBlock: React.FC<Props> = ({
                       style={vtName('family-image', family.slug)}
                     >
                       <Image
-                        src={thumbnail.url}
+                        src={getBestMediaUrl(thumbnail, 500) ?? thumbnail.url}
                         alt=""
                         fill
                         className="ak-model-lines__panel-img ak-model-lines__panel-img--front"
@@ -78,7 +79,7 @@ export const ModelLinesBlock: React.FC<Props> = ({
                       />
                       {hoverThumbnail?.url && (
                         <Image
-                          src={hoverThumbnail.url}
+                          src={getBestMediaUrl(hoverThumbnail, 500) ?? hoverThumbnail.url}
                           alt=""
                           fill
                           className="ak-model-lines__panel-img ak-model-lines__panel-img--hover"

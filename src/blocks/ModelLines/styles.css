@@ -150,10 +150,11 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .ak-model-lines__panel-art--has-hover .ak-model-lines__panel-img--hover,
+  .ak-model-lines__panel-art--has-hover .ak-model-lines__panel-img--front,
   .ak-model-lines__panel:active
     .ak-model-lines__panel-art--has-hover
-    .ak-model-lines__panel-img--front
-    .ak-model-lines__panel:hover
+    .ak-model-lines__panel-img--front,
+  .ak-model-lines__panel:hover
     .ak-model-lines__panel-art--has-hover
     .ak-model-lines__panel-img--front {
     transition: none;

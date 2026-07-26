@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { Link } from '@/i18n/routing'
 import type { Machine, MachineFamily, Media } from '@/payload-types'
+import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 import { useInView } from '@/utilities/useInView'
 
 type Props = {
@@ -34,7 +35,7 @@ export const MachineCard: React.FC<Props> = ({ machine, index = 0 }) => {
       {image?.url && (
         <div className="ak-machines-listing__card-image">
           <Image
-            src={image.url}
+            src={getBestMediaUrl(image, 600) ?? image.url}
             alt={machine.name}
             fill
             className="ak-machines-listing__card-img"

@@ -5,6 +5,7 @@ import type { StaticImageData } from 'next/image'
 import NextImage from 'next/image'
 import type React from 'react'
 import { cssVariables } from '@/cssVariables'
+import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 import { getMediaUrl } from '@/utilities/getMediaUrl'
 import type { Props as MediaProps } from '../types'
 
@@ -51,6 +52,7 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
     size: sizeFromProps,
     src: srcFromProps,
     loading: loadingFromProps,
+    targetWidth = 1600,
   } = props
 
   let width: number | undefined
@@ -66,8 +68,9 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
     alt = altFromResource || ''
 
     const cacheTag = resource.updatedAt
+    const bestUrl = getBestMediaUrl(resource, targetWidth) ?? url
 
-    src = getMediaUrl(url, cacheTag)
+    src = getMediaUrl(bestUrl, cacheTag)
   }
 
   const loading = loadingFromProps || (!priority ? 'lazy' : undefined)

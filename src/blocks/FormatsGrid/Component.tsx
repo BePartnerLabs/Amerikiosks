@@ -8,6 +8,7 @@ import type {
   MachineFamily,
   Media,
 } from '@/payload-types'
+import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 import { toSnakeCase } from '@/utilities/toSnakeCase'
 import './styles.css'
 
@@ -62,7 +63,7 @@ export const FormatsGridBlock: React.FC<Props> = ({
                     {image?.url && (
                       <div className="bp-card__image ak-formats-grid__card-image">
                         <Image
-                          src={image.url}
+                          src={getBestMediaUrl(image, 600) ?? image.url}
                           alt={machine.name}
                           fill
                           className="ak-formats-grid__img"

@@ -7,6 +7,7 @@ import type React from 'react'
 import RichText from '@/components/RichText'
 import { SectionHeader } from '@/components/SectionHeader'
 import type { Media, ProjectsShowcaseBlock as Props } from '@/payload-types'
+import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 import { toSnakeCase } from '@/utilities/toSnakeCase'
 import './styles.css'
 
@@ -75,7 +76,7 @@ export const ProjectsShowcaseBlock: React.FC<Props & { blockName?: string | null
                     {img?.url && (
                       <div className="ak-projects-showcase__card-img">
                         <Image
-                          src={img.url}
+                          src={getBestMediaUrl(img, 900) ?? img.url}
                           alt={img.alt ?? project.title}
                           fill
                           sizes="(max-width: 768px) 100vw, 35vw"
