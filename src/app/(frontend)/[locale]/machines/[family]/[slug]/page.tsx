@@ -2,7 +2,6 @@ import config from '@payload-config'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
-import { getLocale } from 'next-intl/server'
 import { getPayload } from 'payload'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { MachineHero } from '@/components/MachineHero'
@@ -16,7 +15,7 @@ import './machine-detail.css'
 import { RelatedMachines } from './RelatedMachines'
 
 type Props = {
-  params: Promise<{ family: string; slug: string }>
+  params: Promise<{ locale: string; family: string; slug: string }>
 }
 
 async function getMachine(familySlug: string, slug: string, locale: 'en' | 'es') {
@@ -59,8 +58,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { family, slug } = await params
-  const locale = (await getLocale()) as 'en' | 'es'
+  const { family, slug, locale: rawLocale } = await params
+  const locale = rawLocale as 'en' | 'es'
   const machine = await getMachine(family, slug, locale)
   if (!machine) return {}
   return generateMeta({
@@ -76,8 +75,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function MachineDetailPage({ params }: Props) {
-  const { family: familySlug, slug } = await params
-  const locale = (await getLocale()) as 'en' | 'es'
+  const { family: familySlug, slug, locale: rawLocale } = await params
+  const locale = rawLocale as 'en' | 'es'
   const machine = await getMachine(familySlug, slug, locale)
 
   if (!machine) notFound()
