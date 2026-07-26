@@ -22,6 +22,7 @@ import { FolderField as FolderField_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@pa
 import { ResyncListButton as ResyncListButton_5d82853d3000711ed47e64e6cb5f5322 } from '@/collections/Claims/components/ResyncListButton'
 import { ResyncDocButton as ResyncDocButton_cd77d1669fc948221aaa335b049dfd5f } from '@/collections/Claims/components/ResyncDocButton'
 import { ViewPhotoButton as ViewPhotoButton_a5ebcbe60d2bc26f65c5b5759cbd4d99 } from '@/collections/Claims/components/ViewPhotoButton'
+import { MondayColumnsReference as MondayColumnsReference_95f847eafd6912a2696cfbfe6d063868 } from '@/plugins/components/MondayColumnsReference'
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { FolderTypeField as FolderTypeField_2b8867833a34864a02ddf429b0728a40 } from '@payloadcms/next/client'
@@ -62,6 +63,7 @@ export const importMap = {
   "@/collections/Claims/components/ResyncListButton#ResyncListButton": ResyncListButton_5d82853d3000711ed47e64e6cb5f5322,
   "@/collections/Claims/components/ResyncDocButton#ResyncDocButton": ResyncDocButton_cd77d1669fc948221aaa335b049dfd5f,
   "@/collections/Claims/components/ViewPhotoButton#ViewPhotoButton": ViewPhotoButton_a5ebcbe60d2bc26f65c5b5759cbd4d99,
+  "@/plugins/components/MondayColumnsReference#MondayColumnsReference": MondayColumnsReference_95f847eafd6912a2696cfbfe6d063868,
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/next/client#FolderTypeField": FolderTypeField_2b8867833a34864a02ddf429b0728a40,

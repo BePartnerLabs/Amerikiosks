@@ -182,6 +182,17 @@ export const plugins: Plugin[] = [
               },
             },
             {
+              name: 'mondayColumnsReferenceUi',
+              type: 'ui',
+              admin: {
+                position: 'sidebar',
+                condition: (data) => data?.integrationTarget === 'monday',
+                components: {
+                  Field: '@/plugins/components/MondayColumnsReference#MondayColumnsReference',
+                },
+              },
+            },
+            {
               name: 'mondayGroupId',
               type: 'text',
               admin: {
