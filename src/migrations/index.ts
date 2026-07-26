@@ -231,11 +231,13 @@ export const migrations = [
     name: '20260725_000904_add_users_api_key',
   },
   {
-    up: migration_20260725_225632_remove_users_api_key_scope_mcp_to_machines.up,
-    down: migration_20260725_225632_remove_users_api_key_scope_mcp_to_machines.down,
-    name: '20260725_225632_remove_users_api_key_scope_mcp_to_machines'
     up: migration_20260725_192423_statement_block.up,
     down: migration_20260725_192423_statement_block.down,
-    name: '20260725_192423_statement_block'
+    name: '20260725_192423_statement_block',
+  },
+  {
+    up: migration_20260725_225632_remove_users_api_key_scope_mcp_to_machines.up,
+    down: migration_20260725_225632_remove_users_api_key_scope_mcp_to_machines.down,
+    name: '20260725_225632_remove_users_api_key_scope_mcp_to_machines',
   },
 ];
