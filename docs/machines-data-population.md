@@ -1,20 +1,49 @@
 # Machines data population — assets first, then fetch
 
-Runbook for filling in the new `machines` fields (`specs`, `capabilities.items[].image`/`.heading`) plus any pending gallery/dimension assets from `Shared Folder/Maquinas por modelo/` once `feat/machine-pages-v2` (or its migration) ships to an environment with write access.
+Runbook for filling in the new fields shipped by `feat/machine-pages-v2` (PR: family page redesign, model page hero, modal-capable CTAs) once it's deployed to an environment with R2 write access (staging or production).
 
-## Why this two-phase order
+## ⚠️ Known bug to work around: locale
 
-Payload rejects an `upload`/`relationship` field pointing at a media `id` that doesn't exist yet. Every field that references an image (`image`, `gallery[].image`, `capabilities.items[].image`, `dimensionDiagrams[].image`) needs the **media document to exist first**, so the id can be put into the machine's PATCH body. There is no single request that does both — it's always upload → get id → reference id.
+**Every fetch/PATCH below writes to the default locale (`en`) only, unless you explicitly pass `?locale=es`.** None of the machines pages queries set a `fallbackLocale`, so a Spanish visitor sees a **blank field** for anything localized that wasn't separately populated in `es` — it does not fall back to the English value.
+
+Localized fields affected by this PR: `machine-families.heroEyebrow`, `.heroHeading`, `.description`, `.tagline`, `.highlights.eyebrow/.heading/.items[].title/.description`; `machines.specs[].label/.value`, `.capabilities.heading/.items[].heading/.text`, `.cta.label/.url`, `.tagline`, `.heroEyebrow`.
+
+**Do this for every PATCH in Phase 2:**
+1. `PATCH /api/machine-families/:id?locale=en` with the English content.
+2. `PATCH /api/machine-families/:id?locale=es` with the Spanish content (translate the copy — don't just repeat the English strings).
+3. Same pattern for `/api/machines/:id`.
+
+Skipping step 2 is the single most likely way this rollout ships broken — it won't error, it'll just render empty on `/es/machines/...`.
+
+## Why assets-first
+
+Payload rejects an `upload`/`relationship` field pointing at a media `id` that doesn't exist yet. Every field that references an image (`heroLineupImage`, `highlights.items[].image`, `capabilities.items[].image`, `gallery[].image`, `dimensionDiagrams[].image`) needs the **media document to exist first**, so the id can go into the PATCH body. Always: upload → get id → reference id.
+
+## Asset checklist for this PR (what's currently a placeholder)
+
+| Field | Where | Needed for | Suggested size |
+|---|---|---|---|
+| `machine-families.heroLineupImage` | Family hero | One composed, no-background render of the full model line-up per family (Alpha, Gamma, Delta, Zeta, Kappa) | ~2400×1200px, transparent bg |
+| `machine-families.highlights.items[].image` | Family highlight cards | One photo per highlight bullet (currently reused placeholder brand photos in local test data) | 1200×960px (5:4), landscape |
+| `machines.capabilities.items[].image` | Model page capability bands | Optional — only items you want as a full-bleed band need one; the rest render as plain bullets | 1600×1000px |
+
+Everything else (machine `image`, `gallery`, `dimensionDiagrams`) already existed before this PR and doesn't need new assets unless you're adding new angles from `Shared Folder/Maquinas por modelo/`.
 
 ## Environment note (local vs. prod)
 
-Locally, the R2 credentials in `.env.local` are **read-only** — `pnpm dev` can render existing media but a local `POST /api/media` upload will fail. That's fine for local dev because every asset already committed under `public/seed-assets/` or already in the DB renders normally.
+Locally, the R2 credentials in `.env.local` are **read-only** — `pnpm dev` renders existing media fine, but a local `POST /api/media` upload fails. New uploads must run against an environment with R2 write access (staging/production).
 
-For **new** assets (Alpha capability shots, per-model dimension diagrams, additional gallery angles from `Shared Folder`), the upload step in Phase 1 below must run against an environment that has R2 write access — i.e. staging or production, pointed at via `TARGET_URL`. Don't try to run Phase 1 against `localhost`.
+## Auth — two options
 
-## Auth
+**Option A (fastest for a one-off): browser console, already logged into `/admin`.** Open `/admin` in the target environment, log in normally, open DevTools console on that tab, and run `fetch(...)` directly — the session cookie is sent automatically with `credentials: 'include'`. This is how the schema was smoke-tested locally for this PR. No token handling needed.
 
-`Users` uses Payload's default email/password auth (no API-key strategy configured). Get a JWT first:
+```js
+// run directly in the browser console while logged into /admin
+const res = await fetch('/api/machine-families?where[slug][equals]=alpha&depth=0', { credentials: 'include' })
+const { docs } = await res.json()
+```
+
+**Option B (for a scripted/repeatable run): JWT login.**
 
 ```ts
 const loginRes = await fetch(`${TARGET_URL}/api/users/login`, {
@@ -62,7 +91,7 @@ async function uploadAsset(filePath: string, alt: string): Promise<number> {
 
 Run this for every file you intend to attach, sourced from `Shared Folder/Maquinas por modelo/<MODEL>/`. Persist `mediaIdCache` to a JSON file (`filename → id`) after each run so re-running the script doesn't re-upload — the `where[filename][equals]` check above is a second safety net for the same reason.
 
-## Phase 2 — data: find the machine by slug, PATCH it
+## Phase 2 — data: find the doc, PATCH it once per locale
 
 ```ts
 async function getMachineIdBySlug(slug: string): Promise<number> {
@@ -72,26 +101,31 @@ async function getMachineIdBySlug(slug: string): Promise<number> {
   return docs[0].id
 }
 
-async function patchMachine(id: number, data: Record<string, unknown>) {
-  const res = await fetch(`${TARGET_URL}/api/machines/${id}`, {
+async function patchMachine(id: number, locale: 'en' | 'es', data: Record<string, unknown>) {
+  const res = await fetch(`${TARGET_URL}/api/machines/${id}?locale=${locale}`, {
     method: 'PATCH',
     headers: { ...headers, 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   })
-  if (!res.ok) throw new Error(`patch failed for machine ${id}: ${res.status} ${await res.text()}`)
+  if (!res.ok) throw new Error(`patch failed for machine ${id} (${locale}): ${res.status} ${await res.text()}`)
 }
 
 // Example — Alpha 10, specs pulled from Fichas Extraidas/ALPHA-10.md
 const alpha10Id = await getMachineIdBySlug('alpha-10')
-await patchMachine(alpha10Id, {
-  specs: [
-    { label: 'Dimensions (H×W×D)', value: '78.42" × 57.63" × 40.23"' },
-    { label: 'Touchscreen', value: '49"' },
-    { label: 'Storage capacity', value: '90–160 boxes' },
-    { label: 'Heating cycle', value: '2–3 min, 360° bake' },
-    { label: 'Refrigeration range', value: '4°C – 25°C' },
-    { label: 'Payment methods', value: 'Cards, Apple Pay, Google Pay' },
-  ],
+
+const specsEn = [
+  { label: 'Dimensions (H×W×D)', value: '78.42" × 57.63" × 40.23"' },
+  { label: 'Touchscreen', value: '49"' },
+  { label: 'Storage capacity', value: '90–160 boxes' },
+  { label: 'Heating cycle', value: '2–3 min, 360° bake' },
+  { label: 'Refrigeration range', value: '4°C – 25°C' },
+  { label: 'Payment methods', value: 'Cards, Apple Pay, Google Pay' },
+]
+// same labels (numbers don't need translation), but heading/text copy elsewhere DOES
+await patchMachine(alpha10Id, 'en', { specs: specsEn })
+await patchMachine(alpha10Id, 'es', { specs: specsEn })
+
+await patchMachine(alpha10Id, 'en', {
   capabilities: {
     heading: 'Built for hot food. Designed for high traffic.',
     items: [
@@ -104,16 +138,28 @@ await patchMachine(alpha10Id, {
     ],
   },
 })
+await patchMachine(alpha10Id, 'es', {
+  capabilities: {
+    heading: 'Diseñado para comida caliente. Pensado para alto tráfico.',
+    items: [
+      {
+        heading: 'De frío a 360° en menos de 3 minutos.',
+        text: 'El módulo de microondas/horno integrado corre un ciclo de horneado 360° completo.',
+        // same media id — no need to re-upload the image per locale
+      },
+    ],
+  },
+})
 ```
+
+`cta` is the one field where the URL/label genuinely differ from content translation concerns — if `cta.type` is `'modal'`, `modalForm` is a relationship id (not localized) and only `label` needs a translated string per locale.
 
 ## Order of operations for the actual rollout
 
-1. Merge/deploy `feat/machine-pages-v2` (schema + migration) to the target environment.
+1. Merge/deploy `feat/machine-pages-v2` (schema + migrations) to the target environment.
 2. Run `pnpm payload migrate` on that environment if it doesn't run automatically on deploy.
 3. Run Phase 1 (assets) against that environment's `TARGET_URL`, sourced from `Shared Folder/Maquinas por modelo/` and `Shared Folder/Fichas Extraidas/` for copy.
-4. Run Phase 2 (data) per machine, using the cached media ids from step 3.
-5. Spot-check each machine in `/admin` before it goes live — the `specs` labels must match verbatim across models in the same family, or the family-page comparison table's rows won't line up (see the `admin.description` on `machines.specs` in `src/collections/Machines/index.ts`).
-
-## Not in scope here
-
-This doc covers the fetch strategy only. It does not include a ready-to-run script wired to the actual `Shared Folder` file list — build that once the model/family page redesign (Option B) is actually implemented, so the `capabilities.items` split between "plain bullet" and "full-bleed band" is final and you're not uploading images twice.
+4. Run Phase 2 (data) per machine/family, **once per locale** (see the locale warning above).
+5. Spot-check both `/en/machines/...` and `/es/machines/...` in a browser before calling it done — not just `/admin`. The admin UI shows whichever locale tab you're editing; it's easy to fill in `en` and never notice `es` is blank.
+6. `specs` labels must match verbatim across models in the same family (in whichever locale you're viewing), or the family-page comparison table's rows won't line up — see the `admin.description` on `machines.specs` in `src/collections/Machines/index.ts`.
+7. If using a `cta.type: 'modal'`, confirm the referenced form in `forms` actually exists in that environment (form IDs aren't guaranteed to match between local/staging/prod).
