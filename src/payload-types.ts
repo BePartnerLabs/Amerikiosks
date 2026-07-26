@@ -3433,6 +3433,18 @@ export interface Setting {
    */
   mondayApiToken?: string | null;
   /**
+   * Cached snapshot of Monday.com boards/groups/columns, refreshed via the button above. Only visible to logged-in admin users.
+   */
+  mondayBoardsCache?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
    * Where new refund claims sync to by default when submitted from the public ClaimForm. Changing this takes effect immediately for claims created after the change — existing claims keep whatever target they already have. Staff can still override a specific claim's target afterward in Claims → Integration target, but that only affects future re-syncs, not one already dispatched.
    */
   defaultClaimIntegrationTarget?: ('jotform' | 'odoo' | 'monday') | null;
@@ -3565,6 +3577,7 @@ export interface SettingsSelect<T extends boolean = true> {
   jotformApiKey?: T;
   jotformFormId?: T;
   mondayApiToken?: T;
+  mondayBoardsCache?: T;
   defaultClaimIntegrationTarget?: T;
   updatedAt?: T;
   createdAt?: T;

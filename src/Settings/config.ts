@@ -1,4 +1,5 @@
 import type { FieldAccess, GlobalConfig } from 'payload'
+import { syncBoardsEndpoint } from './endpoints/syncBoards'
 import { revalidateSettings } from './hooks/revalidateSettings'
 
 // Settings' own global-level access is public (read: () => true) — this field
@@ -16,6 +17,7 @@ export const Settings: GlobalConfig = {
   access: {
     read: () => true,
   },
+  endpoints: [syncBoardsEndpoint],
   hooks: {
     afterChange: [revalidateSettings],
   },
@@ -185,6 +187,19 @@ export const Settings: GlobalConfig = {
               admin: {
                 description:
                   'API token for the Monday.com GraphQL API (used by the Claims refund flow). Only visible to logged-in admin users — never exposed in the public Settings API response.',
+              },
+            },
+            {
+              name: 'mondayBoardsCache',
+              type: 'json',
+              label: 'Monday.com Boards Cache',
+              access: {
+                read: authenticatedFieldAccess,
+              },
+              admin: {
+                readOnly: true,
+                description:
+                  'Cached snapshot of Monday.com boards/groups/columns, refreshed via the button above. Only visible to logged-in admin users.',
               },
             },
             {

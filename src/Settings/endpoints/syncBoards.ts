@@ -75,8 +75,7 @@ export const syncBoardsEndpoint: Endpoint = {
 
     await req.payload.updateGlobal({
       slug: 'settings',
-      // biome-ignore lint/suspicious/noExplicitAny: mondayBoardsCache field is added to the Settings global in the following task; payload-types.ts doesn't know about it yet
-      data: { mondayBoardsCache } as any,
+      data: { mondayBoardsCache },
       req,
     })
 
