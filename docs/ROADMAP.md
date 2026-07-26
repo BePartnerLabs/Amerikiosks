@@ -45,6 +45,12 @@ Future ideas and planned improvements for the Amerikiosks website. Items are gro
 
 ---
 
+## Platform / Reusable Tooling
+
+- **Extract the Monday.com integration into a reusable internal package** — Built 2026-07-25/26 for the generic Form → Monday sync (`src/repositories/GenericMondayRepository.ts`, `src/Settings` boards cache + refresh/curation UI, `src/plugins/components/Monday*.tsx` board/group pickers, `src/utilities/detectMondayDrift.ts`). Everything except `MondayRepository.ts` (Claims-specific) is generic: cache boards/groups/columns on demand, pick a board/group with a synced-options dropdown + manual fallback, a read-only columns reference panel, per-field column-id validation, and a drift-check list of connected forms. Nothing here depends on Amerikiosks-specific business logic. Worth packaging as an internal Payload plugin (alongside `internal-projects/bpl-ds`, `centralized-workflows`) once a second client project needs a Monday.com form integration — install once, wire up `mondayApiToken` + `integrationTarget`, done. Not worth the packaging overhead for a single consumer today.
+
+---
+
 ## Analytics
 
 - **TrustStrip dwell time dashboard** — `partner_logo_dwell` events are firing to GA4. Create a GA4 custom report or Looker Studio dashboard to visualize which partner logos get the most screen time.
