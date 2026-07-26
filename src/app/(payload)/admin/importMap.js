@@ -22,12 +22,19 @@ import { FolderField as FolderField_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@pa
 import { ResyncListButton as ResyncListButton_5d82853d3000711ed47e64e6cb5f5322 } from '@/collections/Claims/components/ResyncListButton'
 import { ResyncDocButton as ResyncDocButton_cd77d1669fc948221aaa335b049dfd5f } from '@/collections/Claims/components/ResyncDocButton'
 import { ViewPhotoButton as ViewPhotoButton_a5ebcbe60d2bc26f65c5b5759cbd4d99 } from '@/collections/Claims/components/ViewPhotoButton'
+import { MondayBoardPicker as MondayBoardPicker_c2aaa73f5cd9d1f756c6201b3ca5ae5a } from '@/plugins/components/MondayBoardPicker'
+import { MondayGroupPicker as MondayGroupPicker_c2baa8ef80b258ef1470bf62c2896b44 } from '@/plugins/components/MondayGroupPicker'
+import { MondayColumnsReference as MondayColumnsReference_95f847eafd6912a2696cfbfe6d063868 } from '@/plugins/components/MondayColumnsReference'
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { FolderTypeField as FolderTypeField_2b8867833a34864a02ddf429b0728a40 } from '@payloadcms/next/client'
 import { MaterialIconPicker as MaterialIconPicker_332817f447aef6af0f19f42940f0f0c1 } from '@/components/MaterialIconPicker'
 import { RowLabel as RowLabel_ec255a65fa6fa8d1faeb09cf35284224 } from '@/Header/RowLabel'
 import { RowLabel as RowLabel_1f6ff6ff633e3695d348f4f3c58f1466 } from '@/Footer/RowLabel'
+import { PasswordField as PasswordField_3817bf644402e67bfe6577f60ef982de } from '@payloadcms/ui'
+import { MondayBoardsSync as MondayBoardsSync_21ab000b38067fb252c07cccddfe13db } from '@/Settings/components/MondayBoardsSync'
+import { MondayVisibleBoardsSelect as MondayVisibleBoardsSelect_cc6ffb11955a387065a718a2b15af2a2 } from '@/Settings/components/MondayVisibleBoardsSelect'
+import { MondayConnectedForms as MondayConnectedForms_ed70df1e22951d0dbb55027392df2e00 } from '@/Settings/components/MondayConnectedForms'
 import { default as default_aa0a2d19d38a4839dbd373417e210b89 } from '@/components/AdminLogo'
 import { default as default_1a7510af427896d367a49dbf838d2de6 } from '@/components/BeforeDashboard'
 import { default as default_8a7ab0eb7ab5c511aba12e68480bfe5e } from '@/components/BeforeLogin'
@@ -60,12 +67,19 @@ export const importMap = {
   "@/collections/Claims/components/ResyncListButton#ResyncListButton": ResyncListButton_5d82853d3000711ed47e64e6cb5f5322,
   "@/collections/Claims/components/ResyncDocButton#ResyncDocButton": ResyncDocButton_cd77d1669fc948221aaa335b049dfd5f,
   "@/collections/Claims/components/ViewPhotoButton#ViewPhotoButton": ViewPhotoButton_a5ebcbe60d2bc26f65c5b5759cbd4d99,
+  "@/plugins/components/MondayBoardPicker#MondayBoardPicker": MondayBoardPicker_c2aaa73f5cd9d1f756c6201b3ca5ae5a,
+  "@/plugins/components/MondayGroupPicker#MondayGroupPicker": MondayGroupPicker_c2baa8ef80b258ef1470bf62c2896b44,
+  "@/plugins/components/MondayColumnsReference#MondayColumnsReference": MondayColumnsReference_95f847eafd6912a2696cfbfe6d063868,
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/next/client#FolderTypeField": FolderTypeField_2b8867833a34864a02ddf429b0728a40,
   "@/components/MaterialIconPicker#MaterialIconPicker": MaterialIconPicker_332817f447aef6af0f19f42940f0f0c1,
   "@/Header/RowLabel#RowLabel": RowLabel_ec255a65fa6fa8d1faeb09cf35284224,
   "@/Footer/RowLabel#RowLabel": RowLabel_1f6ff6ff633e3695d348f4f3c58f1466,
+  "@payloadcms/ui#PasswordField": PasswordField_3817bf644402e67bfe6577f60ef982de,
+  "@/Settings/components/MondayBoardsSync#MondayBoardsSync": MondayBoardsSync_21ab000b38067fb252c07cccddfe13db,
+  "@/Settings/components/MondayVisibleBoardsSelect#MondayVisibleBoardsSelect": MondayVisibleBoardsSelect_cc6ffb11955a387065a718a2b15af2a2,
+  "@/Settings/components/MondayConnectedForms#MondayConnectedForms": MondayConnectedForms_ed70df1e22951d0dbb55027392df2e00,
   "@/components/AdminLogo#default": default_aa0a2d19d38a4839dbd373417e210b89,
   "@/components/BeforeDashboard#default": default_1a7510af427896d367a49dbf838d2de6,
   "@/components/BeforeLogin#default": default_8a7ab0eb7ab5c511aba12e68480bfe5e,

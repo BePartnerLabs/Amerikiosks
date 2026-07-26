@@ -1,4 +1,5 @@
 import type { FieldAccess, GlobalConfig } from 'payload'
+import { syncBoardsEndpoint } from './endpoints/syncBoards'
 import { revalidateSettings } from './hooks/revalidateSettings'
 
 // Settings' own global-level access is public (read: () => true) — this field
@@ -16,6 +17,7 @@ export const Settings: GlobalConfig = {
   access: {
     read: () => true,
   },
+  endpoints: [syncBoardsEndpoint],
   hooks: {
     afterChange: [revalidateSettings],
   },
@@ -147,6 +149,21 @@ export const Settings: GlobalConfig = {
           label: 'Integrations',
           fields: [
             {
+              name: 'defaultClaimIntegrationTarget',
+              type: 'select',
+              label: 'Default Claim Integration Target',
+              defaultValue: 'monday',
+              options: [
+                { label: 'JotForm', value: 'jotform' },
+                { label: 'Odoo', value: 'odoo' },
+                { label: 'Monday.com', value: 'monday' },
+              ],
+              admin: {
+                description:
+                  "Where new refund claims sync to by default when submitted from the public ClaimForm. Changing this takes effect immediately for claims created after the change — existing claims keep whatever target they already have. Staff can still override a specific claim's target afterward in Claims → Integration target, but that only affects future re-syncs, not one already dispatched.",
+              },
+            },
+            {
               name: 'jotformApiKey',
               type: 'text',
               label: 'JotForm API Key',
@@ -163,6 +180,9 @@ export const Settings: GlobalConfig = {
               admin: {
                 description:
                   'API key for the JotForm submissions API (used by the Claims refund flow). Only visible to logged-in admin users — never exposed in the public Settings API response.',
+                components: {
+                  Field: '@payloadcms/ui#PasswordField',
+                },
               },
             },
             {
@@ -185,21 +205,65 @@ export const Settings: GlobalConfig = {
               admin: {
                 description:
                   'API token for the Monday.com GraphQL API (used by the Claims refund flow). Only visible to logged-in admin users — never exposed in the public Settings API response.',
+                components: {
+                  Field: '@payloadcms/ui#PasswordField',
+                },
               },
             },
             {
-              name: 'defaultClaimIntegrationTarget',
-              type: 'select',
-              label: 'Default Claim Integration Target',
-              defaultValue: 'monday',
-              options: [
-                { label: 'JotForm', value: 'jotform' },
-                { label: 'Odoo', value: 'odoo' },
-                { label: 'Monday.com', value: 'monday' },
-              ],
+              name: 'mondayBoardsCache',
+              type: 'json',
+              label: 'Monday.com Boards Cache',
+              access: {
+                read: authenticatedFieldAccess,
+              },
               admin: {
+                readOnly: true,
+                // Hidden from the raw field UI — with ~90 boards this would
+                // render as a huge, unreadable JSON blob. MondayBoardsSync
+                // (below) shows a readable summary (synced board names)
+                // instead; other components consume this value programmatically.
+                hidden: true,
+              },
+            },
+            {
+              name: 'mondayBoardsSyncUi',
+              type: 'ui',
+              admin: {
+                components: {
+                  Field: '@/Settings/components/MondayBoardsSync#MondayBoardsSync',
+                },
+              },
+            },
+            {
+              name: 'mondayVisibleBoardIds',
+              type: 'json',
+              label: 'Monday.com Visible Board Ids',
+              admin: {
+                // Hidden from the raw field UI — edited exclusively through
+                // MondayVisibleBoardsSelect below.
+                hidden: true,
                 description:
-                  "Where new refund claims sync to by default when submitted from the public ClaimForm. Changing this takes effect immediately for claims created after the change — existing claims keep whatever target they already have. Staff can still override a specific claim's target afterward in Claims → Integration target, but that only affects future re-syncs, not one already dispatched.",
+                  'Curated allowlist of Monday.com board ids shown in the Form board picker. Empty = show every synced board.',
+              },
+            },
+            {
+              name: 'mondayVisibleBoardsUi',
+              type: 'ui',
+              admin: {
+                components: {
+                  Field:
+                    '@/Settings/components/MondayVisibleBoardsSelect#MondayVisibleBoardsSelect',
+                },
+              },
+            },
+            {
+              name: 'mondayConnectedFormsUi',
+              type: 'ui',
+              admin: {
+                components: {
+                  Field: '@/Settings/components/MondayConnectedForms#MondayConnectedForms',
+                },
               },
             },
           ],
