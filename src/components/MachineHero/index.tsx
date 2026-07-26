@@ -28,8 +28,7 @@ export const MachineHero: React.FC<Props> = ({ machine }) => {
     heading: machine.name,
     subtitle: machine.tagline,
     brochureUrl: brochure?.url ?? null,
-    ctaLabel: machine.cta?.label || 'Contact Sales',
-    ctaUrl: machine.cta?.url || '/contact',
+    cta: machine.cta,
   }
 
   if (frameUrls.length > 0) {
@@ -37,6 +36,7 @@ export const MachineHero: React.FC<Props> = ({ machine }) => {
       <RotationScrubHero
         frameUrls={frameUrls}
         alt={machine.name}
+        slug={machine.slug}
         {...heroText}
       />
     )
@@ -46,6 +46,7 @@ export const MachineHero: React.FC<Props> = ({ machine }) => {
     <ZoomFadeHero
       imageUrl={imageUrl}
       alt={machine.name}
+      slug={machine.slug}
       {...heroText}
     />
   )

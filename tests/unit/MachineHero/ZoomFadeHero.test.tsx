@@ -11,8 +11,12 @@ describe('ZoomFadeHero', () => {
     eyebrow: 'NEXT GENERATION',
     heading: 'GAMMA 13 MODEL',
     subtitle: 'A premium high-capacity vending solution.',
-    ctaLabel: 'Contact Sales',
-    ctaUrl: '/contact',
+    cta: {
+      type: 'custom' as const,
+      url: '/contact',
+      label: 'Contact Sales',
+      appearance: 'outline' as const,
+    },
   }
 
   it('renders eyebrow, heading, and subtitle', () => {

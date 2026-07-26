@@ -1,66 +1,50 @@
 import Image from 'next/image'
-import type React from 'react'
-import { SectionHeader } from '@/components/SectionHeader'
+import { ModelLinesCarousel } from '@/blocks/ModelLines/CarouselNav'
+import '@/blocks/ModelLines/styles.css'
 import { Link } from '@/i18n/routing'
-import type { MachineFamily, Media, ModelLinesBlock as ModelLinesBlockProps } from '@/payload-types'
-import { toSnakeCase } from '@/utilities/toSnakeCase'
+import type { Machine, Media } from '@/payload-types'
 import { vtName } from '@/utilities/viewTransitionName'
-import { ModelLinesCarousel } from './CarouselNav'
-import './styles.css'
 
-type Props = ModelLinesBlockProps & { families: MachineFamily[] }
+type Props = {
+  familySlug: string
+  models: Machine[]
+}
 
-// Cycled by index, not tied to a specific family — new families just pick up the next hue.
+// Reuses the exact ak-model-lines panel styling from the home page's
+// "explore our systems" carousel, scoped to models within a family.
 const ACCENTS = ['#ff6b3d', '#3fb0ff', '#7cd992', '#c58cff', '#ffd166', '#ff8fb1']
 
-export const ModelLinesBlock: React.FC<Props> = ({
-  eyebrow,
-  heading,
-  subheading,
-  blockName,
-  blockType,
-  families,
-}) => {
-  if (!heading || families.length === 0) return null
+export const ModelsCarousel: React.FC<Props> = ({ familySlug, models }) => {
+  if (models.length === 0) return null
 
   return (
-    <section
-      className="ak-model-lines"
-      aria-label={heading}
-      data-ga-block={toSnakeCase(blockType)}
-      data-ga-section={blockName ?? undefined}
-    >
+    <section className="ak-model-lines ak-family-detail__models-carousel">
       <div className="bp-content-grid">
         <div className="breakout ak-model-lines__inner">
-          <SectionHeader
-            eyebrow={eyebrow}
-            heading={heading}
-            subtitle={subheading}
-            align="left"
-          />
-
           <ModelLinesCarousel>
-            {families.map((family, i) => {
-              const thumbnail =
-                typeof family.thumbnail === 'object' ? (family.thumbnail as Media) : null
+            {models.map((machine, i) => {
+              const image = typeof machine.image === 'object' ? (machine.image as Media) : null
               const accent = ACCENTS[i % ACCENTS.length]
 
               return (
                 <Link
-                  key={family.id}
-                  href={{ pathname: '/machines/[family]', params: { family: family.slug ?? '' } }}
+                  key={machine.id}
+                  href={{
+                    pathname: '/machines/[family]/[slug]',
+                    params: { family: familySlug, slug: machine.slug ?? '' },
+                  }}
                   className="ak-model-lines__panel"
                   style={{ '--_accent': accent } as React.CSSProperties}
-                  data-ga-event="machine_family_click"
-                  data-ga-label={family.name}
+                  data-ga-event="machine_model_click"
+                  data-ga-label={machine.name}
                 >
-                  {thumbnail?.url && (
+                  {image?.url && (
                     <div
                       className="ak-model-lines__panel-art"
-                      style={vtName('family-image', family.slug)}
+                      style={vtName('machine-image', machine.slug)}
                     >
                       <Image
-                        src={thumbnail.url}
+                        src={image.url}
                         alt=""
                         fill
                         className="ak-model-lines__panel-img"
@@ -71,15 +55,15 @@ export const ModelLinesBlock: React.FC<Props> = ({
                   <div className="ak-model-lines__panel-body">
                     <p
                       className="ak-model-lines__panel-name"
-                      style={vtName('family-name', family.slug)}
+                      style={vtName('machine-name', machine.slug)}
                     >
-                      {family.name}
+                      {machine.name}
                     </p>
-                    {family.tagline && (
-                      <p className="ak-model-lines__panel-tagline">{family.tagline}</p>
+                    {machine.tagline && (
+                      <p className="ak-model-lines__panel-tagline">{machine.tagline}</p>
                     )}
                     <span className="ak-model-lines__panel-cta">
-                      {family.ctaLabel || 'Explore'}
+                      Learn more
                       <svg
                         viewBox="0 0 16 16"
                         fill="none"

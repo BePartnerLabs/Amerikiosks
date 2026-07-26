@@ -10,39 +10,146 @@
   border-bottom: 1px solid var(--ak-surface-border);
 }
 
-/* ── /machines/[family] hero ─────────────────────────────────── */
-.ak-family-detail__hero {
-  padding-block: var(--bp-space-12, 3rem);
-}
-
-.ak-family-detail__hero-inner {
-  text-align: center;
-}
-
-.ak-family-detail__eyebrow {
-  --_eyebrow-color: var(--ak-accent);
-  font-size: var(--bp-font-size-sm, 0.875rem);
-  font-weight: var(--bp-font-weight-semibold, 600);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--_eyebrow-color);
-  margin: 0 0 var(--bp-space-2, 0.5rem);
-}
-
-.ak-family-detail__heading {
-  font-size: var(--bp-font-size-3xl, 2rem);
-  font-weight: var(--bp-font-weight-bold, 700);
-  margin: 0 0 var(--bp-space-4, 1rem);
-}
-
-.ak-family-detail__description {
-  max-width: 40rem;
-  margin: 0 auto;
-  color: var(--bp-color-text-muted);
-}
+/* Family hero itself now renders via the shared <ComposedHero> component
+   (src/components/ComposedHero) — same one the model page hero uses. */
 
 .ak-family-detail__models {
   padding-block: var(--bp-space-16, 4rem);
+}
+
+.ak-family-detail__models-inner {
+  margin-bottom: var(--bp-space-4, 1rem);
+}
+
+.ak-family-detail__models-carousel {
+  background: transparent;
+}
+
+/* ── Family highlights — horizontal featured cards (reuses
+   ak-insights-showcase__featured), stacked with a gap, alternating sides ── */
+.ak-family-detail__highlights {
+  padding-block: var(--bp-space-16, 4rem);
+}
+
+.ak-family-detail__highlights-head {
+  margin-bottom: var(--bp-space-8, 2rem);
+}
+
+.ak-family-detail__highlight-cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bp-space-8, 2rem);
+}
+
+/* The image fills its column edge-to-edge — only round the two corners that
+   touch the outer card boundary, so there's no double-radius seam where it
+   meets the text column. */
+.ak-family-detail__highlight-cards .ak-insights-showcase__featured-img-wrap {
+  border-radius: 0;
+  border-top-left-radius: var(--bp-radius-lg, 0.75rem);
+  border-bottom-left-radius: var(--bp-radius-lg, 0.75rem);
+}
+
+/* Text sits away from the outer card edge, on whichever side it lands on. */
+.ak-family-detail__highlight-cards .ak-insights-showcase__featured-body {
+  padding-right: var(--bp-space-8, 2rem);
+}
+
+/* Reverse (image right / text left) is desktop-only — order swaps the two
+   grid children without touching DOM order, so mobile can safely reset it
+   below and always show image-then-text. */
+@media (min-width: 50.0625rem) {
+  .ak-family-detail__highlight-card--reverse {
+    grid-template-columns: 45fr 55fr;
+  }
+
+  .ak-family-detail__highlight-card--reverse .ak-insights-showcase__featured-img-wrap {
+    order: 2;
+    border-radius: 0;
+    border-top-right-radius: var(--bp-radius-lg, 0.75rem);
+    border-bottom-right-radius: var(--bp-radius-lg, 0.75rem);
+  }
+
+  .ak-family-detail__highlight-card--reverse .ak-insights-showcase__featured-body {
+    order: 1;
+    padding-right: 0;
+    padding-left: var(--bp-space-8, 2rem);
+  }
+}
+
+@media (max-width: 50rem) {
+  .ak-family-detail__highlight-card--reverse {
+    grid-template-columns: 1fr;
+  }
+
+  .ak-family-detail__highlight-cards .ak-insights-showcase__featured-img-wrap {
+    border-radius: 0;
+    border-top-left-radius: var(--bp-radius-lg, 0.75rem);
+    border-top-right-radius: var(--bp-radius-lg, 0.75rem);
+  }
+
+  .ak-family-detail__highlight-cards .ak-insights-showcase__featured-body,
+  .ak-family-detail__highlight-cards
+    .ak-family-detail__highlight-card--reverse
+    .ak-insights-showcase__featured-body {
+    padding-inline: var(--bp-space-5, 1.25rem);
+    padding-bottom: var(--bp-space-5, 1.25rem);
+  }
+}
+
+/* ── Family compare table ─────────────────────────────────────── */
+.ak-family-detail__compare {
+  padding-block: var(--bp-space-16, 4rem);
+}
+
+.ak-family-detail__compare-tablewrap {
+  overflow-x: auto;
+  border-radius: var(--bp-radius-lg, 0.75rem);
+  background: var(--ak-color-surface);
+  padding: var(--bp-space-1, 0.25rem);
+  margin-top: var(--bp-space-6, 1.5rem);
+}
+
+.ak-family-detail__compare-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: var(--bp-font-size-sm, 0.9rem);
+  min-width: 40rem;
+}
+
+.ak-family-detail__compare-table th,
+.ak-family-detail__compare-table td {
+  padding: var(--bp-space-4, 1rem) var(--bp-space-5, 1.25rem);
+  text-align: left;
+}
+
+.ak-family-detail__compare-table thead th {
+  font-size: var(--bp-font-size-xs, 0.78rem);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--bp-color-text-muted);
+}
+
+.ak-family-detail__compare-table tbody th {
+  font-weight: var(--bp-font-weight-medium, 500);
+  color: var(--bp-color-text-muted);
+  width: 28%;
+}
+
+.ak-family-detail__compare-table tbody tr td,
+.ak-family-detail__compare-table tbody tr th {
+  background: var(--ak-surface-background);
+}
+
+.ak-family-detail__compare-table tbody tr:nth-child(odd) td,
+.ak-family-detail__compare-table tbody tr:nth-child(odd) th {
+  background: color-mix(in srgb, var(--ak-surface-background) 96%, var(--bp-color-text) 4%);
+}
+
+.ak-family-detail__compare-table td {
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--bp-font-weight-medium, 500);
 }
 
 .ak-family-detail__footer-cta {

@@ -1,4 +1,3 @@
-import { Icon } from '@/components/Icon'
 import type { Machine } from '@/payload-types'
 
 type Props = {
@@ -25,12 +24,6 @@ export const Highlights: React.FC<Props> = ({ highlights }) => {
                 key={item.id ?? i}
                 className="ak-machine-detail__highlight-card"
               >
-                {item.icon && (
-                  <Icon
-                    name={item.icon}
-                    className="ak-machine-detail__highlight-icon"
-                  />
-                )}
                 <p className="ak-machine-detail__highlight-title">{item.title}</p>
                 {item.description && (
                   <p className="ak-machine-detail__highlight-description">{item.description}</p>

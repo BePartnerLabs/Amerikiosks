@@ -9,6 +9,7 @@ import type { CollectionConfig } from 'payload'
 import { slugField } from 'payload'
 import { anyone } from '../../access/anyone'
 import { authenticated } from '../../access/authenticated'
+import { link } from '../../fields/link'
 
 export const Machines: CollectionConfig = {
   slug: 'machines',
@@ -75,14 +76,15 @@ export const Machines: CollectionConfig = {
       type: 'array',
       fields: [{ name: 'image', type: 'upload', relationTo: 'media', required: true }],
     },
-    {
-      name: 'cta',
-      type: 'group',
-      fields: [
-        { name: 'label', type: 'text', localized: true, defaultValue: 'Request a quote' },
-        { name: 'url', type: 'text' },
-      ],
-    },
+    link({
+      overrides: {
+        name: 'cta',
+        admin: {
+          description:
+            'Hero call-to-action. Supports linking to a page, a custom URL, or opening a form in a modal (e.g. "Contact Sales" opening a lead form instead of navigating away).',
+        },
+      },
+    }),
     {
       name: 'brochure',
       type: 'upload',
@@ -136,7 +138,27 @@ export const Machines: CollectionConfig = {
         {
           name: 'items',
           type: 'array',
-          fields: [{ name: 'text', type: 'text', required: true, localized: true }],
+          admin: {
+            description:
+              'Each item can render as a full-bleed alternating story band (image + heading + text) or, if left without an image, as a plain bullet.',
+          },
+          fields: [
+            {
+              name: 'heading',
+              type: 'text',
+              localized: true,
+              admin: { description: 'Optional short claim, e.g. "Cold, all day."' },
+            },
+            { name: 'text', type: 'text', required: true, localized: true },
+            {
+              name: 'image',
+              type: 'upload',
+              relationTo: 'media',
+              admin: {
+                description: 'Optional. When set, this item renders as a full-bleed story band.',
+              },
+            },
+          ],
         },
       ],
     },
@@ -147,6 +169,30 @@ export const Machines: CollectionConfig = {
         { name: 'height', type: 'text', admin: { description: 'e.g. 92"' } },
         { name: 'width', type: 'text', admin: { description: 'e.g. 74"' } },
         { name: 'depth', type: 'text', admin: { description: 'e.g. 40"' } },
+      ],
+    },
+    {
+      name: 'specs',
+      type: 'array',
+      admin: {
+        description:
+          'Structured spec rows (capacity, power, screen, refrigeration, etc.) sourced from the vendor spec sheet. Drives the family-page comparison table and the model-page spec list. Order here is the display order; use the same "label" text across models in a family so rows line up in the comparison table.',
+      },
+      fields: [
+        {
+          name: 'label',
+          type: 'text',
+          required: true,
+          localized: true,
+          admin: { description: 'e.g. "Storage capacity"' },
+        },
+        {
+          name: 'value',
+          type: 'text',
+          required: true,
+          localized: true,
+          admin: { description: 'e.g. "420–560 units"' },
+        },
       ],
     },
     {
