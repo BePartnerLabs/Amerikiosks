@@ -111,7 +111,11 @@
 /* Front/hover image cross-fade — only present when a hover image is set. */
 .ak-model-lines__panel-art--has-hover .ak-model-lines__panel-img--hover {
   opacity: 0;
-  transition: opacity 200ms var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1));
+  transition: opacity 300ms var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1));
+}
+.ak-model-lines__panel-art--has-hover .ak-model-lines__panel-img--front {
+  opacity: 1;
+  transition: opacity 300ms var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1));
 }
 
 @media (hover: hover) {
@@ -123,6 +127,14 @@
     .ak-model-lines__panel-img--hover {
     opacity: 1;
   }
+  .ak-model-lines__panel:hover
+    .ak-model-lines__panel-art--has-hover
+    .ak-model-lines__panel-img--front,
+  .ak-model-lines__panel:focus-visible
+    .ak-model-lines__panel-art--has-hover
+    .ak-model-lines__panel-img--front {
+    opacity: 0;
+  }
 }
 
 /* Touch devices have no hover — swap on press instead. */
@@ -131,9 +143,19 @@
   .ak-model-lines__panel-img--hover {
   opacity: 1;
 }
-
+.ak-model-lines__panel:active
+  .ak-model-lines__panel-art--has-hover
+  .ak-model-lines__panel-img--front {
+  opacity: 0;
+}
 @media (prefers-reduced-motion: reduce) {
-  .ak-model-lines__panel-art--has-hover .ak-model-lines__panel-img--hover {
+  .ak-model-lines__panel-art--has-hover .ak-model-lines__panel-img--hover,
+  .ak-model-lines__panel:active
+    .ak-model-lines__panel-art--has-hover
+    .ak-model-lines__panel-img--front
+    .ak-model-lines__panel:hover
+    .ak-model-lines__panel-art--has-hover
+    .ak-model-lines__panel-img--front {
     transition: none;
   }
 }
