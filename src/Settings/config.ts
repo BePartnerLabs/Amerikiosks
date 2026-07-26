@@ -180,6 +180,9 @@ export const Settings: GlobalConfig = {
               admin: {
                 description:
                   'API key for the JotForm submissions API (used by the Claims refund flow). Only visible to logged-in admin users — never exposed in the public Settings API response.',
+                components: {
+                  Field: '@payloadcms/ui#PasswordField',
+                },
               },
             },
             {
@@ -202,6 +205,9 @@ export const Settings: GlobalConfig = {
               admin: {
                 description:
                   'API token for the Monday.com GraphQL API (used by the Claims refund flow). Only visible to logged-in admin users — never exposed in the public Settings API response.',
+                components: {
+                  Field: '@payloadcms/ui#PasswordField',
+                },
               },
             },
             {
