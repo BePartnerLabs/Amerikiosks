@@ -1,7 +1,6 @@
 import config from '@payload-config'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { getLocale } from 'next-intl/server'
 import { getPayload } from 'payload'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { ModelLinesRow } from '@/components/ModelLinesRow'
@@ -18,7 +17,7 @@ import { ModelsCarousel } from './ModelsCarousel'
 import { SpecsCompare } from './SpecsCompare'
 
 type Props = {
-  params: Promise<{ family: string }>
+  params: Promise<{ locale: string; family: string }>
 }
 
 export async function getFamilyBySlug(slug: string, locale: 'en' | 'es') {
@@ -49,8 +48,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { family: familySlug } = await params
-  const locale = (await getLocale()) as 'en' | 'es'
+  const { family: familySlug, locale: rawLocale } = await params
+  const locale = rawLocale as 'en' | 'es'
   const family = await getFamilyBySlug(familySlug, locale)
   if (!family) return {}
 
@@ -67,8 +66,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function FamilyDetailPage({ params }: Props) {
-  const { family: familySlug } = await params
-  const locale = (await getLocale()) as 'en' | 'es'
+  const { family: familySlug, locale: rawLocale } = await params
+  const locale = rawLocale as 'en' | 'es'
   const payload = await getPayload({ config })
 
   const family = await getFamilyBySlug(familySlug, locale)

@@ -10,12 +10,23 @@ import { slugField } from 'payload'
 import { anyone } from '../../access/anyone'
 import { authenticated } from '../../access/authenticated'
 import { link } from '../../fields/link'
+import { generateMachinePreviewPath } from '../../utilities/generateMachinePreviewPath'
 
 export const Machines: CollectionConfig = {
   slug: 'machines',
   admin: {
     defaultColumns: ['name', 'updatedAt'],
     useAsTitle: 'name',
+    livePreview: {
+      url: ({ data, req }) =>
+        generateMachinePreviewPath({ slug: data?.slug, family: data?.family, req }),
+    },
+    preview: (data, { req }) =>
+      generateMachinePreviewPath({
+        slug: data?.slug as string,
+        family: data?.family as number | string | undefined,
+        req,
+      }),
   },
   access: {
     create: authenticated,

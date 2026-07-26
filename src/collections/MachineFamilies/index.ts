@@ -9,6 +9,7 @@ import type { CollectionConfig } from 'payload'
 import { slugField } from 'payload'
 import { anyone } from '../../access/anyone'
 import { authenticated } from '../../access/authenticated'
+import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 
 export const MachineFamilies: CollectionConfig = {
   slug: 'machine-families',
@@ -16,6 +17,20 @@ export const MachineFamilies: CollectionConfig = {
     description: 'Product series/lines (e.g. Alpha, Gamma, Delta) shown on /machines.',
     defaultColumns: ['name', 'updatedAt'],
     useAsTitle: 'name',
+    livePreview: {
+      url: ({ data, req }) =>
+        generatePreviewPath({
+          slug: data?.slug,
+          collection: 'machine-families',
+          req,
+        }),
+    },
+    preview: (data, { req }) =>
+      generatePreviewPath({
+        slug: data?.slug as string,
+        collection: 'machine-families',
+        req,
+      }),
   },
   access: {
     create: authenticated,
