@@ -168,6 +168,14 @@
   padding: var(--bp-space-6, 1.5rem);
 }
 
+.ak-model-lines__panel-eyebrow {
+  font-size: var(--bp-font-size-xs, 0.75rem);
+  font-weight: var(--bp-font-weight-semibold, 600);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--_accent);
+}
+
 .ak-model-lines__panel-name {
   font-size: var(--bp-font-size-xl, 1.375rem);
   font-weight: var(--bp-font-weight-bold, 650);

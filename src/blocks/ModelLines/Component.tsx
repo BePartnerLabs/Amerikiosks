@@ -95,6 +95,9 @@ export const ModelLinesBlock: React.FC<Props> = ({
                     >
                       {family.name}
                     </p>
+                    {family.heroEyebrow && (
+                      <span className="ak-model-lines__panel-eyebrow">{family.heroEyebrow}</span>
+                    )}
                     {family.tagline && (
                       <p className="ak-model-lines__panel-tagline">{family.tagline}</p>
                     )}
