@@ -31,22 +31,31 @@ export const Metrics: Block = {
       },
     },
     {
+      // Localized per-subfield rather than on the array itself: a localized
+      // *array* gets a table keyed on `id` alone while carrying a `_locale`
+      // column, so the same row id can't exist in two locales. With
+      // localization.fallback on, opening an untranslated locale echoes the
+      // source locale's row ids straight back on save and the insert dies on
+      // the primary key. Localizing the leaf fields keeps one shared row per
+      // metric with a child _locales table, which is also what the rows mean
+      // here — the same stat, translated.
       name: 'items',
       type: 'array',
       minRows: 2,
       maxRows: 6,
-      localized: true,
       fields: [
         {
           name: 'value',
           type: 'text',
           required: true,
+          localized: true,
           admin: { description: 'e.g. "10+", "1000+", "30"' },
         },
         {
           name: 'label',
           type: 'text',
           required: true,
+          localized: true,
           admin: { description: 'e.g. "Years of Industry Experience"' },
         },
       ],
