@@ -16,6 +16,7 @@ export const Footer: GlobalConfig = {
       name: 'brandDescription',
       type: 'textarea',
       label: 'Brand description',
+      localized: true,
       admin: { description: 'Short tagline shown below the logo.' },
     },
     {
