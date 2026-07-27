@@ -56,9 +56,11 @@ describe('TrustStripBlock', () => {
     expect(screen.queryByText('WHO WE WORK WITH')).toBeNull()
   })
 
-  it('renders duplicate track for seamless loop', () => {
+  it('renders duplicate tracks for seamless loop in both rows', () => {
     const { container } = render(<TrustStripBlock {...base} />)
+    const rows = container.querySelectorAll('.ak-trust-strip__row')
+    expect(rows).toHaveLength(2)
     const tracks = container.querySelectorAll('.ak-trust-strip__track')
-    expect(tracks).toHaveLength(2)
+    expect(tracks).toHaveLength(4)
   })
 })

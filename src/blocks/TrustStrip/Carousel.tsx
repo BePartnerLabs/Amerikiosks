@@ -17,13 +17,22 @@ type CarouselPartner = {
 // gap becomes visible. Repeating the partner list inside each track (rather
 // than adding more sibling tracks) is what grows a single track's own width.
 const MIN_TRACK_WIDTH_PX = 5120
-const CARD_WIDTH_PX = 188
-const CARD_GAP_PX = 16
+const LOGO_WIDTH_PX = 96
+const LOGO_GAP_PX = 40
+
+// Two independent rows scrolling in opposite directions — a denser, plainer
+// alternative to the single-row bordered-card marquee: no card container,
+// just full-color logos, so it reads as a river of marks rather than a
+// row of tiles.
+const ROWS = [
+  { key: 'row-a', direction: 'forward' as const },
+  { key: 'row-b', direction: 'reverse' as const },
+]
 
 export const TrustStripCarousel: React.FC<{ partners: CarouselPartner[] }> = ({ partners }) => {
   const viewportRef = useRef<HTMLDivElement>(null)
 
-  const singleSetWidth = partners.length * (CARD_WIDTH_PX + CARD_GAP_PX)
+  const singleSetWidth = partners.length * (LOGO_WIDTH_PX + LOGO_GAP_PX)
   const repeatCount = Math.max(1, Math.ceil(MIN_TRACK_WIDTH_PX / singleSetWidth))
   const repeatedPartners = Array.from({ length: repeatCount }, () => partners).flat()
 
@@ -35,27 +44,35 @@ export const TrustStripCarousel: React.FC<{ partners: CarouselPartner[] }> = ({ 
         className="ak-trust-strip__viewport"
         aria-live="off"
       >
-        {[0, 1].map((i) => (
-          <ul
-            key={i}
-            className="ak-trust-strip__track"
-            aria-hidden={i === 1 ? 'true' : undefined}
+        {ROWS.map((row) => (
+          <div
+            key={row.key}
+            className="ak-trust-strip__row"
+            data-direction={row.direction}
           >
-            {repeatedPartners.map((partner, index) => (
-              <li
-                // biome-ignore lint/suspicious/noArrayIndexKey: repeatedPartners repeats the same static partners array N times for the marquee effect — partner.id alone duplicates across repetitions, and the list is never reordered/filtered, so index is a safe disambiguator here, not a list-identity risk.
-                key={`${i}-${partner.id}-${index}`}
-                className="ak-trust-strip__card"
+            {[0, 1].map((i) => (
+              <ul
+                key={i}
+                className="ak-trust-strip__track"
+                aria-hidden={i === 1 || row.key !== 'row-a' ? 'true' : undefined}
               >
-                <Image
-                  src={partner.logoUrl}
-                  alt={partner.name}
-                  width={120}
-                  height={60}
-                />
-              </li>
+                {repeatedPartners.map((partner, index) => (
+                  <li
+                    // biome-ignore lint/suspicious/noArrayIndexKey: repeatedPartners repeats the same static partners array N times for the marquee effect — partner.id alone duplicates across repetitions, and the list is never reordered/filtered, so index is a safe disambiguator here, not a list-identity risk.
+                    key={`${row.key}-${i}-${partner.id}-${index}`}
+                    className="ak-trust-strip__card"
+                  >
+                    <Image
+                      src={partner.logoUrl}
+                      alt={partner.name}
+                      width={96}
+                      height={48}
+                    />
+                  </li>
+                ))}
+              </ul>
             ))}
-          </ul>
+          </div>
         ))}
       </div>
       <TrustStripTracker containerRef={viewportRef} />

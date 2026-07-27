@@ -14,42 +14,53 @@
 
 .ak-trust-strip__viewport {
   display: flex;
-  gap: 0;
-  overflow: hidden;
+  flex-direction: column;
+  gap: var(--md-size-space-24, 1.5rem);
   mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
   -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
 }
 
-.ak-trust-strip__track {
-  --_gap: var(--md-size-space-16);
+/* Each row is its own masked/overflow-hidden strip so the two rows can
+   scroll independently, in opposite directions, at different speeds. */
+.ak-trust-strip__row {
   display: flex;
+  gap: 0;
+  overflow: hidden;
+}
+
+.ak-trust-strip__track {
+  --_gap: var(--md-size-space-40, 2.5rem);
+  display: flex;
+  align-items: center;
   gap: var(--_gap);
   list-style: none;
   margin: 0;
   padding: 0;
   padding-inline-end: var(--_gap);
-  animation: ak-marquee 60s linear infinite;
+  animation: ak-marquee 70s linear infinite;
   flex-shrink: 0;
 }
 
+.ak-trust-strip__row[data-direction="reverse"] .ak-trust-strip__track {
+  animation-name: ak-marquee-reverse;
+  animation-duration: 85s;
+}
+
+/* Plain logos — no card, no border, no background, always full color. Reads
+   as a river of marks rather than a row of tiles. */
 .ak-trust-strip__card {
-  --_background: var(--trust-card-background, var(--ak-brand-card-bg));
-  --_border-color: var(--trust-card-border-color, var(--ak-brand-card-border));
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--_background);
-  border: 1px solid var(--_border-color);
-  border-radius: 0.75rem;
-  padding: 14px;
-  width: 188px;
-  aspect-ratio: 188 / 76;
+  width: 96px;
+  aspect-ratio: 96 / 48;
   flex-shrink: 0;
 }
 
 .ak-trust-strip__card img {
   object-fit: contain;
   max-height: 100%;
+  width: 100%;
 }
 
 .ak-trust-strip__viewport:hover .ak-trust-strip__track,
@@ -84,6 +95,15 @@
   }
 }
 
+@keyframes ak-marquee-reverse {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
 @container trust-strip (max-width: 640px) {
   .ak-trust-strip {
     padding-block: var(--md-size-space-40);
@@ -91,8 +111,12 @@
   }
 
   .ak-trust-strip__track {
-    --_gap: 0.625rem;
+    --_gap: 1.25rem;
     animation-duration: 42s;
+  }
+
+  .ak-trust-strip__row[data-direction="reverse"] .ak-trust-strip__track {
+    animation-duration: 50s;
   }
 }
 
