@@ -26,6 +26,11 @@ function buildColumnValue(type: string | undefined, value: string): unknown {
       return { url: value, text: value }
     case 'email':
       return { email: value, text: value }
+    case 'phone':
+      // Monday requires an ISO country code alongside the number. Every
+      // Amerikiosks form is a US kiosk-placement inquiry, so US is a safe
+      // default — revisit if a form ever collects an international phone.
+      return { phone: value, countryShortName: 'US' }
     default:
       return value
   }

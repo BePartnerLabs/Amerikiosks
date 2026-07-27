@@ -59,7 +59,7 @@ export function detectMondayDrift(
 // of that runtime type-aware value builder, so a mismatch gets caught while
 // editing the form instead of surfacing as a failed submission later.
 const COMPATIBLE_COLUMN_TYPES: Record<string, string[]> = {
-  text: ['text', 'long_text'],
+  text: ['text', 'long_text', 'phone'],
   textarea: ['long_text', 'text'],
   email: ['email', 'text'],
   number: ['numbers', 'text'],
@@ -95,6 +95,14 @@ export function validateMondayColumnId(
   const column = board.columns.find((c) => c.id === columnId)
   if (!column) {
     return `Column id "${columnId}" does not exist on board "${board.name}" — check the columns reference panel and correct it.`
+  }
+
+  // Monday's "name" column is the item's title pseudo-column — it can't be
+  // set through column_values at all (regardless of field type). Point
+  // whoever's configuring this at the actual mechanism instead of just
+  // saying "wrong type."
+  if (column.type === 'name') {
+    return `Column "${column.title}" is Monday's item-name column — it can't be set via a regular field mapping. Set this field's externalId to the literal value "item_name" instead; that's what maps a field's value to the item's title.`
   }
 
   const compatibleTypes = fieldBlockType ? COMPATIBLE_COLUMN_TYPES[fieldBlockType] : undefined
