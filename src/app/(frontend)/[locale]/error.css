@@ -1,0 +1,181 @@
+.ak-error-page {
+  --_bg: var(--ak-bg);
+  --_color: var(--ak-white);
+  background-color: var(--_bg);
+  color: var(--_color);
+  position: relative;
+  min-height: 80dvh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Brand pattern overlays — same as not-found, mirrored so both feel like
+   the same "something's off" family of page rather than two unrelated ones. */
+.ak-error-page::before,
+.ak-error-page::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-repeat: no-repeat;
+  background-size: contain;
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+.ak-error-page::before {
+  left: 0;
+  width: 206px;
+  height: 146px;
+  background-image: url("/brand-patterns/pattern-left.svg");
+  background-position: left center;
+}
+
+.ak-error-page::after {
+  right: 0;
+  width: 266px;
+  height: 146px;
+  background-image: url("/brand-patterns/pattern-right.svg");
+  background-position: right center;
+}
+
+.ak-error-page > .bp-content-grid {
+  width: 100%;
+}
+
+.ak-error-page__inner {
+  position: relative;
+  z-index: 1;
+  padding-block: var(--bp-space-16, 4rem);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--bp-space-6, 1.5rem);
+  max-width: 64ch;
+}
+
+.ak-error-page__code {
+  --_color: var(--ak-accent);
+  font-family: var(--ak-font-base);
+  font-size: clamp(6rem, 20vw, 12rem);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--_color);
+  margin: 0;
+  letter-spacing: -0.04em;
+}
+
+.ak-error-page__heading {
+  --_color: var(--error-page-heading-color, var(--ak-white));
+  margin: 0;
+  font-family: var(--ak-font-base);
+  font-size: clamp(1.5rem, 3vw + 0.5rem, 2.5rem);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--_color);
+}
+
+.ak-error-page__message {
+  --_color: var(--error-page-message-color, color-mix(in srgb, var(--ak-white) 70%, transparent));
+  margin: 0;
+  font-size: var(--bp-text-lg, 1.125rem);
+  line-height: 1.65;
+  color: var(--_color);
+  max-width: 44ch;
+}
+
+.ak-error-page__digest {
+  --_color: var(--error-page-digest-color, color-mix(in srgb, var(--ak-white) 45%, transparent));
+  margin: 0;
+  font-size: var(--bp-text-sm, 0.875rem);
+  font-family: monospace;
+  color: var(--_color);
+}
+
+.ak-error-page__actions {
+  display: flex;
+  gap: var(--bp-space-4, 1rem);
+  flex-wrap: wrap;
+  margin-top: var(--bp-space-2, 0.5rem);
+}
+
+/* bp-btn--outline defaults --outline-color to a dark navy meant for light
+   backgrounds — invisible on this page's dark navy bg. Same Level 2 override
+   pattern the CTA block uses for its own dark section. */
+.ak-error-page__actions .bp-btn--outline {
+  --outline-color: var(--ak-white);
+  --outline-border: 1px solid color-mix(in srgb, var(--ak-white) 35%, transparent);
+}
+
+.ak-error-page__actions .bp-btn--outline:hover {
+  --outline-background: color-mix(in srgb, var(--ak-white) 10%, transparent);
+}
+
+/* Entrance animations — same timing as not-found for a consistent feel. */
+@media (prefers-reduced-motion: no-preference) {
+  .ak-error-page__code {
+    animation: ak-fade-up 500ms ease-out both;
+  }
+
+  .ak-error-page__heading {
+    animation: ak-fade-up 500ms ease-out both;
+    animation-delay: 100ms;
+  }
+
+  .ak-error-page__message {
+    animation: ak-fade-up 500ms ease-out both;
+    animation-delay: 200ms;
+  }
+
+  .ak-error-page__digest {
+    animation: ak-fade-up 500ms ease-out both;
+    animation-delay: 250ms;
+  }
+
+  .ak-error-page__actions {
+    animation: ak-fade-up 500ms ease-out both;
+    animation-delay: 300ms;
+  }
+}
+
+@media (max-width: 40rem) {
+  .ak-error-page::before,
+  .ak-error-page::after {
+    opacity: 0.15;
+    top: auto;
+    transform: none;
+  }
+
+  .ak-error-page::before {
+    bottom: 0;
+    top: auto;
+    width: 120px;
+  }
+
+  .ak-error-page::after {
+    bottom: 0;
+    top: auto;
+    width: 150px;
+  }
+
+  .ak-error-page__inner {
+    align-items: center;
+    text-align: center;
+  }
+
+  .ak-error-page__message {
+    max-width: 100%;
+  }
+
+  .ak-error-page__actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .ak-error-page__actions a,
+  .ak-error-page__actions button {
+    width: 100%;
+    justify-content: center;
+  }
+}
