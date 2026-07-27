@@ -26,6 +26,13 @@
     "message": "La página que buscas no existe.",
     "backHome": "Volver al inicio"
   },
+  "error": {
+    "code": "Ups",
+    "heading": "Algo salió mal",
+    "message": "Tuvimos un problema al cargar esta página. Intentá de nuevo, o volvé al inicio.",
+    "retry": "Intentar de nuevo",
+    "backHome": "Volver al inicio"
+  },
   "consent": {
     "ariaLabel": "Consentimiento de cookies",
     "description": "Usamos cookies para operar este sitio y, con tu permiso, para entender cómo se usa. Las cookies necesarias siempre están activas.",
