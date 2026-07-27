@@ -84,11 +84,18 @@ export const CardGrid: Block = {
       ],
     },
     {
+      // Localized per-subfield rather than on the array itself: a localized
+      // *array* gets a table keyed on `id` alone while carrying a `_locale`
+      // column, so the same row id can't exist in two locales. With
+      // localization.fallback on, opening an untranslated locale echoes the
+      // source locale's row ids straight back on save and the insert dies on
+      // the primary key (see the same fix in blocks/Metrics/config.ts).
+      // Media, icon and the link target stay shared across locales; only the
+      // copy is translated.
       name: 'items',
       type: 'array',
       minRows: 1,
       maxRows: 8,
-      localized: true,
       fields: [
         {
           name: 'media',
@@ -101,6 +108,7 @@ export const CardGrid: Block = {
           name: 'eyebrow',
           type: 'text',
           label: 'Card Eyebrow',
+          localized: true,
           admin: { description: 'Small label above the card title. Used in pillar variant.' },
         },
         {
@@ -109,10 +117,11 @@ export const CardGrid: Block = {
           label: 'Icon',
           admin: { description: 'Icon identifier. Used in icon variant.' },
         },
-        { name: 'title', type: 'text', required: true },
+        { name: 'title', type: 'text', required: true, localized: true },
         {
           name: 'body',
           type: 'richText',
+          localized: true,
           editor: lexicalEditor({
             features: ({ rootFeatures }) => [
               ...rootFeatures,
