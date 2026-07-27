@@ -40,9 +40,17 @@ function buildColumnValues(
 export const dispatchFormSync: CollectionAfterChangeHook = async ({ doc, operation, req }) => {
   if (operation !== 'create' || req.context?.skipFormSync) return doc
 
+  // `doc.form` is a relationship — it arrives as a plain id when the create
+  // request used depth 0, but as the populated Form object when depth > 0
+  // (e.g. the default REST depth). Resolve either shape to a numeric id.
+  const formId =
+    typeof doc.form === 'object' && doc.form !== null
+      ? ((doc.form as { id: number }).id as number)
+      : (doc.form as number)
+
   const form = await req.payload.findByID({
     collection: 'forms',
-    id: doc.form as number,
+    id: formId,
     depth: 0,
     req,
   })
