@@ -59,7 +59,7 @@ export function detectMondayDrift(
 // of that runtime type-aware value builder, so a mismatch gets caught while
 // editing the form instead of surfacing as a failed submission later.
 const COMPATIBLE_COLUMN_TYPES: Record<string, string[]> = {
-  text: ['text', 'long_text'],
+  text: ['text', 'long_text', 'phone'],
   textarea: ['long_text', 'text'],
   email: ['email', 'text'],
   number: ['numbers', 'text'],
@@ -96,6 +96,13 @@ export function validateMondayColumnId(
   if (!column) {
     return `Column id "${columnId}" does not exist on board "${board.name}" — check the columns reference panel and correct it.`
   }
+
+  // Monday's "name" column is the item's title pseudo-column: it can't be
+  // written through column_values at all, whatever the field type. Mapping a
+  // field to it is still valid and useful though — dispatchFormSync routes
+  // that field's value to create_item's item_name instead of a column — so
+  // this passes rather than blocking the save.
+  if (column.type === 'name') return true
 
   const compatibleTypes = fieldBlockType ? COMPATIBLE_COLUMN_TYPES[fieldBlockType] : undefined
   if (compatibleTypes && !compatibleTypes.includes(column.type)) {

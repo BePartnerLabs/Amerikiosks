@@ -9,7 +9,11 @@ const cache: MondayBoardsCache = {
       id: '4042731281',
       name: 'Contact Us - AK',
       groups: [],
-      columns: [{ id: 'email', title: 'Email', type: 'email' }],
+      columns: [
+        { id: 'email', title: 'Email', type: 'email' },
+        { id: 'phone', title: 'Phone', type: 'phone' },
+        { id: 'name', title: 'Name', type: 'name' },
+      ],
     },
   ],
 }
@@ -60,5 +64,13 @@ describe('validateMondayColumnId', () => {
 
   it('fails open for a blockType with no known compatibility list', () => {
     expect(validateMondayColumnId('email', '4042731281', cache, 'unknown-type')).toBe(true)
+  })
+
+  it('passes a "phone" column for a "text" field', () => {
+    expect(validateMondayColumnId('phone', '4042731281', cache, 'text')).toBe(true)
+  })
+
+  it("passes Monday's name pseudo-column, which maps to the item title rather than a column", () => {
+    expect(validateMondayColumnId('name', '4042731281', cache, 'text')).toBe(true)
   })
 })

@@ -180,6 +180,49 @@ describe('dispatchFormSync', () => {
     )
   })
 
+  it('builds a {phone, countryShortName} value for a "phone" column', async () => {
+    findByIDMock.mockResolvedValue(baseForm)
+    findGlobalMock.mockResolvedValue({
+      mondayApiToken: 'test-token',
+      mondayBoardsCache: {
+        syncedAt: '2026-01-01T00:00:00.000Z',
+        boards: [
+          {
+            id: '4024476985',
+            name: 'Board',
+            groups: [],
+            columns: [{ id: 'text0', title: 'Phone', type: 'phone' }],
+          },
+        ],
+      },
+    })
+    submitMock.mockResolvedValue({ id: '999' })
+
+    const { dispatchFormSync } = await import(
+      '@/collections/FormSubmissions/hooks/dispatchFormSync'
+    )
+    await dispatchFormSync({
+      doc: {
+        id: 1,
+        form: 10,
+        submissionData: [
+          { field: 'contact-name', value: 'Jane Doe' },
+          { field: 'property-name', value: '555-0100' },
+        ],
+      },
+      operation: 'create',
+      req: fakeReq(),
+    } as never)
+
+    expect(submitMock).toHaveBeenCalledWith(
+      '4024476985',
+      'topics',
+      'Jane Doe',
+      { text0: { phone: '555-0100', countryShortName: 'US' } },
+      'test-token',
+    )
+  })
+
   it('fetches and attaches uploaded files to their mapped Monday column', async () => {
     findByIDMock.mockImplementation(async ({ collection }: { collection: string }) => {
       if (collection === 'forms') return baseForm
@@ -311,6 +354,44 @@ describe('dispatchFormSync', () => {
       expect.objectContaining({
         data: expect.objectContaining({ syncStatus: 'synced' }),
       }),
+    )
+  })
+
+  it('treats a raw "name" externalId as the item title, same as "item_name"', async () => {
+    findByIDMock.mockResolvedValue({
+      ...baseForm,
+      fields: [
+        { name: 'contact-name', externalId: 'name' },
+        { name: 'property-name', externalId: 'text0' },
+      ],
+    })
+    findGlobalMock.mockResolvedValue({ mondayApiToken: 'test-token' })
+    submitMock.mockResolvedValue({ id: '999' })
+
+    const { dispatchFormSync } = await import(
+      '@/collections/FormSubmissions/hooks/dispatchFormSync'
+    )
+    await dispatchFormSync({
+      doc: {
+        id: 1,
+        form: 10,
+        submissionData: [
+          { field: 'contact-name', value: 'Jane Doe' },
+          { field: 'property-name', value: 'Grand Hotel' },
+        ],
+      },
+      operation: 'create',
+      req: fakeReq(),
+    } as never)
+
+    // "Jane Doe" becomes the item title, and no "name" key leaks into
+    // column_values — Monday rejects writes to that pseudo-column.
+    expect(submitMock).toHaveBeenCalledWith(
+      '4024476985',
+      'topics',
+      'Jane Doe',
+      { text0: 'Grand Hotel' },
+      'test-token',
     )
   })
 
