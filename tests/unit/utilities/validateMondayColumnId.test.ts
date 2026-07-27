@@ -70,9 +70,7 @@ describe('validateMondayColumnId', () => {
     expect(validateMondayColumnId('phone', '4042731281', cache, 'text')).toBe(true)
   })
 
-  it('returns a dedicated message steering toward "item_name" for Monday\'s name pseudo-column', () => {
-    const result = validateMondayColumnId('name', '4042731281', cache, 'text')
-    expect(result).not.toBe(true)
-    expect(result).toContain('item_name')
+  it("passes Monday's name pseudo-column, which maps to the item title rather than a column", () => {
+    expect(validateMondayColumnId('name', '4042731281', cache, 'text')).toBe(true)
   })
 })

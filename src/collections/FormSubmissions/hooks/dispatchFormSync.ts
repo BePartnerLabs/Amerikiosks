@@ -6,11 +6,14 @@ type FormField = { name?: string; externalId?: string; blockType?: string }
 type SubmissionDataItem = { field: string; value: unknown }
 type SubmissionUploadItem = { field: string; value: Array<{ value: number | string }> }
 
-// Special-case externalId value on a field: whichever submitted field is
-// tagged this way becomes the Monday item's title (create_item's
-// item_name) instead of a regular column. Falls back to
-// "<form title> — submission #<id>" when no field uses it.
-const ITEM_NAME_EXTERNAL_ID = 'item_name'
+// Whichever submitted field carries one of these externalIds becomes the
+// Monday item's title (create_item's item_name) instead of a regular
+// column; falls back to "<form title> — submission #<id>" when none does.
+// `name` is accepted alongside the explicit `item_name` sentinel because
+// that is the real column id Monday shows for the title column, so it is
+// what an editor naturally copies out of the columns reference panel —
+// and it cannot collide with a regular column, since Monday reserves it.
+const ITEM_NAME_EXTERNAL_IDS = new Set(['item_name', 'name'])
 
 // Monday's column_values shape depends on the target column's type — a
 // plain "text" column rejects the {"text": "..."} wrapper (that's only
@@ -58,7 +61,7 @@ function buildColumnValues(
   for (const { field, value } of submissionData) {
     const externalId = externalIdByFieldName.get(field)
     if (!externalId) continue
-    if (externalId === ITEM_NAME_EXTERNAL_ID) {
+    if (ITEM_NAME_EXTERNAL_IDS.has(externalId)) {
       itemName = String(value)
       continue
     }

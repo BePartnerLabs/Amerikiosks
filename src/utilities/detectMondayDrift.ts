@@ -97,13 +97,12 @@ export function validateMondayColumnId(
     return `Column id "${columnId}" does not exist on board "${board.name}" — check the columns reference panel and correct it.`
   }
 
-  // Monday's "name" column is the item's title pseudo-column — it can't be
-  // set through column_values at all (regardless of field type). Point
-  // whoever's configuring this at the actual mechanism instead of just
-  // saying "wrong type."
-  if (column.type === 'name') {
-    return `Column "${column.title}" is Monday's item-name column — it can't be set via a regular field mapping. Set this field's externalId to the literal value "item_name" instead; that's what maps a field's value to the item's title.`
-  }
+  // Monday's "name" column is the item's title pseudo-column: it can't be
+  // written through column_values at all, whatever the field type. Mapping a
+  // field to it is still valid and useful though — dispatchFormSync routes
+  // that field's value to create_item's item_name instead of a column — so
+  // this passes rather than blocking the save.
+  if (column.type === 'name') return true
 
   const compatibleTypes = fieldBlockType ? COMPATIBLE_COLUMN_TYPES[fieldBlockType] : undefined
   if (compatibleTypes && !compatibleTypes.includes(column.type)) {
