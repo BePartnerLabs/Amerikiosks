@@ -47,6 +47,7 @@ import * as migration_20260726_164753_add_machine_specs_and_capability_images fr
 import * as migration_20260726_170546_add_family_hero_fields from './20260726_170546_add_family_hero_fields';
 import * as migration_20260726_174801_machine_cta_link_field from './20260726_174801_machine_cta_link_field';
 import * as migration_20260726_230615_machine_hover_images from './20260726_230615_machine_hover_images';
+import * as migration_20260727_212156_footer_brand_description_localized from './20260727_212156_footer_brand_description_localized';
 import * as migration_20260727_215724_metrics_items_localize_subfields from './20260727_215724_metrics_items_localize_subfields';
 
 export const migrations = [
@@ -294,6 +295,11 @@ export const migrations = [
     up: migration_20260726_230615_machine_hover_images.up,
     down: migration_20260726_230615_machine_hover_images.down,
     name: '20260726_230615_machine_hover_images',
+  },
+  {
+    up: migration_20260727_212156_footer_brand_description_localized.up,
+    down: migration_20260727_212156_footer_brand_description_localized.down,
+    name: '20260727_212156_footer_brand_description_localized'
   },
   {
     up: migration_20260727_215724_metrics_items_localize_subfields.up,
