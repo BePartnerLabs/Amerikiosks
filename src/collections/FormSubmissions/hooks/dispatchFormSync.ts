@@ -1,5 +1,5 @@
 import type { CollectionAfterChangeHook } from 'payload'
-import { GenericMondayRepository } from '@/repositories/GenericMondayRepository'
+import { GenericMondayRepository, MondayApiError } from '@/repositories/GenericMondayRepository'
 import type { MondayBoardsCache } from '@/utilities/detectMondayDrift'
 
 type FormField = { name?: string; externalId?: string; blockType?: string }
@@ -35,7 +35,11 @@ function buildColumnValues(
   formFields: FormField[],
   submissionData: SubmissionDataItem[],
   columnTypeById: Map<string, string>,
-): { itemName: string | undefined; columnValues: Record<string, unknown> } {
+): {
+  itemName: string | undefined
+  columnValues: Record<string, unknown>
+  rawValueById: Map<string, string>
+} {
   const externalIdByFieldName = new Map(
     formFields
       .filter((f) => f.name && f.externalId)
@@ -44,6 +48,7 @@ function buildColumnValues(
 
   let itemName: string | undefined
   const columnValues: Record<string, unknown> = {}
+  const rawValueById = new Map<string, string>()
 
   for (const { field, value } of submissionData) {
     const externalId = externalIdByFieldName.get(field)
@@ -52,10 +57,38 @@ function buildColumnValues(
       itemName = String(value)
       continue
     }
-    columnValues[externalId] = buildColumnValue(columnTypeById.get(externalId), String(value))
+    const rawValue = String(value)
+    rawValueById.set(externalId, rawValue)
+    columnValues[externalId] = buildColumnValue(columnTypeById.get(externalId), rawValue)
   }
 
-  return { itemName, columnValues }
+  return { itemName, columnValues, rawValueById }
+}
+
+// Monday's error_data.column_type is ground truth straight from the live
+// board — more reliable than mondayBoardsCache, which is only ever as
+// fresh as the last manual sync (Settings -> Monday.com -> Sync boards).
+// Rebuild just the columns Monday complained about using their real type,
+// so a submission self-heals from cache drift instead of failing outright.
+function correctColumnValuesFromError(
+  columnValues: Record<string, unknown>,
+  rawValueById: Map<string, string>,
+  err: MondayApiError,
+): Record<string, unknown> | null {
+  let corrected: Record<string, unknown> | null = null
+
+  for (const gqlError of err.errors) {
+    if (gqlError.extensions?.code !== 'ColumnValueException') continue
+    const columnId = gqlError.extensions.error_data?.column_id
+    const columnType = gqlError.extensions.error_data?.column_type
+    const rawValue = columnId ? rawValueById.get(columnId) : undefined
+    if (!columnId || !columnType || rawValue === undefined) continue
+
+    corrected ??= { ...columnValues }
+    corrected[columnId] = buildColumnValue(columnType, rawValue)
+  }
+
+  return corrected
 }
 
 export const dispatchFormSync: CollectionAfterChangeHook = async ({ doc, operation, req }) => {
@@ -112,19 +145,40 @@ export const dispatchFormSync: CollectionAfterChangeHook = async ({ doc, operati
     const columnTypeById = new Map((board?.columns ?? []).map((c) => [c.id, c.type]))
 
     const formFields = (form.fields ?? []) as FormField[]
-    const { itemName, columnValues } = buildColumnValues(
+    const { itemName, columnValues, rawValueById } = buildColumnValues(
       formFields,
       (doc.submissionData ?? []) as SubmissionDataItem[],
       columnTypeById,
     )
 
-    const { id: itemId } = await GenericMondayRepository.submit(
-      boardId,
-      groupId,
-      itemName ?? `${form.title} — submission #${doc.id}`,
-      columnValues,
-      apiToken,
-    )
+    const resolvedItemName = itemName ?? `${form.title} — submission #${doc.id}`
+
+    let itemId: string
+    try {
+      ;({ id: itemId } = await GenericMondayRepository.submit(
+        boardId,
+        groupId,
+        resolvedItemName,
+        columnValues,
+        apiToken,
+      ))
+    } catch (err) {
+      if (!(err instanceof MondayApiError)) throw err
+
+      const corrected = correctColumnValuesFromError(columnValues, rawValueById, err)
+      if (!corrected) throw err
+
+      req.payload.logger.warn(
+        `dispatchFormSync: retrying submission ${doc.id} with column types from Monday's own error response (mondayBoardsCache may be stale — consider re-syncing it)`,
+      )
+      ;({ id: itemId } = await GenericMondayRepository.submit(
+        boardId,
+        groupId,
+        resolvedItemName,
+        corrected,
+        apiToken,
+      ))
+    }
 
     // Uploads live in submissionUploads (media relationships), not
     // submissionData — see the plugin's handleUploads.js. Fetch each

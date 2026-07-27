@@ -53,17 +53,38 @@ export function detectMondayDrift(
   return { boardFound: true, missingColumnIds }
 }
 
+// Which Monday column types a given form field block can sync into without
+// GenericMondayRepository.buildColumnValue producing a shape Monday
+// rejects (see dispatchFormSync.ts) — this is the config-time counterpart
+// of that runtime type-aware value builder, so a mismatch gets caught while
+// editing the form instead of surfacing as a failed submission later.
+const COMPATIBLE_COLUMN_TYPES: Record<string, string[]> = {
+  text: ['text', 'long_text'],
+  textarea: ['long_text', 'text'],
+  email: ['email', 'text'],
+  number: ['numbers', 'text'],
+  select: ['status', 'dropdown', 'text'],
+  checkbox: ['checkbox'],
+  country: ['country', 'dropdown', 'text'],
+  state: ['dropdown', 'text'],
+  upload: ['file'],
+}
+
 /**
  * Validates a single field's Monday column id against the selected board's
- * cached columns. Fails open (returns true) whenever we can't be confident
- * about the answer — no board selected yet, no cache synced, or the board
- * itself isn't in the cache — so this only ever blocks save on a case we're
- * sure is wrong, per the same reasoning as detectMondayDrift.
+ * cached columns — both that the id still exists, and (when a field
+ * blockType is known) that the column's type is one this field can
+ * actually sync into. Fails open (returns true) whenever we can't be
+ * confident about the answer — no board selected yet, no cache synced, the
+ * board itself isn't in the cache, or the blockType has no known
+ * compatibility list — so this only ever blocks save on a case we're sure
+ * is wrong, per the same reasoning as detectMondayDrift.
  */
 export function validateMondayColumnId(
   columnId: string | null | undefined,
   boardId: string | null | undefined,
   cache: MondayBoardsCache | null | undefined,
+  fieldBlockType?: string,
 ): string | true {
   if (!columnId) return true
   if (!boardId || !cache) return true
@@ -71,8 +92,15 @@ export function validateMondayColumnId(
   const board = cache.boards.find((b) => b.id === boardId)
   if (!board) return true
 
-  const validColumnIds = new Set(board.columns.map((c) => c.id))
-  if (validColumnIds.has(columnId)) return true
+  const column = board.columns.find((c) => c.id === columnId)
+  if (!column) {
+    return `Column id "${columnId}" does not exist on board "${board.name}" — check the columns reference panel and correct it.`
+  }
 
-  return `Column id "${columnId}" does not exist on board "${board.name}" — check the columns reference panel and correct it.`
+  const compatibleTypes = fieldBlockType ? COMPATIBLE_COLUMN_TYPES[fieldBlockType] : undefined
+  if (compatibleTypes && !compatibleTypes.includes(column.type)) {
+    return `Column "${column.title}" is a "${column.type}" column on Monday, which a "${fieldBlockType}" field can't sync into cleanly — pick a ${compatibleTypes.join('/')} column instead, or change this field's type.`
+  }
+
+  return true
 }

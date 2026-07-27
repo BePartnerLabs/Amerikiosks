@@ -2,16 +2,40 @@ import { serverHttpClient } from './clients/ServerHttpClient'
 
 const MONDAY_API_URL = 'https://api.monday.com/v2'
 
+export type MondayGraphQLError = {
+  message: string
+  extensions?: {
+    code?: string
+    error_data?: {
+      column_id?: string
+      column_type?: string
+      column_name?: string
+    }
+  }
+}
+
 type MondayResponse = {
   data?: Record<string, unknown>
-  errors?: Array<{ message: string }>
+  errors?: MondayGraphQLError[]
+}
+
+// Carries the raw, typed error array (not just a stringified message) so
+// callers can react to specific failures — e.g. dispatchFormSync retries a
+// ColumnValueException using the real column_type Monday reports, since
+// the cached board schema it built the value from can drift out of date.
+export class MondayApiError extends Error {
+  errors: MondayGraphQLError[]
+
+  constructor(errors: MondayGraphQLError[]) {
+    super(`GenericMondayRepository: Monday API returned errors: ${JSON.stringify(errors)}`)
+    this.name = 'MondayApiError'
+    this.errors = errors
+  }
 }
 
 function assertNoGraphQLErrors(body: MondayResponse): void {
   if (body.errors?.length) {
-    throw new Error(
-      `GenericMondayRepository: Monday API returned errors: ${JSON.stringify(body.errors)}`,
-    )
+    throw new MondayApiError(body.errors)
   }
 }
 
