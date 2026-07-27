@@ -1,4 +1,5 @@
 import type { Machine, Media } from '@/payload-types'
+import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 import { getMediaUrl } from '@/utilities/getMediaUrl'
 import { RotationScrubHero } from './RotationScrubHero'
 import { ZoomFadeHero } from './ZoomFadeHero'
@@ -10,7 +11,7 @@ type Props = {
 
 export const MachineHero: React.FC<Props> = ({ machine }) => {
   const image = typeof machine.image === 'object' ? (machine.image as Media) : null
-  const imageUrl = getMediaUrl(image?.url)
+  const imageUrl = getMediaUrl(getBestMediaUrl(image, 1800) ?? image?.url)
   const brochure = typeof machine.brochure === 'object' ? (machine.brochure as Media) : null
 
   const frameUrls =
@@ -18,7 +19,7 @@ export const MachineHero: React.FC<Props> = ({ machine }) => {
       ? (machine.rotationFrames
           .map((f) => {
             const media = typeof f.image === 'object' ? (f.image as Media) : null
-            return getMediaUrl(media?.url)
+            return getMediaUrl(getBestMediaUrl(media, 1800) ?? media?.url)
           })
           .filter(Boolean) as string[])
       : []

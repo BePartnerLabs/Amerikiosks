@@ -7,6 +7,7 @@ import type {
   Media,
   Page,
 } from '@/payload-types'
+import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 import { toSnakeCase } from '@/utilities/toSnakeCase'
 import './styles.css'
 
@@ -68,7 +69,7 @@ export const AudienceShowcaseBlock: React.FC<AudienceShowcaseBlockProps> = ({
                   >
                     <div className="ak-audience-showcase__card-photo">
                       <Image
-                        src={item.image.url ?? ''}
+                        src={getBestMediaUrl(item.image, 600) ?? item.image.url ?? ''}
                         alt={item.image.alt ?? title}
                         fill
                         className="ak-audience-showcase__card-img"

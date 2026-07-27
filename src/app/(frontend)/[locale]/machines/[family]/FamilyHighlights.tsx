@@ -2,6 +2,7 @@ import Image from 'next/image'
 import '@/blocks/InsightsShowcase/styles.css'
 import { SectionHeader } from '@/components/SectionHeader'
 import type { MachineFamily, Media } from '@/payload-types'
+import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 
 type Props = {
   highlights: NonNullable<MachineFamily['highlights']>
@@ -44,7 +45,7 @@ export const FamilyHighlights: React.FC<Props> = ({ highlights }) => {
                   {image?.url && (
                     <div className="ak-insights-showcase__featured-img-wrap">
                       <Image
-                        src={image.url}
+                        src={getBestMediaUrl(image, 900) ?? image.url}
                         alt=""
                         fill
                         className="ak-insights-showcase__featured-img"

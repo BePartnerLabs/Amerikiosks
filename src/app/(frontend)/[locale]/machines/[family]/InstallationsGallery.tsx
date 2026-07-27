@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import type { MachineInstallation, Media, Partner } from '@/payload-types'
+import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 
 type Props = {
   installations: MachineInstallation[]
@@ -34,7 +35,7 @@ export const InstallationsGallery: React.FC<Props> = ({ installations }) => {
                   {photo?.url && (
                     <div className="ak-family-detail__installation-photo">
                       <Image
-                        src={photo.url}
+                        src={getBestMediaUrl(photo, 600) ?? photo.url}
                         alt={client?.name ?? ''}
                         fill
                         className="ak-family-detail__installation-img"
@@ -46,7 +47,7 @@ export const InstallationsGallery: React.FC<Props> = ({ installations }) => {
                     {logo?.url && (
                       <div className="ak-family-detail__installation-logo">
                         <Image
-                          src={logo.url}
+                          src={getBestMediaUrl(logo, 150) ?? logo.url}
                           alt={client?.name ?? ''}
                           fill
                           className="ak-family-detail__installation-logo-img"

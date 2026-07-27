@@ -7,6 +7,7 @@ import type React from 'react'
 import { Icon } from '@/components/Icon'
 import { SectionHeader } from '@/components/SectionHeader'
 import type { InsightsShowcaseBlock as InsightsShowcaseBlockProps, Media } from '@/payload-types'
+import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 import { toSnakeCase } from '@/utilities/toSnakeCase'
 import './styles.css'
 
@@ -69,7 +70,7 @@ export const InsightsShowcaseBlock: React.FC<InsightsShowcaseBlockProps> = async
             {heroImg?.url && (
               <div className="ak-insights-showcase__featured-img-wrap">
                 <Image
-                  src={heroImg.url}
+                  src={getBestMediaUrl(heroImg, 900) ?? heroImg.url}
                   alt={heroImg.alt ?? featured.title}
                   fill
                   className="ak-insights-showcase__featured-img"
@@ -117,7 +118,7 @@ export const InsightsShowcaseBlock: React.FC<InsightsShowcaseBlockProps> = async
                     {img?.url && (
                       <div className="bp-card__image">
                         <Image
-                          src={img.url}
+                          src={getBestMediaUrl(img, 600) ?? img.url}
                           alt={img.alt ?? insight.title}
                           fill
                           className=""

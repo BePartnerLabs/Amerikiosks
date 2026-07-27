@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { Link } from '@/i18n/routing'
 import type { MachineFamily, Media } from '@/payload-types'
+import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 import './styles.css'
 
 type Props = {
@@ -33,7 +34,7 @@ export const ModelLinesRow: React.FC<Props> = ({ families, activeSlug, locale })
             {thumbnail?.url && (
               <div className="ak-model-lines-row__thumb">
                 <Image
-                  src={thumbnail.url}
+                  src={getBestMediaUrl(thumbnail, 200) ?? thumbnail.url}
                   alt={family.name}
                   fill
                   className="ak-model-lines-row__img"

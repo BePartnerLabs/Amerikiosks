@@ -3,6 +3,7 @@ import { ModelLinesCarousel } from '@/blocks/ModelLines/CarouselNav'
 import '@/blocks/ModelLines/styles.css'
 import { Link } from '@/i18n/routing'
 import type { Machine, Media } from '@/payload-types'
+import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 import { vtName } from '@/utilities/viewTransitionName'
 
 type Props = {
@@ -51,7 +52,7 @@ export const ModelsCarousel: React.FC<Props> = ({ familySlug, models, locale }) 
                       style={vtName('machine-image', machine.slug)}
                     >
                       <Image
-                        src={image.url}
+                        src={getBestMediaUrl(image, 500) ?? image.url}
                         alt=""
                         fill
                         className="ak-model-lines__panel-img ak-model-lines__panel-img--front"
@@ -59,7 +60,7 @@ export const ModelsCarousel: React.FC<Props> = ({ familySlug, models, locale }) 
                       />
                       {hoverImage?.url && (
                         <Image
-                          src={hoverImage.url}
+                          src={getBestMediaUrl(hoverImage, 500) ?? hoverImage.url}
                           alt=""
                           fill
                           className="ak-model-lines__panel-img ak-model-lines__panel-img--hover"

@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import type { Machine, Media } from '@/payload-types'
+import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 
 type Props = {
   diagrams: NonNullable<Machine['dimensionDiagrams']>
@@ -26,7 +27,7 @@ export const Dimensions: React.FC<Props> = ({ diagrams, dimensions }) => {
                 >
                   <div className="ak-machine-detail__dimensions-diagram-image">
                     <Image
-                      src={image.url}
+                      src={getBestMediaUrl(image, 900) ?? image.url}
                       alt={diagram.label ?? ''}
                       fill
                       className="ak-machine-detail__dimensions-diagram-img"

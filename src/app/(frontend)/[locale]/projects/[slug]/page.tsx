@@ -11,6 +11,7 @@ import RichText from '@/components/RichText'
 import { routing } from '@/i18n/routing'
 import type { Media } from '@/payload-types'
 import { generateMeta } from '@/utilities/generateMeta'
+import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 import PageClient from './page.client'
 
 export async function generateStaticParams() {
@@ -66,7 +67,7 @@ export default async function ProjectPage({ params: paramsPromise }: Args) {
       {heroImg?.url && (
         <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9' }}>
           <Image
-            src={heroImg.url}
+            src={getBestMediaUrl(heroImg, 1800) ?? heroImg.url}
             alt={heroImg.alt ?? project.title}
             fill
             priority
