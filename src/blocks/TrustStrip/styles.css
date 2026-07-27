@@ -25,7 +25,11 @@
 .ak-trust-strip__row {
   display: flex;
   gap: 0;
-  overflow: hidden;
+  /* Clip horizontally for the marquee loop, but let a hovered logo's zoom
+     bleed vertically instead of getting cropped by the row's own height. */
+  overflow-x: hidden;
+  overflow-y: visible;
+  padding-block: var(--md-size-space-8, 0.5rem);
 }
 
 .ak-trust-strip__track {
@@ -47,20 +51,46 @@
 }
 
 /* Plain logos — no card, no border, no background, always full color. Reads
-   as a river of marks rather than a row of tiles. */
+   as a river of marks rather than a row of tiles. Smaller at rest, with room
+   reserved below (always, so hovering one card never reflows its neighbors)
+   for the name label that fades in on hover/focus. */
 .ak-trust-strip__card {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  width: 96px;
-  aspect-ratio: 96 / 48;
+  justify-content: flex-start;
+  gap: var(--md-size-space-8, 0.5rem);
+  width: 64px;
   flex-shrink: 0;
 }
 
 .ak-trust-strip__card img {
   object-fit: contain;
-  max-height: 100%;
   width: 100%;
+  height: 32px;
+  transition: transform 0.25s ease;
+}
+
+.ak-trust-strip__card:hover img,
+.ak-trust-strip__card:focus-within img {
+  transform: scale(1.35);
+}
+
+.ak-trust-strip__card-name {
+  font-size: var(--bp-font-size-xs, 0.75rem);
+  color: var(--bp-color-text-muted);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(-0.25rem);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.ak-trust-strip__card:hover .ak-trust-strip__card-name,
+.ak-trust-strip__card:focus-within .ak-trust-strip__card-name {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .ak-trust-strip__viewport:hover .ak-trust-strip__track,
