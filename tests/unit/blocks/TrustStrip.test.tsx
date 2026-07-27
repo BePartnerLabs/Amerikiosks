@@ -56,9 +56,30 @@ describe('TrustStripBlock', () => {
     expect(screen.queryByText('WHO WE WORK WITH')).toBeNull()
   })
 
-  it('renders duplicate track for seamless loop', () => {
+  it('renders a single row with a duplicate track when partner count fits one line', () => {
     const { container } = render(<TrustStripBlock {...base} />)
+    const rows = container.querySelectorAll('.ak-trust-strip__row')
+    expect(rows).toHaveLength(1)
     const tracks = container.querySelectorAll('.ak-trust-strip__track')
     expect(tracks).toHaveLength(2)
+  })
+
+  it('splits into two rows once partner count exceeds the per-row max', () => {
+    const manyPartners: TrustStripPartner[] = Array.from({ length: 20 }, (_, i) => ({
+      id: i + 1,
+      name: `Partner ${i + 1}`,
+      logo: { url: `/partner-${i + 1}.png`, alt: `Partner ${i + 1}` },
+      order: i + 1,
+    }))
+    const { container } = render(
+      <TrustStripBlock
+        {...base}
+        partners={manyPartners}
+      />,
+    )
+    const rows = container.querySelectorAll('.ak-trust-strip__row')
+    expect(rows).toHaveLength(2)
+    const tracks = container.querySelectorAll('.ak-trust-strip__track')
+    expect(tracks).toHaveLength(4)
   })
 })
