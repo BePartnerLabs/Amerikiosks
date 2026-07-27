@@ -42,4 +42,23 @@ describe('validateMondayColumnId', () => {
     expect(result).toContain('deleted_col')
     expect(result).toContain('Contact Us - AK')
   })
+
+  it('passes when no fieldBlockType is given, even for a mismatched column type', () => {
+    expect(validateMondayColumnId('email', '4042731281', cache)).toBe(true)
+  })
+
+  it('passes when the column type is compatible with the field blockType', () => {
+    expect(validateMondayColumnId('email', '4042731281', cache, 'email')).toBe(true)
+  })
+
+  it('returns an error when the column type is incompatible with the field blockType', () => {
+    const result = validateMondayColumnId('email', '4042731281', cache, 'number')
+    expect(result).not.toBe(true)
+    expect(result).toContain('email')
+    expect(result).toContain('number')
+  })
+
+  it('fails open for a blockType with no known compatibility list', () => {
+    expect(validateMondayColumnId('email', '4042731281', cache, 'unknown-type')).toBe(true)
+  })
 })

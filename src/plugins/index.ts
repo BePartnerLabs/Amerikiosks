@@ -8,6 +8,7 @@ import type { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import { s3Storage } from '@payloadcms/storage-s3'
 import type { Plugin, TextFieldValidation } from 'payload'
+import { resyncEndpoint } from '@/collections/FormSubmissions/endpoints/resync'
 import { dispatchFormSync } from '@/collections/FormSubmissions/hooks/dispatchFormSync'
 import { revalidateRedirects } from '@/hooks/revalidateRedirects'
 import type { Insight, Machine, Page, Project } from '@/payload-types'
@@ -142,6 +143,7 @@ export const plugins: Plugin[] = [
                   value,
                   boardId,
                   settings.mondayBoardsCache as MondayBoardsCache | undefined,
+                  block.slug,
                 )
               }) as TextFieldValidation,
             })
@@ -222,6 +224,18 @@ export const plugins: Plugin[] = [
       },
     },
     formSubmissionOverrides: {
+      admin: {
+        components: {
+          beforeListTable: [
+            '@/collections/FormSubmissions/components/ResyncListButton#ResyncListButton',
+          ],
+          edit: {
+            beforeDocumentControls: [
+              '@/collections/FormSubmissions/components/ResyncDocButton#ResyncDocButton',
+            ],
+          },
+        },
+      },
       fields: ({ defaultFields }) => [
         ...defaultFields,
         {
@@ -258,6 +272,7 @@ export const plugins: Plugin[] = [
       hooks: {
         afterChange: [dispatchFormSync],
       },
+      endpoints: [resyncEndpoint],
     },
   }),
   searchPlugin({
