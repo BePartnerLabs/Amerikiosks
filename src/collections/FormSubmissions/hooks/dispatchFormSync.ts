@@ -1,5 +1,6 @@
 import type { CollectionAfterChangeHook } from 'payload'
 import { GenericMondayRepository } from '@/repositories/GenericMondayRepository'
+import type { MondayBoardsCache } from '@/utilities/detectMondayDrift'
 
 type FormField = { name?: string; externalId?: string; blockType?: string }
 type SubmissionDataItem = { field: string; value: unknown }
@@ -11,9 +12,29 @@ type SubmissionUploadItem = { field: string; value: Array<{ value: number | stri
 // "<form title> — submission #<id>" when no field uses it.
 const ITEM_NAME_EXTERNAL_ID = 'item_name'
 
+// Monday's column_values shape depends on the target column's type — a
+// plain "text" column rejects the {"text": "..."} wrapper (that's only
+// valid for a handful of richer types), so build the value per column type
+// from the cached board schema rather than assuming one shape for every
+// column. Falls back to a plain string for "text"/"numbers"/unknown types,
+// which covers everything except the handful listed here.
+function buildColumnValue(type: string | undefined, value: string): unknown {
+  switch (type) {
+    case 'long_text':
+      return { text: value }
+    case 'link':
+      return { url: value, text: value }
+    case 'email':
+      return { email: value, text: value }
+    default:
+      return value
+  }
+}
+
 function buildColumnValues(
   formFields: FormField[],
   submissionData: SubmissionDataItem[],
+  columnTypeById: Map<string, string>,
 ): { itemName: string | undefined; columnValues: Record<string, unknown> } {
   const externalIdByFieldName = new Map(
     formFields
@@ -31,7 +52,7 @@ function buildColumnValues(
       itemName = String(value)
       continue
     }
-    columnValues[externalId] = { text: String(value) }
+    columnValues[externalId] = buildColumnValue(columnTypeById.get(externalId), String(value))
   }
 
   return { itemName, columnValues }
@@ -86,10 +107,15 @@ export const dispatchFormSync: CollectionAfterChangeHook = async ({ doc, operati
     const settings = await req.payload.findGlobal({ slug: 'settings', req })
     const apiToken = settings.mondayApiToken ?? ''
 
+    const boardsCache = settings.mondayBoardsCache as MondayBoardsCache | undefined
+    const board = boardsCache?.boards.find((b) => b.id === boardId)
+    const columnTypeById = new Map((board?.columns ?? []).map((c) => [c.id, c.type]))
+
     const formFields = (form.fields ?? []) as FormField[]
     const { itemName, columnValues } = buildColumnValues(
       formFields,
       (doc.submissionData ?? []) as SubmissionDataItem[],
+      columnTypeById,
     )
 
     const { id: itemId } = await GenericMondayRepository.submit(

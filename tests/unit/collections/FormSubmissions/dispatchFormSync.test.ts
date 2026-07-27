@@ -112,13 +112,56 @@ describe('dispatchFormSync', () => {
       '4024476985',
       'topics',
       'Jane Doe',
-      { text0: { text: 'Grand Hotel' } },
+      { text0: 'Grand Hotel' },
       'test-token',
     )
     expect(updateMock).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({ syncStatus: 'synced' }),
       }),
+    )
+  })
+
+  it('wraps the value in {text: ...} only for column types that require it, per the cached board schema', async () => {
+    findByIDMock.mockResolvedValue(baseForm)
+    findGlobalMock.mockResolvedValue({
+      mondayApiToken: 'test-token',
+      mondayBoardsCache: {
+        syncedAt: '2026-01-01T00:00:00.000Z',
+        boards: [
+          {
+            id: '4024476985',
+            name: 'Board',
+            groups: [],
+            columns: [{ id: 'text0', title: 'Property Name', type: 'long_text' }],
+          },
+        ],
+      },
+    })
+    submitMock.mockResolvedValue({ id: '999' })
+
+    const { dispatchFormSync } = await import(
+      '@/collections/FormSubmissions/hooks/dispatchFormSync'
+    )
+    await dispatchFormSync({
+      doc: {
+        id: 1,
+        form: 10,
+        submissionData: [
+          { field: 'contact-name', value: 'Jane Doe' },
+          { field: 'property-name', value: 'Grand Hotel' },
+        ],
+      },
+      operation: 'create',
+      req: fakeReq(),
+    } as never)
+
+    expect(submitMock).toHaveBeenCalledWith(
+      '4024476985',
+      'topics',
+      'Jane Doe',
+      { text0: { text: 'Grand Hotel' } },
+      'test-token',
     )
   })
 
