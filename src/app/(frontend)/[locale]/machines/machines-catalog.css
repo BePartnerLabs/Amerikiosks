@@ -25,76 +25,75 @@
   background: transparent;
 }
 
-/* ── Family highlights — horizontal featured cards (reuses
-   ak-insights-showcase__featured), stacked with a gap, alternating sides ── */
+/* ── Family highlights — boxed card grid, each tile with an optional
+   contained image, a bold accent-colored stat line, and a muted caption ── */
 .ak-family-detail__highlights {
   padding-block: var(--bp-space-16, 4rem);
+  background: var(--ak-color-surface);
 }
 
 .ak-family-detail__highlights-head {
   margin-bottom: var(--bp-space-8, 2rem);
 }
 
-.ak-family-detail__highlight-cards {
+.ak-family-detail__highlight-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--bp-space-4, 1rem);
+}
+
+@media (min-width: 40rem) {
+  .ak-family-detail__highlight-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 64rem) {
+  .ak-family-detail__highlight-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.ak-family-detail__highlight-card {
+  --_background: var(--bp-color-bg);
   display: flex;
   flex-direction: column;
-  gap: var(--bp-space-8, 2rem);
+  align-items: center;
+  justify-content: space-between;
+  aspect-ratio: 1;
+  gap: var(--bp-space-3, 0.75rem);
+  padding: var(--bp-space-6, 1.5rem);
+  border-radius: var(--bp-radius-lg, 0.75rem);
+  background: var(--_background);
+  text-align: center;
 }
 
-/* The image fills its column edge-to-edge — only round the two corners that
-   touch the outer card boundary, so there's no double-radius seam where it
-   meets the text column. */
-.ak-family-detail__highlight-cards .ak-insights-showcase__featured-img-wrap {
-  border-radius: 0;
-  border-top-left-radius: var(--bp-radius-lg, 0.75rem);
-  border-bottom-left-radius: var(--bp-radius-lg, 0.75rem);
+.ak-family-detail__highlight-card-img-wrap {
+  position: relative;
+  width: 60%;
+  max-width: 10rem;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--bp-radius-md, 0.5rem);
+  overflow: hidden;
 }
 
-/* Text sits away from the outer card edge, on whichever side it lands on. */
-.ak-family-detail__highlight-cards .ak-insights-showcase__featured-body {
-  padding-right: var(--bp-space-8, 2rem);
+.ak-family-detail__highlight-card-img {
+  object-fit: contain;
 }
 
-/* Reverse (image right / text left) is desktop-only — order swaps the two
-   grid children without touching DOM order, so mobile can safely reset it
-   below and always show image-then-text. */
-@media (min-width: 50.0625rem) {
-  .ak-family-detail__highlight-card--reverse {
-    grid-template-columns: 45fr 55fr;
-  }
-
-  .ak-family-detail__highlight-card--reverse .ak-insights-showcase__featured-img-wrap {
-    order: 2;
-    border-radius: 0;
-    border-top-right-radius: var(--bp-radius-lg, 0.75rem);
-    border-bottom-right-radius: var(--bp-radius-lg, 0.75rem);
-  }
-
-  .ak-family-detail__highlight-card--reverse .ak-insights-showcase__featured-body {
-    order: 1;
-    padding-right: 0;
-    padding-left: var(--bp-space-8, 2rem);
-  }
+.ak-family-detail__highlight-card-title {
+  --_color: var(--ak-accent);
+  font-size: var(--bp-font-size-xl, 1.375rem);
+  font-weight: var(--bp-font-weight-bold, 700);
+  color: var(--_color);
+  margin: 0;
 }
 
-@media (max-width: 50rem) {
-  .ak-family-detail__highlight-card--reverse {
-    grid-template-columns: 1fr;
-  }
-
-  .ak-family-detail__highlight-cards .ak-insights-showcase__featured-img-wrap {
-    border-radius: 0;
-    border-top-left-radius: var(--bp-radius-lg, 0.75rem);
-    border-top-right-radius: var(--bp-radius-lg, 0.75rem);
-  }
-
-  .ak-family-detail__highlight-cards .ak-insights-showcase__featured-body,
-  .ak-family-detail__highlight-cards
-    .ak-family-detail__highlight-card--reverse
-    .ak-insights-showcase__featured-body {
-    padding-inline: var(--bp-space-5, 1.25rem);
-    padding-bottom: var(--bp-space-5, 1.25rem);
-  }
+.ak-family-detail__highlight-card-description {
+  font-size: var(--bp-font-size-sm, 0.875rem);
+  color: var(--bp-color-text-muted);
+  min-height: 1.25em;
+  margin: 0;
 }
 
 /* ── Family compare table ─────────────────────────────────────── */
