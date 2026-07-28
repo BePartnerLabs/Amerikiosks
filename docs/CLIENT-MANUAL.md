@@ -81,6 +81,15 @@ Working outline for the final content-editor usage manual. Each bullet is a topi
 - Contains only a random id, the choice made, and the date — no IP address or other personal data
 - Nothing to edit here day-to-day; it exists for legal/audit purposes only
 
+## 10b. Accessibility widget (site-wide)
+
+- The round accessibility button at the bottom-left of every page opens a panel with **text size** (normal / large / larger), **high contrast**, **highlight links**, **reduce motion**, and **read aloud**
+- It is always on and needs **no configuration in `/admin`** — there is nothing to enable, schedule, or fill in
+- Each visitor's choices are remembered in their own browser only; they are not stored against any account and never leave the visitor's device
+- Read aloud uses the browser's built-in speech engine (no third-party service, no cost). Once switched on, the visitor clicks any text on the page to hear it. It is hidden automatically in browsers that don't support speech
+- The panel's wording is translated in the site's message files, not the CMS — changing that text is a developer task
+- Important: this widget improves usability, but it is not the same thing as ADA/WCAG conformance. Conformance comes from the pages themselves (alt text on every image, meaningful link text, correct heading order) — the parts you control when writing content
+
 ## 11. Localization (EN / ES)
 
 - How to switch locale in the admin

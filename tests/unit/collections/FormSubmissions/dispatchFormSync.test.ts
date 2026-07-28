@@ -236,6 +236,7 @@ describe('dispatchFormSync', () => {
     findGlobalMock.mockResolvedValue({ mondayApiToken: 'test-token' })
     submitMock.mockResolvedValue({ id: '999' })
     global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
       arrayBuffer: async () => new Uint8Array([1, 2, 3]).buffer,
     }) as never
 
