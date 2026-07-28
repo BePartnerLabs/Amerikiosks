@@ -61,6 +61,10 @@ Working outline for the final content-editor usage manual. Each bullet is a topi
 - Creating/editing a form (form-builder plugin): fields, confirmation message, notification email
 - Connecting a form to a button via the Link field's modal type
 - Where form submissions go / how to check them
+- **The consent checkbox** — on any form that collects personal data (name, email, phone, company), add a checkbox field named exactly `consent` and mark it required. Its label is where the opt-in wording goes. Without that field the submission is still saved, but no consent is recorded against it — so it has to be added form by form, it is not automatic
+- **Reading the consent record** — each submission shows a read-only "Consent given" tick and a "Consent at" date in its sidebar. They are written at the moment of capture and cannot be edited by hand, which is the whole point: they stand as evidence
+- **Spam protection is automatic** — submissions are rate-limited, screened for bots, and validated before anything is stored. Nothing to configure per form. Optionally, `Settings → Integrations` holds the Cloudflare Turnstile keys; filling them in turns on an extra bot check across every form at once, and leaving them empty simply skips it
+- **Upload fields** — accept JPEG, PNG, WEBP and HEIC images up to 8MB. The file type is checked against the file's real content, so renaming something to `.jpg` will not get it through
 
 ## 9. Header & Footer (site-wide)
 

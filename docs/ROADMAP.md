@@ -40,7 +40,18 @@ Future ideas and planned improvements for the Amerikiosks website. Items are gro
 
 ---
 
-## Forms — abuse protection
+## Forms — abuse protection ✅ shipped
+
+**Done on `feat/forms-hardening-and-ux`** (2026-07-28). Everything below shipped together, in the sequence the original note called for: the owned route first, then the controls hung off it. Covered by `tests/unit/app/form-submissions.test.ts`.
+
+- ~~**Owned `/next/*` submission route**~~ — `src/app/(frontend)/next/form-submissions/route.ts`, writing through the Local API.
+- ~~**Cloudflare Turnstile**~~ — widget in `src/blocks/Form`, `siteverify` check in the route, toggled by `turnstileEnabled`/`turnstileSecretKey` in Settings. Deliberately fails **open** when Cloudflare itself is unreachable, so an outage there can't take every form on the site down.
+- ~~**Honeypot + timing heuristic**~~ — both answer `201` without writing, so a bot learns nothing about which signal caught it. Minimum fill time is 3s.
+- ~~**Rate limiting per IP**~~ — 5 requests per 60s sliding window. In-memory, so it resets on redeploy/cold start and doesn't hold across instances; fine as a low-effort guard, not a substitute for a shared store.
+- ~~**Gating `POST /api/form-submissions` itself**~~ — the plugin's REST endpoint now denies public creates (`create: () => false` in `formSubmissionOverrides`), closing the bypass.
+- Vercel BotID was not needed and was not pursued.
+
+Original note (2026-07-27) below, kept for the reasoning:
 
 Raised 2026-07-27. `POST /api/form-submissions` is a fully public, unauthenticated, unthrottled write endpoint — proven trivially scriptable while debugging the upload 404 (a plain `curl` created real submissions and, on integrated forms, real Monday items). Every form on the site funnels into it, so a bot has one target, and each accepted submission costs a Monday API call plus, on the upload forms, an R2 object. Nothing currently stands between a script and the client's CRM.
 
@@ -97,7 +108,7 @@ Audited 2026-07-19 — site did not comply, no consent mechanism existed at all.
 - ~~**Terms of Service page**~~ — done, seeded (`src/endpoints/seed/pages/terms-and-conditions.ts`), replaces the old WordPress 2023 WooCommerce boilerplate that didn't match the current B2B site.
 - ~~**Consent preference center**~~ — done, `ConsentPreferencesButton` (floating, bottom-left) reopens the banner at any time.
 - ~~**Server-side consent log**~~ — done on `feat/consent-server-log`, per client request after a prior (unrelated, accessibility) lawsuit — the cookie alone isn't durable evidence if a user clears it. `ConsentLogs` collection (`src/collections/ConsentLogs.ts`) records a random `consentId` + the choice + a timestamp on every accept/reject/save, written via `/next/consent-log`. No IP, fingerprint, or other personal identifier is stored — the same `consentId` is also written into the `ak_consent` cookie, so only someone who actually went through the real consent flow on their own device can present a matching id to prove they consented.
-- **PII consent checkbox on lead-capture forms** — still open. Brand/Venue/Agency/Emerging-Brand/Start-a-Partnership forms all collect name/email/phone/company with no visible opt-in or purpose/retention disclosure at the point of capture.
+- ~~**PII consent checkbox on lead-capture forms**~~ — code done on `feat/forms-hardening-and-ux`. `consentGiven`/`consentAt` are read-only sidebar fields on `form-submissions` (`src/plugins/index.ts`), written by `/next/form-submissions` at the moment of capture from a form field named exactly `consent`; migration `20260728_192449_forms_consent_and_turnstile.ts`. **Still needs a data pass in `/admin`:** the checkbox is an ordinary form-builder field, so it has to be added by hand to each of Brand/Venue/Agency/Emerging-Brand/Start-a-Partnership — a form without it silently stores no consent record. The purpose/retention disclosure text lives in that field's label.
 - Not a gap: JotForm integration (`JotFormRepository`) is server-to-server (API calls), not a client embed — no extra third-party cookies from it. No other ad-tech/fingerprinting scripts found in a first pass.
 - All three legal pages are a functional draft, not legal advice — CCPA applicability, PCI-DSS payment language, and Curaçao/El Salvador-specific requirements still need review by qualified counsel before they're final.
 
