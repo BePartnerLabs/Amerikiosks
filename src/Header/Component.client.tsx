@@ -54,10 +54,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, socialLinks })
               className="bp-header__logo"
               aria-label="Go to homepage"
             >
-              <Logo
-                loading="eager"
-                priority="high"
-              />
+              <Logo />
             </Link>
 
             <HeaderNav data={data} />
