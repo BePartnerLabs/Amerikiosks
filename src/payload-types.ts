@@ -765,6 +765,28 @@ export interface Form {
    * Monday.com group id within the board (e.g. "topics").
    */
   mondayGroupId?: string | null;
+  /**
+   * Adds a required consent checkbox above the submit button. Turn this on for any form that collects personal data (name, email, phone). The answer and its timestamp are stored on each submission as proof.
+   */
+  requiresConsent?: boolean | null;
+  /**
+   * Wording shown next to the consent checkbox. State what the data is used for and link to the privacy policy.
+   */
+  consentText?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1997,6 +2019,11 @@ export interface FormSubmission {
   syncStatus?: ('pending' | 'synced' | 'error') | null;
   syncError?: string | null;
   syncedAt?: string | null;
+  /**
+   * Whether the visitor ticked the consent box on a form that requires it. Written by the submission route — a consent record only counts if it was stored at the moment of capture.
+   */
+  consentGiven?: boolean | null;
+  consentAt?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -3370,6 +3397,8 @@ export interface FormsSelect<T extends boolean = true> {
   integrationTarget?: T;
   externalId?: T;
   mondayGroupId?: T;
+  requiresConsent?: T;
+  consentText?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -3396,6 +3425,8 @@ export interface FormSubmissionsSelect<T extends boolean = true> {
   syncStatus?: T;
   syncError?: T;
   syncedAt?: T;
+  consentGiven?: T;
+  consentAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -3753,6 +3784,18 @@ export interface Setting {
    */
   llmsIncludeInsights?: boolean | null;
   /**
+   * Adds an invisible bot check to every public form. Leave off until both keys below are filled in — with it on and the keys missing, submissions would be rejected. The other protections (rate limiting, honeypot, timing) run regardless of this setting.
+   */
+  turnstileEnabled?: boolean | null;
+  /**
+   * Public key from the Cloudflare dashboard (Turnstile → your widget). It is rendered into the page by design — it is not a secret.
+   */
+  turnstileSiteKey?: string | null;
+  /**
+   * Private key used server-side to verify each submission against Cloudflare. Only visible to logged-in admin users — never exposed in the public Settings API response.
+   */
+  turnstileSecretKey?: string | null;
+  /**
    * Where new refund claims sync to by default when submitted from the public ClaimForm. Changing this takes effect immediately for claims created after the change — existing claims keep whatever target they already have. Staff can still override a specific claim's target afterward in Claims → Integration target, but that only affects future re-syncs, not one already dispatched.
    */
   defaultClaimIntegrationTarget?: ('odoo' | 'monday') | null;
@@ -3920,6 +3963,9 @@ export interface SettingsSelect<T extends boolean = true> {
   llmsSiteDescription?: T;
   llmsIncludePages?: T;
   llmsIncludeInsights?: T;
+  turnstileEnabled?: T;
+  turnstileSiteKey?: T;
+  turnstileSecretKey?: T;
   defaultClaimIntegrationTarget?: T;
   mondayApiToken?: T;
   mondayBoardsCache?: T;

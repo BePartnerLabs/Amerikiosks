@@ -3,6 +3,8 @@ import type React from 'react'
 import type { FieldErrorsImpl, FieldValues, UseFormRegister } from 'react-hook-form'
 
 import { FormError } from '../Error'
+import { RequiredMark } from '../RequiredMark'
+import { registerOptions } from '../validation'
 import { Width } from '../Width'
 
 export const Textarea: React.FC<
@@ -11,7 +13,7 @@ export const Textarea: React.FC<
     register: UseFormRegister<FieldValues>
     rows?: number
   }
-> = ({ name, defaultValue, errors, label, register, required, rows = 3, width }) => {
+> = ({ blockType, name, defaultValue, errors, label, register, required, rows = 3, width }) => {
   const hasError = Boolean(errors[name])
   const errorId = `${name}-error`
 
@@ -25,11 +27,7 @@ export const Textarea: React.FC<
         htmlFor={name}
       >
         {label}
-        {required && (
-          <span className="required">
-            * <span className="sr-only">(required)</span>
-          </span>
-        )}
+        {required && <RequiredMark />}
       </label>
       <textarea
         className="bp-input"
@@ -38,7 +36,7 @@ export const Textarea: React.FC<
         rows={rows}
         aria-invalid={hasError}
         aria-describedby={hasError ? errorId : undefined}
-        {...register(name, { required })}
+        {...register(name, registerOptions({ blockType, name, label, required }))}
       />
       {hasError && (
         <FormError

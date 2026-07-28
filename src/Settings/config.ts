@@ -201,6 +201,47 @@ export const Settings: GlobalConfig = {
           ],
         },
         {
+          label: 'Security',
+          fields: [
+            {
+              name: 'turnstileEnabled',
+              type: 'checkbox',
+              label: 'Enable Cloudflare Turnstile on public forms',
+              defaultValue: false,
+              admin: {
+                description:
+                  'Adds an invisible bot check to every public form. Leave off until both keys below are filled in — with it on and the keys missing, submissions would be rejected. The other protections (rate limiting, honeypot, timing) run regardless of this setting.',
+              },
+            },
+            {
+              name: 'turnstileSiteKey',
+              type: 'text',
+              label: 'Turnstile Site Key',
+              admin: {
+                description:
+                  'Public key from the Cloudflare dashboard (Turnstile → your widget). It is rendered into the page by design — it is not a secret.',
+                condition: (data) => Boolean(data?.turnstileEnabled),
+              },
+            },
+            {
+              name: 'turnstileSecretKey',
+              type: 'text',
+              label: 'Turnstile Secret Key',
+              access: {
+                read: authenticatedFieldAccess,
+              },
+              admin: {
+                description:
+                  'Private key used server-side to verify each submission against Cloudflare. Only visible to logged-in admin users — never exposed in the public Settings API response.',
+                condition: (data) => Boolean(data?.turnstileEnabled),
+                components: {
+                  Field: '@payloadcms/ui#PasswordField',
+                },
+              },
+            },
+          ],
+        },
+        {
           label: 'Integrations',
           fields: [
             {

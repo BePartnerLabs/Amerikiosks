@@ -66,5 +66,28 @@
     "reset": "Restablecer todo",
     "on": "activado",
     "off": "desactivado"
+  },
+  "form": {
+    "loading": "Enviando tus datos…",
+    "requiredMark": "(obligatorio)",
+    "close": "Cerrar",
+    "closeForm": "Cerrar formulario",
+    "retry": "Reintentar",
+    "submitError": "No pudimos enviar tu formulario. Tus datos siguen aquí — inténtalo de nuevo.",
+    "successClose": "Cerrar",
+    "errors": {
+      "required": "Este campo es obligatorio",
+      "email": "Introduce un email válido, p. ej. nombre@empresa.com",
+      "number": "Introduce un número",
+      "phone": "Introduce un teléfono válido",
+      "maxLength": "Esta respuesta es demasiado larga",
+      "generic": "Revisa este campo"
+    },
+    "upload": {
+      "prompt": "Arrastra un archivo aquí o búscalo",
+      "dismiss": "Quitar",
+      "tooLarge": "El archivo supera el límite de 8MB.",
+      "wrongType": "El archivo debe ser una imagen JPEG, PNG, WEBP o HEIC."
+    }
   }
 }

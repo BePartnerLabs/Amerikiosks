@@ -3,6 +3,8 @@ import type React from 'react'
 import type { FieldErrorsImpl, FieldValues, UseFormRegister } from 'react-hook-form'
 
 import { FormError } from '../Error'
+import { RequiredMark } from '../RequiredMark'
+import { registerOptions } from '../validation'
 import { Width } from '../Width'
 
 export const FormNumber: React.FC<
@@ -10,7 +12,7 @@ export const FormNumber: React.FC<
     errors: Partial<FieldErrorsImpl>
     register: UseFormRegister<FieldValues>
   }
-> = ({ name, defaultValue, errors, label, register, required, width }) => {
+> = ({ blockType, name, defaultValue, errors, label, register, required, width }) => {
   const hasError = Boolean(errors[name])
   const errorId = `${name}-error`
 
@@ -24,11 +26,7 @@ export const FormNumber: React.FC<
         htmlFor={name}
       >
         {label}
-        {required && (
-          <span className="required">
-            * <span className="sr-only">(required)</span>
-          </span>
-        )}
+        {required && <RequiredMark />}
       </label>
       <input
         className="bp-input"
@@ -38,7 +36,7 @@ export const FormNumber: React.FC<
         inputMode="numeric"
         aria-invalid={hasError}
         aria-describedby={hasError ? errorId : undefined}
-        {...register(name, { required })}
+        {...register(name, registerOptions({ blockType, name, label, required }))}
       />
       {hasError && (
         <FormError

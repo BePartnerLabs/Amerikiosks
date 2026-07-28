@@ -195,6 +195,27 @@ export const plugins: Plugin[] = [
                 },
               },
             },
+            {
+              name: 'requiresConsent',
+              type: 'checkbox',
+              defaultValue: false,
+              admin: {
+                position: 'sidebar',
+                description:
+                  'Adds a required consent checkbox above the submit button. Turn this on for any form that collects personal data (name, email, phone). The answer and its timestamp are stored on each submission as proof.',
+              },
+            },
+            {
+              name: 'consentText',
+              type: 'richText',
+              localized: true,
+              admin: {
+                position: 'sidebar',
+                condition: (data) => Boolean(data?.requiresConsent),
+                description:
+                  'Wording shown next to the consent checkbox. State what the data is used for and link to the privacy policy.',
+              },
+            },
           ])
       },
     },
@@ -243,7 +264,31 @@ export const plugins: Plugin[] = [
             readOnly: true,
           },
         },
+        {
+          name: 'consentGiven',
+          type: 'checkbox',
+          admin: {
+            position: 'sidebar',
+            readOnly: true,
+            description:
+              'Whether the visitor ticked the consent box on a form that requires it. Written by the submission route — a consent record only counts if it was stored at the moment of capture.',
+          },
+        },
+        {
+          name: 'consentAt',
+          type: 'date',
+          admin: {
+            position: 'sidebar',
+            readOnly: true,
+          },
+        },
       ],
+      access: {
+        // The public path is /next/form-submissions, which rate-limits,
+        // screens for bots and validates before writing. Leaving the plugin's
+        // own REST endpoint open would be a bypass around all of that.
+        create: () => false,
+      },
       hooks: {
         afterChange: [dispatchFormSync],
       },

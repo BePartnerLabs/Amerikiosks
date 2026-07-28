@@ -1,6 +1,7 @@
 'use client'
 
 import type { UploadField } from '@payloadcms/plugin-form-builder/types'
+import { useTranslations } from 'next-intl'
 import type React from 'react'
 import { useCallback, useEffect, useState } from 'react'
 import type {
@@ -10,6 +11,7 @@ import type {
   UseFormSetValue,
 } from 'react-hook-form'
 import { FormError } from '../Error'
+import { RequiredMark } from '../RequiredMark'
 import { Width } from '../Width'
 
 const MAX_BYTES = 8 * 1024 * 1024
@@ -31,6 +33,7 @@ export const Upload: React.FC<
     setValue: UseFormSetValue<any>
   }
 > = ({ name, errors, label, register, required, setValue, width }) => {
+  const t = useTranslations('form.upload')
   const [file, setFile] = useState<File | undefined>(undefined)
   const [error, setError] = useState<string | undefined>(undefined)
   const [isDragOver, setIsDragOver] = useState(false)
@@ -51,7 +54,7 @@ export const Upload: React.FC<
     (candidate: File | undefined) => {
       if (!candidate) return
       if (candidate.size > MAX_BYTES) {
-        setError('File exceeds the 8MB size limit.')
+        setError(t('tooLarge'))
         setFile(undefined)
         setValue(name, undefined, { shouldValidate: true })
         return
@@ -60,7 +63,7 @@ export const Upload: React.FC<
       setFile(candidate)
       setValue(name, candidate, { shouldValidate: true })
     },
-    [name, setValue],
+    [name, setValue, t],
   )
 
   return (
@@ -73,11 +76,7 @@ export const Upload: React.FC<
         htmlFor={name}
       >
         {label}
-        {required && (
-          <span className="required">
-            * <span className="sr-only">(required)</span>
-          </span>
-        )}
+        {required && <RequiredMark />}
       </label>
       <label
         className="bp-file-upload__dropzone"
@@ -109,9 +108,7 @@ export const Upload: React.FC<
         >
           ⬆
         </span>
-        <span className="bp-file-upload__copy">
-          Drag a file here or <span className="bp-file-upload__browse">browse</span>
-        </span>
+        <span className="bp-file-upload__copy">{t('prompt')}</span>
       </label>
       {(file || error) && (
         <ul className="bp-file-upload__list">
@@ -135,7 +132,7 @@ export const Upload: React.FC<
                 type="button"
                 onClick={() => setError(undefined)}
               >
-                Dismiss
+                {t('dismiss')}
               </button>
             </li>
           )}
