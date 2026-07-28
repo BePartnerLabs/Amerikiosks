@@ -1,7 +1,8 @@
 /**
- * Utility functions for UI components automatically added by ShadCN and used in a few of our frontend components and blocks.
- *
- * Other functions may be exported from here in the future or by installing other shadcn components.
+ * Tailwind class merger, originally added by shadcn. The shadcn components
+ * themselves are gone — visual components use the BPL DS (`bp-*` classes)
+ * instead — but `cn` is still used where Tailwind utilities are composed
+ * conditionally (AdminBar, the root layout's font variables).
  */
 
 import { type ClassValue, clsx } from 'clsx'

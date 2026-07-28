@@ -10,16 +10,6 @@ vi.mock('next-intl', () => ({
   useTranslations: () => (key: string) => key,
 }))
 
-vi.mock('@/components/ui/input', () => ({
-  Input: (props: React.InputHTMLAttributes<HTMLInputElement>) => <input {...props} />,
-}))
-
-vi.mock('@/components/ui/label', () => ({
-  Label: ({ children, htmlFor }: { children: React.ReactNode; htmlFor?: string }) => (
-    <label htmlFor={htmlFor}>{children}</label>
-  ),
-}))
-
 vi.mock('@/utilities/useDebounce', () => ({
   useDebounce: (value: string) => value,
 }))

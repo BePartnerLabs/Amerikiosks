@@ -1,7 +1,6 @@
 'use client'
 import { CopyIcon } from '@payloadcms/ui/icons/Copy'
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
 
 export function CopyButton({ code }: { code: string }) {
   const [text, setText] = useState('Copy')
@@ -17,8 +16,9 @@ export function CopyButton({ code }: { code: string }) {
 
   return (
     <div className="ak-code__copy">
-      <Button
-        variant="secondary"
+      <button
+        type="button"
+        className="bp-btn bp-btn--secondary"
         onClick={async () => {
           await navigator.clipboard.writeText(code)
           updateCopyStatus()
@@ -26,7 +26,7 @@ export function CopyButton({ code }: { code: string }) {
       >
         <p>{text}</p>
         <CopyIcon />
-      </Button>
+      </button>
     </div>
   )
 }
