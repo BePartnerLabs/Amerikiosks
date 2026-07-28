@@ -29,5 +29,5 @@ To document a block: `/document-block <path>` (e.g. `/document-block src/blocks/
 | `Header/` | Site header global |
 | `Footer/` | Site footer global |
 | `components/` | Shared UI components |
-| `collections/` | Payload collection configs |
+| `collections/` | Payload collection configs — see [`collections/CLAUDE.md`](./collections/CLAUDE.md) before enabling drafts on an existing collection |
 | `globals/` | Payload global configs |

@@ -8,7 +8,10 @@ export const Brands: CollectionConfig = {
     plural: { en: 'Refund Brands', es: 'Marcas de Reembolso' },
     singular: { en: 'Refund Brand', es: 'Marca de Reembolso' },
   },
-  defaultSort: 'order',
+  // `name` breaks the tie: every brand ships with `order: 0`, and sorting on a
+  // column where every value is equal leaves the row order undefined, so the
+  // paginated admin list can show the same row on two pages and skip another.
+  defaultSort: ['order', 'name'],
   admin: {
     group: { en: 'Config', es: 'Configuración' },
     defaultColumns: ['name', 'order', 'updatedAt'],
