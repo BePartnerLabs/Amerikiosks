@@ -169,16 +169,21 @@
   font-size: var(--bp-text-sm, 0.875rem);
 }
 
+/* The gap is the point: this sits under the submit button, and butted up
+   against it the copy read as part of the button rather than as a separate
+   note. */
 .ak-form__footnote {
-  margin-top: var(--bp-space-4, 1rem);
+  margin-top: var(--bp-space-8, 2rem);
 }
 
 .ak-form__footnote p {
   --_color: var(--ak-color-muted);
   margin: 0;
   color: var(--_color);
-  font-size: var(--bp-text-xs, 0.75rem);
-  line-height: 1.5;
+  /* xs sat too tight under the submit button to read as reassurance rather
+     than legal small print — this is copy meant to be read. */
+  font-size: var(--bp-text-sm, 0.875rem);
+  line-height: 1.6;
 }
 
 /* ── Error summary ─────────────────────────────────────────────
