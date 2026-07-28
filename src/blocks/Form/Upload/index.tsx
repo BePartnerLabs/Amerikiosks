@@ -2,8 +2,13 @@
 
 import type { UploadField } from '@payloadcms/plugin-form-builder/types'
 import type React from 'react'
-import { useCallback, useState } from 'react'
-import type { FieldErrorsImpl, UseFormSetValue } from 'react-hook-form'
+import { useCallback, useEffect, useState } from 'react'
+import type {
+  FieldErrorsImpl,
+  FieldValues,
+  UseFormRegister,
+  UseFormSetValue,
+} from 'react-hook-form'
 import { FormError } from '../Error'
 import { Width } from '../Width'
 
@@ -21,15 +26,26 @@ function formatFileSize(bytes: number): string {
 export const Upload: React.FC<
   UploadField & {
     errors: Partial<FieldErrorsImpl>
+    register: UseFormRegister<FieldValues>
     // biome-ignore lint/suspicious/noExplicitAny: react-hook-form's FieldValues generic doesn't cover a dynamically-keyed form-builder submission
     setValue: UseFormSetValue<any>
   }
-> = ({ name, errors, label, required, setValue, width }) => {
+> = ({ name, errors, label, register, required, setValue, width }) => {
   const [file, setFile] = useState<File | undefined>(undefined)
   const [error, setError] = useState<string | undefined>(undefined)
   const [isDragOver, setIsDragOver] = useState(false)
   const hasError = Boolean(errors[name]) || Boolean(error)
   const errorId = `${name}-error`
+
+  // The dropzone holds its File in component state and pushes it through
+  // setValue, so there is no input to spread register()'s props onto the way
+  // every other field does. Register the name on its own anyway — without it
+  // react-hook-form has no rules attached and `required` is silently
+  // unenforced: the form submits with no file and the FormError below can
+  // never fire, because nothing ever writes errors[name].
+  useEffect(() => {
+    register(name, { required })
+  }, [name, register, required])
 
   const accept = useCallback(
     (candidate: File | undefined) => {
@@ -37,12 +53,12 @@ export const Upload: React.FC<
       if (candidate.size > MAX_BYTES) {
         setError('File exceeds the 8MB size limit.')
         setFile(undefined)
-        setValue(name, undefined)
+        setValue(name, undefined, { shouldValidate: true })
         return
       }
       setError(undefined)
       setFile(candidate)
-      setValue(name, candidate)
+      setValue(name, candidate, { shouldValidate: true })
     },
     [name, setValue],
   )
