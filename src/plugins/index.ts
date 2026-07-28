@@ -9,6 +9,7 @@ import { s3Storage } from '@payloadcms/storage-s3'
 import type { Plugin, TextFieldValidation } from 'payload'
 import { resyncEndpoint } from '@/collections/FormSubmissions/endpoints/resync'
 import { dispatchFormSync } from '@/collections/FormSubmissions/hooks/dispatchFormSync'
+import { revalidateFormGlobals } from '@/collections/Forms/hooks/revalidateFormGlobals'
 import type { Insight, Machine, Page, Project } from '@/payload-types'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
 import { searchFields } from '@/search/fieldOverrides'
@@ -93,6 +94,9 @@ export const plugins: Plugin[] = [
     },
     uploadCollections: ['media'],
     formOverrides: {
+      hooks: {
+        afterChange: [revalidateFormGlobals],
+      },
       fields: ({ defaultFields }) => {
         // Per-field-block "externalId" — the Monday column id that field's
         // value maps to (see GenericMondayRepository). Added to every block
