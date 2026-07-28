@@ -32,8 +32,21 @@
 
 /* ─── Bottom bar ─────────────────────────────────────────── */
 .ak-footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bp-space-4);
   padding-block: var(--bp-space-6);
   border-top: 1px solid color-mix(in srgb, var(--_footer-text) 12%, transparent);
+  color: var(--_footer-text);
+}
+
+@media (width < 40rem) {
+  .ak-footer__bottom {
+    flex-direction: column-reverse;
+    justify-content: center;
+  }
 }
 
 .ak-footer__copyright {

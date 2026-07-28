@@ -2,13 +2,15 @@ import Link from 'next/link'
 import { FormDrawerTrigger } from '@/components/FormDrawer'
 import { CMSLink } from '@/components/Link'
 import { Logo } from '@/components/Logo/Logo'
+import { type SocialLink, SocialLinks } from '@/components/SocialLinks'
 import type { Footer } from '@/payload-types'
 
 interface FooterContentProps {
   footer: Partial<Footer>
+  socialLinks?: SocialLink[] | null
 }
 
-export function FooterContent({ footer }: FooterContentProps) {
+export function FooterContent({ footer, socialLinks }: FooterContentProps) {
   const {
     brandDescription,
     columns,
@@ -133,6 +135,10 @@ export function FooterContent({ footer }: FooterContentProps) {
 
         <div className="breakout ak-footer__bottom">
           <p className="ak-footer__copyright">© {new Date().getFullYear()} Amerikiosks</p>
+          <SocialLinks
+            links={socialLinks}
+            variant="footer"
+          />
         </div>
       </div>
     </footer>

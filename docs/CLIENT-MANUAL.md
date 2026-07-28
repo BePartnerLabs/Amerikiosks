@@ -90,6 +90,14 @@ Working outline for the final content-editor usage manual. Each bullet is a topi
 - The panel's wording is translated in the site's message files, not the CMS — changing that text is a developer task
 - Important: this widget improves usability, but it is not the same thing as ADA/WCAG conformance. Conformance comes from the pages themselves (alt text on every image, meaningful link text, correct heading order) — the parts you control when writing content
 
+## 10c. Redes sociales
+
+- `Settings → Social` — una fila por red: se elige la plataforma de la lista (el logo sale de ahí) y se pega la URL completa del perfil (`https://…`)
+- Aparecen automáticamente en tres lugares: la barra inferior del footer, el header en desktop y el menú hamburguesa en mobile. No hay nada que activar por zona
+- El campo "Label" es opcional: solo cambia el texto que leen los lectores de pantalla (por defecto "Amerikiosks on Instagram")
+- Además le avisan a Google qué perfiles son los oficiales de la marca (`sameAs`), lo que ayuda a que aparezcan en el panel de conocimiento
+- Si la lista queda vacía, no se muestra nada en ningún lado
+
 ## 11. Localization (EN / ES)
 
 - How to switch locale in the admin

@@ -33,6 +33,7 @@ import { FolderTypeField as FolderTypeField_2b8867833a34864a02ddf429b0728a40 } f
 import { MaterialIconPicker as MaterialIconPicker_332817f447aef6af0f19f42940f0f0c1 } from '@/components/MaterialIconPicker'
 import { RowLabel as RowLabel_ec255a65fa6fa8d1faeb09cf35284224 } from '@/Header/RowLabel'
 import { RowLabel as RowLabel_1f6ff6ff633e3695d348f4f3c58f1466 } from '@/Footer/RowLabel'
+import { SocialRowLabel as SocialRowLabel_b3e16c87a56fb576425c8abdeea03bf6 } from '@/Settings/SocialRowLabel'
 import { PasswordField as PasswordField_3817bf644402e67bfe6577f60ef982de } from '@payloadcms/ui'
 import { MondayBoardsSync as MondayBoardsSync_21ab000b38067fb252c07cccddfe13db } from '@/Settings/components/MondayBoardsSync'
 import { MondayVisibleBoardsSelect as MondayVisibleBoardsSelect_cc6ffb11955a387065a718a2b15af2a2 } from '@/Settings/components/MondayVisibleBoardsSelect'
@@ -80,6 +81,7 @@ export const importMap = {
   "@/components/MaterialIconPicker#MaterialIconPicker": MaterialIconPicker_332817f447aef6af0f19f42940f0f0c1,
   "@/Header/RowLabel#RowLabel": RowLabel_ec255a65fa6fa8d1faeb09cf35284224,
   "@/Footer/RowLabel#RowLabel": RowLabel_1f6ff6ff633e3695d348f4f3c58f1466,
+  "@/Settings/SocialRowLabel#SocialRowLabel": SocialRowLabel_b3e16c87a56fb576425c8abdeea03bf6,
   "@payloadcms/ui#PasswordField": PasswordField_3817bf644402e67bfe6577f60ef982de,
   "@/Settings/components/MondayBoardsSync#MondayBoardsSync": MondayBoardsSync_21ab000b38067fb252c07cccddfe13db,
   "@/Settings/components/MondayVisibleBoardsSelect#MondayVisibleBoardsSelect": MondayVisibleBoardsSelect_cc6ffb11955a387065a718a2b15af2a2,

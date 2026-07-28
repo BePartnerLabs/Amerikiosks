@@ -64,6 +64,9 @@ export default async function LocaleLayout({ children, params }: Props) {
     serverUrl,
     brandDescription,
     contactEmail,
+    socialUrls: (settings as { socialLinks?: { url?: string | null }[] } | null)?.socialLinks?.map(
+      (link) => link.url,
+    ),
   })
   const websiteJsonLd = generateWebsiteJsonLd({ serverUrl })
 

@@ -5,7 +5,15 @@ import './footer.css'
 export async function Footer() {
   const { getLocale } = await import('next-intl/server')
   const locale = await getLocale()
-  const footer = await getCachedGlobal('footer', 1, locale)()
+  const [footer, settings] = await Promise.all([
+    getCachedGlobal('footer', 1, locale)(),
+    getCachedGlobal('settings', 0, locale)(),
+  ])
 
-  return <FooterContent footer={footer ?? {}} />
+  return (
+    <FooterContent
+      footer={footer ?? {}}
+      socialLinks={settings?.socialLinks}
+    />
+  )
 }

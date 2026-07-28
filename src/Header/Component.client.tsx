@@ -7,6 +7,7 @@ import { useEffect, useRef } from 'react'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 import { CMSLink } from '@/components/Link'
 import { Logo } from '@/components/Logo/Logo'
+import { type SocialLink, SocialLinks } from '@/components/SocialLinks'
 import type { Header } from '@/payload-types'
 import { HeaderNav } from './Nav'
 import './header.css'
@@ -18,9 +19,10 @@ const MobileMenu = dynamic(() => import('./MobileMenu').then((m) => ({ default: 
 
 interface HeaderClientProps {
   data: Header
+  socialLinks?: SocialLink[] | null
 }
 
-export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
+export const HeaderClient: React.FC<HeaderClientProps> = ({ data, socialLinks }) => {
   const headerRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
@@ -61,6 +63,10 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
             <HeaderNav data={data} />
 
             <div className="bp-header__actions">
+              <SocialLinks
+                links={socialLinks}
+                variant="header"
+              />
               {data.showLanguageSwitcher && <LanguageSwitcher />}
               {data.cta && (data.cta.type === 'modal' ? data.cta.modalForm : data.cta.url) && (
                 <span
@@ -78,7 +84,10 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
                   />
                 </span>
               )}
-              <MobileMenu data={data} />
+              <MobileMenu
+                data={data}
+                socialLinks={socialLinks}
+              />
             </div>
           </div>
         </div>
