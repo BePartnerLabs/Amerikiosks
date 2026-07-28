@@ -1,6 +1,7 @@
 import type { CollectionAfterChangeHook } from 'payload'
 import { GenericMondayRepository, MondayApiError } from '@/repositories/GenericMondayRepository'
 import type { MondayBoardsCache } from '@/utilities/detectMondayDrift'
+import { getServerSideURL } from '@/utilities/getURL'
 
 type FormField = { name?: string; externalId?: string; blockType?: string }
 type SubmissionDataItem = { field: string; value: unknown }
@@ -223,7 +224,18 @@ export const dispatchFormSync: CollectionAfterChangeHook = async ({ doc, operati
               })) as MediaDoc)
         if (!media.url) continue
 
-        const res = await fetch(media.url)
+        // media.url is relative when Payload serves the file itself
+        // (`/api/media/file/<name>`). Node's fetch has no document base, so a
+        // relative URL throws `Failed to parse URL from /api/media/file/...`.
+        // Absolute URLs (external storage with a public base) pass through.
+        const fileUrl = /^https?:\/\//.test(media.url)
+          ? media.url
+          : `${getServerSideURL()}${media.url}`
+
+        const res = await fetch(fileUrl)
+        if (!res.ok) {
+          throw new Error(`could not read upload ${media.filename ?? media.url}: ${res.status}`)
+        }
         const buffer = Buffer.from(await res.arrayBuffer())
         await GenericMondayRepository.addFile(
           itemId,

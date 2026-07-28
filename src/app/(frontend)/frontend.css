@@ -563,3 +563,68 @@ textarea.bp-input {
 [data-slug="machines"] .ak-hero-simple {
   --hero-simple-background: linear-gradient(180deg, #ecf2ff 0%, #ffffff 100%);
 }
+
+/* ─── Accessibility widget: site-wide effects ──────────────────
+   Driven entirely by attributes the widget writes onto <html>.
+   No component knows this exists. See
+   docs/superpowers/specs/2026-07-27-accessibility-widget-design.md */
+
+/* Text size. The DS is rem-based, so scaling the root scales the whole
+   layout proportionally instead of breaking it. */
+html {
+  font-size: calc(100% * var(--ak-a11y-text-scale, 1));
+}
+
+/* High contrast — two layers. The token overrides below fix text and borders
+   for anything that consumes the DS palette; the filter on the content
+   wrapper catches everything that doesn't (imagery, gradients, brand fills,
+   third-party embeds) so the whole page shifts, not just DS-styled chrome.
+   The filter is scoped to .ak-a11y-filter-root rather than <body> because a
+   filtered element becomes the containing block for its position:fixed
+   descendants — on <body> that would strand the floating buttons mid-page. */
+html[data-a11y-contrast="on"] .ak-a11y-filter-root {
+  filter: contrast(1.35) saturate(1.15);
+}
+
+html[data-a11y-contrast="on"] {
+  --bp-color-text: #000000;
+  --bp-color-text-muted: #1a1a1a;
+  --bp-color-bg: #ffffff;
+  --bp-color-bg-subtle: #ffffff;
+  --bp-color-bg-elevated: #ffffff;
+  --bp-color-border: #000000;
+}
+html[data-a11y-contrast="on"] * {
+  text-shadow: none !important;
+}
+/* Text sitting on top of imagery has no guaranteed contrast ratio, so give
+   it an opaque backing plate rather than trying to tune the overlay. */
+html[data-a11y-contrast="on"] :is(.ak-hero, .ak-machine-hero) :is(h1, h2, h3, p, span) {
+  background-color: #000000;
+  color: #ffffff;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* Highlight links — make every interactive target unmistakable. */
+html[data-a11y-links="on"] :is(a, button):not(.ak-a11y-fab):not(.ak-a11y-panel *) {
+  text-decoration: underline !important;
+  text-underline-offset: 0.2em;
+  outline: 2px solid var(--bp-color-border);
+  outline-offset: 2px;
+}
+
+/* Reduce motion — complements the OS prefers-reduced-motion media query for
+   users on shared or kiosk machines who can't change the OS setting. */
+html[data-a11y-motion="reduce"],
+html[data-a11y-motion="reduce"] *,
+html[data-a11y-motion="reduce"] *::before,
+html[data-a11y-motion="reduce"] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+html[data-a11y-motion="reduce"] {
+  view-transition-name: none;
+}

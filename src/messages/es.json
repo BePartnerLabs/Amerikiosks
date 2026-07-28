@@ -48,5 +48,23 @@
     "analyticsDescription": "Google Analytics — nos ayuda a entender cómo se usa el sitio. Desactivadas por defecto.",
     "necessaryInfoLabel": "Más información sobre cookies necesarias",
     "analyticsInfoLabel": "Más información sobre cookies de analítica"
+  },
+  "accessibility": {
+    "fabLabel": "Opciones de accesibilidad",
+    "title": "Accesibilidad",
+    "close": "Cerrar opciones de accesibilidad",
+    "textSize": "Tamaño del texto",
+    "textSizeNormal": "Normal",
+    "textSizeLarge": "Grande",
+    "textSizeLarger": "Más grande",
+    "contrast": "Alto contraste",
+    "highlightLinks": "Resaltar enlaces",
+    "reduceMotion": "Reducir movimiento",
+    "readAloud": "Leer en voz alta",
+    "readAloudHint": "Haz clic en cualquier texto de la página para escucharlo.",
+    "stopReading": "Detener lectura",
+    "reset": "Restablecer todo",
+    "on": "activado",
+    "off": "desactivado"
   }
 }
