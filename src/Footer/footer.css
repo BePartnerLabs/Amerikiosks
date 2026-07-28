@@ -78,6 +78,14 @@
   color: color-mix(in srgb, var(--_footer-text) 60%, transparent);
   text-decoration: none;
   transition: color var(--bp-duration-fast) var(--bp-ease);
+  /* The contact CTA renders as <button> when it opens a modal form — strip UA
+     button chrome so it reads as a plain footer link. */
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: inherit;
+  text-align: inherit;
+  cursor: pointer;
 }
 
 .ak-footer__link:hover {

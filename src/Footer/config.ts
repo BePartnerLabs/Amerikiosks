@@ -79,12 +79,34 @@ export const Footer: GlobalConfig = {
       admin: { description: 'e.g. "Start a partnership"' },
     },
     {
+      name: 'contactCtaType',
+      type: 'select',
+      label: 'Contact CTA behaviour',
+      defaultValue: 'link',
+      options: [
+        { label: 'Go to a URL', value: 'link' },
+        { label: 'Open a modal form', value: 'modal' },
+      ],
+      admin: { condition: (_, siblingData) => Boolean(siblingData?.contactCta) },
+    },
+    {
       // Localized too: per-locale slugs differ (see i18n/routing.ts), so the
       // Spanish CTA often needs to point at a different path than English.
       name: 'contactCtaUrl',
       type: 'text',
       label: 'Contact CTA URL',
       localized: true,
+      admin: { condition: (_, siblingData) => siblingData?.contactCtaType !== 'modal' },
+    },
+    {
+      name: 'contactCtaForm',
+      type: 'relationship',
+      relationTo: 'forms',
+      label: 'Contact CTA form',
+      admin: {
+        condition: (_, siblingData) => siblingData?.contactCtaType === 'modal',
+        description: 'Opens this form in a modal drawer instead of navigating.',
+      },
     },
   ],
   hooks: {
