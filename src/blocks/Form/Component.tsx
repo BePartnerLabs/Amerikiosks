@@ -11,6 +11,12 @@ import { FormsRepository } from '@/repositories'
 import { fields } from './fields'
 import './styles.css'
 
+type Gtag = (
+  command: 'event',
+  eventName: string,
+  params: { form_name?: string; locale?: string },
+) => void
+
 export type FormBlockType = {
   blockName?: string
   blockType?: 'formBlock'
@@ -62,6 +68,15 @@ export const FormBlock: React.FC<
     },
     onSuccess: () => {
       if (confirmationType === 'redirect' && redirect?.url) {
+        // The success node below (which carries data-ga-event) never renders for
+        // redirect confirmations, so without this the lead goes untracked.
+        const g = (window as Window & { gtag?: Gtag }).gtag
+        if (typeof g === 'function') {
+          g('event', 'generate_lead', {
+            form_name: title,
+            locale: document.documentElement.lang || undefined,
+          })
+        }
         router.push(redirect.url)
       }
     },
@@ -100,6 +115,7 @@ export const FormBlock: React.FC<
               data-testid="form-block-success"
               data-ga-event="generate_lead"
               data-ga-form-name={title}
+              data-ga-label={title}
             >
               <RichText data={confirmationMessage} />
             </div>

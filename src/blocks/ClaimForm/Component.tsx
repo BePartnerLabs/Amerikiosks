@@ -442,6 +442,7 @@ export const ClaimFormBlock: React.FC<{ id?: string; brands: Brand[] } & ClaimFo
           data-testid="claim-form-success"
           data-ga-event="claim_submit"
           data-ga-machine-id={submitted.machineId}
+          data-ga-label="claim_form"
           className="ak-claim-form__success"
         >
           <p className="ak-claim-form__success-title">

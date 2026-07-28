@@ -10,8 +10,8 @@ type Gtag = (
     section?: string
     label?: string
     locale?: string
-    machineId?: string
-    formName?: string
+    machine_id?: string
+    form_name?: string
   },
 ) => void
 
@@ -28,8 +28,8 @@ export function GAListener() {
         section: el.dataset.gaSection ?? blockEl?.dataset.gaSection ?? undefined,
         label: el.dataset.gaLabel || el.innerText.trim().slice(0, 100) || undefined,
         locale: document.documentElement.lang || undefined,
-        machineId: el.dataset.gaMachineId ?? undefined,
-        formName: el.dataset.gaFormName ?? undefined,
+        machine_id: el.dataset.gaMachineId ?? undefined,
+        form_name: el.dataset.gaFormName ?? undefined,
       })
     }
     document.addEventListener('click', handler)
