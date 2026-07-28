@@ -23,10 +23,21 @@ import type { Header as HeaderType } from '@/payload-types'
 describe('HeaderClient', () => {
   afterEach(cleanup)
 
-  it('renders the logo, nav, language switcher, and mobile menu', () => {
+  it('renders the logo, nav, and mobile menu', () => {
     render(<HeaderClient data={{ navItems: [] } as unknown as HeaderType} />)
     expect(screen.getByTestId('logo')).toBeInTheDocument()
     expect(screen.getByTestId('header-nav')).toBeInTheDocument()
+  })
+
+  it('hides the language switcher unless showLanguageSwitcher is on', () => {
+    render(<HeaderClient data={{ navItems: [] } as unknown as HeaderType} />)
+    expect(screen.queryByTestId('lang-switcher')).toBeNull()
+  })
+
+  it('renders the language switcher when showLanguageSwitcher is on', () => {
+    render(
+      <HeaderClient data={{ navItems: [], showLanguageSwitcher: true } as unknown as HeaderType} />,
+    )
     expect(screen.getByTestId('lang-switcher')).toBeInTheDocument()
   })
 
