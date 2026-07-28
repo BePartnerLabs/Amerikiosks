@@ -4,8 +4,11 @@ export const generateOrganizationJsonLd = (args: {
   serverUrl: string
   brandDescription?: string | null
   contactEmail?: string | null
+  socialUrls?: (string | null | undefined)[] | null
 }) => {
-  const { serverUrl, brandDescription, contactEmail } = args
+  const { serverUrl, brandDescription, contactEmail, socialUrls } = args
+  // `sameAs` is how search engines tie official social profiles to the brand.
+  const sameAs = (socialUrls ?? []).filter((url): url is string => Boolean(url))
 
   return {
     '@context': 'https://schema.org',
@@ -14,6 +17,7 @@ export const generateOrganizationJsonLd = (args: {
     url: serverUrl,
     logo: `${serverUrl}/logos/logo-1.svg`,
     ...(brandDescription && { description: brandDescription }),
+    ...(sameAs.length > 0 && { sameAs }),
     ...(contactEmail && {
       contactPoint: {
         '@type': 'ContactPoint',

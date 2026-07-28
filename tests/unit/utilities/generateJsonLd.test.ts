@@ -48,6 +48,25 @@ describe('generateOrganizationJsonLd', () => {
     })
     expect(result).not.toHaveProperty('contactPoint')
   })
+
+  it('reports social profiles as sameAs', () => {
+    const result = generateOrganizationJsonLd({
+      serverUrl: 'https://amerikiosks.com',
+      socialUrls: ['https://www.instagram.com/amerikiosks', 'https://www.linkedin.com/company/ak'],
+    })
+    expect(result).toHaveProperty('sameAs', [
+      'https://www.instagram.com/amerikiosks',
+      'https://www.linkedin.com/company/ak',
+    ])
+  })
+
+  it('omits sameAs when no profile has a url', () => {
+    const result = generateOrganizationJsonLd({
+      serverUrl: 'https://amerikiosks.com',
+      socialUrls: [null, undefined, ''],
+    })
+    expect(result).not.toHaveProperty('sameAs')
+  })
 })
 
 describe('generateWebsiteJsonLd', () => {

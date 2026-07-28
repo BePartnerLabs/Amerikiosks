@@ -4,6 +4,7 @@ import Link from 'next/link'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Icon } from '@/components/Icon'
 import { CMSLink } from '@/components/Link'
+import { type SocialLink, SocialLinks } from '@/components/SocialLinks'
 import type { Header } from '@/payload-types'
 import '../Nav/megamenu.css'
 import './mobile-menu.css'
@@ -13,6 +14,7 @@ type MegaItem = NonNullable<NonNullable<NavItem['megaMenu']>['items']>[number]
 
 interface MobileMenuProps {
   data: Header
+  socialLinks?: SocialLink[] | null
 }
 
 // ── Module-scope helpers (no component state needed) ───────────────────────
@@ -42,7 +44,7 @@ const resolveMegaItemHref = (item: MegaItem): string => {
   return '#'
 }
 
-export const MobileMenu: React.FC<MobileMenuProps> = ({ data }) => {
+export const MobileMenu: React.FC<MobileMenuProps> = ({ data, socialLinks }) => {
   const [open, setOpen] = useState(false)
   const [activePanel, setActivePanel] = useState<NavItem | null>(null)
   const navItems = (data?.navItems || []).filter((item) => !item.hidden)
@@ -220,6 +222,11 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ data }) => {
                 />
               </span>
             )}
+
+            <SocialLinks
+              links={socialLinks}
+              variant="mobile"
+            />
           </div>
 
           {/* Sub panel */}

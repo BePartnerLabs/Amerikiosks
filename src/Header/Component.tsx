@@ -5,7 +5,10 @@ import { HeaderClient } from './Component.client'
 
 export async function Header() {
   const locale = await getLocale()
-  const headerData = await getCachedGlobal('header', 1, locale)()
+  const [headerData, settings] = await Promise.all([
+    getCachedGlobal('header', 1, locale)(),
+    getCachedGlobal('settings', 0, locale)(),
+  ])
 
   return (
     <>
@@ -21,7 +24,10 @@ export async function Header() {
           }),
         }}
       />
-      <HeaderClient data={headerData} />
+      <HeaderClient
+        data={headerData}
+        socialLinks={settings?.socialLinks}
+      />
     </>
   )
 }

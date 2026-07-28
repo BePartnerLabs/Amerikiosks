@@ -55,6 +55,7 @@ import * as migration_20260727_235750_footer_localize_column_labels_and_cta from
 import * as migration_20260728_000142_header_show_language_switcher from './20260728_000142_header_show_language_switcher';
 import * as migration_20260728_024908_form_drawer_targets from './20260728_024908_form_drawer_targets';
 import * as migration_20260728_025847_footer_cta_modal_form from './20260728_025847_footer_cta_modal_form';
+import * as migration_20260728_041216_settings_social_links from './20260728_041216_settings_social_links';
 
 export const migrations = [
   {
@@ -340,6 +341,11 @@ export const migrations = [
   {
     up: migration_20260728_025847_footer_cta_modal_form.up,
     down: migration_20260728_025847_footer_cta_modal_form.down,
-    name: '20260728_025847_footer_cta_modal_form'
+    name: '20260728_025847_footer_cta_modal_form',
+  },
+  {
+    up: migration_20260728_041216_settings_social_links.up,
+    down: migration_20260728_041216_settings_social_links.down,
+    name: '20260728_041216_settings_social_links'
   },
 ];

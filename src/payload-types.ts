@@ -3713,6 +3713,23 @@ export interface Setting {
    */
   googleAnalyticsId?: string | null;
   /**
+   * Shown in the footer, in the header (desktop and mobile menu) and reported to search engines as the brand’s official profiles.
+   */
+  socialLinks?:
+    | {
+        /**
+         * Decides which logo is rendered.
+         */
+        platform: 'instagram' | 'linkedin' | 'facebook' | 'youtube' | 'tiktok' | 'x' | 'whatsapp';
+        url: string;
+        /**
+         * Optional. Overrides the screen-reader label, which defaults to "Amerikiosks on Instagram".
+         */
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
    * When enabled, /llms.txt is publicly accessible and lists site content for AI agents.
    */
   llmsEnabled?: boolean | null;
@@ -3884,6 +3901,14 @@ export interface SettingsSelect<T extends boolean = true> {
         id?: T;
       };
   googleAnalyticsId?: T;
+  socialLinks?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        label?: T;
+        id?: T;
+      };
   llmsEnabled?: T;
   llmsSiteDescription?: T;
   llmsIncludePages?: T;

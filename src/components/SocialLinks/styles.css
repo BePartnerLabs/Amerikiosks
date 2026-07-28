@@ -1,0 +1,78 @@
+/* ═══════════════════════════════════════════════════════════════
+   Social links — shared by footer, header and mobile menu
+   ═══════════════════════════════════════════════════════════════ */
+
+.ak-social {
+  display: flex;
+  align-items: center;
+  gap: var(--bp-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ak-social__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* Icons are 20px; the padding brings the hit area to the 44px minimum
+     recommended for touch targets without changing the visual size. */
+  padding: var(--bp-space-3);
+  margin: calc(var(--bp-space-3) * -1);
+  color: currentColor;
+  opacity: 0.75;
+  transition: opacity var(--bp-duration-fast) var(--bp-ease);
+}
+
+.ak-social__link:hover,
+.ak-social__link:focus-visible {
+  opacity: 1;
+}
+
+.ak-social__link:focus-visible {
+  outline: 2px solid var(--ak-accent);
+  outline-offset: 2px;
+  border-radius: var(--ak-radius);
+}
+
+/* ─── Footer ────────────────────────────────────────────── */
+.ak-social--footer {
+  --_social-color: var(--social-color, var(--ak-white));
+
+  color: var(--_social-color);
+}
+
+/* ─── Header ────────────────────────────────────────────── */
+/* White, like the nav links and the logo, since the header sits on a dark
+   surface. Hidden at the same container width where the nav collapses into the
+   hamburger — the mobile sheet renders them instead. */
+.ak-social--header {
+  --_social-color: var(--social-color, var(--ak-white));
+
+  gap: var(--bp-space-2);
+  color: var(--_social-color);
+  /* Separated from the language switcher / CTA cluster on its right. */
+  margin-inline-end: var(--bp-space-2);
+  padding-inline-end: var(--bp-space-4);
+  border-inline-end: 1px solid color-mix(in srgb, var(--_social-color) 20%, transparent);
+}
+
+@container header-inner (max-width: 59.99rem) {
+  .ak-social--header {
+    display: none;
+  }
+}
+
+/* ─── Mobile menu panel ─────────────────────────────────── */
+.ak-social--mobile {
+  gap: var(--bp-space-4);
+  margin-block-start: var(--bp-space-6);
+  padding-block-start: var(--bp-space-6);
+  border-block-start: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+}
+
+@container header-inner (min-width: 60rem) {
+  .ak-social--mobile {
+    display: none;
+  }
+}

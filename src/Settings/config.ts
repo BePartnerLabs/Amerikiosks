@@ -102,6 +102,61 @@ export const Settings: GlobalConfig = {
           ],
         },
         {
+          label: 'Social',
+          fields: [
+            {
+              // Not localized: a profile URL is the same in every locale.
+              name: 'socialLinks',
+              type: 'array',
+              label: 'Social profiles',
+              maxRows: 8,
+              admin: {
+                description:
+                  'Shown in the footer, in the header (desktop and mobile menu) and reported to search engines as the brand’s official profiles.',
+                components: { RowLabel: '@/Settings/SocialRowLabel#SocialRowLabel' },
+              },
+              fields: [
+                {
+                  name: 'platform',
+                  type: 'select',
+                  required: true,
+                  options: [
+                    { label: 'Instagram', value: 'instagram' },
+                    { label: 'LinkedIn', value: 'linkedin' },
+                    { label: 'Facebook', value: 'facebook' },
+                    { label: 'YouTube', value: 'youtube' },
+                    { label: 'TikTok', value: 'tiktok' },
+                    { label: 'X (Twitter)', value: 'x' },
+                    { label: 'WhatsApp', value: 'whatsapp' },
+                  ],
+                  admin: { description: 'Decides which logo is rendered.' },
+                },
+                {
+                  name: 'url',
+                  type: 'text',
+                  required: true,
+                  validate: (value: unknown) => {
+                    if (typeof value !== 'string' || !value.startsWith('https://')) {
+                      return 'Enter the full profile URL, starting with https://'
+                    }
+                    return true
+                  },
+                  admin: { placeholder: 'https://www.instagram.com/amerikiosks' },
+                },
+                {
+                  name: 'label',
+                  type: 'text',
+                  localized: true,
+                  admin: {
+                    description:
+                      'Optional. Overrides the screen-reader label, which defaults to "Amerikiosks on Instagram".',
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        {
           label: 'LLMs',
           fields: [
             {
