@@ -40,6 +40,21 @@ Future ideas and planned improvements for the Amerikiosks website. Items are gro
 
 ---
 
+## Forms — abuse protection
+
+Raised 2026-07-27. `POST /api/form-submissions` is a fully public, unauthenticated, unthrottled write endpoint — proven trivially scriptable while debugging the upload 404 (a plain `curl` created real submissions and, on integrated forms, real Monday items). Every form on the site funnels into it, so a bot has one target, and each accepted submission costs a Monday API call plus, on the upload forms, an R2 object. Nothing currently stands between a script and the client's CRM.
+
+- **Bot protection on form submission** — three viable options, in rough order of effort:
+  - **Cloudflare Turnstile** — free, privacy-friendly, no user interaction in the common case, and R2 is already Cloudflare so the account exists. Needs a widget in `src/blocks/Form/Component.tsx`, a `cf-turnstile-response` token on the submission, and server-side verification against `siteverify` before the create — meaning submissions can no longer go straight to Payload's REST endpoint; they'd route through an owned `/next/*` route (repository pattern) that verifies first and then writes via the Local API. That routing change is the bulk of the work, and it also gives us the natural place to hang rate limiting.
+  - **Vercel BotID** — least code (a call in the route, no visible widget), but it's a Vercel-platform feature; check plan availability and pricing before committing.
+  - **Honeypot + timing heuristic** — near-zero effort, catches naive bots only. Worth adding regardless of which of the above wins, not as a substitute for one.
+- **Rate limiting per IP on the submission route** — independent of captcha and cheap once the `/next/*` route above exists. Even a generous limit turns a scripted flood into a nuisance instead of a CRM cleanup job.
+- **Consider gating `POST /api/form-submissions` itself** once an owned route exists — the plugin's REST endpoint would otherwise remain an unprotected bypass around whatever we put in front of it.
+
+Sequence matters: the `/next/*` submission route is the prerequisite for all three items, so design it once rather than bolting each control onto the current direct-to-Payload call.
+
+---
+
 ## Design System
 
 - **Narrow "prose" lane on `.bp-content-grid`** — Discussed 2026-07-20 while building the legal pages (Privacy/Cookie/Terms). `.bp-content-grid` (`src/app/(frontend)/globals.css`) currently exposes `full-width` / `breakout` / `content` named lines, with `content` maxing out at 1344px — fine for marketing layouts (cards, heroes) but too wide for a wall of body text (blog posts, legal pages), where comfortable line length is closer to ~44rem. Shipped a stopgap for now: `max-width: 44rem; margin-inline: auto;` scoped to `.ak-content .ak-rich-text` in `src/blocks/Content/styles.css` — narrows the *text*, not the grid. The more correct fix is a new named line on the shared grid itself (e.g. `[prose-start]...[prose-end]`, narrower than `content`) so blog/legal content can opt in via `grid-column: prose`, consistent with how `breakout`/`full-width` already work. Deliberately not done in the GDPR branch — it touches a primitive shared by every block on the site and belongs in its own design-system spec (`openspec/specs/design-system/spec.md`), not bundled into unrelated feature work.
