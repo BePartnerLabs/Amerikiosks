@@ -54,7 +54,7 @@ describe('GAListener', () => {
     document.body.removeChild(el)
   })
 
-  it('includes machineId when data-ga-machine-id is present (e.g. claim_submit from a QR-originated visit)', () => {
+  it('includes machine_id when data-ga-machine-id is present (e.g. claim_submit from a QR-originated visit)', () => {
     const gtag = vi.fn()
     // biome-ignore lint/suspicious/noExplicitAny: assigning the global gtag mock for this test
     ;(window as any).gtag = gtag
@@ -70,12 +70,12 @@ describe('GAListener', () => {
     expect(gtag).toHaveBeenCalledWith(
       'event',
       'claim_submit',
-      expect.objectContaining({ machineId: 'AK-0231' }),
+      expect.objectContaining({ machine_id: 'AK-0231' }),
     )
     document.body.removeChild(el)
   })
 
-  it('the common case: omits machineId entirely (not the string "undefined") when data-ga-machine-id is absent', () => {
+  it('the common case: omits machine_id entirely (not the string "undefined") when data-ga-machine-id is absent', () => {
     const gtag = vi.fn()
     // biome-ignore lint/suspicious/noExplicitAny: assigning the global gtag mock for this test
     ;(window as any).gtag = gtag
@@ -88,11 +88,11 @@ describe('GAListener', () => {
     el.click()
 
     const [, , params] = gtag.mock.calls[0]
-    expect(params.machineId).toBeUndefined()
+    expect(params.machine_id).toBeUndefined()
     document.body.removeChild(el)
   })
 
-  it('includes formName when data-ga-form-name is present (e.g. generate_lead from a modal form drawer)', () => {
+  it('includes form_name when data-ga-form-name is present (e.g. generate_lead from a modal form drawer)', () => {
     const gtag = vi.fn()
     // biome-ignore lint/suspicious/noExplicitAny: assigning the global gtag mock for this test
     ;(window as any).gtag = gtag
@@ -108,7 +108,7 @@ describe('GAListener', () => {
     expect(gtag).toHaveBeenCalledWith(
       'event',
       'generate_lead',
-      expect.objectContaining({ formName: 'Partnership Program' }),
+      expect.objectContaining({ form_name: 'Partnership Program' }),
     )
     document.body.removeChild(el)
   })
