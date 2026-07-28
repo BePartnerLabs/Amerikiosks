@@ -4,7 +4,11 @@ import type { MondayBoardsCache } from '@/utilities/detectMondayDrift'
 
 type FormField = { name?: string; externalId?: string; blockType?: string }
 type SubmissionDataItem = { field: string; value: unknown }
-type SubmissionUploadItem = { field: string; value: Array<{ value: number | string }> }
+type MediaDoc = { url?: string | null; filename?: string | null; mimeType?: string | null }
+type SubmissionUploadItem = {
+  field: string
+  value: Array<{ value: number | string | MediaDoc }>
+}
 
 // Whichever submitted field carries one of these externalIds becomes the
 // Monday item's title (create_item's item_name) instead of a regular
@@ -201,13 +205,22 @@ export const dispatchFormSync: CollectionAfterChangeHook = async ({ doc, operati
       const columnId = externalIdByFieldName.get(field)
       if (!columnId) continue
 
-      for (const { value: mediaId } of value ?? []) {
-        const media = await req.payload.findByID({
-          collection: 'media',
-          id: mediaId,
-          depth: 0,
-          req,
-        })
+      for (const { value: mediaRef } of value ?? []) {
+        // Same depth caveat as `doc.form` above: at the REST API's default
+        // depth the relationship arrives as the populated media doc, not an
+        // id. Passing that object straight into findByID sent an object as a
+        // SQL param, which failed the query, poisoned the request's
+        // transaction, and surfaced to the browser as a bare 404 on POST
+        // /api/form-submissions — the submission itself never got committed.
+        const media =
+          typeof mediaRef === 'object' && mediaRef !== null
+            ? (mediaRef as MediaDoc)
+            : ((await req.payload.findByID({
+                collection: 'media',
+                id: mediaRef,
+                depth: 0,
+                req,
+              })) as MediaDoc)
         if (!media.url) continue
 
         const res = await fetch(media.url)
@@ -234,7 +247,17 @@ export const dispatchFormSync: CollectionAfterChangeHook = async ({ doc, operati
     req.payload.logger.error(
       `dispatchFormSync: failed to sync submission ${doc.id}: ${(err as Error).message}`,
     )
-    await updateStatus({ syncStatus: 'error', syncError: (err as Error).message })
+    // A sync failure must never fail the submission itself. If the error came
+    // from the DB, the request's transaction is already aborted and this
+    // status write throws too — swallow it rather than turning a stored
+    // submission into an error response for the visitor.
+    try {
+      await updateStatus({ syncStatus: 'error', syncError: (err as Error).message })
+    } catch (statusErr) {
+      req.payload.logger.error(
+        `dispatchFormSync: could not record sync error on submission ${doc.id}: ${(statusErr as Error).message}`,
+      )
+    }
   }
 
   return doc
