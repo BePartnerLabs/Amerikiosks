@@ -178,6 +178,20 @@ export const Header: GlobalConfig = {
         },
       ],
     },
+    {
+      // Off by default: the Spanish translation is still in progress, so the
+      // switcher stays hidden until an editor turns it on. Hiding it only
+      // removes the control — /es keeps resolving, so the site can still be
+      // previewed by URL while it's being translated.
+      name: 'showLanguageSwitcher',
+      type: 'checkbox',
+      defaultValue: false,
+      label: 'Show language switcher',
+      admin: {
+        description:
+          'Show the EN/ES toggle in the header. Turn this on once the Spanish translation is ready — the /es URLs work either way.',
+      },
+    },
   ], // end global fields
   hooks: {
     afterChange: [revalidateHeader],

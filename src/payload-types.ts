@@ -3591,6 +3591,10 @@ export interface Header {
      */
     modalForm?: (number | null) | Form;
   };
+  /**
+   * Show the EN/ES toggle in the header. Turn this on once the Spanish translation is ready — the /es URLs work either way.
+   */
+  showLanguageSwitcher?: boolean | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -3609,6 +3613,10 @@ export interface Footer {
   columns?:
     | {
         label: string;
+        /**
+         * Temporarily remove this whole column from the footer without deleting it.
+         */
+        hidden?: boolean | null;
         links?:
           | {
               link: {
@@ -3630,6 +3638,10 @@ export interface Footer {
                 modalForm?: (number | null) | Form;
                 label: string;
               };
+              /**
+               * Temporarily remove this link from the footer without deleting it.
+               */
+              hidden?: boolean | null;
               id?: string | null;
             }[]
           | null;
@@ -3784,6 +3796,7 @@ export interface HeaderSelect<T extends boolean = true> {
         url?: T;
         modalForm?: T;
       };
+  showLanguageSwitcher?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -3798,6 +3811,7 @@ export interface FooterSelect<T extends boolean = true> {
     | T
     | {
         label?: T;
+        hidden?: T;
         links?:
           | T
           | {
@@ -3811,6 +3825,7 @@ export interface FooterSelect<T extends boolean = true> {
                     modalForm?: T;
                     label?: T;
                   };
+              hidden?: T;
               id?: T;
             };
         id?: T;

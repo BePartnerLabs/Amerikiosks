@@ -37,29 +37,35 @@ export function FooterContent({ footer }: FooterContentProps) {
             {brandDescription && <p className="ak-footer__tagline">{brandDescription}</p>}
           </div>
 
-          {/* Nav columns */}
-          {(columns ?? []).map((col, i) => (
-            <div
-              key={col.id ?? i}
-              className="ak-footer__col"
-            >
-              <p className="ak-footer__col-heading">{col.label}</p>
-              <ul className="ak-footer__col-links">
-                {(col.links ?? []).map(({ link, id }, j) => (
-                  <li
-                    key={id ?? j}
-                    data-ga-event="footer_link_click"
-                    data-ga-section="footer"
-                  >
-                    <CMSLink
-                      {...link}
-                      className="ak-footer__link"
-                    />
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          {/* Nav columns — `hidden` lets an editor pull a column or a single
+              link out of the footer without deleting it, same as the header's
+              nav items. */}
+          {(columns ?? [])
+            .filter((col) => !col.hidden)
+            .map((col, i) => (
+              <div
+                key={col.id ?? i}
+                className="ak-footer__col"
+              >
+                <p className="ak-footer__col-heading">{col.label}</p>
+                <ul className="ak-footer__col-links">
+                  {(col.links ?? [])
+                    .filter((l) => !l.hidden)
+                    .map(({ link, id }, j) => (
+                      <li
+                        key={id ?? j}
+                        data-ga-event="footer_link_click"
+                        data-ga-section="footer"
+                      >
+                        <CMSLink
+                          {...link}
+                          className="ak-footer__link"
+                        />
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            ))}
 
           {/* Contact column */}
           {(contactCta || contactEmail) && (
