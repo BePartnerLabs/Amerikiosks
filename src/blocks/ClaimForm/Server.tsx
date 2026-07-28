@@ -11,7 +11,8 @@ export const ClaimFormServer: React.FC<ClaimFormBlockProps> = async (props) => {
     collection: 'brands',
     depth: 1,
     overrideAccess: false,
-    sort: 'order',
+    // Same tiebreaker as the collection's defaultSort — see Brands.ts.
+    sort: ['order', 'name'],
     limit: 100,
   })
 
