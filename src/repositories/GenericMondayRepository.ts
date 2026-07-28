@@ -1,4 +1,5 @@
 import { serverHttpClient } from './clients/ServerHttpClient'
+import { isMondayMocked, logMockedMondayCall } from './mondayMock'
 
 const MONDAY_API_URL = 'https://api.monday.com/v2'
 
@@ -33,21 +34,6 @@ export class MondayApiError extends Error {
   }
 }
 
-/**
- * In local development every form submission would otherwise create a real
- * item on the client's real Monday board — the boards in
- * docs/monday-forms-setup.md are production boards their staff work from.
- * So dev logs the request instead of sending it. Set MONDAY_LIVE=true to
- * opt back in when deliberately testing the integration end to end.
- */
-const isMocked = process.env.NODE_ENV === 'development' && process.env.MONDAY_LIVE !== 'true'
-
-function logMocked(operation: string, details: Record<string, unknown>): void {
-  console.info(
-    `\n[monday:mock] ${operation} — not sent (NODE_ENV=development, MONDAY_LIVE unset)\n${JSON.stringify(details, null, 2)}\n`,
-  )
-}
-
 function assertNoGraphQLErrors(body: MondayResponse): void {
   if (body.errors?.length) {
     throw new MondayApiError(body.errors)
@@ -69,8 +55,8 @@ export const GenericMondayRepository = {
     columnValues: Record<string, unknown>,
     apiToken: string,
   ): Promise<{ id: string }> {
-    if (isMocked) {
-      logMocked('create_item', { boardId, groupId, itemName, columnValues })
+    if (isMondayMocked) {
+      logMockedMondayCall('create_item', { boardId, groupId, itemName, columnValues })
       return { id: `mock-${Date.now()}` }
     }
 
@@ -107,8 +93,8 @@ export const GenericMondayRepository = {
     file: { buffer: Buffer; filename: string; contentType: string },
     apiToken: string,
   ): Promise<void> {
-    if (isMocked) {
-      logMocked('add_file_to_column', {
+    if (isMondayMocked) {
+      logMockedMondayCall('add_file_to_column', {
         itemId,
         columnId,
         filename: file.filename,

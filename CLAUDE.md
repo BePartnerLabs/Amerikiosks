@@ -39,6 +39,17 @@ Note: `insights` was formerly `posts` — old references to a `posts` collection
 
 `podman-compose up -d` (o `docker-compose up -d`) levanta Postgres + MinIO usando el `.env` file. En desarrollo normal solo se necesita la DB y MinIO — el app corre con `pnpm dev`.
 
+### Monday.com en local: mockeado por defecto
+
+Los boards de Monday que usa el proyecto son **boards de producción** del cliente (ver `docs/monday-forms-setup.md`); no hay cuenta sandbox. Por eso, con `NODE_ENV=development` **ninguna** llamada a Monday sale de la máquina: `src/repositories/mondayMock.ts` intercepta y escribe el payload en consola con el prefijo `[monday:mock]`, devolviendo un id falso.
+
+Cubre los dos caminos, que comparten API y token:
+
+- `GenericMondayRepository` — el sync de formularios (`create_item`, `add_file_to_column`).
+- `MondayRepository` — los claims de reembolso del `ClaimForm`.
+
+No hace falta configurar nada: el mock está activo aunque el token de Monday esté puesto en Settings. Para probar la integración de verdad, `MONDAY_LIVE=true` en `.env.local` — y recuerda que eso crea items reales que alguien tendrá que borrar a mano. En producción no aplica: el guard exige `NODE_ENV === 'development'`.
+
 ## Design System (BPL DS)
 
 Antes de escribir cualquier componente visual, invoca la skill `bpl-design-system` (reglas de variables CSS y flujo para agregar un componente). Cuando el usuario pase un path de variable de Figma, invoca la skill `figma-tokens`.
