@@ -88,6 +88,8 @@
       "dismiss": "Dismiss",
       "tooLarge": "File exceeds the 8MB size limit.",
       "wrongType": "File must be a JPEG, PNG, WEBP or HEIC image."
-    }
+    },
+    "summary": "{count, plural, one {1 field needs attention} other {# fields need attention}}",
+    "progressLabel": "Form completion"
   }
 }

@@ -88,6 +88,8 @@
       "dismiss": "Quitar",
       "tooLarge": "El archivo supera el límite de 8MB.",
       "wrongType": "El archivo debe ser una imagen JPEG, PNG, WEBP o HEIC."
-    }
+    },
+    "summary": "{count, plural, one {1 campo requiere atención} other {# campos requieren atención}}",
+    "progressLabel": "Progreso del formulario"
   }
 }

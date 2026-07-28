@@ -62,6 +62,10 @@ export const FormDrawerTrigger: React.FC<FormDrawerTriggerProps> = ({
       popover=""
       className="ak-link-drawer"
     >
+      <div
+        className="ak-link-drawer__accent"
+        aria-hidden="true"
+      />
       <div className="ak-link-drawer__header">
         {form.title && <h2 className="ak-link-drawer__title">{form.title}</h2>}
         <button

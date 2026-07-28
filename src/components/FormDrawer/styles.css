@@ -51,13 +51,29 @@
   background-color: var(--_backdrop);
 }
 
+/* Brand rule across the top of the panel — the drawer's only piece of
+   decoration, and the first thing that identifies it as Amerikiosks. */
+.ak-link-drawer__accent {
+  flex: none;
+  height: 4px;
+
+  --_background: var(--ak-accent);
+  background-color: var(--_background);
+}
+
 .ak-link-drawer__header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--bp-space-4, 1rem);
   padding: var(--bp-space-5, 1.25rem) var(--bp-space-6, 1.5rem);
   border-bottom: 1px solid var(--ak-color-border);
+
+  --_background: var(--ak-color-surface);
+  background-color: var(--_background);
 }
 
 .ak-link-drawer__title {
@@ -118,4 +134,47 @@
 
 .ak-link-drawer .ak-form__field {
   grid-column: span 1;
+}
+
+/* Split is a full-page layout; 28rem never has room for two columns. */
+.ak-link-drawer .ak-form--split {
+  display: block;
+  max-width: none;
+}
+
+.ak-link-drawer .ak-form__aside {
+  display: none;
+}
+
+/* The submit bar stays reachable no matter how long the form is — the
+   16-field applications otherwise bury it under a full screen of scroll.
+   It needs an opaque background of its own: sticky content sitting over the
+   fields it is scrolling past reads as a rendering bug. */
+.ak-link-drawer .ak-form__actions {
+  position: sticky;
+  bottom: 0;
+  align-items: stretch;
+  margin-inline: calc(var(--bp-space-6, 1.5rem) * -1);
+  margin-top: var(--bp-space-4, 1rem);
+  padding: var(--bp-space-4, 1rem) var(--bp-space-6, 1.5rem);
+  border-top: 1px solid var(--ak-color-border);
+
+  --_background: var(--ak-color-surface);
+  background-color: var(--_background);
+}
+
+.ak-link-drawer .ak-form__progress {
+  justify-content: center;
+}
+
+.ak-link-drawer .ak-form__submit {
+  width: 100%;
+}
+
+/* A `message` block between fields reads as a section separator here, which
+   is what turns 16 flat inputs into three legible groups. */
+.ak-link-drawer .ak-form__message-block {
+  margin-block: var(--bp-space-6, 1.5rem) var(--bp-space-2, 0.5rem);
+  padding-bottom: var(--bp-space-2, 0.5rem);
+  border-bottom: 1px solid var(--ak-color-border);
 }

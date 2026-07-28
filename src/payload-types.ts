@@ -766,6 +766,50 @@ export interface Form {
    */
   mondayGroupId?: string | null;
   /**
+   * Short paragraph shown under the form title. This is what appears inside the modal drawer, which has no block-level intro of its own.
+   */
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Small print under the submit button — reassurance, not instructions (e.g. "No staffing required. Amerikiosks handles placement, setup and daily operations.").
+   */
+  footnote?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Headline of the thank-you state, e.g. "Request received". The rich text below becomes the body.
+   */
+  confirmationHeading?: string | null;
+  /**
+   * What happens next, with a real timeframe — e.g. "We'll email you within 2 business days." This is the line that decides whether the site reads as serious.
+   */
+  confirmationNext?: string | null;
+  /**
    * Adds a required consent checkbox above the submit button. Turn this on for any form that collects personal data (name, email, phone). The answer and its timestamp are stored on each submission as proof.
    */
   requiresConsent?: boolean | null;
@@ -962,6 +1006,10 @@ export interface FormBlock {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * Split puts the intro content in a dark panel to the left of the fields. Use it on a full page like /contact; it falls back to stacked on narrow screens and inside the modal drawer, which is always too narrow for two columns.
+   */
+  layout?: ('stacked' | 'split') | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'formBlock';
@@ -2520,6 +2568,7 @@ export interface FormBlockSelect<T extends boolean = true> {
   form?: T;
   enableIntro?: T;
   introContent?: T;
+  layout?: T;
   id?: T;
   blockName?: T;
 }
@@ -3397,6 +3446,10 @@ export interface FormsSelect<T extends boolean = true> {
   integrationTarget?: T;
   externalId?: T;
   mondayGroupId?: T;
+  description?: T;
+  footnote?: T;
+  confirmationHeading?: T;
+  confirmationNext?: T;
   requiresConsent?: T;
   consentText?: T;
   updatedAt?: T;

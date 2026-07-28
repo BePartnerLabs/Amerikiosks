@@ -60,6 +60,7 @@ import * as migration_20260728_050000_brands_backfill_versions from './20260728_
 import * as migration_20260728_051222_redirects_type_field from './20260728_051222_redirects_type_field';
 import * as migration_20260728_051500_redirects_normalize_from from './20260728_051500_redirects_normalize_from';
 import * as migration_20260728_192449_forms_consent_and_turnstile from './20260728_192449_forms_consent_and_turnstile';
+import * as migration_20260728_194219_forms_description_footnote_confirmation from './20260728_194219_forms_description_footnote_confirmation';
 
 export const migrations = [
   {
@@ -370,6 +371,11 @@ export const migrations = [
   {
     up: migration_20260728_192449_forms_consent_and_turnstile.up,
     down: migration_20260728_192449_forms_consent_and_turnstile.down,
-    name: '20260728_192449_forms_consent_and_turnstile'
+    name: '20260728_192449_forms_consent_and_turnstile',
+  },
+  {
+    up: migration_20260728_194219_forms_description_footnote_confirmation.up,
+    down: migration_20260728_194219_forms_description_footnote_confirmation.down,
+    name: '20260728_194219_forms_description_footnote_confirmation'
   },
 ];

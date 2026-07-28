@@ -5,9 +5,9 @@ import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import type React from 'react'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { FieldValues, UseFormRegister } from 'react-hook-form'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import RichText from '@/components/RichText'
 import { FormsRepository } from '@/repositories'
 import { fields } from './fields'
@@ -20,12 +20,24 @@ type Gtag = (
   params: { form_name?: string; locale?: string },
 ) => void
 
+/** Fields the formOverrides in src/plugins/index.ts add on top of the plugin's own. */
+type ExtendedForm = FormType & {
+  description?: DefaultTypedEditorState
+  footnote?: DefaultTypedEditorState
+  confirmationHeading?: string
+  confirmationNext?: string
+  requiresConsent?: boolean
+  consentText?: DefaultTypedEditorState
+}
+
 export type FormBlockType = {
   blockName?: string
   blockType?: 'formBlock'
   enableIntro: boolean
   form: FormType
   introContent?: DefaultTypedEditorState
+  /** 'split' puts the intro in a panel beside the fields — full-page only. */
+  layout?: 'stacked' | 'split'
   /** Set by FormDrawer — adds a Close button to the confirmation state. */
   onRequestClose?: () => void
 }
@@ -47,15 +59,20 @@ export const FormBlock: React.FC<
       title,
     } = {},
     introContent,
+    layout = 'stacked',
     onRequestClose,
   } = props
 
   const t = useTranslations('form')
 
-  const { requiresConsent, consentText } = formFromProps as FormType & {
-    requiresConsent?: boolean
-    consentText?: DefaultTypedEditorState
-  }
+  const {
+    description,
+    footnote,
+    confirmationHeading,
+    confirmationNext,
+    requiresConsent,
+    consentText,
+  } = formFromProps as ExtendedForm
 
   const formMethods = useForm({
     defaultValues: formFromProps.fields,
@@ -68,6 +85,7 @@ export const FormBlock: React.FC<
     formState: { errors },
     handleSubmit,
     register,
+    setFocus,
   } = formMethods
 
   // The form's value shape is the CMS-defined field list, so react-hook-form is
@@ -82,6 +100,11 @@ export const FormBlock: React.FC<
   // Anything submitted faster than the route's threshold is treated as a bot.
   const renderedAtRef = useRef<number>(Date.now())
   const honeypotRef = useRef<HTMLInputElement>(null)
+
+  // Submitting a long form and seeing nothing happen — because the offending
+  // field is three screens up — is the worst failure mode in the drawer.
+  const [invalidFields, setInvalidFields] = useState<{ name: string; label: string }[]>([])
+  const summaryRef = useRef<HTMLDivElement>(null)
 
   const {
     mutate,
@@ -125,11 +148,33 @@ export const FormBlock: React.FC<
   const lastDataRef = useRef<FormFieldBlock[] | undefined>(undefined)
   const onSubmit = useCallback(
     (data: FormFieldBlock[]) => {
+      setInvalidFields([])
       lastDataRef.current = data
       mutate(data)
     },
     [mutate],
   )
+
+  const onInvalid = useCallback(() => {
+    const labelByName = new Map(
+      (formFromProps?.fields ?? [])
+        .filter((f) => 'name' in f)
+        .map((f) => [
+          (f as { name: string }).name,
+          (f as { label?: string; name: string }).label || (f as { name: string }).name,
+        ]),
+    )
+    const found = Object.keys(errors)
+      .filter((name) => labelByName.has(name))
+      .map((name) => ({ name, label: labelByName.get(name) as string }))
+
+    setInvalidFields(found)
+    // Focus beats scroll here: it moves the screen reader too, and the browser
+    // scrolls the focused control into view for free.
+    const first = found[0]?.name
+    if (first) setFocus(first as never)
+    summaryRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+  }, [errors, formFromProps, setFocus])
 
   const retry = useCallback(() => {
     resetMutation()
@@ -150,137 +195,208 @@ export const FormBlock: React.FC<
     }
   }, [hasSubmitted])
 
-  return (
-    <div className="ak-form">
-      {enableIntro && introContent && !hasSubmitted && (
-        <RichText
-          className="ak-form__intro"
-          data={introContent}
-          enableGutter={false}
-        />
-      )}
-      <div className="ak-form__card">
-        <FormProvider {...formMethods}>
-          {!isLoading && hasSubmitted && confirmationType === 'message' && (
-            <div
-              ref={successRef}
-              className="ak-form__success"
-              data-testid="form-block-success"
-              data-ga-event="generate_lead"
-              data-ga-form-name={title}
-              data-ga-label={title}
-              role="status"
-              aria-live="polite"
-              tabIndex={-1}
-            >
-              <RichText data={confirmationMessage} />
-              {onRequestClose && (
-                <button
-                  className="bp-btn bp-btn--dark ak-form__success-close"
-                  type="button"
-                  onClick={onRequestClose}
-                >
-                  {t('successClose')}
-                </button>
-              )}
-            </div>
-          )}
-          {isLoading && !hasSubmitted && <p className="ak-form__loading">{t('loading')}</p>}
-          {mutationError && !isLoading && (
-            <div
-              className="ak-form__status ak-form__status--error"
-              role="alert"
-            >
-              {t('submitError')}
-              <button
-                className="ak-form__retry"
-                type="button"
-                onClick={retry}
-              >
-                {t('retry')}
-              </button>
-            </div>
-          )}
-          {!hasSubmitted && (
-            <form
-              id={formID}
-              onSubmit={handleSubmit(onSubmit)}
-            >
-              {/* Not a real field — a person never sees it, a naive bot fills it. */}
-              <input
-                ref={honeypotRef}
-                className="ak-form__honeypot"
-                name="website_url"
-                type="text"
-                tabIndex={-1}
-                autoComplete="off"
-                aria-hidden="true"
-              />
-              <div className="ak-form__fields">
-                {formFromProps?.fields?.map((field, index) => {
-                  const Field = fields?.[field.blockType as keyof typeof fields] as
-                    | React.ComponentType<Record<string, unknown>>
-                    | undefined
-                  const fieldKey =
-                    (field as { id?: string; name?: string; blockName?: string }).id ||
-                    (field as { id?: string; name?: string; blockName?: string }).name ||
-                    (field as { id?: string; name?: string; blockName?: string }).blockName ||
-                    `${field.blockType}-field-${index}`
-                  if (Field) {
-                    return (
-                      <Field
-                        key={fieldKey}
-                        form={formFromProps}
-                        {...field}
-                        {...formMethods}
-                        control={control}
-                        errors={errors}
-                        register={register}
-                      />
-                    )
-                  }
-                  return null
-                })}
-              </div>
+  // Progress is only worth showing when the form is long enough to feel long —
+  // on a 4-field contact form a progress bar is noise, not reassurance.
+  const answerableFields = (formFromProps?.fields ?? []).filter(
+    (f) => 'name' in f && (f as { blockType?: string }).blockType !== 'message',
+  ) as unknown as { name: string }[]
+  const showProgress = answerableFields.length >= 8
+  const watched = useWatch({ control })
+  const filledCount = answerableFields.filter((f) => {
+    const value = (watched as unknown as Record<string, unknown>)?.[f.name]
+    return value !== undefined && value !== null && value !== '' && value !== false
+  }).length
 
-              {requiresConsent && (
-                <div className="ak-form__consent bp-checkbox-field">
-                  <label className="bp-checkbox">
-                    <input
-                      className="bp-checkbox__input"
-                      id="consent"
-                      type="checkbox"
-                      aria-invalid={Boolean(consentError)}
-                      aria-describedby={consentError ? 'consent-error' : undefined}
-                      {...registerConsent('consent', { required: true })}
+  const intro = enableIntro && introContent && !hasSubmitted && (
+    <RichText
+      className="ak-form__intro"
+      data={introContent}
+      enableGutter={false}
+    />
+  )
+
+  const body = (
+    <div className="ak-form__card">
+      <FormProvider {...formMethods}>
+        {!isLoading && hasSubmitted && confirmationType === 'message' && (
+          <div
+            ref={successRef}
+            className="ak-form__success"
+            data-testid="form-block-success"
+            data-ga-event="generate_lead"
+            data-ga-form-name={title}
+            data-ga-label={title}
+            role="status"
+            aria-live="polite"
+            tabIndex={-1}
+          >
+            <span
+              className="ak-form__success-check"
+              aria-hidden="true"
+            >
+              <span className="ak-form__success-ring" />✓
+            </span>
+            {confirmationHeading && (
+              <h3 className="ak-form__success-heading">{confirmationHeading}</h3>
+            )}
+            <div className="ak-form__success-body">
+              <RichText data={confirmationMessage} />
+            </div>
+            {confirmationNext && <p className="ak-form__success-next">{confirmationNext}</p>}
+            {onRequestClose && (
+              <button
+                className="bp-btn bp-btn--dark ak-form__success-close"
+                type="button"
+                onClick={onRequestClose}
+              >
+                {t('successClose')}
+              </button>
+            )}
+          </div>
+        )}
+        {isLoading && !hasSubmitted && <p className="ak-form__loading">{t('loading')}</p>}
+        {mutationError && !isLoading && (
+          <div
+            className="ak-form__status ak-form__status--error"
+            role="alert"
+          >
+            {t('submitError')}
+            <button
+              className="ak-form__retry"
+              type="button"
+              onClick={retry}
+            >
+              {t('retry')}
+            </button>
+          </div>
+        )}
+        {!hasSubmitted && (
+          <form
+            id={formID}
+            onSubmit={handleSubmit(onSubmit, onInvalid)}
+            noValidate
+          >
+            {invalidFields.length > 0 && (
+              <div
+                ref={summaryRef}
+                className="ak-form__summary"
+                role="alert"
+              >
+                <p className="ak-form__summary-title">
+                  {t('summary', { count: invalidFields.length })}
+                </p>
+                <ul className="ak-form__summary-list">
+                  {invalidFields.map((field) => (
+                    <li key={field.name}>
+                      <button
+                        type="button"
+                        onClick={() => setFocus(field.name as never)}
+                      >
+                        {field.label}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {/* Not a real field — a person never sees it, a naive bot fills it. */}
+            <input
+              ref={honeypotRef}
+              className="ak-form__honeypot"
+              name="website_url"
+              type="text"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+            />
+            <div className="ak-form__fields">
+              {formFromProps?.fields?.map((field, index) => {
+                const Field = fields?.[field.blockType as keyof typeof fields] as
+                  | React.ComponentType<Record<string, unknown>>
+                  | undefined
+                const fieldKey =
+                  (field as { id?: string; name?: string; blockName?: string }).id ||
+                  (field as { id?: string; name?: string; blockName?: string }).name ||
+                  (field as { id?: string; name?: string; blockName?: string }).blockName ||
+                  `${field.blockType}-field-${index}`
+                if (Field) {
+                  return (
+                    <Field
+                      key={fieldKey}
+                      form={formFromProps}
+                      {...field}
+                      {...formMethods}
+                      control={control}
+                      errors={errors}
+                      register={register}
                     />
-                    {consentText ? (
-                      <RichText
-                        className="ak-form__consent-text"
-                        data={consentText}
-                        enableGutter={false}
-                      />
-                    ) : null}
-                  </label>
-                  {consentError && (
-                    <p
-                      className="bp-checkbox-field__error"
-                      id="consent-error"
-                      role="alert"
-                    >
-                      {t('errors.required')}
-                    </p>
-                  )}
+                  )
+                }
+                return null
+              })}
+            </div>
+
+            {requiresConsent && (
+              <div className="ak-form__consent bp-checkbox-field">
+                <label className="bp-checkbox">
+                  <input
+                    className="bp-checkbox__input"
+                    id="consent"
+                    type="checkbox"
+                    aria-invalid={consentError}
+                    aria-describedby={consentError ? 'consent-error' : undefined}
+                    {...registerConsent('consent', { required: true })}
+                  />
+                  {consentText ? (
+                    <RichText
+                      className="ak-form__consent-text"
+                      data={consentText}
+                      enableGutter={false}
+                    />
+                  ) : null}
+                </label>
+                {consentError && (
+                  <p
+                    className="bp-checkbox-field__error"
+                    id="consent-error"
+                    role="alert"
+                  >
+                    {t('errors.required')}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {turnstile.enabled && (
+              <div
+                ref={turnstile.containerRef}
+                className="ak-form__turnstile"
+              />
+            )}
+
+            <div className="ak-form__actions">
+              {showProgress && (
+                <div className="ak-form__progress">
+                  <span className="ak-form__progress-count">
+                    {filledCount} / {answerableFields.length}
+                  </span>
+                  <span
+                    className="ak-form__progress-track"
+                    role="progressbar"
+                    aria-valuemin={0}
+                    aria-valuemax={answerableFields.length}
+                    aria-valuenow={filledCount}
+                    aria-label={t('progressLabel')}
+                  >
+                    <span
+                      className="ak-form__progress-bar"
+                      style={{
+                        inlineSize: `${Math.round((filledCount / answerableFields.length) * 100)}%`,
+                      }}
+                    />
+                  </span>
                 </div>
               )}
-
-              {turnstile.enabled && (
-                <div
-                  ref={turnstile.containerRef}
-                  className="ak-form__turnstile"
-                />
-              )}
-
               <button
                 className="bp-btn bp-btn--dark ak-form__submit"
                 form={formID}
@@ -289,10 +405,53 @@ export const FormBlock: React.FC<
               >
                 {submitButtonLabel}
               </button>
-            </form>
-          )}
-        </FormProvider>
+            </div>
+
+            {footnote && (
+              <RichText
+                className="ak-form__footnote"
+                data={footnote}
+                enableGutter={false}
+              />
+            )}
+          </form>
+        )}
+      </FormProvider>
+    </div>
+  )
+
+  // Split only pays off when there is something to put in the panel.
+  if (layout === 'split' && enableIntro && introContent) {
+    return (
+      <div
+        className="ak-form ak-form--split"
+        data-layout="split"
+      >
+        <aside className="ak-form__aside">
+          <RichText
+            data={introContent}
+            enableGutter={false}
+          />
+        </aside>
+        {body}
       </div>
+    )
+  }
+
+  return (
+    <div className="ak-form">
+      {intro}
+      {/* The drawer has no block-level intro of its own — this is the Form
+          document's own description, which is what the modal design shows
+          under the title. */}
+      {description && !hasSubmitted && (
+        <RichText
+          className="ak-form__description"
+          data={description}
+          enableGutter={false}
+        />
+      )}
+      {body}
     </div>
   )
 }

@@ -39,6 +39,19 @@ export const FormBlock: Block = {
       }),
       label: 'Intro Content',
     },
+    {
+      name: 'layout',
+      type: 'select',
+      defaultValue: 'stacked',
+      options: [
+        { label: 'Stacked — intro above the form', value: 'stacked' },
+        { label: 'Split — intro in a panel beside the form', value: 'split' },
+      ],
+      admin: {
+        description:
+          'Split puts the intro content in a dark panel to the left of the fields. Use it on a full page like /contact; it falls back to stacked on narrow screens and inside the modal drawer, which is always too narrow for two columns.',
+      },
+    },
   ],
   graphQL: {
     singularName: 'FormBlock',

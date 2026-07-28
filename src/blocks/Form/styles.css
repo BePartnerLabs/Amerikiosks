@@ -108,18 +108,304 @@
   box-shadow: var(--_shadow);
 }
 
+.ak-form__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bp-space-3, 0.75rem);
+}
+
+.ak-form__progress {
+  display: flex;
+  align-items: center;
+  gap: var(--bp-space-3, 0.75rem);
+
+  --_color: var(--ak-color-muted);
+  color: var(--_color);
+  font-size: var(--bp-text-xs, 0.75rem);
+}
+
+.ak-form__progress-count {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.ak-form__progress-track {
+  flex: 1;
+  height: 3px;
+  border-radius: 999px;
+  overflow: hidden;
+
+  --_background: var(--ak-color-border);
+  background-color: var(--_background);
+}
+
+.ak-form__progress-bar {
+  display: block;
+  block-size: 100%;
+
+  --_background: var(--ak-accent);
+  background-color: var(--_background);
+  transition: inline-size 0.25s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ak-form__progress-bar {
+    transition: none;
+  }
+}
+
 .ak-form__message-block {
   margin-block: var(--bp-space-12, 3rem);
 }
 
-/* The confirmation state takes focus on submit (see Component.tsx) — without
-   this it would draw the browser's default outline around the whole panel. */
+.ak-form__description {
+  margin-bottom: var(--bp-space-6, 1.5rem);
+}
+
+.ak-form__description p {
+  --_color: var(--ak-color-muted);
+  margin: 0;
+  color: var(--_color);
+  font-size: var(--bp-text-sm, 0.875rem);
+}
+
+.ak-form__footnote {
+  margin-top: var(--bp-space-4, 1rem);
+}
+
+.ak-form__footnote p {
+  --_color: var(--ak-color-muted);
+  margin: 0;
+  color: var(--_color);
+  font-size: var(--bp-text-xs, 0.75rem);
+  line-height: 1.5;
+}
+
+/* ── Error summary ─────────────────────────────────────────────
+   Submitting a long form and seeing nothing change (because the bad field
+   is above the fold) is the failure this exists to prevent. */
+.ak-form__summary {
+  --_color: var(--ak-accent);
+  --_border-color: var(--ak-accent);
+  margin-bottom: var(--bp-space-6, 1.5rem);
+  padding: var(--bp-space-3, 0.75rem) var(--bp-space-4, 1rem);
+  border: 1px solid var(--_border-color);
+  border-radius: var(--bp-radius, 0.625rem);
+  color: var(--_color);
+}
+
+.ak-form__summary-title {
+  margin: 0 0 var(--bp-space-2, 0.5rem);
+  font-size: var(--bp-text-sm, 0.875rem);
+  font-weight: 700;
+}
+
+.ak-form__summary-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bp-space-2, 0.5rem) var(--bp-space-4, 1rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ak-form__summary-list button {
+  --_color: var(--ak-accent);
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--_color);
+  font-size: var(--bp-text-sm, 0.875rem);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ── Confirmation ──────────────────────────────────────────────
+   The state takes focus on submit (see Component.tsx) — hence the reset
+   outline, and the animation below marks the change as a completion rather
+   than a glitch. */
+.ak-form__success {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--bp-space-3, 0.75rem);
+}
+
 .ak-form__success:focus {
   outline: none;
 }
 
+.ak-form__success-check {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  font-size: 1.25rem;
+  font-weight: 700;
+
+  --_color: var(--ak-color-heading);
+  --_background: color-mix(in srgb, var(--ak-accent) 12%, transparent);
+  color: var(--_color);
+  background-color: var(--_background);
+}
+
+.ak-form__success-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+
+  --_border-color: var(--ak-accent);
+  border: 2px solid var(--_border-color);
+  opacity: 0;
+}
+
+.ak-form__success-heading {
+  --_color: var(--ak-color-heading);
+  margin: 0;
+  color: var(--_color);
+  font-size: var(--bp-text-xl, 1.25rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.ak-form__success-body p:last-child {
+  margin-bottom: 0;
+}
+
+.ak-form__success-next {
+  --_color: var(--ak-color-muted);
+  --_background: var(--ak-color-surface-muted, transparent);
+  --_border-color: var(--ak-color-border);
+  width: 100%;
+  margin: 0;
+  padding: var(--bp-space-3, 0.75rem);
+  border: 1px dashed var(--_border-color);
+  border-radius: var(--bp-radius, 0.625rem);
+  background-color: var(--_background);
+  color: var(--_color);
+  font-size: var(--bp-text-sm, 0.875rem);
+}
+
 .ak-form__success-close {
-  margin-top: var(--bp-space-6, 1.5rem);
+  margin-top: var(--bp-space-3, 0.75rem);
+}
+
+/* One element with character (the check), everything else in a minor key,
+   all of it under 750ms — the visitor already waited for the server. */
+.ak-form__success-check {
+  animation: ak-form-pop 420ms cubic-bezier(0.2, 0.8, 0.3, 1.2) both;
+}
+
+.ak-form__success-ring {
+  animation: ak-form-ripple 700ms ease-out both;
+}
+
+.ak-form__success-heading {
+  animation: ak-form-rise 380ms ease-out 90ms both;
+}
+
+.ak-form__success-body {
+  animation: ak-form-rise 380ms ease-out 160ms both;
+}
+
+.ak-form__success-next {
+  animation: ak-form-rise 380ms ease-out 240ms both;
+}
+
+.ak-form__success-close {
+  animation: ak-form-rise 380ms ease-out 320ms both;
+}
+
+@keyframes ak-form-pop {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+
+  60% {
+    transform: scale(1.06);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes ak-form-rise {
+  from {
+    transform: translateY(6px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes ak-form-ripple {
+  from {
+    transform: scale(0.6);
+    opacity: 0.55;
+  }
+
+  to {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+/* Reduced motion means "show it complete", not "show it slower". */
+@media (prefers-reduced-motion: reduce) {
+  .ak-form__success-check,
+  .ak-form__success-heading,
+  .ak-form__success-body,
+  .ak-form__success-next,
+  .ak-form__success-close {
+    animation: none;
+  }
+
+  .ak-form__success-ring {
+    display: none;
+  }
+}
+
+/* ── Split layout ──────────────────────────────────────────────
+   Full-page only (e.g. /contact). The drawer overrides this back to a single
+   column — 28rem never has room for two. */
+.ak-form--split {
+  display: grid;
+  grid-template-columns: 1fr 1.25fr;
+  gap: 0;
+  max-width: 64rem;
+  overflow: hidden;
+  border-radius: var(--bp-radius-lg, 0.75rem);
+}
+
+.ak-form--split .ak-form__aside {
+  --_background: var(--ak-color-heading);
+  --_color: var(--ak-color-on-accent, #fff);
+  padding: var(--bp-space-8, 2rem);
+  background-color: var(--_background);
+  color: var(--_color);
+}
+
+.ak-form--split .ak-form__aside :is(h2, h3, h4, p, li) {
+  color: inherit;
+}
+
+.ak-form--split .ak-form__card {
+  border-radius: 0;
+}
+
+@media (max-width: 48rem) {
+  .ak-form--split {
+    grid-template-columns: 1fr;
+  }
 }
 
 .ak-form__retry {

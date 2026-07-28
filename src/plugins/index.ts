@@ -196,6 +196,44 @@ export const plugins: Plugin[] = [
               },
             },
             {
+              name: 'description',
+              type: 'richText',
+              localized: true,
+              admin: {
+                description:
+                  'Short paragraph shown under the form title. This is what appears inside the modal drawer, which has no block-level intro of its own.',
+              },
+            },
+            {
+              name: 'footnote',
+              type: 'richText',
+              localized: true,
+              admin: {
+                description:
+                  'Small print under the submit button — reassurance, not instructions (e.g. "No staffing required. Amerikiosks handles placement, setup and daily operations.").',
+              },
+            },
+            {
+              name: 'confirmationHeading',
+              type: 'text',
+              localized: true,
+              admin: {
+                condition: (data) => data?.confirmationType !== 'redirect',
+                description:
+                  'Headline of the thank-you state, e.g. "Request received". The rich text below becomes the body.',
+              },
+            },
+            {
+              name: 'confirmationNext',
+              type: 'text',
+              localized: true,
+              admin: {
+                condition: (data) => data?.confirmationType !== 'redirect',
+                description:
+                  'What happens next, with a real timeframe — e.g. "We\'ll email you within 2 business days." This is the line that decides whether the site reads as serious.',
+              },
+            },
+            {
               name: 'requiresConsent',
               type: 'checkbox',
               defaultValue: false,
