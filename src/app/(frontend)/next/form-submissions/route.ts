@@ -7,6 +7,7 @@ import {
   normalizePhone,
   validateSubmission,
 } from '@/blocks/Form/validation'
+import { syncFormSubmission } from '@/collections/FormSubmissions/hooks/syncFormSubmission'
 import { detectImageMimeType } from '@/utilities/detectImageMimeType'
 
 const MAX_UPLOAD_BYTES = 8 * 1024 * 1024 // 8MB — mirrors Form/Upload/index.tsx
@@ -213,6 +214,13 @@ export async function POST(req: Request) {
       // plugin's REST endpoint can't be used to walk around these checks.
       overrideAccess: true,
     })
+
+    // After the create has committed, and without the request's transactional
+    // req — a failure here (Monday down, a bad column mapping, a DB hiccup)
+    // must not be able to undo the submission that is now safely stored.
+    // syncFormSubmission swallows its own errors and records them on the
+    // document as syncStatus: 'error', so this await cannot throw.
+    await syncFormSubmission({ payload, doc: submission as never })
 
     return Response.json(submission, { status: 201 })
   } catch (err) {

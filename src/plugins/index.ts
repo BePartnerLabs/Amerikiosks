@@ -8,7 +8,6 @@ import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/
 import { s3Storage } from '@payloadcms/storage-s3'
 import type { Plugin, TextFieldValidation } from 'payload'
 import { resyncEndpoint } from '@/collections/FormSubmissions/endpoints/resync'
-import { dispatchFormSync } from '@/collections/FormSubmissions/hooks/dispatchFormSync'
 import { revalidateFormGlobals } from '@/collections/Forms/hooks/revalidateFormGlobals'
 import type { Insight, Machine, Page, Project } from '@/payload-types'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
@@ -331,9 +330,10 @@ export const plugins: Plugin[] = [
         // own REST endpoint open would be a bypass around all of that.
         create: () => false,
       },
-      hooks: {
-        afterChange: [dispatchFormSync],
-      },
+      // No afterChange sync hook here on purpose: the Monday dispatch runs
+      // after the submission is committed, from /next/form-submissions (see
+      // syncFormSubmission's own comment). As an afterChange it shared the
+      // create's transaction and could roll the visitor's lead back.
       endpoints: [resyncEndpoint],
     },
   }),

@@ -1,5 +1,5 @@
 import type { Endpoint } from 'payload'
-import { dispatchFormSync } from '../hooks/dispatchFormSync'
+import { syncFormSubmission } from '../hooks/syncFormSubmission'
 
 type ResyncResult = { id: unknown; ok: boolean; error?: string }
 
@@ -12,7 +12,7 @@ async function resyncOne(submissionId: unknown, req: Parameters<Endpoint['handle
     overrideAccess: true,
   })
   try {
-    await dispatchFormSync({ doc, operation: 'create', req } as never)
+    await syncFormSubmission({ payload: req.payload, doc: doc as never })
     const refreshed = await req.payload.findByID({
       collection: 'form-submissions',
       id: doc.id,

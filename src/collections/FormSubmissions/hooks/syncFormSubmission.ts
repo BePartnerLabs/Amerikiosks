@@ -1,4 +1,4 @@
-import type { CollectionAfterChangeHook } from 'payload'
+import type { Payload } from 'payload'
 import { GenericMondayRepository, MondayApiError } from '@/repositories/GenericMondayRepository'
 import type { MondayBoardsCache } from '@/utilities/detectMondayDrift'
 import { getServerSideURL } from '@/utilities/getURL'
@@ -104,9 +104,52 @@ function correctColumnValuesFromError(
   return corrected
 }
 
-export const dispatchFormSync: CollectionAfterChangeHook = async ({ doc, operation, req }) => {
-  if (operation !== 'create' || req.context?.skipFormSync) return doc
+type SubmissionDoc = {
+  id: number | string
+  form: number | { id: number }
+  submissionData?: unknown
+  submissionUploads?: unknown
+}
 
+/**
+ * Pushes a stored submission to its form's configured integration.
+ *
+ * Deliberately NOT a collection hook. It used to run as `afterChange`, which
+ * meant it executed inside the create's transaction: any DB-level error in
+ * here aborted that transaction and took the visitor's submission down with
+ * it — the lead was lost and the browser got a bare 404 (see the media-id
+ * caveat further down, and commit d9fe37e). It also held a Postgres
+ * connection open for the duration of an HTTP round-trip to Monday.
+ *
+ * Callers run it *after* the submission is committed and pass a plain
+ * `payload` instance rather than the request's transactional `req`, so a sync
+ * failure can no longer reach the stored row. The cost is that a crash
+ * between commit and sync leaves the submission on `syncStatus: 'pending'` —
+ * which is exactly what the manual resync button in /admin is for.
+ */
+export async function syncFormSubmission({
+  payload,
+  doc,
+}: {
+  payload: Payload
+  doc: SubmissionDoc
+}): Promise<void> {
+  // Belt and braces around everything below. The per-step handling further
+  // down records failures on the document, but the very first lookups (the
+  // form, the settings global) happen before that machinery exists — and an
+  // exception escaping here would reach the caller, which is awaiting this
+  // after the submission is already committed. Nothing in this function is
+  // allowed to become the visitor's problem.
+  try {
+    await run(payload, doc)
+  } catch (err) {
+    payload.logger.error(
+      `syncFormSubmission: unrecoverable failure for submission ${doc.id}: ${(err as Error).message}`,
+    )
+  }
+}
+
+async function run(payload: Payload, doc: SubmissionDoc): Promise<void> {
   // `doc.form` is a relationship — it arrives as a plain id when the create
   // request used depth 0, but as the populated Form object when depth > 0
   // (e.g. the default REST depth). Resolve either shape to a numeric id.
@@ -115,23 +158,20 @@ export const dispatchFormSync: CollectionAfterChangeHook = async ({ doc, operati
       ? ((doc.form as { id: number }).id as number)
       : (doc.form as number)
 
-  const form = await req.payload.findByID({
+  const form = await payload.findByID({
     collection: 'forms',
     id: formId,
     depth: 0,
-    req,
   })
 
   const integrationTarget = (form as { integrationTarget?: string }).integrationTarget ?? 'none'
-  if (integrationTarget === 'none') return doc
+  if (integrationTarget === 'none') return
 
   const updateStatus = async (data: Record<string, unknown>) =>
-    req.payload.update({
+    payload.update({
       collection: 'form-submissions',
       id: doc.id,
       data,
-      context: { skipFormSync: true },
-      req,
     })
 
   if (integrationTarget !== 'monday') {
@@ -140,7 +180,7 @@ export const dispatchFormSync: CollectionAfterChangeHook = async ({ doc, operati
       syncStatus: 'error',
       syncError: `${integrationTarget} integration not yet implemented`,
     })
-    return doc
+    return
   }
 
   try {
@@ -150,7 +190,7 @@ export const dispatchFormSync: CollectionAfterChangeHook = async ({ doc, operati
       throw new Error('Form is missing externalId (board id) or mondayGroupId')
     }
 
-    const settings = await req.payload.findGlobal({ slug: 'settings', req })
+    const settings = await payload.findGlobal({ slug: 'settings' })
     const apiToken = settings.mondayApiToken ?? ''
 
     const boardsCache = settings.mondayBoardsCache as MondayBoardsCache | undefined
@@ -181,8 +221,8 @@ export const dispatchFormSync: CollectionAfterChangeHook = async ({ doc, operati
       const corrected = correctColumnValuesFromError(columnValues, rawValueById, err)
       if (!corrected) throw err
 
-      req.payload.logger.warn(
-        `dispatchFormSync: retrying submission ${doc.id} with column types from Monday's own error response (mondayBoardsCache may be stale — consider re-syncing it)`,
+      payload.logger.warn(
+        `syncFormSubmission: retrying submission ${doc.id} with column types from Monday's own error response (mondayBoardsCache may be stale — consider re-syncing it)`,
       )
       ;({ id: itemId } = await GenericMondayRepository.submit(
         boardId,
@@ -216,11 +256,10 @@ export const dispatchFormSync: CollectionAfterChangeHook = async ({ doc, operati
         const media =
           typeof mediaRef === 'object' && mediaRef !== null
             ? (mediaRef as MediaDoc)
-            : ((await req.payload.findByID({
+            : ((await payload.findByID({
                 collection: 'media',
                 id: mediaRef,
                 depth: 0,
-                req,
               })) as MediaDoc)
         if (!media.url) continue
 
@@ -256,21 +295,18 @@ export const dispatchFormSync: CollectionAfterChangeHook = async ({ doc, operati
       syncError: null,
     })
   } catch (err) {
-    req.payload.logger.error(
-      `dispatchFormSync: failed to sync submission ${doc.id}: ${(err as Error).message}`,
+    payload.logger.error(
+      `syncFormSubmission: failed to sync submission ${doc.id}: ${(err as Error).message}`,
     )
-    // A sync failure must never fail the submission itself. If the error came
-    // from the DB, the request's transaction is already aborted and this
-    // status write throws too — swallow it rather than turning a stored
-    // submission into an error response for the visitor.
+    // Recording the failure is best-effort: the submission is already
+    // committed and must survive regardless, so a second failure here is
+    // logged and dropped rather than propagated.
     try {
       await updateStatus({ syncStatus: 'error', syncError: (err as Error).message })
     } catch (statusErr) {
-      req.payload.logger.error(
-        `dispatchFormSync: could not record sync error on submission ${doc.id}: ${(statusErr as Error).message}`,
+      payload.logger.error(
+        `syncFormSubmission: could not record sync error on submission ${doc.id}: ${(statusErr as Error).message}`,
       )
     }
   }
-
-  return doc
 }

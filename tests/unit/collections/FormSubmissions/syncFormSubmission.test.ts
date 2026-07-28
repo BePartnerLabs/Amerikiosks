@@ -26,15 +26,12 @@ const findGlobalMock = vi.fn()
 const loggerErrorMock = vi.fn()
 const loggerWarnMock = vi.fn()
 
-function fakeReq(context?: Record<string, unknown>) {
+function fakePayload() {
   return {
-    context,
-    payload: {
-      findByID: findByIDMock,
-      update: updateMock,
-      findGlobal: findGlobalMock,
-      logger: { error: loggerErrorMock, warn: loggerWarnMock },
-    },
+    findByID: findByIDMock,
+    update: updateMock,
+    findGlobal: findGlobalMock,
+    logger: { error: loggerErrorMock, warn: loggerWarnMock },
   } as never
 }
 
@@ -51,46 +48,53 @@ const baseForm = {
   ],
 }
 
-describe('dispatchFormSync', () => {
+describe('syncFormSubmission', () => {
   afterEach(() => {
-    vi.clearAllMocks()
+    // resetAllMocks, not clearAllMocks: these tests set implementations
+    // (mockResolvedValue/mockRejectedValue), and clearing only wipes call
+    // history — a rejection set in one test would leak into the next.
+    vi.resetAllMocks()
   })
 
-  it('no-ops on update (only runs on create)', async () => {
-    const { dispatchFormSync } = await import(
-      '@/collections/FormSubmissions/hooks/dispatchFormSync'
+  // The whole point of moving this out of afterChange: it runs after the
+  // submission is committed, so nothing it does may propagate an exception
+  // back to the caller and take the stored lead with it.
+  it('never throws, even when every Payload call it makes fails', async () => {
+    const { syncFormSubmission } = await import(
+      '@/collections/FormSubmissions/hooks/syncFormSubmission'
     )
-    await dispatchFormSync({
-      doc: { id: 1, form: 10, submissionData: [] },
-      operation: 'update',
-      req: fakeReq(),
-    } as never)
-    expect(findByIDMock).not.toHaveBeenCalled()
+    findByIDMock.mockRejectedValue(new Error('connection terminated'))
+    updateMock.mockRejectedValue(new Error('connection terminated'))
+
+    await expect(
+      syncFormSubmission({
+        payload: fakePayload(),
+        doc: { id: 1, form: 10, submissionData: [] } as never,
+      }),
+    ).resolves.toBeUndefined()
   })
 
   it('no-ops when the form has integrationTarget: none', async () => {
     findByIDMock.mockResolvedValue({ ...baseForm, integrationTarget: 'none' })
-    const { dispatchFormSync } = await import(
-      '@/collections/FormSubmissions/hooks/dispatchFormSync'
+    const { syncFormSubmission } = await import(
+      '@/collections/FormSubmissions/hooks/syncFormSubmission'
     )
-    await dispatchFormSync({
-      doc: { id: 1, form: 10, submissionData: [] },
-      operation: 'create',
-      req: fakeReq(),
-    } as never)
+    await syncFormSubmission({
+      payload: fakePayload(),
+      doc: { id: 1, form: 10, submissionData: [] } as never,
+    })
     expect(updateMock).not.toHaveBeenCalled()
   })
 
   it('records an error for a non-monday, non-none target (odoo not yet implemented)', async () => {
     findByIDMock.mockResolvedValue({ ...baseForm, integrationTarget: 'odoo' })
-    const { dispatchFormSync } = await import(
-      '@/collections/FormSubmissions/hooks/dispatchFormSync'
+    const { syncFormSubmission } = await import(
+      '@/collections/FormSubmissions/hooks/syncFormSubmission'
     )
-    await dispatchFormSync({
-      doc: { id: 1, form: 10, submissionData: [] },
-      operation: 'create',
-      req: fakeReq(),
-    } as never)
+    await syncFormSubmission({
+      payload: fakePayload(),
+      doc: { id: 1, form: 10, submissionData: [] } as never,
+    })
     expect(updateMock).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({
@@ -106,10 +110,11 @@ describe('dispatchFormSync', () => {
     findGlobalMock.mockResolvedValue({ mondayApiToken: 'test-token' })
     submitMock.mockResolvedValue({ id: '999' })
 
-    const { dispatchFormSync } = await import(
-      '@/collections/FormSubmissions/hooks/dispatchFormSync'
+    const { syncFormSubmission } = await import(
+      '@/collections/FormSubmissions/hooks/syncFormSubmission'
     )
-    await dispatchFormSync({
+    await syncFormSubmission({
+      payload: fakePayload(),
       doc: {
         id: 1,
         form: 10,
@@ -118,10 +123,8 @@ describe('dispatchFormSync', () => {
           { field: 'property-name', value: 'Grand Hotel' },
           { field: 'unmapped-field', value: 'ignored' },
         ],
-      },
-      operation: 'create',
-      req: fakeReq(),
-    } as never)
+      } as never,
+    })
 
     expect(submitMock).toHaveBeenCalledWith(
       '4024476985',
@@ -155,10 +158,11 @@ describe('dispatchFormSync', () => {
     })
     submitMock.mockResolvedValue({ id: '999' })
 
-    const { dispatchFormSync } = await import(
-      '@/collections/FormSubmissions/hooks/dispatchFormSync'
+    const { syncFormSubmission } = await import(
+      '@/collections/FormSubmissions/hooks/syncFormSubmission'
     )
-    await dispatchFormSync({
+    await syncFormSubmission({
+      payload: fakePayload(),
       doc: {
         id: 1,
         form: 10,
@@ -166,10 +170,8 @@ describe('dispatchFormSync', () => {
           { field: 'contact-name', value: 'Jane Doe' },
           { field: 'property-name', value: 'Grand Hotel' },
         ],
-      },
-      operation: 'create',
-      req: fakeReq(),
-    } as never)
+      } as never,
+    })
 
     expect(submitMock).toHaveBeenCalledWith(
       '4024476985',
@@ -198,10 +200,11 @@ describe('dispatchFormSync', () => {
     })
     submitMock.mockResolvedValue({ id: '999' })
 
-    const { dispatchFormSync } = await import(
-      '@/collections/FormSubmissions/hooks/dispatchFormSync'
+    const { syncFormSubmission } = await import(
+      '@/collections/FormSubmissions/hooks/syncFormSubmission'
     )
-    await dispatchFormSync({
+    await syncFormSubmission({
+      payload: fakePayload(),
       doc: {
         id: 1,
         form: 10,
@@ -209,10 +212,8 @@ describe('dispatchFormSync', () => {
           { field: 'contact-name', value: 'Jane Doe' },
           { field: 'property-name', value: '555-0100' },
         ],
-      },
-      operation: 'create',
-      req: fakeReq(),
-    } as never)
+      } as never,
+    })
 
     expect(submitMock).toHaveBeenCalledWith(
       '4024476985',
@@ -240,19 +241,18 @@ describe('dispatchFormSync', () => {
       arrayBuffer: async () => new Uint8Array([1, 2, 3]).buffer,
     }) as never
 
-    const { dispatchFormSync } = await import(
-      '@/collections/FormSubmissions/hooks/dispatchFormSync'
+    const { syncFormSubmission } = await import(
+      '@/collections/FormSubmissions/hooks/syncFormSubmission'
     )
-    await dispatchFormSync({
+    await syncFormSubmission({
+      payload: fakePayload(),
       doc: {
         id: 1,
         form: 10,
         submissionData: [{ field: 'contact-name', value: 'Jane Doe' }],
         submissionUploads: [{ field: 'photo', value: [{ value: 5 }] }],
-      },
-      operation: 'create',
-      req: fakeReq(),
-    } as never)
+      } as never,
+    })
 
     expect(addFileMock).toHaveBeenCalledWith(
       '999',
@@ -267,14 +267,17 @@ describe('dispatchFormSync', () => {
     findGlobalMock.mockResolvedValue({ mondayApiToken: 'test-token' })
     submitMock.mockRejectedValue(new Error('Monday API returned errors: boom'))
 
-    const { dispatchFormSync } = await import(
-      '@/collections/FormSubmissions/hooks/dispatchFormSync'
+    const { syncFormSubmission } = await import(
+      '@/collections/FormSubmissions/hooks/syncFormSubmission'
     )
-    await dispatchFormSync({
-      doc: { id: 1, form: 10, submissionData: [{ field: 'contact-name', value: 'Jane Doe' }] },
-      operation: 'create',
-      req: fakeReq(),
-    } as never)
+    await syncFormSubmission({
+      payload: fakePayload(),
+      doc: {
+        id: 1,
+        form: 10,
+        submissionData: [{ field: 'contact-name', value: 'Jane Doe' }],
+      } as never,
+    })
 
     expect(updateMock).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -318,10 +321,11 @@ describe('dispatchFormSync', () => {
       )
       .mockResolvedValueOnce({ id: '999' })
 
-    const { dispatchFormSync } = await import(
-      '@/collections/FormSubmissions/hooks/dispatchFormSync'
+    const { syncFormSubmission } = await import(
+      '@/collections/FormSubmissions/hooks/syncFormSubmission'
     )
-    await dispatchFormSync({
+    await syncFormSubmission({
+      payload: fakePayload(),
       doc: {
         id: 1,
         form: 10,
@@ -329,10 +333,8 @@ describe('dispatchFormSync', () => {
           { field: 'contact-name', value: 'Jane Doe' },
           { field: 'property-name', value: 'Grand Hotel' },
         ],
-      },
-      operation: 'create',
-      req: fakeReq(),
-    } as never)
+      } as never,
+    })
 
     expect(submitMock).toHaveBeenCalledTimes(2)
     expect(submitMock).toHaveBeenNthCalledWith(
@@ -369,10 +371,11 @@ describe('dispatchFormSync', () => {
     findGlobalMock.mockResolvedValue({ mondayApiToken: 'test-token' })
     submitMock.mockResolvedValue({ id: '999' })
 
-    const { dispatchFormSync } = await import(
-      '@/collections/FormSubmissions/hooks/dispatchFormSync'
+    const { syncFormSubmission } = await import(
+      '@/collections/FormSubmissions/hooks/syncFormSubmission'
     )
-    await dispatchFormSync({
+    await syncFormSubmission({
+      payload: fakePayload(),
       doc: {
         id: 1,
         form: 10,
@@ -380,10 +383,8 @@ describe('dispatchFormSync', () => {
           { field: 'contact-name', value: 'Jane Doe' },
           { field: 'property-name', value: 'Grand Hotel' },
         ],
-      },
-      operation: 'create',
-      req: fakeReq(),
-    } as never)
+      } as never,
+    })
 
     // "Jane Doe" becomes the item title, and no "name" key leaks into
     // column_values — Monday rejects writes to that pseudo-column.
@@ -394,17 +395,5 @@ describe('dispatchFormSync', () => {
       { text0: 'Grand Hotel' },
       'test-token',
     )
-  })
-
-  it('skips its own update-triggered recursion via context.skipFormSync', async () => {
-    const { dispatchFormSync } = await import(
-      '@/collections/FormSubmissions/hooks/dispatchFormSync'
-    )
-    await dispatchFormSync({
-      doc: { id: 1, form: 10, submissionData: [] },
-      operation: 'create',
-      req: fakeReq({ skipFormSync: true }),
-    } as never)
-    expect(findByIDMock).not.toHaveBeenCalled()
   })
 })
