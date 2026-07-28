@@ -2,6 +2,86 @@
   display: none;
   height: 20px;
   width: auto;
+  /* the chevrons animate in from outside the viewBox */
+  overflow: visible;
+}
+
+/*
+ * "Bracket Lock" entrance: the outer chevrons fly in and stop hard against the
+ * centre, the core diamond snaps open between them, then the wordmark wipes out
+ * to the right. Runs once on mount.
+ */
+.logo-desktop g {
+  transform-box: view-box;
+}
+.logo-mark-left {
+  transform-origin: 22px 33px;
+  animation: logo-bracket-left 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.logo-mark-right {
+  transform-origin: 86px 33px;
+  animation: logo-bracket-right 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.logo-mark-core {
+  transform-origin: 54px 33px;
+  animation: logo-bracket-core 420ms cubic-bezier(0.16, 1, 0.3, 1) 560ms both;
+}
+.logo-word {
+  animation: logo-bracket-word 760ms cubic-bezier(0.22, 1, 0.32, 1) 680ms both;
+}
+
+@keyframes logo-bracket-left {
+  from {
+    transform: translateX(-90px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+@keyframes logo-bracket-right {
+  from {
+    transform: translateX(90px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+@keyframes logo-bracket-core {
+  0% {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  70% {
+    transform: scaleX(1.18);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+@keyframes logo-bracket-word {
+  from {
+    clip-path: inset(0 100% 0 0);
+    opacity: 0.2;
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-mark-left,
+  .logo-mark-right,
+  .logo-mark-core,
+  .logo-word {
+    animation: none;
+  }
 }
 .logo-mobile {
   display: block;
