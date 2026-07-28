@@ -89,8 +89,12 @@ export const TrustStripCarousel: React.FC<{ partners: CarouselPartner[] }> = ({ 
                       <Image
                         src={partner.logoUrl}
                         alt={partner.name}
-                        width={96}
-                        height={48}
+                        // Twice the rendered 96x48 box (CSS caps it): the
+                        // srcset Next derives from these has to cover a 2x
+                        // screen *and* the 1.35x hover zoom, which asking
+                        // for the display size alone doesn't.
+                        width={192}
+                        height={96}
                       />
                       <span
                         className="ak-trust-strip__card-name"
