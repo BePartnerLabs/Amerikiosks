@@ -1,6 +1,7 @@
-import type { NextRequest } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 import createMiddleware from 'next-intl/middleware'
 import { routing } from './i18n/routing'
+import { findRedirect } from './plugins/redirects/lookup'
 
 const intlMiddleware = createMiddleware(routing)
 
@@ -8,7 +9,18 @@ const intlMiddleware = createMiddleware(routing)
 // the common case is that none of these params are present, and that must be a no-op.
 const CAPTURED_PARAMS = ['machine_id', 'utm_source', 'utm_medium', 'utm_campaign']
 
-export default function middleware(req: NextRequest) {
+export default async function middleware(req: NextRequest) {
+  // Redirects run before i18n so they can catch any path — including ones with
+  // several segments, which have no route and would 404 before the app's
+  // <PayloadRedirects> ever rendered.
+  const redirect = await findRedirect(req.nextUrl.pathname, req.nextUrl.origin)
+  if (redirect) {
+    const url = redirect.to.startsWith('http')
+      ? redirect.to
+      : new URL(redirect.to, req.nextUrl.origin)
+    return NextResponse.redirect(url, redirect.status)
+  }
+
   const res = intlMiddleware(req)
 
   for (const key of CAPTURED_PARAMS) {

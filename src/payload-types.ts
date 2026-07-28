@@ -1939,13 +1939,15 @@ export interface ConsentLog {
   createdAt: string;
 }
 /**
+ * Send an old URL to a current one. Works for any path, including ones with several segments (e.g. /2023/02/hello-world). Changes take effect within a minute — no deploy needed.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
   id: number;
   /**
-   * You will need to rebuild the website when changing this field.
+   * The old path, e.g. /our-history. A full URL, a trailing slash or a locale prefix are cleaned up automatically on save.
    */
   from: string;
   to?: {
@@ -1961,6 +1963,10 @@ export interface Redirect {
         } | null);
     url?: string | null;
   };
+  /**
+   * 301 for a URL that moved for good (search engines transfer its ranking). 302 only for a temporary detour.
+   */
+  type: '301' | '302';
   updatedAt: string;
   createdAt: string;
 }
@@ -3200,6 +3206,7 @@ export interface RedirectsSelect<T extends boolean = true> {
         reference?: T;
         url?: T;
       };
+  type?: T;
   updatedAt?: T;
   createdAt?: T;
 }

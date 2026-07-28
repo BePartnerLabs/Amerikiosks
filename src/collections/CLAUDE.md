@@ -33,3 +33,13 @@ Verify with `payload.find({ collection, draft: true })` — it must return the s
 ## `defaultSort` on a column with repeated values
 
 `defaultSort: 'order'` where every row has the same `order` leaves the row order undefined in Postgres. With the admin list paginated, the same document can appear on two pages while another never shows — it reads as duplicated/phantom rows. Always give the sort a tiebreaker: `defaultSort: ['order', 'name']`, and use the same array wherever the frontend queries that collection (see `Brands.ts` and `blocks/ClaimForm/Server.tsx`).
+
+## Redirects
+
+The `redirects` collection comes from `@payloadcms/plugin-redirects`, wrapped in `src/plugins/redirects/`. **The Payload plugin only models the collection — it does no routing.** Matching happens in `src/proxy.ts` (middleware), which is why a redirect works on any path, including multi-segment ones with no route of their own.
+
+Do **not** go back to resolving redirects from a React component (`<PayloadRedirects>`, from the Payload website template). A component only runs once Next has matched a route, so any legacy URL without one 404s before the collection is ever consulted — which is how `/2023/02/hello-world` and friends sat dead in the table for months.
+
+Two rules the lookup enforces, both learned from real data:
+- `from` is normalized on save **and** on read (`normalizePath`): leading slash, no trailing slash, no locale prefix, no origin, lowercase. The original code compared `redirect.from === url` verbatim, so `/cart/` and `our-story` silently matched nothing.
+- A redirect whose `from` equals a **published** page slug is dropped (`buildRedirectEntries`), so a stale row can never shadow a live page.
