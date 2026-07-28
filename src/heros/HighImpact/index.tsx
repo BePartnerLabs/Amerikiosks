@@ -100,6 +100,9 @@ export const HighImpactHero: React.FC<Page['hero']> = ({
                       .join('-')}
                     data-ga-event="hero_cta_click"
                     data-ga-section="hero_high_impact"
+                    // Without an explicit label GAListener falls back to innerText,
+                    // which picks up surrounding hero copy instead of the button.
+                    data-ga-label={link?.label ?? undefined}
                   >
                     <CMSLink
                       {...link}

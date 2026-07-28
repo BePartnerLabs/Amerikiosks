@@ -8,6 +8,11 @@ export const TrustStripTracker: React.FC<{
   containerRef: React.RefObject<HTMLDivElement | null>
 }> = ({ containerRef }) => {
   const entryTimes = useRef<Map<Element, number>>(new Map())
+  // The strip is an infinite marquee, so every card re-enters and re-exits the
+  // viewport every few seconds. Without this, one visitor generated hundreds of
+  // partner_logo_dwell events — 84% of all events in the property. One event per
+  // partner per page view is all the signal there ever was.
+  const reported = useRef<Set<string>>(new Set())
 
   useEffect(() => {
     const container = containerRef.current
@@ -32,6 +37,8 @@ export const TrustStripTracker: React.FC<{
               entryTimes.current.delete(entry.target)
               if (dwell_seconds > 0 && typeof g === 'function') {
                 const name = entry.target.querySelector('img')?.getAttribute('alt') ?? 'unknown'
+                if (reported.current.has(name)) continue
+                reported.current.add(name)
                 g('event', 'partner_logo_dwell', {
                   partner_name: name,
                   dwell_seconds,
