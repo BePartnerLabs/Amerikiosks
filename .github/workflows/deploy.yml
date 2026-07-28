@@ -1,9 +1,12 @@
 name: Deploy
 
 on:
+  # `main` is deliberately absent. Merging to main used to fire a preview
+  # deploy nobody looked at, and publishing the release then rebuilt the same
+  # commit for production — two builds per change. Previews now come only from
+  # `preview/**` branches, where they are actually reviewed.
   push:
     branches:
-      - main
       - 'preview/**'
   release:
     types: [published]
