@@ -17,6 +17,17 @@ export const AudienceShowcaseServer: React.FC<AudienceShowcaseBlockProps> = asyn
 
   const populatedItems = await Promise.all(
     items.map(async (item) => {
+      if (item.target === 'form') {
+        if (!item.form || typeof item.form === 'object') return item
+        const form = await payload.findByID({
+          collection: 'forms',
+          id: item.form,
+          depth: 1,
+          overrideAccess: false,
+        })
+        return { ...item, form }
+      }
+
       if (!item.page) return item
       const pageId =
         typeof item.page === 'number'

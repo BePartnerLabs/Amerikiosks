@@ -1,16 +1,25 @@
 import Image from 'next/image'
 import type React from 'react'
+import { FormDrawerTrigger } from '@/components/FormDrawer'
 import { SectionHeader } from '@/components/SectionHeader'
 import { Link } from '@/i18n/routing'
-import type { MachineFamily, Media, ModelLinesBlock as ModelLinesBlockProps } from '@/payload-types'
+import type {
+  Form,
+  MachineFamily,
+  Media,
+  ModelLinesBlock as ModelLinesBlockProps,
+} from '@/payload-types'
 import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 import { toSnakeCase } from '@/utilities/toSnakeCase'
 import { vtName } from '@/utilities/viewTransitionName'
 import { ModelLinesCarousel } from './CarouselNav'
 import './styles.css'
 
-type Props = ModelLinesBlockProps & {
+type Props = Omit<ModelLinesBlockProps, 'form'> & {
   families: MachineFamily[]
+  // Resolved by the server wrapper. When set, panels open this form in the
+  // drawer instead of navigating to the family page.
+  form?: Form | null
   // Required so the server-rendered Link below never falls back to next-intl's
   // own getLocale() — that reads headers and breaks static generation for any
   // page using this block (see the machines pages' DYNAMIC_SERVER_USAGE fix).
@@ -28,6 +37,7 @@ export const ModelLinesBlock: React.FC<Props> = ({
   blockType,
   families,
   locale,
+  form,
 }) => {
   if (!heading || families.length === 0) return null
 
@@ -55,16 +65,8 @@ export const ModelLinesBlock: React.FC<Props> = ({
                 typeof family.hoverThumbnail === 'object' ? (family.hoverThumbnail as Media) : null
               const accent = ACCENTS[i % ACCENTS.length]
 
-              return (
-                <Link
-                  key={family.id}
-                  href={{ pathname: '/machines/[family]', params: { family: family.slug ?? '' } }}
-                  locale={locale}
-                  className="ak-model-lines__panel"
-                  style={{ '--_accent': accent } as React.CSSProperties}
-                  data-ga-event="machine_family_click"
-                  data-ga-label={family.name}
-                >
+              const inner = (
+                <>
                   {thumbnail?.url && (
                     <div
                       className={`ak-model-lines__panel-art${hoverThumbnail?.url ? ' ak-model-lines__panel-art--has-hover' : ''}`}
@@ -118,6 +120,32 @@ export const ModelLinesBlock: React.FC<Props> = ({
                       </svg>
                     </span>
                   </div>
+                </>
+              )
+
+              const panelProps = {
+                className: 'ak-model-lines__panel',
+                style: { '--_accent': accent } as React.CSSProperties,
+                'data-ga-event': 'machine_family_click',
+                'data-ga-label': family.name,
+              }
+
+              return form ? (
+                <FormDrawerTrigger
+                  key={family.id}
+                  form={form}
+                  {...panelProps}
+                >
+                  {inner}
+                </FormDrawerTrigger>
+              ) : (
+                <Link
+                  key={family.id}
+                  href={{ pathname: '/machines/[family]', params: { family: family.slug ?? '' } }}
+                  locale={locale}
+                  {...panelProps}
+                >
+                  {inner}
                 </Link>
               )
             })}

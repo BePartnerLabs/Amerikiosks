@@ -76,6 +76,12 @@
   color: var(--bp-color-text);
   background: var(--ak-surface-background);
   border: 1px solid var(--ak-surface-border);
+  /* Form-target panels render as <button> — strip UA button chrome so they
+     look identical to the <a> variant. */
+  padding: 0;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
   transition:
     transform 200ms var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1)),
     box-shadow 200ms var(--bp-ease, cubic-bezier(0.4, 0, 0.2, 1));

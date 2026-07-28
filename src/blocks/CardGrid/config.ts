@@ -134,18 +134,31 @@ export const CardGrid: Block = {
           name: 'link',
           type: 'group',
           label: 'Card Link',
-          admin: { description: 'Optional CTA link per card. Used in icon variant.' },
+          admin: {
+            description:
+              'Optional CTA link per card. Used in icon variant. Choose "None" to make the card non-clickable.',
+          },
           fields: [
-            { name: 'label', type: 'text', localized: true },
-            { name: 'url', type: 'text' },
             {
               name: 'type',
               type: 'radio',
               defaultValue: 'custom',
               options: [
+                { label: 'None (card not clickable)', value: 'none' },
                 { label: 'Custom URL', value: 'custom' },
                 { label: 'Internal page', value: 'reference' },
               ],
+            },
+            {
+              name: 'label',
+              type: 'text',
+              localized: true,
+              admin: { condition: (_, siblingData) => siblingData?.type !== 'none' },
+            },
+            {
+              name: 'url',
+              type: 'text',
+              admin: { condition: (_, siblingData) => siblingData?.type === 'custom' },
             },
             {
               name: 'reference',

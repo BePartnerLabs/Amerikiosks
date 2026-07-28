@@ -13,6 +13,7 @@ type Item = NonNullable<CardGridBlockProps['items']>[number]
 
 function resolveUrl(link: Item['link'] | CardGridBlockProps['link']): string | null {
   if (!link) return null
+  if (link.type === 'none') return null
   if (link.type === 'reference' && link.reference && typeof link.reference === 'object') {
     return `/${(link.reference as Page).slug}`
   }

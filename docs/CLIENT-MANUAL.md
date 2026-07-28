@@ -23,9 +23,12 @@ Working outline for the final content-editor usage manual. Each bullet is a topi
 
 - Hero variants (High/Medium/Low Impact) — when to use which
 - Card Grid — compact / icon / pillar variants, when each fits
+  - **Card Link → "None"** makes a card purely informational (no click target, no CTA arrow)
 - Trust Strip — the auto-scrolling logo strip, adding/reordering partners
 - Content, Media, CTA, Archive — general-purpose blocks
 - Audience Showcase, Formats Grid, Process Steps — structured multi-item blocks
+  - **Audience Showcase:** each card chooses per item between "Link to a page" and "Open a modal form"
+  - **Model Lines:** leave "Form to open" empty for the normal behaviour (panel → machine family page); set a form and every panel opens that form in the modal drawer instead
 - FAQ + Form, Claim Form, Support Hub, Machines Listing — specialized blocks
 - **Support Hub → Claim Form: the `machine_id` link** — the kiosk's printed QR code encodes `machine_id` on the Support Hub page's own URL; Support Hub automatically carries it over onto the "Request a refund" button so the claim ends up tagged with the originating kiosk (visible in `/admin` and forwarded to Monday.com's "Kiosk ID" column, if that integration is enabled — see Settings below). Nothing to configure — this is automatic as long as the QR code itself still points at the Support Hub page with `?machine_id=...`.
 - Projects Showcase, Insights Showcase — pull from other collections, not manually authored

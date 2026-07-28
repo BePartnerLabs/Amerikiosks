@@ -31,6 +31,14 @@
   text-decoration: none;
   background-color: var(--_background);
   box-shadow: var(--ak-card-shadow-subtle);
+  /* Form-target cards render as <button> — strip UA button chrome so they
+     look identical to the <a> variant. */
+  padding: 0;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  cursor: pointer;
 }
 
 @media (prefers-reduced-motion: no-preference) {
