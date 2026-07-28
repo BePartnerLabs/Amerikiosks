@@ -21,6 +21,13 @@
   justify-content: center;
 }
 
+/* The DS button sets align-items but no justify-content. As a stretched item
+   in this column flex it spans the full width, so without this its label sits
+   left instead of centered. */
+.ak-claim-form__intro .bp-btn {
+  justify-content: center;
+}
+
 .ak-claim-form__intro-content :is(h1, h2, h3, h4) {
   --_color: var(--ak-color-heading);
   color: var(--_color);
