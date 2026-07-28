@@ -575,8 +575,17 @@ html {
   font-size: calc(100% * var(--ak-a11y-text-scale, 1));
 }
 
-/* High contrast — raise text against background beyond the brand palette,
-   and make every boundary explicit. */
+/* High contrast — two layers. The token overrides below fix text and borders
+   for anything that consumes the DS palette; the filter on the content
+   wrapper catches everything that doesn't (imagery, gradients, brand fills,
+   third-party embeds) so the whole page shifts, not just DS-styled chrome.
+   The filter is scoped to .ak-a11y-filter-root rather than <body> because a
+   filtered element becomes the containing block for its position:fixed
+   descendants — on <body> that would strand the floating buttons mid-page. */
+html[data-a11y-contrast="on"] .ak-a11y-filter-root {
+  filter: contrast(1.35) saturate(1.15);
+}
+
 html[data-a11y-contrast="on"] {
   --bp-color-text: #000000;
   --bp-color-text-muted: #1a1a1a;

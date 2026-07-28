@@ -8,6 +8,7 @@ import Script from 'next/script'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import type React from 'react'
+import { AccessibilityWidget } from '@/components/AccessibilityWidget'
 import { AdminBar } from '@/components/AdminBar'
 import { GAListener } from '@/components/Analytics/GAListener'
 import { ConsentManager } from '@/components/ConsentBanner/ConsentManager'
@@ -15,6 +16,7 @@ import { Footer } from '@/Footer/Component'
 import { Header } from '@/Header/Component'
 import { routing } from '@/i18n/routing'
 import { Providers } from '@/providers'
+import { A11Y_RESTORE_SCRIPT } from '@/utilities/a11yPrefs'
 import { CONSENT_COOKIE_NAME, parseConsentCookie } from '@/utilities/consent'
 import { generateOrganizationJsonLd, generateWebsiteJsonLd } from '@/utilities/generateJsonLd'
 import { getCachedGlobal } from '@/utilities/getGlobals'
@@ -82,6 +84,13 @@ export default async function LocaleLayout({ children, params }: Props) {
           // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD is server-generated structured data, not user input
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
+        <script
+          // Must run before first paint, so it's a plain blocking inline script
+          // rather than next/script — otherwise stored accessibility prefs
+          // visibly flash off on every navigation.
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: static build-time constant, no user input
+          dangerouslySetInnerHTML={{ __html: A11Y_RESTORE_SCRIPT }}
+        />
         <link
           href="/favicon.ico"
           rel="icon"
@@ -121,10 +130,18 @@ export default async function LocaleLayout({ children, params }: Props) {
           <Providers>
             <GAListener />
             <ConsentManager initialConsent={consent} />
+            <AccessibilityWidget />
             <AdminBar adminBarProps={{ preview: isEnabled }} />
-            <Header />
-            <main id="main-content">{children}</main>
-            <Footer />
+            {/* High-contrast mode applies a CSS filter to this wrapper. It
+                can't go on <body>: a filtered element becomes the containing
+                block for its position:fixed descendants, which would make the
+                accessibility and cookie buttons above scroll away with the
+                page. Keeping them outside the wrapper avoids that. */}
+            <div className="ak-a11y-filter-root">
+              <Header />
+              <main id="main-content">{children}</main>
+              <Footer />
+            </div>
           </Providers>
         </NextIntlClientProvider>
       </body>
