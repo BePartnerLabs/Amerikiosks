@@ -95,7 +95,11 @@ const nextConfig: NextConfig = {
   // over a LAN IP (e.g. testing on a phone via `pnpm dev`'s printed Network
   // URL). Harmless in production (this key is dev-only). Update the IP here
   // if your machine's LAN address changes (DHCP).
-  allowedDevOrigins: ['192.168.100.23'],
+  // The trycloudflare entry covers sharing a `pnpm dev` session over a
+  // Cloudflare quick tunnel (`cloudflared tunnel --url http://localhost:3000`),
+  // which hits the exact same wall: the page renders, no console error appears,
+  // and every client component silently stays unhydrated.
+  allowedDevOrigins: ['192.168.100.23', '*.trycloudflare.com'],
 }
 
 export default withPayload(withNextIntl(nextConfig), { devBundleServerPackages: false })

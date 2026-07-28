@@ -15,9 +15,17 @@
   inset-inline-start: auto;
   /* Leaves a sliver of the page visible on narrow screens so the drawer
      reads as an overlay, not a full takeover. */
-  width: min(28rem, calc(100vw - 10px));
-  max-width: calc(100vw - 10px);
-  height: 100vh;
+  /* dvi (dynamic viewport inline size) rather than vw: vw includes the width
+     of a classic scrollbar, which is what makes a "full width minus a sliver"
+     drawer overflow by a few px on desktop. */
+  width: min(28rem, calc(100dvi - 10px));
+  max-width: calc(100dvi - 10px);
+  /* 100vh on iOS Safari is the height with the URL bar *collapsed*, so the
+     bottom of the drawer — where the sticky submit lives — sits underneath the
+     bar and is unreachable. dvh tracks the actually-visible viewport instead.
+     No vh fallback: dvh/dvi ship in every browser this project targets
+     (Safari 15.4+, Chrome 108+, Firefox 101+). */
+  height: 100dvh;
   margin: 0;
   padding: 0;
   border: none;
@@ -156,7 +164,10 @@
   align-items: stretch;
   margin-inline: calc(var(--bp-space-6, 1.5rem) * -1);
   margin-top: var(--bp-space-4, 1rem);
-  padding: var(--bp-space-4, 1rem) var(--bp-space-6, 1.5rem);
+  /* The extra bottom padding keeps the button clear of the iOS home indicator
+     once dvh has pulled the panel up above the URL bar. */
+  padding: var(--bp-space-4, 1rem) var(--bp-space-6, 1.5rem)
+    calc(var(--bp-space-4, 1rem) + env(safe-area-inset-bottom));
   border-top: 1px solid var(--ak-color-border);
 
   --_background: var(--ak-color-surface);
