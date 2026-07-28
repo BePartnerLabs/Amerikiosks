@@ -13,7 +13,36 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # `migrate` runs against the live database while the OLD build is still
+  # serving, so between it and the promotion there is a window where new
+  # schema meets old code. Reads survive that; writes can corrupt. These two
+  # jobs close /admin and /api at the edge for the duration — production only,
+  # since a preview deploy has no editors to protect.
+  lock:
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    # Same GitHub Environment the reusable deploy workflow uses — the Vercel
+    # secrets are scoped to it and resolve to empty strings without this.
+    environment: production
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+    steps:
+      - name: Install Vercel CLI
+        run: npm install -g vercel@57.0.0
+
+      - name: Enable maintenance rules
+        run: |
+          vercel firewall rules enable "maintenance-admin"
+          vercel firewall rules enable "maintenance-api"
+          vercel firewall publish --yes
+
   migrate:
+    needs: [lock]
+    # `lock` is skipped on preview deploys; without this, skipping it would
+    # cascade and skip the whole pipeline.
+    if: always() && !failure() && !cancelled()
     uses: BePartnerLabs/centralized-workflows/.github/workflows/migrate-payload.yml@v1
     with:
       environment: ${{ github.event_name == 'release' && 'production' || 'preview' }}
@@ -26,3 +55,24 @@ jobs:
       environment: ${{ github.event_name == 'release' && 'production' || 'preview' }}
       prod: ${{ github.event_name == 'release' }}
     secrets: inherit
+
+  unlock:
+    needs: [lock, migrate, deploy]
+    # Unconditional on purpose: a failed migrate or deploy must not leave the
+    # client locked out of /admin with no obvious cause.
+    if: always() && needs.lock.result == 'success'
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+    steps:
+      - name: Install Vercel CLI
+        run: npm install -g vercel@57.0.0
+
+      - name: Disable maintenance rules
+        run: |
+          vercel firewall rules disable "maintenance-admin"
+          vercel firewall rules disable "maintenance-api"
+          vercel firewall publish --yes
