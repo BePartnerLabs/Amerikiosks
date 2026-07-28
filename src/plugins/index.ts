@@ -1,7 +1,6 @@
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { mcpPlugin } from '@payloadcms/plugin-mcp'
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
-import { redirectsPlugin } from '@payloadcms/plugin-redirects'
 import { searchPlugin } from '@payloadcms/plugin-search'
 import { seoPlugin } from '@payloadcms/plugin-seo'
 import type { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
@@ -10,12 +9,12 @@ import { s3Storage } from '@payloadcms/storage-s3'
 import type { Plugin, TextFieldValidation } from 'payload'
 import { resyncEndpoint } from '@/collections/FormSubmissions/endpoints/resync'
 import { dispatchFormSync } from '@/collections/FormSubmissions/hooks/dispatchFormSync'
-import { revalidateRedirects } from '@/hooks/revalidateRedirects'
 import type { Insight, Machine, Page, Project } from '@/payload-types'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
 import { searchFields } from '@/search/fieldOverrides'
 import { type MondayBoardsCache, validateMondayColumnId } from '@/utilities/detectMondayDrift'
 import { getServerSideURL } from '@/utilities/getURL'
+import { amerikiosksRedirectsPlugin } from './redirects'
 
 export const generateTitle: GenerateTitle<Insight | Page | Project | Machine> = ({ doc }) => {
   const label =
@@ -62,31 +61,7 @@ export const plugins: Plugin[] = [
         }),
       ]
     : []),
-  redirectsPlugin({
-    collections: ['pages', 'insights'],
-    overrides: {
-      // @ts-expect-error - This is a valid override, mapped fields don't resolve to the same type
-      fields: ({ defaultFields }) => {
-        return defaultFields.map((field) => {
-          if ('name' in field && field.name === 'from') {
-            return {
-              ...field,
-              admin: {
-                description: 'You will need to rebuild the website when changing this field.',
-              },
-            }
-          }
-          return field
-        })
-      },
-      admin: {
-        group: 'Config',
-      },
-      hooks: {
-        afterChange: [revalidateRedirects],
-      },
-    },
-  }),
+  amerikiosksRedirectsPlugin(),
   nestedDocsPlugin({
     collections: ['categories', 'pages'],
     generateURL: (docs) => docs.reduce((url, doc) => `${url}/${doc.slug}`, ''),

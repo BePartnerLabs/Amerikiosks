@@ -5,12 +5,17 @@ vi.mock('next-intl/middleware', () => ({
   default: () => () => NextResponse.next(),
 }))
 
+// No redirect rows: the middleware must fall through to the i18n handling.
+vi.mock('@/plugins/redirects/lookup', () => ({
+  findRedirect: vi.fn(async () => null),
+}))
+
 describe('middleware (proxy.ts)', () => {
   it('the common case: no machine_id/UTM present — no cookies are set, response passes through', async () => {
     const { default: middleware } = await import('@/proxy')
     const req = new NextRequest('https://amerikiosks.com/customer-service')
 
-    const res = middleware(req)
+    const res = await middleware(req)
 
     expect(res.cookies.get('machine_id')).toBeUndefined()
     expect(res.cookies.get('utm_source')).toBeUndefined()
@@ -22,7 +27,7 @@ describe('middleware (proxy.ts)', () => {
       'https://amerikiosks.com/customer-service/request-a-refund?machine_id=AK-0231',
     )
 
-    const res = middleware(req)
+    const res = await middleware(req)
 
     expect(res.cookies.get('machine_id')?.value).toBe('AK-0231')
   })
@@ -33,7 +38,7 @@ describe('middleware (proxy.ts)', () => {
       'https://amerikiosks.com/?utm_source=instagram&utm_medium=social&utm_campaign=summer',
     )
 
-    const res = middleware(req)
+    const res = await middleware(req)
 
     expect(res.cookies.get('utm_source')?.value).toBe('instagram')
     expect(res.cookies.get('utm_medium')?.value).toBe('social')
@@ -49,7 +54,7 @@ describe('middleware (proxy.ts)', () => {
     const { default: middleware } = await import('@/proxy')
     const req = new NextRequest('https://amerikiosks.com/customer-service')
 
-    const res = middleware(req)
+    const res = await middleware(req)
 
     expect(res.status).toBe(307)
     expect(res.headers.get('location')).toBe('https://amerikiosks.com/en/customer-service')
