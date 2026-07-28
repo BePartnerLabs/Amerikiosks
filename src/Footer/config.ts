@@ -30,11 +30,33 @@ export const Footer: GlobalConfig = {
           type: 'text',
           required: true,
           label: 'Column heading',
+          localized: true,
+        },
+        {
+          name: 'hidden',
+          type: 'checkbox',
+          defaultValue: false,
+          label: 'Hidden',
+          admin: {
+            description:
+              'Temporarily remove this whole column from the footer without deleting it.',
+          },
         },
         {
           name: 'links',
           type: 'array',
-          fields: [link({ appearances: false })],
+          fields: [
+            link({ appearances: false }),
+            {
+              name: 'hidden',
+              type: 'checkbox',
+              defaultValue: false,
+              label: 'Hidden',
+              admin: {
+                description: 'Temporarily remove this link from the footer without deleting it.',
+              },
+            },
+          ],
           maxRows: 8,
           admin: {
             components: {
@@ -53,12 +75,16 @@ export const Footer: GlobalConfig = {
       name: 'contactCta',
       type: 'text',
       label: 'Contact CTA text',
+      localized: true,
       admin: { description: 'e.g. "Start a partnership"' },
     },
     {
+      // Localized too: per-locale slugs differ (see i18n/routing.ts), so the
+      // Spanish CTA often needs to point at a different path than English.
       name: 'contactCtaUrl',
       type: 'text',
       label: 'Contact CTA URL',
+      localized: true,
     },
   ],
   hooks: {

@@ -50,6 +50,9 @@ import * as migration_20260726_230615_machine_hover_images from './20260726_2306
 import * as migration_20260727_212156_footer_brand_description_localized from './20260727_212156_footer_brand_description_localized';
 import * as migration_20260727_215724_metrics_items_localize_subfields from './20260727_215724_metrics_items_localize_subfields';
 import * as migration_20260727_222748_card_grid_items_localize_subfields from './20260727_222748_card_grid_items_localize_subfields';
+import * as migration_20260727_234919_footer_hidden_columns_and_links from './20260727_234919_footer_hidden_columns_and_links';
+import * as migration_20260727_235750_footer_localize_column_labels_and_cta from './20260727_235750_footer_localize_column_labels_and_cta';
+import * as migration_20260728_000142_header_show_language_switcher from './20260728_000142_header_show_language_switcher';
 
 export const migrations = [
   {
@@ -310,6 +313,21 @@ export const migrations = [
   {
     up: migration_20260727_222748_card_grid_items_localize_subfields.up,
     down: migration_20260727_222748_card_grid_items_localize_subfields.down,
-    name: '20260727_222748_card_grid_items_localize_subfields'
+    name: '20260727_222748_card_grid_items_localize_subfields',
+  },
+  {
+    up: migration_20260727_234919_footer_hidden_columns_and_links.up,
+    down: migration_20260727_234919_footer_hidden_columns_and_links.down,
+    name: '20260727_234919_footer_hidden_columns_and_links',
+  },
+  {
+    up: migration_20260727_235750_footer_localize_column_labels_and_cta.up,
+    down: migration_20260727_235750_footer_localize_column_labels_and_cta.down,
+    name: '20260727_235750_footer_localize_column_labels_and_cta',
+  },
+  {
+    up: migration_20260728_000142_header_show_language_switcher.up,
+    down: migration_20260728_000142_header_show_language_switcher.down,
+    name: '20260728_000142_header_show_language_switcher'
   },
 ];

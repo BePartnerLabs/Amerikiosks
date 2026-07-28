@@ -73,7 +73,7 @@ export const HighImpactHero: React.FC<Page['hero']> = ({
       </div>
 
       <div className="bp-content-grid">
-        <div className="breakout">
+        <div className="full-width">
           <div className="ak-hero-home__content">
             {richText && (
               <RichText

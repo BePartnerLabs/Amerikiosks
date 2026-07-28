@@ -55,12 +55,12 @@
 .ak-hero-home__content {
   background: var(--brand-color-palette-slate-300);
   backdrop-filter: blur(10px);
-  padding: 60px;
+  padding: 40px;
   position: relative;
-  border-radius: 40px;
+  border-radius: 0 var(--bp-space-6) var(--bp-space-6) 0;
   z-index: 2;
-  max-width: 72ch;
-  padding-block: 5rem;
+  max-width: 64ch;
+  padding-block: 2rem;
   display: flex;
   flex-direction: column;
   gap: var(--bp-space-6);

@@ -60,14 +60,15 @@
   align-items: center;
   justify-content: flex-start;
   gap: var(--md-size-space-8, 0.5rem);
-  width: 64px;
+  /* Mirrored by LOGO_WIDTH_PX in Carousel.tsx, which sizes the marquee loop. */
+  width: 96px;
   flex-shrink: 0;
 }
 
 .ak-trust-strip__card img {
   object-fit: contain;
   width: 100%;
-  height: 32px;
+  height: 48px;
   transition: transform 0.25s ease;
 }
 

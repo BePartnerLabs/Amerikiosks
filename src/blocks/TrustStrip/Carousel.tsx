@@ -17,7 +17,10 @@ type CarouselPartner = {
 // gap becomes visible. Repeating the partner list inside each track (rather
 // than adding more sibling tracks) is what grows a single track's own width.
 const MIN_TRACK_WIDTH_PX = 5120
-const LOGO_WIDTH_PX = 64
+// Keep in step with the .ak-trust-strip__card width in styles.css — this is
+// what the repeat count above is derived from, so a mismatch reintroduces
+// the visible gap in the loop.
+const LOGO_WIDTH_PX = 96
 const LOGO_GAP_PX = 48
 
 // Below this count everything fits comfortably on one line. Past it, split
@@ -86,8 +89,12 @@ export const TrustStripCarousel: React.FC<{ partners: CarouselPartner[] }> = ({ 
                       <Image
                         src={partner.logoUrl}
                         alt={partner.name}
-                        width={64}
-                        height={32}
+                        // Twice the rendered 96x48 box (CSS caps it): the
+                        // srcset Next derives from these has to cover a 2x
+                        // screen *and* the 1.35x hover zoom, which asking
+                        // for the display size alone doesn't.
+                        width={192}
+                        height={96}
                       />
                       <span
                         className="ak-trust-strip__card-name"

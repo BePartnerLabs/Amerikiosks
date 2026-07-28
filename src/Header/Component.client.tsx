@@ -61,7 +61,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
             <HeaderNav data={data} />
 
             <div className="bp-header__actions">
-              <LanguageSwitcher />
+              {data.showLanguageSwitcher && <LanguageSwitcher />}
               {data.cta && (data.cta.type === 'modal' ? data.cta.modalForm : data.cta.url) && (
                 <span
                   data-ga-event="cta_click"
