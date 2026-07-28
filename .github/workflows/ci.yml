@@ -31,3 +31,28 @@ jobs:
       store-path: ${{ needs.setup.outputs.store-path }}
       test-command: pnpm test:coverage
       coverage: true
+
+  # Deploys only fire on `preview/**` and on published releases, so without
+  # this nothing proves main still compiles until a release is being cut.
+  # Compile only — no DB is reached, the values below just satisfy the config
+  # that `payload generate:importmap` loads before `next build` runs.
+  build:
+    needs: setup
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+      - uses: actions/cache@v6
+        with:
+          path: ${{ needs.setup.outputs.store-path }}
+          key: ${{ needs.setup.outputs.cache-key }}
+          restore-keys: ${{ runner.os }}-pnpm-
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+        env:
+          DATABASE_URL: postgres://ci:ci@localhost:5432/ci
+          PAYLOAD_SECRET: ci-build-only-not-a-real-secret
