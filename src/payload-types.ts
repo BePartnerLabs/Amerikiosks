@@ -3668,7 +3668,12 @@ export interface Footer {
    * e.g. "Start a partnership"
    */
   contactCta?: string | null;
+  contactCtaType?: ('link' | 'modal') | null;
   contactCtaUrl?: string | null;
+  /**
+   * Opens this form in a modal drawer instead of navigating.
+   */
+  contactCtaForm?: (number | null) | Form;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -3847,7 +3852,9 @@ export interface FooterSelect<T extends boolean = true> {
       };
   contactEmail?: T;
   contactCta?: T;
+  contactCtaType?: T;
   contactCtaUrl?: T;
+  contactCtaForm?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

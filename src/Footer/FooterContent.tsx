@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { FormDrawerTrigger } from '@/components/FormDrawer'
 import { CMSLink } from '@/components/Link'
 import { Logo } from '@/components/Logo/Logo'
 import type { Footer } from '@/payload-types'
@@ -8,7 +9,21 @@ interface FooterContentProps {
 }
 
 export function FooterContent({ footer }: FooterContentProps) {
-  const { brandDescription, columns, contactEmail, contactCta, contactCtaUrl } = footer
+  const {
+    brandDescription,
+    columns,
+    contactEmail,
+    contactCta,
+    contactCtaUrl,
+    contactCtaType,
+    contactCtaForm,
+  } = footer
+
+  // The global is fetched with depth 1, so a picked form arrives populated.
+  const ctaForm =
+    contactCtaType === 'modal' && contactCtaForm && typeof contactCtaForm === 'object'
+      ? contactCtaForm
+      : null
 
   return (
     <footer
@@ -78,7 +93,14 @@ export function FooterContent({ footer }: FooterContentProps) {
                     data-ga-section="footer"
                     data-ga-label={contactCta}
                   >
-                    {contactCtaUrl ? (
+                    {ctaForm ? (
+                      <FormDrawerTrigger
+                        form={ctaForm}
+                        className="ak-footer__link"
+                      >
+                        {contactCta}
+                      </FormDrawerTrigger>
+                    ) : contactCtaUrl ? (
                       <Link
                         href={contactCtaUrl}
                         className="ak-footer__link"
