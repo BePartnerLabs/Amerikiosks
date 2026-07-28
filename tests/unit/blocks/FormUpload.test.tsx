@@ -5,6 +5,9 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { Upload } from '@/blocks/Form/Upload'
 
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: string) => key,
+}))
 afterEach(cleanup)
 
 const onSubmit = vi.fn()
@@ -80,7 +83,7 @@ describe('Form upload field', () => {
 
     selectFile(8 * 1024 * 1024 + 1, 'huge.png')
 
-    await waitFor(() => expect(screen.getByText(/8MB size limit/)).toBeTruthy())
+    await waitFor(() => expect(screen.getByText('tooLarge')).toBeTruthy())
     expect(screen.queryByText('huge.png')).toBeNull()
 
     fireEvent.click(screen.getByText('Send'))

@@ -1,4 +1,5 @@
 import configPromise from '@payload-config'
+import type { RequiredDataFromCollectionSlug } from 'payload'
 import { getPayload } from 'payload'
 import {
   type FieldSpec,
@@ -206,8 +207,7 @@ export async function POST(req: Request) {
               consentAt: new Date().toISOString(),
             }
           : {}),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any,
+      } as unknown as RequiredDataFromCollectionSlug<'form-submissions'>,
       // This route is the trust boundary — the collection itself denies public
       // creates (see formSubmissionOverrides in src/plugins/index.ts) so the
       // plugin's REST endpoint can't be used to walk around these checks.

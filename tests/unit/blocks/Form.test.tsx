@@ -9,6 +9,10 @@ let mutationState: {
   error: Error | null
 } = { isPending: false, isSuccess: false, error: null }
 
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: string) => key,
+}))
+
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push }),
 }))
@@ -19,6 +23,7 @@ vi.mock('@tanstack/react-query', () => ({
     isPending: mutationState.isPending,
     isSuccess: mutationState.isSuccess,
     error: mutationState.error,
+    reset: vi.fn(),
   }),
 }))
 
@@ -116,7 +121,7 @@ describe('FormBlock', () => {
         form={baseForm as never}
       />,
     )
-    expect(screen.getByText('Loading, please wait...')).toBeInTheDocument()
+    expect(screen.getByText('loading')).toBeInTheDocument()
   })
 
   it('renders the confirmation message and hides the form once submitted', () => {
@@ -152,6 +157,7 @@ describe('FormBlock', () => {
         form={baseForm as never}
       />,
     )
-    expect(screen.getByText('500: Boom')).toBeInTheDocument()
+    expect(screen.getByText('submitError')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'retry' })).toBeInTheDocument()
   })
 })

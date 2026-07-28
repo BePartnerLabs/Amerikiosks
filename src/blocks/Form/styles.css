@@ -111,3 +111,46 @@
 .ak-form__message-block {
   margin-block: var(--bp-space-12, 3rem);
 }
+
+/* The confirmation state takes focus on submit (see Component.tsx) — without
+   this it would draw the browser's default outline around the whole panel. */
+.ak-form__success:focus {
+  outline: none;
+}
+
+.ak-form__success-close {
+  margin-top: var(--bp-space-6, 1.5rem);
+}
+
+.ak-form__retry {
+  --_color: var(--ak-accent);
+  margin-left: var(--bp-space-3, 0.75rem);
+  color: var(--_color);
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.ak-form__consent {
+  margin-bottom: var(--bp-space-6, 1.5rem);
+}
+
+.ak-form__consent-text p {
+  margin: 0;
+  font-size: var(--bp-text-sm, 0.875rem);
+}
+
+.ak-form__turnstile:not(:empty) {
+  margin-bottom: var(--bp-space-6, 1.5rem);
+}
+
+/* Bot bait. Kept out of the accessibility tree and off-screen rather than
+   display:none — some bots skip hidden inputs, which defeats the point. */
+.ak-form__honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}

@@ -12,13 +12,13 @@ describe('FormsRepository.submit', () => {
     vi.clearAllMocks()
   })
 
-  it('posts JSON to /api/form-submissions when there are no file fields', async () => {
+  it('posts JSON to /next/form-submissions when there are no file fields', async () => {
     const { FormsRepository } = await import('@/repositories/FormsRepository')
     const data = { form: 'contact', submissionData: [{ field: 'email', value: 'a@b.com' }] }
 
     await FormsRepository.submit(data)
 
-    expect(post).toHaveBeenCalledWith('/api/form-submissions', data)
+    expect(post).toHaveBeenCalledWith('/next/form-submissions', data)
     expect(postFormData).not.toHaveBeenCalled()
   })
 
@@ -38,7 +38,7 @@ describe('FormsRepository.submit', () => {
     expect(post).not.toHaveBeenCalled()
     expect(postFormData).toHaveBeenCalledTimes(1)
     const [path, formData] = postFormData.mock.calls[0]
-    expect(path).toBe('/api/form-submissions')
+    expect(path).toBe('/next/form-submissions')
     expect(formData).toBeInstanceOf(FormData)
 
     const payload = JSON.parse(formData.get('_payload') as string)

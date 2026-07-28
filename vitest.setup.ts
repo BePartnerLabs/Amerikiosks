@@ -27,3 +27,7 @@ if (!window.matchMedia) {
       dispatchEvent: () => false,
     }) as MediaQueryList
 }
+
+// scrollIntoView is not implemented in jsdom — the form confirmation state
+// scrolls itself into view when it takes focus.
+Element.prototype.scrollIntoView = () => {}
