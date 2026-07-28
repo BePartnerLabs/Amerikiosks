@@ -1,9 +1,11 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import type React from 'react'
+import { FormDrawerTrigger } from '@/components/FormDrawer'
 import { SectionHeader } from '@/components/SectionHeader'
 import type {
   AudienceShowcaseBlock as AudienceShowcaseBlockProps,
+  Form,
   Media,
   Page,
 } from '@/payload-types'
@@ -12,7 +14,8 @@ import { toSnakeCase } from '@/utilities/toSnakeCase'
 import './styles.css'
 
 type PopulatedItem = NonNullable<AudienceShowcaseBlockProps['items']>[number] & {
-  page: Page
+  page?: Page | null
+  form?: Form | null
   image: Media
 }
 
@@ -26,13 +29,12 @@ export const AudienceShowcaseBlock: React.FC<AudienceShowcaseBlockProps> = ({
 }) => {
   if (!heading) return null
 
-  const populatedItems = (items ?? []).filter(
-    (item): item is PopulatedItem =>
-      item.page !== null &&
-      typeof item.page === 'object' &&
-      item.image !== null &&
-      typeof item.image === 'object',
-  )
+  const populatedItems = (items ?? []).filter((item): item is PopulatedItem => {
+    if (item.image === null || typeof item.image !== 'object') return false
+    return item.target === 'form'
+      ? item.form !== null && typeof item.form === 'object'
+      : item.page !== null && typeof item.page === 'object'
+  })
 
   return (
     <section
@@ -55,18 +57,12 @@ export const AudienceShowcaseBlock: React.FC<AudienceShowcaseBlockProps> = ({
           {populatedItems.length > 0 && (
             <div className="ak-audience-showcase__grid">
               {populatedItems.map((item) => {
-                const title = item.label ?? item.page.title
-                const description = item.description ?? item.page.meta?.description
-                const href = `/${item.page.slug}`
+                const isForm = item.target === 'form' && item.form
+                const title = item.label ?? (isForm ? item.form?.title : item.page?.title) ?? ''
+                const description = item.description ?? item.page?.meta?.description
 
-                return (
-                  <Link
-                    key={item.id ?? item.page.id}
-                    href={href}
-                    className="ak-audience-showcase__card"
-                    data-ga-event="audience_card_click"
-                    data-ga-label={item.page.title}
-                  >
+                const inner = (
+                  <>
                     <div className="ak-audience-showcase__card-photo">
                       <Image
                         src={getBestMediaUrl(item.image, 600) ?? item.image.url ?? ''}
@@ -89,6 +85,34 @@ export const AudienceShowcaseBlock: React.FC<AudienceShowcaseBlockProps> = ({
                         </span>
                       )}
                     </div>
+                  </>
+                )
+
+                if (isForm && item.form) {
+                  return (
+                    <FormDrawerTrigger
+                      key={item.id ?? `form-${item.form.id}`}
+                      form={item.form}
+                      className="ak-audience-showcase__card"
+                      data-ga-event="audience_card_click"
+                      data-ga-label={title}
+                    >
+                      {inner}
+                    </FormDrawerTrigger>
+                  )
+                }
+
+                if (!item.page) return null
+
+                return (
+                  <Link
+                    key={item.id ?? item.page.id}
+                    href={`/${item.page.slug}`}
+                    className="ak-audience-showcase__card"
+                    data-ga-event="audience_card_click"
+                    data-ga-label={item.page.title}
+                  >
+                    {inner}
                   </Link>
                 )
               })}

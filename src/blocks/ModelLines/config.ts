@@ -28,5 +28,15 @@ export const ModelLines: Block = {
       type: 'text',
       localized: true,
     },
+    {
+      name: 'form',
+      type: 'relationship',
+      relationTo: 'forms',
+      label: 'Form to open',
+      admin: {
+        description:
+          'Optional. If set, clicking a model line opens this form in a modal drawer instead of navigating to the family page.',
+      },
+    },
   ],
 }

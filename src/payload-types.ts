@@ -1002,12 +1002,12 @@ export interface CardGridBlock {
           [k: string]: unknown;
         } | null;
         /**
-         * Optional CTA link per card. Used in icon variant.
+         * Optional CTA link per card. Used in icon variant. Choose "None" to make the card non-clickable.
          */
         link?: {
+          type?: ('none' | 'custom' | 'reference') | null;
           label?: string | null;
           url?: string | null;
-          type?: ('custom' | 'reference') | null;
           reference?: (number | null) | Page;
         };
         id?: string | null;
@@ -1116,9 +1116,17 @@ export interface AudienceShowcaseBlock {
   items?:
     | {
         /**
+         * What happens when the card is clicked.
+         */
+        target?: ('page' | 'form') | null;
+        /**
          * Pulls title and description from this page.
          */
-        page: number | Page;
+        page?: (number | null) | Page;
+        /**
+         * Opens this form in a modal drawer instead of navigating.
+         */
+        form?: (number | null) | Form;
         /**
          * Card background image.
          */
@@ -1531,6 +1539,10 @@ export interface ModelLinesBlock {
   eyebrow?: string | null;
   heading: string;
   subheading?: string | null;
+  /**
+   * Optional. If set, clicking a model line opens this form in a modal drawer instead of navigating to the family page.
+   */
+  form?: (number | null) | Form;
   id?: string | null;
   blockName?: string | null;
   blockType: 'modelLines';
@@ -2506,9 +2518,9 @@ export interface CardGridBlockSelect<T extends boolean = true> {
         link?:
           | T
           | {
+              type?: T;
               label?: T;
               url?: T;
-              type?: T;
               reference?: T;
             };
         id?: T;
@@ -2571,7 +2583,9 @@ export interface AudienceShowcaseBlockSelect<T extends boolean = true> {
   items?:
     | T
     | {
+        target?: T;
         page?: T;
+        form?: T;
         image?: T;
         label?: T;
         description?: T;
@@ -2638,6 +2652,7 @@ export interface ModelLinesBlockSelect<T extends boolean = true> {
   eyebrow?: T;
   heading?: T;
   subheading?: T;
+  form?: T;
   id?: T;
   blockName?: T;
 }

@@ -1,12 +1,8 @@
 'use client'
-import type { Form as FormType } from '@payloadcms/plugin-form-builder/types'
 import Link from 'next/link'
 import type React from 'react'
-import { useEffect, useId, useState } from 'react'
-import { createPortal } from 'react-dom'
-import { FormBlock } from '@/blocks/Form/Component'
+import { FormDrawerTrigger } from '@/components/FormDrawer'
 import type { Form, Insight, Page } from '@/payload-types'
-import './link-drawer.css'
 
 type CMSLinkType = {
   appearance?: 'inline' | 'default' | 'outline' | 'link' | 'ghost' | 'dark' | null
@@ -45,15 +41,6 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
     url,
   } = props
 
-  const drawerId = useId()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    // Only modal-type links need the portal — avoid an extra re-render for
-    // every plain <Link> usage of this component (Header, Footer, CTAs...).
-    if (type === 'modal') setMounted(true)
-  }, [type])
-
   if (type === 'modal') {
     if (!modalForm || typeof modalForm !== 'object') return null
 
@@ -62,47 +49,14 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
         ? (appearanceClass[appearance] ?? 'bp-btn bp-btn--primary')
         : ''
 
-    const drawer = (
-      <div
-        id={drawerId}
-        popover=""
-        className="ak-link-drawer"
-      >
-        <div className="ak-link-drawer__header">
-          {modalForm.title && <h2 className="ak-link-drawer__title">{modalForm.title}</h2>}
-          <button
-            type="button"
-            popoverTarget={drawerId}
-            popoverTargetAction="hide"
-            aria-label="Close"
-            className="ak-link-drawer__close"
-          >
-            ×
-          </button>
-        </div>
-        <FormBlock
-          enableIntro={false}
-          form={modalForm as unknown as FormType}
-        />
-      </div>
-    )
-
     return (
-      <>
-        <button
-          type="button"
-          popoverTarget={drawerId}
-          className={`${btnClass}${className ? ` ${className}` : ''}`}
-        >
-          {label}
-          {children}
-        </button>
-        {/* Portaled to document.body — a popover rendered wherever CMSLink
-            happens to live (hero, header, footer, CTA…) would otherwise
-            inherit that context's ambient CSS (e.g. a hero's oversized
-            heading styles bleeding into the drawer's own title). */}
-        {mounted ? createPortal(drawer, document.body) : null}
-      </>
+      <FormDrawerTrigger
+        form={modalForm}
+        className={`${btnClass}${className ? ` ${className}` : ''}`}
+      >
+        {label}
+        {children}
+      </FormDrawerTrigger>
     )
   }
 
