@@ -12,13 +12,6 @@ concurrency:
   group: deploy-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  # Pinned so the platform can't break a release unannounced. Keep in sync with
-  # the `vercel-cli-version` default in centralized-workflows/deploy-vercel.yml:
-  # the `env` context isn't available in a reusable workflow's `with:`, so this
-  # can't be passed through and the two have to be bumped together.
-  VERCEL_CLI_VERSION: "57.0.0"
-
 jobs:
   # `migrate` runs against the live database while the OLD build is still
   # serving, so between it and the promotion there is a window where new
@@ -37,7 +30,7 @@ jobs:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
     steps:
       - name: Install Vercel CLI
-        run: npm install -g vercel@${{ env.VERCEL_CLI_VERSION }}
+        run: npm install -g vercel@${{ vars.VERCEL_CLI_VERSION || '57.0.0' }}
 
       - name: Enable maintenance rules
         run: |
@@ -61,6 +54,11 @@ jobs:
     with:
       environment: ${{ github.event_name == 'release' && 'production' || 'preview' }}
       prod: ${{ github.event_name == 'release' }}
+      # Same pin as lock/unlock above, so all three run one CLI version against a
+      # release. `vars` (unlike `env`) is available in a reusable workflow's
+      # `with:`, so setting the VERCEL_CLI_VERSION Actions variable bumps every
+      # job at once — no edit to centralized-workflows needed.
+      vercel-cli-version: ${{ vars.VERCEL_CLI_VERSION || '57.0.0' }}
     secrets: inherit
 
   unlock:
@@ -76,7 +74,7 @@ jobs:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
     steps:
       - name: Install Vercel CLI
-        run: npm install -g vercel@${{ env.VERCEL_CLI_VERSION }}
+        run: npm install -g vercel@${{ vars.VERCEL_CLI_VERSION || '57.0.0' }}
 
       - name: Disable maintenance rules
         run: |
