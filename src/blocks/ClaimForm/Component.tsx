@@ -8,7 +8,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { Path } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import RichText from '@/components/RichText'
-import { Button } from '@/components/ui/button'
 import { ClaimsRepository } from '@/repositories'
 import type { ClaimFormData } from '@/repositories/ClaimsRepository'
 import './styles.css'
@@ -24,14 +23,14 @@ export type ClaimFormBlockType = {
 }
 
 type Brand = { id: number | string; name: string; logoUrl?: string }
-// sawCreditsAvailable is UI-only branching state (JotForm's qid 4 "Did you
-// see credits available?", cash-only) — never sent to the backend, stripped
+// sawCreditsAvailable is UI-only branching state (from the legacy JotForm's
+// qid 4 "Did you see credits available?", cash-only) — never sent to the backend, stripped
 // out in onSubmit before calling ClaimsRepository.submit.
 type FormValues = Omit<ClaimFormData, 'machineId' | 'photo'> & {
   sawCreditsAvailable?: 'yes' | 'no'
 }
 
-// Fixes the JotForm bug found in the live-site audit: the confirmation email
+// Fixes a bug found in the audit of the legacy JotForm: its confirmation email
 // showed "Type a question" for 5 of 11 fields instead of the real label.
 const FIELD_LABELS: Record<string, string> = {
   kioskBrand: 'Kiosk Brand',
@@ -149,8 +148,8 @@ const CLAIM_REASONS = [
   { value: 'no_product', label: "I didn't receive my product" },
 ]
 
-// Values match Claims.refundMethod's select options and JotForm's "Select a
-// refund method" option text verbatim. Icons are simple-icons brand glyphs
+// Values match Claims.refundMethod's select options and the legacy JotForm's
+// "Select a refund method" option text verbatim. Icons are simple-icons brand glyphs
 // (MIT), same rationale as the WhatsApp/Google Pay/Apple Pay icons above —
 // Material Symbols has no brand logos.
 const REFUND_METHODS = [
@@ -224,7 +223,7 @@ const nowForDateTimeLocal = () => {
 
 // Formats as the user types into "(555) 555-5555", stripping everything but
 // digits and capping at 10 — matches the US phone format the refund team
-// expects (this form is US-kiosk-only, see JotFormRepository's 5_full mapping).
+// expects — this form is US-kiosk-only.
 // Browser autofill often includes the leading US country code (+1), giving 11
 // digits — drop it before slicing, or the first 10 digits kept would be the
 // "1" plus the first 9 of the real number instead of the actual area code.
@@ -258,7 +257,7 @@ const BEFORE_CREDIT_CHECK_STEPS: Step[] = [
   { key: 'paymentMethod', fields: ['paymentMethod'], required: true },
 ]
 
-// Cash-only sub-flow mirroring JotForm qid 4 ("Did you see credits
+// Cash-only sub-flow mirroring the legacy JotForm's qid 4 ("Did you see credits
 // available?") and its Yes/No branch messages (qid 6 vs qid 5). Yes means the
 // machine still shows the credit — nothing to refund yet, so the flow ends on
 // that message instead of continuing to collect contact info. No means the
@@ -292,7 +291,7 @@ const AFTER_CREDIT_CHECK_STEPS: Step[] = [
 
 // Card refunds go back to the card automatically (card + digits step); cash
 // refunds need a destination account instead (refundMethod + refundAccount) —
-// mirrors the branching audited on the live JotForm (qid 18/20/21), condensed
+// mirrors the branching audited on the legacy JotForm (qid 18/20/21), condensed
 // into two straightforward extra steps instead of cloning its image+yes/no flow.
 const CARD_STEPS: Step[] = [
   { key: 'lastFourCardDigits', fields: ['lastFourCardDigits'], required: true },
@@ -320,7 +319,7 @@ export const ClaimFormBlock: React.FC<{ id?: string; brands: Brand[] } & ClaimFo
   const [isDragOver, setIsDragOver] = useState(false)
 
   // step -1 = intro screen, 0..STEPS.length-1 = one field group per screen
-  // (mirrors the 11-screen flow audited on Amerikiosks' current JotForm).
+  // (mirrors the 11-screen flow audited on the legacy JotForm it replaced).
   const [step, setStep] = useState(-1)
 
   const {
@@ -481,13 +480,13 @@ export const ClaimFormBlock: React.FC<{ id?: string; brands: Brand[] } & ClaimFo
               enableGutter={false}
             />
           )}
-          <Button
+          <button
             type="button"
             onClick={() => setStep(0)}
             className="bp-btn bp-btn--dark"
           >
             Start
-          </Button>
+          </button>
         </div>
       </div>
     )
@@ -924,31 +923,31 @@ export const ClaimFormBlock: React.FC<{ id?: string; brands: Brand[] } & ClaimFo
 
         <div className="ak-claim-form__actions">
           {step >= 0 && (
-            <Button
+            <button
               type="button"
-              variant="outline"
+              className="bp-btn bp-btn--outline"
               onClick={goBack}
             >
               Previous
-            </Button>
+            </button>
           )}
           {isCreditsAvailableTerminal || isAutoAdvanceStep ? null : isLastStep ? (
-            <Button
+            <button
               key="submit"
               type="submit"
               className="bp-btn bp-btn--dark"
             >
               {submitButtonLabel}
-            </Button>
+            </button>
           ) : (
-            <Button
+            <button
               key="next"
               type="button"
               className="bp-btn bp-btn--dark"
               onClick={goNext}
             >
               Next
-            </Button>
+            </button>
           )}
         </div>
       </form>

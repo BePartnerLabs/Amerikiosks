@@ -595,6 +595,7 @@ html[data-a11y-contrast="on"] {
   --bp-color-border: #000000;
 }
 html[data-a11y-contrast="on"] * {
+  /* biome-ignore lint/complexity/noImportantStyles: a11y user overrides must beat component styles; that is the whole point of the toggle */
   text-shadow: none !important;
 }
 /* Text sitting on top of imagery has no guaranteed contrast ratio, so give
@@ -608,6 +609,7 @@ html[data-a11y-contrast="on"] :is(.ak-hero, .ak-machine-hero) :is(h1, h2, h3, p,
 
 /* Highlight links — make every interactive target unmistakable. */
 html[data-a11y-links="on"] :is(a, button):not(.ak-a11y-fab):not(.ak-a11y-panel *) {
+  /* biome-ignore lint/complexity/noImportantStyles: a11y user overrides must beat component styles; that is the whole point of the toggle */
   text-decoration: underline !important;
   text-underline-offset: 0.2em;
   outline: 2px solid var(--bp-color-border);
@@ -620,9 +622,13 @@ html[data-a11y-motion="reduce"],
 html[data-a11y-motion="reduce"] *,
 html[data-a11y-motion="reduce"] *::before,
 html[data-a11y-motion="reduce"] *::after {
+  /* biome-ignore lint/complexity/noImportantStyles: a11y user overrides must beat component styles; that is the whole point of the toggle */
   animation-duration: 0.001ms !important;
+  /* biome-ignore lint/complexity/noImportantStyles: a11y user overrides must beat component styles; that is the whole point of the toggle */
   animation-iteration-count: 1 !important;
+  /* biome-ignore lint/complexity/noImportantStyles: a11y user overrides must beat component styles; that is the whole point of the toggle */
   transition-duration: 0.001ms !important;
+  /* biome-ignore lint/complexity/noImportantStyles: a11y user overrides must beat component styles; that is the whole point of the toggle */
   scroll-behavior: auto !important;
 }
 html[data-a11y-motion="reduce"] {
