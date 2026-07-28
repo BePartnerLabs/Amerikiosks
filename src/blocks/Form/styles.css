@@ -377,34 +377,88 @@
 /* ── Split layout ──────────────────────────────────────────────
    Full-page only (e.g. /contact). The drawer overrides this back to a single
    column — 28rem never has room for two. */
+/* Same panel language as the mega menu (src/Header/Nav/megamenu.css): dark
+   left column, white right column, one rounded card with the seam hidden. The
+   --ak-mega-* tokens are shared on purpose — if the mega menu is restyled,
+   this follows it instead of drifting into a second, nearly-identical look. */
 .ak-form--split {
   display: grid;
-  grid-template-columns: 1fr 1.25fr;
+  grid-template-columns: 36% 1fr;
   gap: 0;
   max-width: 64rem;
   overflow: hidden;
   border-radius: var(--bp-radius-lg, 0.75rem);
+  box-shadow: var(--bp-shadow-xl);
 }
 
 .ak-form--split .ak-form__aside {
-  --_background: var(--ak-color-heading);
-  --_color: var(--ak-color-on-accent, #fff);
+  --_background: var(--form-panel-background, var(--ak-mega-left-bg));
+  --_color: var(--form-panel-color, var(--ak-mega-fg));
+  display: flex;
+  flex-direction: column;
+  gap: var(--md-size-space-20, 1.25rem);
   padding: var(--bp-space-8, 2rem);
   background-color: var(--_background);
   color: var(--_color);
 }
 
-.ak-form--split .ak-form__aside :is(h2, h3, h4, p, li) {
+.ak-form__aside-accent {
+  --_background: var(--ak-accent);
+  display: block;
+  width: var(--bp-space-8, 2rem);
+  height: 2px;
+  border-radius: var(--bp-radius-full, 999px);
+  background-color: var(--_background);
+}
+
+.ak-form__aside-eyebrow {
+  --_color: var(--form-panel-eyebrow-color, var(--ak-mega-eyebrow-color));
+  margin: 0;
+  color: var(--_color);
+  font-size: var(--bp-text-xs);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.ak-form__aside-headline {
+  margin: 0;
   color: inherit;
+  font-size: var(--bp-text-2xl);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.ak-form__aside-description :is(p, li) {
+  margin: 0;
+  color: inherit;
+  font-size: var(--bp-text-sm);
+  line-height: 1.6;
 }
 
 .ak-form--split .ak-form__card {
+  --_background: var(--form-panel-form-background, var(--ak-mega-right-bg));
+  padding: var(--bp-space-8, 2rem);
+  border: none;
   border-radius: 0;
+  background-color: var(--_background);
 }
 
 @media (max-width: 48rem) {
   .ak-form--split {
     grid-template-columns: 1fr;
+  }
+
+  /* Stacked, the panel sits directly above the fields, so it works as a
+     heading rather than a column of its own: accent rule, eyebrow, headline.
+     The description would just push the first input further down the page. */
+  .ak-form--split .ak-form__aside-description {
+    display: none;
+  }
+
+  .ak-form--split .ak-form__aside {
+    gap: var(--bp-space-3, 0.75rem);
+    padding: var(--bp-space-6, 1.5rem);
   }
 }
 

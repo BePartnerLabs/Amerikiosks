@@ -38,6 +38,9 @@ export type FormBlockType = {
   introContent?: DefaultTypedEditorState
   /** 'split' puts the intro in a panel beside the fields — full-page only. */
   layout?: 'stacked' | 'split'
+  /** Split only — mirrors the mega menu's left panel (eyebrow + headline). */
+  panelLabel?: string | null
+  panelHeadline?: string | null
   /** Set by FormDrawer — adds a Close button to the confirmation state. */
   onRequestClose?: () => void
 }
@@ -60,6 +63,8 @@ export const FormBlock: React.FC<
     } = {},
     introContent,
     layout = 'stacked',
+    panelLabel,
+    panelHeadline,
     onRequestClose,
   } = props
 
@@ -420,18 +425,30 @@ export const FormBlock: React.FC<
     </div>
   )
 
-  // Split only pays off when there is something to put in the panel.
-  if (layout === 'split' && enableIntro && introContent) {
+  // Split only pays off when there is something to put in the panel. Its
+  // markup mirrors the mega menu's left panel (accent bar → eyebrow →
+  // headline → description) so the two read as the same component family.
+  const hasPanelContent = panelLabel || panelHeadline || (enableIntro && introContent)
+  if (layout === 'split' && hasPanelContent) {
     return (
       <div
         className="ak-form ak-form--split"
         data-layout="split"
       >
         <aside className="ak-form__aside">
-          <RichText
-            data={introContent}
-            enableGutter={false}
+          <span
+            className="ak-form__aside-accent"
+            aria-hidden="true"
           />
+          {panelLabel && <p className="ak-form__aside-eyebrow">{panelLabel}</p>}
+          {panelHeadline && <h2 className="ak-form__aside-headline">{panelHeadline}</h2>}
+          {enableIntro && introContent && (
+            <RichText
+              className="ak-form__aside-description"
+              data={introContent}
+              enableGutter={false}
+            />
+          )}
         </aside>
         {body}
       </div>

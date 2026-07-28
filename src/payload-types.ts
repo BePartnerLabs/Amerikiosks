@@ -1007,6 +1007,14 @@ export interface FormBlock {
     [k: string]: unknown;
   } | null;
   /**
+   * Small uppercase label above the headline, e.g. "Get in touch".
+   */
+  panelLabel?: string | null;
+  /**
+   * The hook. Short and specific — this is the panel's whole job.
+   */
+  panelHeadline?: string | null;
+  /**
    * Split puts the intro content in a dark panel to the left of the fields. Use it on a full page like /contact; it falls back to stacked on narrow screens and inside the modal drawer, which is always too narrow for two columns.
    */
   layout?: ('stacked' | 'split') | null;
@@ -2568,6 +2576,8 @@ export interface FormBlockSelect<T extends boolean = true> {
   form?: T;
   enableIntro?: T;
   introContent?: T;
+  panelLabel?: T;
+  panelHeadline?: T;
   layout?: T;
   id?: T;
   blockName?: T;

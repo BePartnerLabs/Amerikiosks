@@ -39,6 +39,27 @@ export const FormBlock: Block = {
       }),
       label: 'Intro Content',
     },
+    // Deliberately the same three field names the mega menu's left panel uses
+    // (src/Header/config.ts → megaMenu), so an editor who has filled in one
+    // already knows what these do.
+    {
+      name: 'panelLabel',
+      type: 'text',
+      label: 'Panel eyebrow',
+      admin: {
+        condition: (_, siblingData) => siblingData?.layout === 'split',
+        description: 'Small uppercase label above the headline, e.g. "Get in touch".',
+      },
+    },
+    {
+      name: 'panelHeadline',
+      type: 'text',
+      label: 'Panel headline',
+      admin: {
+        condition: (_, siblingData) => siblingData?.layout === 'split',
+        description: "The hook. Short and specific — this is the panel's whole job.",
+      },
+    },
     {
       name: 'layout',
       type: 'select',
