@@ -72,7 +72,10 @@ export const Upload: React.FC<
   const [error, setError] = useState<string | undefined>(undefined)
   const [isDragOver, setIsDragOver] = useState(false)
   const [justDropped, setJustDropped] = useState(false)
-  const zoneRef = useRef<HTMLLabelElement>(null)
+  // The ripple lives on the stage, not on the dropzone: accepting a file
+  // unmounts the dropzone in the same tick, so an animation anchored to it
+  // never got a frame — the zone just vanished and the file row appeared.
+  const stageRef = useRef<HTMLDivElement>(null)
   // dragenter/dragleave also fire for every child element, so a plain boolean
   // flickers as the pointer crosses the icon or the copy. Counting depth is
   // the standard fix.
@@ -130,11 +133,11 @@ export const Upload: React.FC<
   // than through React state: dragover fires on every mouse move, and a
   // re-render per frame would be a lot of work for a decoration.
   const trackPointer = useCallback((event: React.DragEvent) => {
-    const zone = zoneRef.current
-    if (!zone) return
-    const rect = zone.getBoundingClientRect()
-    zone.style.setProperty('--mx', `${event.clientX - rect.left}px`)
-    zone.style.setProperty('--my', `${event.clientY - rect.top}px`)
+    const stage = stageRef.current
+    if (!stage) return
+    const rect = stage.getBoundingClientRect()
+    stage.style.setProperty('--mx', `${event.clientX - rect.left}px`)
+    stage.style.setProperty('--my', `${event.clientY - rect.top}px`)
   }, [])
 
   return (
@@ -150,113 +153,118 @@ export const Upload: React.FC<
         {required && <RequiredMark />}
       </label>
 
-      {!file && (
-        <label
-          ref={zoneRef}
-          className="bp-file-upload__dropzone ak-upload__zone"
-          htmlFor={name}
-          data-dragover={isDragOver || undefined}
-          data-dropped={justDropped || undefined}
-          onDragEnter={(e) => {
-            e.preventDefault()
-            dragDepth.current += 1
-            setIsDragOver(true)
-          }}
-          onDragOver={(e) => {
-            e.preventDefault()
-            trackPointer(e)
-          }}
-          onDragLeave={() => {
-            dragDepth.current -= 1
-            if (dragDepth.current <= 0) {
+      <div
+        className="ak-upload__stage"
+        ref={stageRef}
+        data-dropped={justDropped || undefined}
+      >
+        <span
+          className="ak-upload__ripple"
+          aria-hidden="true"
+        />
+
+        {!file && (
+          <label
+            className="bp-file-upload__dropzone ak-upload__zone"
+            htmlFor={name}
+            data-dragover={isDragOver || undefined}
+            onDragEnter={(e) => {
+              e.preventDefault()
+              dragDepth.current += 1
+              setIsDragOver(true)
+            }}
+            onDragOver={(e) => {
+              e.preventDefault()
+              trackPointer(e)
+            }}
+            onDragLeave={() => {
+              dragDepth.current -= 1
+              if (dragDepth.current <= 0) {
+                dragDepth.current = 0
+                setIsDragOver(false)
+              }
+            }}
+            onDrop={(e) => {
+              e.preventDefault()
               dragDepth.current = 0
+              trackPointer(e)
               setIsDragOver(false)
-            }
-          }}
-          onDrop={(e) => {
-            e.preventDefault()
-            dragDepth.current = 0
-            trackPointer(e)
-            setIsDragOver(false)
-            setJustDropped(true)
-            setTimeout(() => setJustDropped(false), 500)
-            accepted(e.dataTransfer.files?.[0])
-          }}
-        >
-          <span
-            className="ak-upload__ripple"
-            aria-hidden="true"
-          />
-          <input
-            className="bp-file-upload__input"
-            id={name}
-            type="file"
-            accept={accept}
-            aria-invalid={hasError}
-            aria-describedby={hasError ? errorId : undefined}
-            onChange={(e) => accepted(e.target.files?.[0])}
-          />
-          <span
-            className="bp-file-upload__icon"
-            aria-hidden="true"
+              setJustDropped(true)
+              setTimeout(() => setJustDropped(false), 500)
+              accepted(e.dataTransfer.files?.[0])
+            }}
           >
-            ⬆
-          </span>
-          <span className="bp-file-upload__copy">{t('prompt')}</span>
-          <span className="ak-upload__hint">
-            {accept.includes(PDF_TYPE) ? t('hintWithPdf') : t('hint')}
-          </span>
-        </label>
-      )}
-
-      {file && (
-        <div className="ak-upload__file">
-          {/* Drawn as a CSS background rather than an image element: this is a
-              local object URL for a file the visitor just picked, so next/image
-              has nothing to optimise and no loader that could fetch it. */}
-          <span
-            className="ak-upload__thumb"
-            aria-hidden="true"
-            style={previewUrl ? { backgroundImage: `url(${previewUrl})` } : undefined}
-          >
-            {previewUrl ? '' : fileExtension(file.name)}
-          </span>
-
-          <span className="ak-upload__meta">
-            <span className="ak-upload__name">{file.name}</span>
-            <span className="ak-upload__size">
-              {isUploading
-                ? `${uploadPercent}% · ${formatFileSize(file.size)}`
-                : formatFileSize(file.size)}
+            <input
+              className="bp-file-upload__input"
+              id={name}
+              type="file"
+              accept={accept}
+              aria-invalid={hasError}
+              aria-describedby={hasError ? errorId : undefined}
+              onChange={(e) => accepted(e.target.files?.[0])}
+            />
+            <span
+              className="bp-file-upload__icon"
+              aria-hidden="true"
+            >
+              ⬆
             </span>
-            {typeof uploadPercent === 'number' && (
-              <span
-                className="ak-upload__bar"
-                role="progressbar"
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-valuenow={uploadPercent}
-                aria-label={t('uploading')}
-              >
-                <span
-                  className="ak-upload__bar-fill"
-                  style={{ inlineSize: `${uploadPercent}%` }}
-                />
-              </span>
-            )}
-          </span>
+            <span className="bp-file-upload__copy">{t('prompt')}</span>
+            <span className="ak-upload__hint">
+              {accept.includes(PDF_TYPE) ? t('hintWithPdf') : t('hint')}
+            </span>
+          </label>
+        )}
 
-          <button
-            className="ak-upload__remove"
-            type="button"
-            onClick={remove}
-            disabled={isUploading}
-            aria-label={t('remove')}
-          >
-            ×
-          </button>
-        </div>
-      )}
+        {file && (
+          <div className="ak-upload__file">
+            {/* Drawn as a CSS background rather than an image element: this is
+                a local object URL for a file the visitor just picked, so
+                next/image has nothing to optimise and no loader for it. */}
+            <span
+              className="ak-upload__thumb"
+              aria-hidden="true"
+              style={previewUrl ? { backgroundImage: `url(${previewUrl})` } : undefined}
+            >
+              {previewUrl ? '' : fileExtension(file.name)}
+            </span>
+
+            <span className="ak-upload__meta">
+              <span className="ak-upload__name">{file.name}</span>
+              <span className="ak-upload__size">
+                {isUploading
+                  ? `${uploadPercent}% · ${formatFileSize(file.size)}`
+                  : formatFileSize(file.size)}
+              </span>
+              {typeof uploadPercent === 'number' && (
+                <span
+                  className="ak-upload__bar"
+                  role="progressbar"
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={uploadPercent}
+                  aria-label={t('uploading')}
+                >
+                  <span
+                    className="ak-upload__bar-fill"
+                    style={{ inlineSize: `${uploadPercent}%` }}
+                  />
+                </span>
+              )}
+            </span>
+
+            <button
+              className="ak-upload__remove"
+              type="button"
+              onClick={remove}
+              disabled={isUploading}
+              aria-label={t('remove')}
+            >
+              ×
+            </button>
+          </div>
+        )}
+      </div>
 
       {error && (
         <p

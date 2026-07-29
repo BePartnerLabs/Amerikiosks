@@ -516,9 +516,15 @@
    was missing — a pointer-tracking spotlight while a file is dragged over, a
    ring that expands from where it landed, and the chosen file as a row with
    its own progress. */
+/* The stage outlives the swap from dropzone to file row, so the drop ring can
+   finish playing after the file has been accepted. Anchoring it to the zone
+   meant it was unmounted in the same tick and never drew a frame. */
+.ak-upload__stage {
+  position: relative;
+}
+
 .ak-upload__zone {
   position: relative;
-  overflow: hidden;
   transition:
     border-color var(--bp-duration-fast, 0.15s) var(--bp-ease, ease),
     background-color var(--bp-duration-fast, 0.15s) var(--bp-ease, ease),
@@ -569,12 +575,30 @@
   border: 2px solid var(--_border-color);
 }
 
-.ak-upload__zone[data-dropped] .ak-upload__ripple {
+.ak-upload__stage[data-dropped] .ak-upload__ripple {
   animation: ak-upload-ring 460ms cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
 }
 
-.ak-upload__zone[data-dropped] {
+.ak-upload__stage[data-dropped] {
   animation: ak-upload-settle 320ms cubic-bezier(0.2, 0.8, 0.3, 1.1);
+}
+
+/* The row arrives while the ring is still expanding, so it fades in rather
+   than popping into place mid-animation. */
+.ak-upload__file {
+  animation: ak-upload-arrive 260ms ease-out both;
+}
+
+@keyframes ak-upload-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes ak-upload-ring {
@@ -732,8 +756,9 @@
     transform: none;
   }
 
-  .ak-upload__zone[data-dropped],
-  .ak-upload__zone[data-dropped] .ak-upload__ripple {
+  .ak-upload__stage[data-dropped],
+  .ak-upload__stage[data-dropped] .ak-upload__ripple,
+  .ak-upload__file {
     animation: none;
   }
 }
