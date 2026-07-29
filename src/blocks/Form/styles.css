@@ -491,9 +491,29 @@
   margin-bottom: var(--bp-space-6, 1.5rem);
 }
 
+/* Replaces the label wrapper the checkbox used to sit in — see the comment in
+   Component.tsx for why the wording cannot be a <label>. */
+.ak-form__consent-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--bp-space-2, 0.5rem);
+}
+
+.ak-form__consent-row .bp-checkbox__input {
+  flex: none;
+  margin-top: 0.15rem;
+}
+
 .ak-form__consent-text p {
   margin: 0;
   font-size: var(--bp-text-sm, 0.875rem);
+}
+
+/* The privacy-policy link has to look like a link inside small print. */
+.ak-form__consent-text a {
+  --_color: var(--ak-accent);
+  color: var(--_color);
+  text-decoration: underline;
 }
 
 .ak-form__turnstile:not(:empty) {

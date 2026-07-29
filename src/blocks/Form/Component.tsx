@@ -377,11 +377,18 @@ export const FormBlock: React.FC<
 
             {requiresConsent && (
               <div className="ak-form__consent bp-checkbox-field">
-                <label className="bp-checkbox">
+                {/* The wording is NOT wrapped in a <label>. It is expected to
+                    contain a link to the privacy policy, and a label forwards
+                    every click to its control — so following that link would
+                    also tick or untick the box. The checkbox is named through
+                    aria-labelledby instead, which keeps the association for
+                    assistive tech without stealing the link's clicks. */}
+                <div className="ak-form__consent-row">
                   <input
                     className="bp-checkbox__input"
                     id="consent"
                     type="checkbox"
+                    aria-labelledby="consent-text"
                     aria-invalid={consentError}
                     aria-describedby={consentError ? 'consent-error' : undefined}
                     {...registerConsent('consent', { required: true })}
@@ -389,11 +396,12 @@ export const FormBlock: React.FC<
                   {consentText ? (
                     <RichText
                       className="ak-form__consent-text"
+                      id="consent-text"
                       data={consentText}
                       enableGutter={false}
                     />
                   ) : null}
-                </label>
+                </div>
                 {consentError && (
                   <p
                     className="bp-checkbox-field__error"
