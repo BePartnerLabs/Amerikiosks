@@ -33,26 +33,33 @@ function loadScript(): Promise<void> {
 }
 
 /**
- * Renders an invisible Turnstile widget and hands back its token.
+ * Renders a Turnstile widget and hands back its token.
  *
  * The site key is read from the <meta name="turnstile-site-key"> tag that the
  * frontend layout emits when Turnstile is enabled in Settings — with the
  * feature off there is no meta tag, this hook does nothing, and forms submit
  * exactly as before.
+ *
+ * `active` exists because every modal drawer on a page mounts its own
+ * FormBlock into a portal: the home page carries fourteen of them, and
+ * rendering a widget per form meant fourteen Cloudflare challenges racing each
+ * other on load, each with its own badge. Callers pass true only once their
+ * form is actually being used, so exactly one widget ever exists.
  */
-export function useTurnstile() {
+export function useTurnstile(active: boolean) {
   const containerRef = useRef<HTMLDivElement>(null)
   const widgetIdRef = useRef<string | undefined>(undefined)
   const [token, setToken] = useState<string | undefined>(undefined)
   const [siteKey, setSiteKey] = useState<string | undefined>(undefined)
 
   useEffect(() => {
+    if (!active) return
     const key = document.querySelector('meta[name="turnstile-site-key"]')?.getAttribute('content')
     if (key) setSiteKey(key)
-  }, [])
+  }, [active])
 
   useEffect(() => {
-    if (!siteKey || !containerRef.current || widgetIdRef.current) return
+    if (!active || !siteKey || !containerRef.current || widgetIdRef.current) return
     let cancelled = false
 
     loadScript()
@@ -75,7 +82,7 @@ export function useTurnstile() {
     return () => {
       cancelled = true
     }
-  }, [siteKey])
+  }, [active, siteKey])
 
   const reset = () => {
     const turnstile = (window as Window & { turnstile?: Turnstile }).turnstile

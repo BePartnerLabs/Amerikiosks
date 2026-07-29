@@ -51,8 +51,8 @@ function setSiteKeyMeta(key: string) {
 type HookValue = ReturnType<typeof useTurnstile>
 let current: HookValue
 
-function Probe() {
-  const value = useTurnstile()
+function Probe({ active = true }: { active?: boolean }) {
+  const value = useTurnstile(active)
   current = value
   return <div ref={value.containerRef} />
 }
@@ -154,5 +154,19 @@ describe('useTurnstile', () => {
     await waitFor(() => expect(errorSpy).toHaveBeenCalledWith('[turnstile]', expect.any(Error)))
     expect(current.token).toBeUndefined()
     expect(turnstileRender).not.toHaveBeenCalled()
+  })
+  // Each modal drawer mounts its own FormBlock, so a widget per form meant a
+  // dozen Cloudflare challenges on one page load. Nothing may happen until the
+  // form is actually engaged.
+  it('does nothing at all until it is activated', async () => {
+    document.head.innerHTML = '<meta name="turnstile-site-key" content="site-key" />'
+
+    render(<Probe active={false} />)
+
+    await waitFor(() => {
+      expect(document.getElementById('cf-turnstile-script')).toBeNull()
+    })
+    expect(turnstileRender).not.toHaveBeenCalled()
+    expect(current.enabled).toBe(false)
   })
 })

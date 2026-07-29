@@ -100,7 +100,11 @@ export const FormBlock: React.FC<
   const registerConsent = register as unknown as UseFormRegister<FieldValues>
 
   const router = useRouter()
-  const turnstile = useTurnstile()
+  // The widget is only worth creating once someone actually touches this form.
+  // Every drawer on the page mounts its own FormBlock, so rendering one on
+  // mount meant a dozen Cloudflare challenges competing on a single page load.
+  const [isEngaged, setIsEngaged] = useState(false)
+  const turnstile = useTurnstile(isEngaged)
 
   // Anything submitted faster than the route's threshold is treated as a bot.
   const renderedAtRef = useRef<number>(Date.now())
@@ -305,6 +309,10 @@ export const FormBlock: React.FC<
             id={formID}
             onSubmit={handleSubmit(onSubmit, onInvalid)}
             noValidate
+            // Focus rather than change: the token takes a moment to arrive, so
+            // it should start as soon as the visitor reaches the first field
+            // rather than after they have finished typing in it.
+            onFocusCapture={() => setIsEngaged(true)}
           >
             {invalidFields.length > 0 && (
               <div
