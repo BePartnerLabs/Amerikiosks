@@ -3,9 +3,18 @@
    from frontend.css), with brand-specific Level 2 overrides here.
    ═══════════════════════════════════════════════════════════════ */
 
+/* Vertical rhythm at block level, matching every other block on the page
+   (CardGrid, Content, Metrics all use --bp-space-16). Without it the form sat
+   flush against whatever came before and after it. The drawer overrides this
+   back to zero — it provides its own padding. */
 .ak-form {
   max-width: 48rem;
   margin-inline: auto;
+  padding-block: var(--bp-space-16, 4rem);
+}
+
+.ak-form--split {
+  padding-block: var(--bp-space-16, 4rem);
 }
 
 .ak-form__intro {

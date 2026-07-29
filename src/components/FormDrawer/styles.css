@@ -118,7 +118,10 @@
 
 /* Fixes a container-type + flex-column interaction: an element with
    container-type set doesn't reliably stretch to its flex parent's cross
-   size on its own — it needs an explicit width. */
+   size on its own — it needs an explicit width.
+   The padding shorthand also resets the block's page-level vertical rhythm:
+   4rem above and below belongs to a page, not to a panel that already has its
+   own padding and a sticky header. */
 .ak-link-drawer .ak-form {
   width: 100%;
   max-width: none;
