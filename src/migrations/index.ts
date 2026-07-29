@@ -64,6 +64,7 @@ import * as migration_20260728_194219_forms_description_footnote_confirmation fr
 import * as migration_20260728_215733_form_block_panel_fields from './20260728_215733_form_block_panel_fields';
 import * as migration_20260729_000725_form_submission_private_attachments from './20260729_000725_form_submission_private_attachments';
 import * as migration_20260729_025009_form_field_value_type_autocomplete from './20260729_025009_form_field_value_type_autocomplete';
+import * as migration_20260729_040952_form_autocomplete_select from './20260729_040952_form_autocomplete_select';
 
 export const migrations = [
   {
@@ -394,6 +395,11 @@ export const migrations = [
   {
     up: migration_20260729_025009_form_field_value_type_autocomplete.up,
     down: migration_20260729_025009_form_field_value_type_autocomplete.down,
-    name: '20260729_025009_form_field_value_type_autocomplete'
+    name: '20260729_025009_form_field_value_type_autocomplete',
+  },
+  {
+    up: migration_20260729_040952_form_autocomplete_select.up,
+    down: migration_20260729_040952_form_autocomplete_select.down,
+    name: '20260729_040952_form_autocomplete_select'
   },
 ];

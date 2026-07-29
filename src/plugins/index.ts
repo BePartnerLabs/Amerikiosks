@@ -108,16 +108,35 @@ export const plugins: Plugin[] = [
           for (const block of fieldsBlocksField.blocks) {
             if (block.slug === 'message' || block.slug === 'payment') continue
 
-            // Optional browser autofill hint. Off by default: a wrong token is
-            // worse than none — autocomplete="name" on a company field makes
-            // the browser offer the visitor's own name.
+            // A select, not free text: these are HTML spec tokens, and a typo
+            // like "e-mail" fails silently — the browser ignores an unknown
+            // token, so nothing autofills and nobody finds out. Labelled in
+            // plain language because the person choosing is an editor, not a
+            // developer. Off by default: a wrong token is worse than none, e.g.
+            // "name" on a company field offers the visitor's own name.
             if (['text', 'email', 'number', 'textarea'].includes(block.slug)) {
               block.fields.push({
                 name: 'autocomplete',
-                type: 'text',
+                type: 'select',
+                options: [
+                  { label: "Don't autofill", value: 'off' },
+                  { label: 'Full name', value: 'name' },
+                  { label: 'First name', value: 'given-name' },
+                  { label: 'Last name', value: 'family-name' },
+                  { label: 'Email', value: 'email' },
+                  { label: 'Phone', value: 'tel' },
+                  { label: 'Company / brand name', value: 'organization' },
+                  { label: 'Job title', value: 'organization-title' },
+                  { label: 'Website', value: 'url' },
+                  { label: 'Street address', value: 'street-address' },
+                  { label: 'City', value: 'address-level2' },
+                  { label: 'State / region', value: 'address-level1' },
+                  { label: 'Postal code', value: 'postal-code' },
+                  { label: 'Country', value: 'country-name' },
+                ],
                 admin: {
                   description:
-                    'HTML autocomplete token, e.g. "email", "tel", "organization", "url", "name". Leave empty to disable autofill for this field. See the full list at developer.mozilla.org/docs/Web/HTML/Attributes/autocomplete.',
+                    'Lets the browser offer the visitor’s saved details for this field. Leave empty on B2B fields where a personal value would be wrong — a company field should use “Company / brand name”, never “Full name”.',
                 },
               })
             }

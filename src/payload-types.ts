@@ -580,9 +580,26 @@ export interface Form {
             width?: number | null;
             required?: boolean | null;
             /**
-             * HTML autocomplete token, e.g. "email", "tel", "organization", "url", "name". Leave empty to disable autofill for this field. See the full list at developer.mozilla.org/docs/Web/HTML/Attributes/autocomplete.
+             * Lets the browser offer the visitor’s saved details for this field. Leave empty on B2B fields where a personal value would be wrong — a company field should use “Company / brand name”, never “Full name”.
              */
-            autocomplete?: string | null;
+            autocomplete?:
+              | (
+                  | 'off'
+                  | 'name'
+                  | 'given-name'
+                  | 'family-name'
+                  | 'email'
+                  | 'tel'
+                  | 'organization'
+                  | 'organization-title'
+                  | 'url'
+                  | 'street-address'
+                  | 'address-level2'
+                  | 'address-level1'
+                  | 'postal-code'
+                  | 'country-name'
+                )
+              | null;
             /**
              * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
              */
@@ -617,9 +634,26 @@ export interface Form {
             width?: number | null;
             required?: boolean | null;
             /**
-             * HTML autocomplete token, e.g. "email", "tel", "organization", "url", "name". Leave empty to disable autofill for this field. See the full list at developer.mozilla.org/docs/Web/HTML/Attributes/autocomplete.
+             * Lets the browser offer the visitor’s saved details for this field. Leave empty on B2B fields where a personal value would be wrong — a company field should use “Company / brand name”, never “Full name”.
              */
-            autocomplete?: string | null;
+            autocomplete?:
+              | (
+                  | 'off'
+                  | 'name'
+                  | 'given-name'
+                  | 'family-name'
+                  | 'email'
+                  | 'tel'
+                  | 'organization'
+                  | 'organization-title'
+                  | 'url'
+                  | 'street-address'
+                  | 'address-level2'
+                  | 'address-level1'
+                  | 'postal-code'
+                  | 'country-name'
+                )
+              | null;
             /**
              * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
              */
@@ -670,9 +704,26 @@ export interface Form {
             defaultValue?: string | null;
             required?: boolean | null;
             /**
-             * HTML autocomplete token, e.g. "email", "tel", "organization", "url", "name". Leave empty to disable autofill for this field. See the full list at developer.mozilla.org/docs/Web/HTML/Attributes/autocomplete.
+             * Lets the browser offer the visitor’s saved details for this field. Leave empty on B2B fields where a personal value would be wrong — a company field should use “Company / brand name”, never “Full name”.
              */
-            autocomplete?: string | null;
+            autocomplete?:
+              | (
+                  | 'off'
+                  | 'name'
+                  | 'given-name'
+                  | 'family-name'
+                  | 'email'
+                  | 'tel'
+                  | 'organization'
+                  | 'organization-title'
+                  | 'url'
+                  | 'street-address'
+                  | 'address-level2'
+                  | 'address-level1'
+                  | 'postal-code'
+                  | 'country-name'
+                )
+              | null;
             /**
              * Phone strips formatting before the value is sent on (Monday phone columns require it). Website accepts "acme.com" and adds the https:// people leave out.
              */
@@ -692,9 +743,26 @@ export interface Form {
             defaultValue?: string | null;
             required?: boolean | null;
             /**
-             * HTML autocomplete token, e.g. "email", "tel", "organization", "url", "name". Leave empty to disable autofill for this field. See the full list at developer.mozilla.org/docs/Web/HTML/Attributes/autocomplete.
+             * Lets the browser offer the visitor’s saved details for this field. Leave empty on B2B fields where a personal value would be wrong — a company field should use “Company / brand name”, never “Full name”.
              */
-            autocomplete?: string | null;
+            autocomplete?:
+              | (
+                  | 'off'
+                  | 'name'
+                  | 'given-name'
+                  | 'family-name'
+                  | 'email'
+                  | 'tel'
+                  | 'organization'
+                  | 'organization-title'
+                  | 'url'
+                  | 'street-address'
+                  | 'address-level2'
+                  | 'address-level1'
+                  | 'postal-code'
+                  | 'country-name'
+                )
+              | null;
             /**
              * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
              */
