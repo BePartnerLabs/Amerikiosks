@@ -491,12 +491,14 @@
   margin-bottom: var(--bp-space-6, 1.5rem);
 }
 
-/* Replaces the label wrapper the checkbox used to sit in — see the comment in
-   Component.tsx for why the wording cannot be a <label>. */
+/* Keeps the .bp-checkbox class even though this is a div, not a label — see
+   Component.tsx for why the wording cannot be a <label>. The class is what
+   defines the private custom properties .bp-checkbox__input reads for its
+   size, border and background; without it the input collapses to nothing. */
 .ak-form__consent-row {
-  display: flex;
   align-items: flex-start;
-  gap: var(--bp-space-2, 0.5rem);
+  /* The row itself is not clickable any more, only the box and the link. */
+  cursor: default;
 }
 
 .ak-form__consent-row .bp-checkbox__input {

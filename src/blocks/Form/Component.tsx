@@ -383,7 +383,7 @@ export const FormBlock: React.FC<
                     also tick or untick the box. The checkbox is named through
                     aria-labelledby instead, which keeps the association for
                     assistive tech without stealing the link's clicks. */}
-                <div className="ak-form__consent-row">
+                <div className="bp-checkbox ak-form__consent-row">
                   <input
                     className="bp-checkbox__input"
                     id="consent"
