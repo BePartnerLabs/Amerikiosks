@@ -58,10 +58,11 @@ Working outline for the final content-editor usage manual. Each bullet is a topi
 
 ## 8. Forms
 
-- Creating/editing a form (form-builder plugin): fields, confirmation message, notification email
+- Creating/editing a form (form-builder plugin): fields, confirmation message
+- **Leads arrive in Monday.com, not by email.** The plugin shows an "Emails" panel on each form — it does nothing, because this site sends no email. Which board a form feeds is set per form in `Integration target` + the board/group pickers
 - Connecting a form to a button via the Link field's modal type
 - Where form submissions go / how to check them
-- **The consent checkbox** — on any form that collects personal data (name, email, phone, company), add a checkbox field named exactly `consent` and mark it required. Its label is where the opt-in wording goes. Without that field the submission is still saved, but no consent is recorded against it — so it has to be added form by form, it is not automatic
+- **The consent checkbox** — turn on `Requires consent` in the form's sidebar for anything that collects personal data (name, email, phone, company). The checkbox is then added automatically above the submit button and is required; `Consent text` is where the opt-in wording and the privacy-policy link go. Nothing to add field by field
 - **Reading the consent record** — each submission shows a read-only "Consent given" tick and a "Consent at" date in its sidebar. They are written at the moment of capture and cannot be edited by hand, which is the whole point: they stand as evidence
 - **Spam protection is automatic** — submissions are rate-limited, screened for bots, and validated before anything is stored. Nothing to configure per form. Optionally, `Settings → Security` holds the Cloudflare Turnstile toggle and its two keys; turning it on adds an invisible bot check across every form at once. Leave it off until both keys are filled in — on without keys would reject real submissions
 - **The text around the form** — each form document has its own `Description` (the paragraph under the title, which is what shows inside the modal drawer) and `Footnote` (the small print under the submit button, for reassurance rather than instructions)
