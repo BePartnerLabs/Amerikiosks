@@ -119,7 +119,22 @@ export const FormBlock: React.FC<
     reset: resetMutation,
   } = useMutation({
     mutationFn: (data: FormFieldBlock[]) => {
-      const submissionData = Object.entries(data).map(([field, value]) => ({ field, value }))
+      // `useForm({ defaultValues: formFromProps.fields })` seeds the form state
+      // from the fields *array*, so `data` also carries its numeric indices
+      // ("0", "1", …) whose values are whole field-config objects. Payload's
+      // own endpoint ignored those; our route validates what it is given and
+      // rejects anything the form does not declare, which turned every real
+      // submission into a 400. Send only the declared fields.
+      const declared = new Set(
+        (formFromProps?.fields ?? [])
+          .filter((f) => 'name' in f)
+          .map((f) => (f as { name: string }).name),
+      )
+      if (requiresConsent) declared.add('consent')
+
+      const submissionData = Object.entries(data)
+        .filter(([field]) => declared.has(field))
+        .map(([field, value]) => ({ field, value }))
       return FormsRepository.submit({
         form: formID ?? '',
         submissionData,

@@ -17,14 +17,23 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({ push }),
 }))
 
+let capturedMutationFn: ((data: unknown) => unknown) | undefined
 vi.mock('@tanstack/react-query', () => ({
-  useMutation: ({ mutationFn: _mutationFn }: { mutationFn: unknown }) => ({
-    mutate,
-    isPending: mutationState.isPending,
-    isSuccess: mutationState.isSuccess,
-    error: mutationState.error,
-    reset: vi.fn(),
-  }),
+  useMutation: ({ mutationFn }: { mutationFn: (data: unknown) => unknown }) => {
+    capturedMutationFn = mutationFn
+    return {
+      mutate,
+      isPending: mutationState.isPending,
+      isSuccess: mutationState.isSuccess,
+      error: mutationState.error,
+      reset: vi.fn(),
+    }
+  },
+}))
+
+const submitMock = vi.fn()
+vi.mock('@/repositories', () => ({
+  FormsRepository: { submit: (...args: unknown[]) => submitMock(...args) },
 }))
 
 vi.mock('@/components/RichText', () => ({
@@ -159,5 +168,29 @@ describe('FormBlock', () => {
     )
     expect(screen.getByText('submitError')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'retry' })).toBeInTheDocument()
+  })
+
+  // react-hook-form is seeded with `defaultValues: form.fields`, an array, so
+  // the submitted data also carries numeric index keys whose values are whole
+  // field-config objects. Sending those made the route reject every real
+  // submission as containing undeclared fields — a 400 that only showed up
+  // when a human actually filled the form in a browser.
+  it('sends only the fields the form declares, not the array indices react-hook-form seeds', async () => {
+    render(
+      <FormBlock
+        enableIntro={false}
+        form={baseForm as never}
+      />,
+    )
+
+    await capturedMutationFn?.({
+      0: { blockType: 'text', name: 'email' },
+      1: { blockType: 'text', name: 'ignored' },
+      email: 'someone@example.com',
+    })
+
+    expect(submitMock).toHaveBeenCalledTimes(1)
+    const [payload] = submitMock.mock.calls[0]
+    expect(payload.submissionData).toEqual([{ field: 'email', value: 'someone@example.com' }])
   })
 })
