@@ -20,10 +20,30 @@ export const MAX_TEXTAREA_LENGTH = 5000
 // through the generic form path.
 export const PHONE_PATTERN = /^\+?[\d\s().-]{7,25}$/
 
-/** Heuristic — the form builder has no dedicated phone block type. */
-export function isPhoneField(name?: string, label?: string): boolean {
-  const haystack = `${name ?? ''} ${label ?? ''}`.toLowerCase()
-  return /phone|tel[eé]fono|movil|móvil|mobile|whatsapp/.test(haystack)
+// Deliberately forgiving about the scheme: people type "acme.com" far more
+// often than "https://acme.com", and rejecting that costs a lead over a
+// formality. What it does insist on is a dotted domain.
+export const URL_PATTERN = /^(https?:\/\/)?[^\s.]+\.[^\s]{2,}$/
+
+/**
+ * Declared per field in /admin (the "Value type" select on text blocks), not
+ * guessed from the field's name — a heuristic missed anything an editor called
+ * "Cell" or "Número de contacto", and an unnormalised phone is exactly what
+ * Monday's phone column rejected in ffd890a.
+ */
+export function isPhoneField(field: Pick<FieldSpec, 'valueType'>): boolean {
+  return field.valueType === 'phone'
+}
+
+export function isWebsiteField(field: Pick<FieldSpec, 'valueType'>): boolean {
+  return field.valueType === 'website'
+}
+
+/** Adds the scheme people leave out, so what reaches Monday is a real URL. */
+export function normalizeWebsite(value: string): string {
+  const trimmed = value.trim()
+  if (!trimmed) return trimmed
+  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`
 }
 
 /** Strips everything a human might type so only `+` and digits reach Monday. */
@@ -37,6 +57,10 @@ export type FieldSpec = {
   name?: string
   label?: string
   required?: boolean
+  /** Set on text fields in /admin — 'text' (default), 'phone' or 'website'. */
+  valueType?: string
+  /** Optional HTML autocomplete token, set per field in /admin. */
+  autocomplete?: string
 }
 
 export type ValidationCode =
@@ -44,6 +68,7 @@ export type ValidationCode =
   | 'email'
   | 'number'
   | 'phone'
+  | 'website'
   | 'maxLength'
   | 'unknownField'
 
@@ -69,8 +94,11 @@ export function validateValue(field: FieldSpec, value: unknown): ValidationCode 
     case 'textarea':
       return str.length > MAX_TEXTAREA_LENGTH ? 'maxLength' : null
     case 'text':
-      if (isPhoneField(field.name, field.label)) {
+      if (isPhoneField(field)) {
         return PHONE_PATTERN.test(str) ? null : 'phone'
+      }
+      if (isWebsiteField(field)) {
+        return URL_PATTERN.test(str) ? null : 'website'
       }
       return str.length > MAX_TEXT_LENGTH ? 'maxLength' : null
     default:

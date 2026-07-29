@@ -107,6 +107,59 @@ export const plugins: Plugin[] = [
         if (fieldsBlocksField && 'blocks' in fieldsBlocksField) {
           for (const block of fieldsBlocksField.blocks) {
             if (block.slug === 'message' || block.slug === 'payment') continue
+
+            // Optional browser autofill hint. Off by default: a wrong token is
+            // worse than none — autocomplete="name" on a company field makes
+            // the browser offer the visitor's own name.
+            if (['text', 'email', 'number', 'textarea'].includes(block.slug)) {
+              block.fields.push({
+                name: 'autocomplete',
+                type: 'text',
+                admin: {
+                  description:
+                    'HTML autocomplete token, e.g. "email", "tel", "organization", "url", "name". Leave empty to disable autofill for this field. See the full list at developer.mozilla.org/docs/Web/HTML/Attributes/autocomplete.',
+                },
+              })
+            }
+
+            // What a field *means*, chosen explicitly rather than guessed from
+            // its name. The previous heuristic (a regex over name and label)
+            // missed anything an editor called "Cell" or "Número de contacto",
+            // and a missed phone reaches Monday unnormalised — which is what
+            // its phone column rejected in ffd890a.
+            if (block.slug === 'text') {
+              block.fields.push({
+                name: 'valueType',
+                type: 'select',
+                defaultValue: 'text',
+                options: [
+                  { label: 'Plain text', value: 'text' },
+                  { label: 'Phone number', value: 'phone' },
+                  { label: 'Website / URL', value: 'website' },
+                ],
+                admin: {
+                  description:
+                    'Phone strips formatting before the value is sent on (Monday phone columns require it). Website accepts "acme.com" and adds the https:// people leave out.',
+                },
+              })
+            }
+
+            if (block.slug === 'upload') {
+              block.fields.push({
+                name: 'acceptedFileTypes',
+                type: 'select',
+                hasMany: true,
+                defaultValue: ['image'],
+                options: [
+                  { label: 'Images (JPEG, PNG, WEBP, HEIC)', value: 'image' },
+                  { label: 'PDF', value: 'pdf' },
+                ],
+                admin: {
+                  description:
+                    "Checked against the file's real bytes, not its extension. Leave empty to fall back to images only.",
+                },
+              })
+            }
             block.fields.push({
               name: 'externalId',
               type: 'text',

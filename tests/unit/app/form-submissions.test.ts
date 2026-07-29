@@ -90,7 +90,8 @@ function callPOST(req: Request) {
 const CONTACT_FIELDS = [
   { blockType: 'text', name: 'name', required: true },
   { blockType: 'email', name: 'email', required: true },
-  { blockType: 'text', name: 'phone', label: 'Phone' },
+  // valueType, not the field name: the type is declared per field in /admin.
+  { blockType: 'text', name: 'phone', label: 'Phone', valueType: 'phone' },
 ]
 
 type PayloadStub = {
@@ -393,6 +394,54 @@ describe('POST /next/form-submissions', () => {
     })
   })
 
+  describe('consent', () => {
+    // FormBlock renders this checkbox itself when the form has
+    // `requiresConsent` — it is never a form-builder field, so it has no spec.
+    // Treating it as undeclared meant a 400 on every consent form, and the
+    // record that is the entire point of the feature was never written.
+    const consentForm = { id: 'contact', requiresConsent: true, fields: CONTACT_FIELDS }
+
+    it('accepts the built-in consent field and records the answer with a timestamp', async () => {
+      const create = vi.fn().mockResolvedValue({ id: 42 })
+      const stub = stubPayload({ form: consentForm, create })
+
+      const res = await callPOST(
+        jsonRequest({
+          form: 'contact',
+          submissionData: [...validSubmission, { field: 'consent', value: true }],
+        }),
+      )
+
+      expect(res.status).toBe(201)
+      const [args] = stub.create.mock.calls[0]
+      expect(args.data.consentGiven).toBe(true)
+      expect(typeof args.data.consentAt).toBe('string')
+    })
+
+    it('rejects a consent form submitted without ticking the box', async () => {
+      const stub = stubPayload({ form: consentForm })
+
+      const res = await callPOST(jsonRequest({ form: 'contact', submissionData: validSubmission }))
+
+      expect(res.status).toBe(400)
+      await expect(res.json()).resolves.toMatchObject({
+        issues: expect.arrayContaining([{ field: 'consent', code: 'required' }]),
+      })
+      expect(stub.create).not.toHaveBeenCalled()
+    })
+
+    it('does not write a consent record for a form that does not require it', async () => {
+      const create = vi.fn().mockResolvedValue({ id: 42 })
+      const stub = stubPayload({ form: { id: 'contact', fields: CONTACT_FIELDS }, create })
+
+      await callPOST(jsonRequest({ form: 'contact', submissionData: validSubmission }))
+
+      const [args] = stub.create.mock.calls[0]
+      expect(args.data.consentGiven).toBeUndefined()
+      expect(args.data.consentAt).toBeUndefined()
+    })
+  })
+
   describe('uploads', () => {
     const formWithUpload = {
       id: 'contact',
@@ -489,39 +538,6 @@ describe('POST /next/form-submissions', () => {
         error: 'File must be a JPEG, PNG, WEBP, or HEIC image.',
       })
       expect(stub.create).not.toHaveBeenCalled()
-    })
-  })
-
-  describe('consent mirroring', () => {
-    const formWithConsent = {
-      id: 'contact',
-      fields: [...CONTACT_FIELDS, { blockType: 'checkbox', name: 'consent', required: true }],
-    }
-
-    it('mirrors a granted consent onto the document with a timestamp', async () => {
-      const stub = stubPayload({ form: formWithConsent })
-
-      const res = await callPOST(
-        jsonRequest({
-          form: 'contact',
-          submissionData: [...validSubmission, { field: 'consent', value: true }],
-        }),
-      )
-
-      expect(res.status).toBe(201)
-      const { data } = stub.create.mock.calls[0][0]
-      expect(data.consentGiven).toBe(true)
-      expect(Date.parse(data.consentAt)).not.toBeNaN()
-    })
-
-    it('leaves the mirrored fields off entirely when the form has no consent field', async () => {
-      const stub = stubPayload()
-
-      await callPOST(jsonRequest({ form: 'contact', submissionData: validSubmission }))
-
-      const { data } = stub.create.mock.calls[0][0]
-      expect(data).not.toHaveProperty('consentGiven')
-      expect(data).not.toHaveProperty('consentAt')
     })
   })
 

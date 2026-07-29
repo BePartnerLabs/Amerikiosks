@@ -63,6 +63,7 @@ import * as migration_20260728_192449_forms_consent_and_turnstile from './202607
 import * as migration_20260728_194219_forms_description_footnote_confirmation from './20260728_194219_forms_description_footnote_confirmation';
 import * as migration_20260728_215733_form_block_panel_fields from './20260728_215733_form_block_panel_fields';
 import * as migration_20260729_000725_form_submission_private_attachments from './20260729_000725_form_submission_private_attachments';
+import * as migration_20260729_025009_form_field_value_type_autocomplete from './20260729_025009_form_field_value_type_autocomplete';
 
 export const migrations = [
   {
@@ -388,6 +389,11 @@ export const migrations = [
   {
     up: migration_20260729_000725_form_submission_private_attachments.up,
     down: migration_20260729_000725_form_submission_private_attachments.down,
-    name: '20260729_000725_form_submission_private_attachments'
+    name: '20260729_000725_form_submission_private_attachments',
+  },
+  {
+    up: migration_20260729_025009_form_field_value_type_autocomplete.up,
+    down: migration_20260729_025009_form_field_value_type_autocomplete.down,
+    name: '20260729_025009_form_field_value_type_autocomplete'
   },
 ];

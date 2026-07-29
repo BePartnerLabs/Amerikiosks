@@ -4,7 +4,9 @@ import { getPayload } from 'payload'
 import {
   type FieldSpec,
   isPhoneField,
+  isWebsiteField,
   normalizePhone,
+  normalizeWebsite,
   validateSubmission,
 } from '@/blocks/Form/validation'
 import { syncFormSubmission } from '@/collections/FormSubmissions/hooks/syncFormSubmission'
@@ -139,7 +141,20 @@ export async function POST(req: Request) {
     return Response.json({ error: 'Unknown form.' }, { status: 400 })
   }
 
-  const specs = (form.fields ?? []) as FieldSpec[]
+  const declaredSpecs = (form.fields ?? []) as FieldSpec[]
+
+  // The consent checkbox is rendered by FormBlock itself when the form has
+  // `requiresConsent`, not declared as a form-builder field — so it has no
+  // spec of its own. Without this synthetic one it was both rejected as an
+  // undeclared field (a 400 on every consent form) and never recorded, which
+  // is the exact failure the feature exists to prevent: the visitor ticks a
+  // required box and nothing is stored.
+  const requiresConsent = Boolean((form as { requiresConsent?: boolean }).requiresConsent)
+  // A new array, never a push: `form.fields` is the fetched document's own
+  // array, and mutating it would edit the object the caller handed us.
+  const specs: FieldSpec[] = requiresConsent
+    ? [...declaredSpecs, { name: 'consent', blockType: 'checkbox', required: true }]
+    : declaredSpecs
 
   // Upload fields arrive as multipart parts, not as submissionData values, so
   // they are validated separately below — exclude them from the value pass.
@@ -192,8 +207,9 @@ export async function POST(req: Request) {
 
   const normalized = submissionData.map((entry) => {
     const spec = specs.find((f) => f.name === entry.field)
-    if (spec && isPhoneField(spec.name, spec.label) && typeof entry.value === 'string') {
-      return { ...entry, value: normalizePhone(entry.value) }
+    if (spec && typeof entry.value === 'string') {
+      if (isPhoneField(spec)) return { ...entry, value: normalizePhone(entry.value) }
+      if (isWebsiteField(spec)) return { ...entry, value: normalizeWebsite(entry.value) }
     }
     return entry
   })
@@ -205,10 +221,9 @@ export async function POST(req: Request) {
         form: body.form,
         submissionData: normalized,
         ...(attachments.length > 0 ? { attachments } : {}),
-        // The consent checkbox is a real form field, so it arrives inside
-        // submissionData; these mirror it onto the document itself so the
-        // record stands on its own as proof.
-        ...(specs.some((f) => f.name === 'consent')
+        // Mirrored onto the document itself so the consent record stands on
+        // its own as proof, rather than living inside a submissionData blob.
+        ...(requiresConsent
           ? {
               consentGiven: Boolean(submissionData.find((e) => e.field === 'consent')?.value),
               consentAt: new Date().toISOString(),

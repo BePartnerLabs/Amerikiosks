@@ -241,8 +241,9 @@
 .ak-form__success {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--bp-space-3, 0.75rem);
+  text-align: center;
 }
 
 .ak-form__success:focus {
@@ -304,6 +305,7 @@
 
 .ak-form__success-close {
   margin-top: var(--bp-space-3, 0.75rem);
+  align-self: stretch;
 }
 
 /* One element with character (the check), everything else in a minor key,

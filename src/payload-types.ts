@@ -580,6 +580,10 @@ export interface Form {
             width?: number | null;
             required?: boolean | null;
             /**
+             * HTML autocomplete token, e.g. "email", "tel", "organization", "url", "name". Leave empty to disable autofill for this field. See the full list at developer.mozilla.org/docs/Web/HTML/Attributes/autocomplete.
+             */
+            autocomplete?: string | null;
+            /**
              * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
              */
             externalId?: string | null;
@@ -612,6 +616,10 @@ export interface Form {
             label?: string | null;
             width?: number | null;
             required?: boolean | null;
+            /**
+             * HTML autocomplete token, e.g. "email", "tel", "organization", "url", "name". Leave empty to disable autofill for this field. See the full list at developer.mozilla.org/docs/Web/HTML/Attributes/autocomplete.
+             */
+            autocomplete?: string | null;
             /**
              * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
              */
@@ -662,6 +670,14 @@ export interface Form {
             defaultValue?: string | null;
             required?: boolean | null;
             /**
+             * HTML autocomplete token, e.g. "email", "tel", "organization", "url", "name". Leave empty to disable autofill for this field. See the full list at developer.mozilla.org/docs/Web/HTML/Attributes/autocomplete.
+             */
+            autocomplete?: string | null;
+            /**
+             * Phone strips formatting before the value is sent on (Monday phone columns require it). Website accepts "acme.com" and adds the https:// people leave out.
+             */
+            valueType?: ('text' | 'phone' | 'website') | null;
+            /**
              * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
              */
             externalId?: string | null;
@@ -675,6 +691,10 @@ export interface Form {
             width?: number | null;
             defaultValue?: string | null;
             required?: boolean | null;
+            /**
+             * HTML autocomplete token, e.g. "email", "tel", "organization", "url", "name". Leave empty to disable autofill for this field. See the full list at developer.mozilla.org/docs/Web/HTML/Attributes/autocomplete.
+             */
+            autocomplete?: string | null;
             /**
              * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
              */
@@ -697,6 +717,10 @@ export interface Form {
             maxFileSize?: number | null;
             required?: boolean | null;
             multiple?: boolean | null;
+            /**
+             * Checked against the file's real bytes, not its extension. Leave empty to fall back to images only.
+             */
+            acceptedFileTypes?: ('image' | 'pdf')[] | null;
             /**
              * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
              */
@@ -3347,6 +3371,7 @@ export interface FormsSelect<T extends boolean = true> {
               label?: T;
               width?: T;
               required?: T;
+              autocomplete?: T;
               externalId?: T;
               id?: T;
               blockName?: T;
@@ -3365,6 +3390,7 @@ export interface FormsSelect<T extends boolean = true> {
               label?: T;
               width?: T;
               required?: T;
+              autocomplete?: T;
               externalId?: T;
               id?: T;
               blockName?: T;
@@ -3408,6 +3434,8 @@ export interface FormsSelect<T extends boolean = true> {
               width?: T;
               defaultValue?: T;
               required?: T;
+              autocomplete?: T;
+              valueType?: T;
               externalId?: T;
               id?: T;
               blockName?: T;
@@ -3420,6 +3448,7 @@ export interface FormsSelect<T extends boolean = true> {
               width?: T;
               defaultValue?: T;
               required?: T;
+              autocomplete?: T;
               externalId?: T;
               id?: T;
               blockName?: T;
@@ -3440,6 +3469,7 @@ export interface FormsSelect<T extends boolean = true> {
               maxFileSize?: T;
               required?: T;
               multiple?: T;
+              acceptedFileTypes?: T;
               externalId?: T;
               id?: T;
               blockName?: T;

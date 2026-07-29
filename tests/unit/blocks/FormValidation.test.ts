@@ -9,19 +9,17 @@ import {
 } from '@/blocks/Form/validation'
 
 describe('isPhoneField', () => {
-  it.each(['phone', 'telefono', 'teléfono', 'movil', 'móvil', 'mobile', 'whatsapp'])(
-    'matches %s in the field name',
-    (word) => {
-      expect(isPhoneField(word)).toBe(true)
-    },
-  )
-
-  it('matches on the label when the name is opaque', () => {
-    expect(isPhoneField('field_3', 'Your Phone')).toBe(true)
+  // The type is declared per field in /admin now. The old heuristic read the
+  // name and label, which silently missed "Cell" or "Número de contacto" — and
+  // a missed phone reaches Monday unnormalised, the failure from ffd890a.
+  it('is driven by the declared value type, not by the field name', () => {
+    expect(isPhoneField({ valueType: 'phone' })).toBe(true)
+    expect(isPhoneField({ valueType: 'text' })).toBe(false)
+    expect(isPhoneField({})).toBe(false)
   })
 
-  it('does not match an unrelated field', () => {
-    expect(isPhoneField('company', 'Company name')).toBe(false)
+  it('does not infer a phone from a name that merely looks like one', () => {
+    expect(isPhoneField({ valueType: undefined })).toBe(false)
   })
 })
 
@@ -72,10 +70,17 @@ describe('validateValue', () => {
     expect(validateValue({ blockType: 'number', name: 'n' }, '12')).toBeNull()
   })
 
-  it('applies the phone pattern to a text field that looks like a phone', () => {
-    const spec = { blockType: 'text', name: 'phone' }
+  it('applies the phone pattern to a text field declared as a phone', () => {
+    const spec = { blockType: 'text', name: 'phone', valueType: 'phone' }
     expect(validateValue(spec, '+1 (305) 555-0100')).toBeNull()
     expect(validateValue(spec, 'call me')).toBe('phone')
+  })
+
+  it('accepts a website with or without the scheme, and rejects a non-domain', () => {
+    const spec = { blockType: 'text', name: 'website', valueType: 'website' }
+    expect(validateValue(spec, 'acme.com')).toBeNull()
+    expect(validateValue(spec, 'https://acme.com/path')).toBeNull()
+    expect(validateValue(spec, 'not a website')).toBe('website')
   })
 
   it('caps a plain text field at MAX_TEXT_LENGTH', () => {

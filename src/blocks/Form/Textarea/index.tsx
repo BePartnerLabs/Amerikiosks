@@ -9,11 +9,27 @@ import { Width } from '../Width'
 
 export const Textarea: React.FC<
   TextField & {
+    // Added to every field block in src/plugins/index.ts, so they are not
+    // part of the plugin's own field types.
+    autocomplete?: string
+    valueType?: string
     errors: Partial<FieldErrorsImpl>
     register: UseFormRegister<FieldValues>
     rows?: number
   }
-> = ({ blockType, name, defaultValue, errors, label, register, required, rows = 3, width }) => {
+> = ({
+  autocomplete,
+  blockType,
+  valueType,
+  name,
+  defaultValue,
+  errors,
+  label,
+  register,
+  required,
+  rows = 3,
+  width,
+}) => {
   const hasError = Boolean(errors[name])
   const errorId = `${name}-error`
 
@@ -36,7 +52,8 @@ export const Textarea: React.FC<
         rows={rows}
         aria-invalid={hasError}
         aria-describedby={hasError ? errorId : undefined}
-        {...register(name, registerOptions({ blockType, name, label, required }))}
+        autoComplete={autocomplete || 'off'}
+        {...register(name, registerOptions({ blockType, name, label, required, valueType }))}
       />
       {hasError && (
         <FormError

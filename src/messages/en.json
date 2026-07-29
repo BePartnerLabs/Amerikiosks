@@ -81,7 +81,8 @@
       "number": "Enter a number",
       "phone": "Enter a valid phone number",
       "maxLength": "This answer is too long",
-      "generic": "Check this field"
+      "generic": "Check this field",
+      "website": "Enter a valid website, e.g. acme.com"
     },
     "upload": {
       "prompt": "Drag a file here or browse",
