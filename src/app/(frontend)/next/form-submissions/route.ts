@@ -139,14 +139,20 @@ export async function POST(req: Request) {
     return Response.json({ error: 'Unknown form.' }, { status: 400 })
   }
 
-  const submissionData = body.submissionData ?? []
   const specs = (form.fields ?? []) as FieldSpec[]
 
   // Upload fields arrive as multipart parts, not as submissionData values, so
   // they are validated separately below — exclude them from the value pass.
+  // Both sides of it: dropping only the *specs* left the browser's own entry
+  // for the file input with nothing to match against, and every form with an
+  // upload field 400'd on `unknownField`.
   const uploadFieldNames = new Set(
     specs.filter((f) => f.blockType === 'upload' && f.name).map((f) => f.name as string),
   )
+  const submissionData = (body.submissionData ?? []).filter(
+    (entry) => !uploadFieldNames.has(entry.field),
+  )
+
   const issues = validateSubmission(
     specs.filter((f) => !uploadFieldNames.has(f.name ?? '')),
     submissionData,

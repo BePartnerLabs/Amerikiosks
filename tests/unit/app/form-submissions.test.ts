@@ -437,6 +437,28 @@ describe('POST /next/form-submissions', () => {
       )
     })
 
+    // The browser registers the file input like any other field, so its entry
+    // shows up in submissionData with no value. Upload specs are excluded from
+    // the value pass, so that entry had nothing to match and every form with an
+    // upload field 400'd on `unknownField` — with no file attached at all.
+    it('ignores the submissionData entry the browser sends for a file input', async () => {
+      const create = vi.fn().mockResolvedValue({ id: 42 })
+      const stub = stubPayload({ form: formWithUpload, create })
+
+      const res = await callPOST(
+        jsonRequest({
+          form: 'contact',
+          submissionData: [...validSubmission, { field: 'photo', value: undefined }],
+        }),
+      )
+
+      expect(res.status).toBe(201)
+      const [submissionArgs] = stub.create.mock.calls[0]
+      expect(submissionArgs.data.submissionData).not.toContainEqual(
+        expect.objectContaining({ field: 'photo' }),
+      )
+    })
+
     it('rejects a file over the 8MB cap before reading it', async () => {
       const stub = stubPayload({ form: formWithUpload })
 
