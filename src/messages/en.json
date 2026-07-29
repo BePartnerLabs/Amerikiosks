@@ -88,7 +88,11 @@
       "prompt": "Drag a file here or browse",
       "dismiss": "Dismiss",
       "tooLarge": "File exceeds the 8MB size limit.",
-      "wrongType": "File must be a JPEG, PNG, WEBP or HEIC image."
+      "wrongType": "File must be a JPEG, PNG, WEBP or HEIC image.",
+      "hint": "JPEG, PNG, WEBP or HEIC · max 8MB",
+      "hintWithPdf": "JPEG, PNG, WEBP, HEIC or PDF · max 8MB",
+      "remove": "Remove file",
+      "uploading": "Upload progress"
     },
     "summary": "{count, plural, one {1 field needs attention} other {# fields need attention}}",
     "progressLabel": "Form completion",

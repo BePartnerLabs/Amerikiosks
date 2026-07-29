@@ -17,7 +17,7 @@ export interface FormSubmissionData {
 const FORM_SUBMISSIONS_PATH = '/next/form-submissions'
 
 export const FormsRepository = {
-  async submit(data: FormSubmissionData): Promise<void> {
+  async submit(data: FormSubmissionData, onProgress?: (percent: number) => void): Promise<void> {
     const fileEntries = data.submissionData.filter(
       (item): item is { field: string; value: File } => item.value instanceof File,
     )
@@ -40,6 +40,6 @@ export const FormsRepository = {
       formData.append(field, value)
     }
 
-    await apiClient.postFormData(FORM_SUBMISSIONS_PATH, formData)
+    await apiClient.postFormData(FORM_SUBMISSIONS_PATH, formData, onProgress)
   },
 }

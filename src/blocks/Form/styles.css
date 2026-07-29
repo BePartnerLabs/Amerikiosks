@@ -510,3 +510,230 @@
   opacity: 0;
   pointer-events: none;
 }
+
+/* ── Upload dropzone ───────────────────────────────────────────
+   Option A from the design comparison: the existing box, with the states it
+   was missing — a pointer-tracking spotlight while a file is dragged over, a
+   ring that expands from where it landed, and the chosen file as a row with
+   its own progress. */
+.ak-upload__zone {
+  position: relative;
+  overflow: hidden;
+  transition:
+    border-color var(--bp-duration-fast, 0.15s) var(--bp-ease, ease),
+    background-color var(--bp-duration-fast, 0.15s) var(--bp-ease, ease),
+    transform var(--bp-duration-fast, 0.15s) var(--bp-ease, ease);
+}
+
+.ak-upload__zone[data-dragover] {
+  --_border-color: var(--ak-accent);
+  --_background: color-mix(in srgb, var(--ak-accent) 7%, transparent);
+  border-color: var(--_border-color);
+  border-style: solid;
+  background-color: var(--_background);
+  transform: scale(1.015);
+}
+
+/* No transition on the gradient's position: a lag between the cursor and the
+   light reads as jank rather than polish. Only the fade in/out is eased. */
+.ak-upload__zone::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--bp-duration-fast, 0.15s) var(--bp-ease, ease);
+  background: radial-gradient(
+    14rem circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--ak-accent) 26%, transparent),
+    transparent 70%
+  );
+}
+
+.ak-upload__zone[data-dragover]::after {
+  opacity: 1;
+}
+
+.ak-upload__ripple {
+  position: absolute;
+  left: var(--mx, 50%);
+  top: var(--my, 50%);
+  width: 0;
+  height: 0;
+  border-radius: 999px;
+  pointer-events: none;
+  opacity: 0;
+  translate: -50% -50%;
+
+  --_border-color: var(--ak-accent);
+  border: 2px solid var(--_border-color);
+}
+
+.ak-upload__zone[data-dropped] .ak-upload__ripple {
+  animation: ak-upload-ring 460ms cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+}
+
+.ak-upload__zone[data-dropped] {
+  animation: ak-upload-settle 320ms cubic-bezier(0.2, 0.8, 0.3, 1.1);
+}
+
+@keyframes ak-upload-ring {
+  from {
+    width: 0;
+    height: 0;
+    opacity: 0.85;
+  }
+
+  to {
+    width: 22rem;
+    height: 22rem;
+    opacity: 0;
+  }
+}
+
+@keyframes ak-upload-settle {
+  0% {
+    transform: scale(0.97);
+  }
+
+  60% {
+    transform: scale(1.01);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.ak-upload__hint {
+  --_color: var(--ak-color-muted);
+  color: var(--_color);
+  font-size: var(--bp-text-xs, 0.75rem);
+}
+
+.ak-upload__file {
+  display: flex;
+  align-items: center;
+  gap: var(--bp-space-3, 0.75rem);
+
+  --_border-color: var(--ak-color-border);
+  padding: var(--bp-space-2, 0.5rem) var(--bp-space-3, 0.75rem);
+  border: 1px solid var(--_border-color);
+  border-radius: var(--bp-radius, 0.625rem);
+}
+
+.ak-upload__thumb {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  overflow: hidden;
+
+  --_background: var(--ak-color-surface-muted, transparent);
+  --_border-color: var(--ak-color-border);
+  --_color: var(--ak-color-muted);
+  border: 1px solid var(--_border-color);
+  border-radius: var(--bp-radius-sm, 0.375rem);
+  background-color: var(--_background);
+  color: var(--_color);
+  font-size: var(--bp-text-xs, 0.75rem);
+  font-weight: 700;
+}
+
+.ak-upload__thumb {
+  background-position: center;
+  background-size: cover;
+}
+
+.ak-upload__meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.ak-upload__name {
+  --_color: var(--ak-color-heading);
+  color: var(--_color);
+  font-size: var(--bp-text-sm, 0.875rem);
+  font-weight: 600;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.ak-upload__size {
+  --_color: var(--ak-color-muted);
+  color: var(--_color);
+  font-size: var(--bp-text-xs, 0.75rem);
+  font-variant-numeric: tabular-nums;
+}
+
+.ak-upload__bar {
+  display: block;
+  height: 3px;
+  margin-top: 0.2rem;
+  border-radius: 999px;
+  overflow: hidden;
+
+  --_background: var(--ak-color-border);
+  background-color: var(--_background);
+}
+
+.ak-upload__bar-fill {
+  display: block;
+  block-size: 100%;
+
+  --_background: var(--ak-accent);
+  background-color: var(--_background);
+  transition: inline-size 0.25s ease;
+}
+
+.ak-upload__remove {
+  flex: none;
+  border: none;
+  background: none;
+  padding: 0.2rem;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+
+  --_color: var(--ak-color-muted);
+  color: var(--_color);
+}
+
+.ak-upload__remove:hover:not(:disabled) {
+  --_color: var(--ak-accent);
+  color: var(--_color);
+}
+
+.ak-upload__remove:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ak-upload__error {
+  --_color: var(--ak-accent);
+  margin: var(--bp-space-2, 0.5rem) 0 0;
+  color: var(--_color);
+  font-size: var(--bp-text-xs, 0.75rem);
+}
+
+/* The border and the copy carry the message; the rest is decoration. */
+@media (prefers-reduced-motion: reduce) {
+  .ak-upload__zone,
+  .ak-upload__bar-fill {
+    transition: none;
+  }
+
+  .ak-upload__zone[data-dragover] {
+    transform: none;
+  }
+
+  .ak-upload__zone[data-dropped],
+  .ak-upload__zone[data-dropped] .ak-upload__ripple {
+    animation: none;
+  }
+}

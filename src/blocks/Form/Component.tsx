@@ -109,6 +109,9 @@ export const FormBlock: React.FC<
   // Submitting a long form and seeing nothing happen — because the offending
   // field is three screens up — is the worst failure mode in the drawer.
   const [invalidFields, setInvalidFields] = useState<{ name: string; label: string }[]>([])
+  // Only meaningful while a submission carrying a file is in flight; the
+  // Upload field renders its own bar from it.
+  const [uploadPercent, setUploadPercent] = useState<number | undefined>(undefined)
   const summaryRef = useRef<HTMLDivElement>(null)
 
   const {
@@ -135,13 +138,19 @@ export const FormBlock: React.FC<
       const submissionData = Object.entries(data)
         .filter(([field]) => declared.has(field))
         .map(([field, value]) => ({ field, value }))
-      return FormsRepository.submit({
-        form: formID ?? '',
-        submissionData,
-        honeypot: honeypotRef.current?.value || undefined,
-        renderedAt: renderedAtRef.current,
-        turnstileToken: turnstile.token,
-      })
+      const hasFile = submissionData.some((entry) => entry.value instanceof File)
+      if (hasFile) setUploadPercent(0)
+
+      return FormsRepository.submit(
+        {
+          form: formID ?? '',
+          submissionData,
+          honeypot: honeypotRef.current?.value || undefined,
+          renderedAt: renderedAtRef.current,
+          turnstileToken: turnstile.token,
+        },
+        hasFile ? setUploadPercent : undefined,
+      )
     },
     onSuccess: () => {
       if (confirmationType === 'redirect' && redirect?.url) {
@@ -157,6 +166,7 @@ export const FormBlock: React.FC<
         router.push(redirect.url)
       }
     },
+    onSettled: () => setUploadPercent(undefined),
     onError: (err) => {
       // The visitor gets the sentence below; the technical detail belongs in
       // the console, not on screen (this used to render as "500: Not Found").
@@ -349,6 +359,7 @@ export const FormBlock: React.FC<
                       control={control}
                       errors={errors}
                       register={register}
+                      uploadPercent={uploadPercent}
                     />
                   )
                 }
