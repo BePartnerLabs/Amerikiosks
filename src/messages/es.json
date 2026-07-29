@@ -96,7 +96,7 @@
       "uploading": "Progreso de subida"
     },
     "summary": "{count, plural, one {1 campo requiere atención} other {# campos requieren atención}}",
-    "progressLabel": "Progreso del formulario",
+    "progressLabel": "Campos obligatorios completados",
     "sending": "Enviando…",
     "charactersLeft": "{count, plural, one {queda 1 carácter} other {quedan # caracteres}}"
   }

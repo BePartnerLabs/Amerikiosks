@@ -201,8 +201,22 @@ export async function POST(req: Request) {
       )
     }
     const filename = file.name || 'upload'
-    const key = await uploadPrivateFile(Buffer.from(arrayBuffer), detectedType, filename)
-    attachments.push({ field: fieldName, key, filename, mimeType: detectedType })
+    try {
+      const key = await uploadPrivateFile(Buffer.from(arrayBuffer), detectedType, filename)
+      attachments.push({ field: fieldName, key, filename, mimeType: detectedType })
+    } catch (err) {
+      // Storage being misconfigured or unreachable is our problem, not the
+      // visitor's, but it must not surface as an unhandled 500 either: they get
+      // a sentence they can act on, and the detail goes to the log. (Seen for
+      // real when a local S3_ENDPOINT had the public bucket baked into its
+      // path, so the private bucket resolved to a nested key and R2 answered
+      // AccessDenied.)
+      console.error('[form-submissions] could not store the attachment:', err)
+      return Response.json(
+        { error: 'We could not store your file. Please try again in a moment.' },
+        { status: 503 },
+      )
+    }
   }
 
   const normalized = submissionData.map((entry) => {

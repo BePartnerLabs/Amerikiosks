@@ -229,17 +229,24 @@ export const FormBlock: React.FC<
     }
   }, [hasSubmitted])
 
-  // Progress is only worth showing when the form is long enough to feel long —
-  // on a 4-field contact form a progress bar is noise, not reassurance.
-  const answerableFields = (formFromProps?.fields ?? []).filter(
-    (f) => 'name' in f && (f as { blockType?: string }).blockType !== 'message',
+  // Progress counts *required* fields only, so 100% means "you can submit".
+  // Counting every field made the bar permanently incomplete for anyone who
+  // legitimately skipped the optional ones, and it made a switch ambiguous:
+  // left off on purpose is an answer, but it looked like a gap.
+  const requiredFields = (formFromProps?.fields ?? []).filter(
+    (f) => 'name' in f && (f as { required?: boolean }).required,
   ) as unknown as { name: string }[]
-  const showProgress = answerableFields.length >= 8
   const watched = useWatch({ control })
-  const filledCount = answerableFields.filter((f) => {
+  const answeredCount = requiredFields.filter((f) => {
     const value = (watched as unknown as Record<string, unknown>)?.[f.name]
-    return value !== undefined && value !== null && value !== '' && value !== false
+    // A required boolean means "must be on" — an unticked consent box is not a
+    // completed answer, it is the thing blocking the submit.
+    if (typeof value === 'boolean') return value
+    return value !== undefined && value !== null && value !== ''
   }).length
+  // Below a handful of required fields there is nothing to reassure anyone
+  // about, and a bar stuck at 1/2 reads worse than no bar.
+  const showProgress = requiredFields.length >= 4
 
   const intro = enableIntro && introContent && !hasSubmitted && (
     <RichText
@@ -425,20 +432,20 @@ export const FormBlock: React.FC<
               {showProgress && (
                 <div className="ak-form__progress">
                   <span className="ak-form__progress-count">
-                    {filledCount} / {answerableFields.length}
+                    {answeredCount} / {requiredFields.length}
                   </span>
                   <span
                     className="ak-form__progress-track"
                     role="progressbar"
                     aria-valuemin={0}
-                    aria-valuemax={answerableFields.length}
-                    aria-valuenow={filledCount}
+                    aria-valuemax={requiredFields.length}
+                    aria-valuenow={answeredCount}
                     aria-label={t('progressLabel')}
                   >
                     <span
                       className="ak-form__progress-bar"
                       style={{
-                        inlineSize: `${Math.round((filledCount / answerableFields.length) * 100)}%`,
+                        inlineSize: `${Math.round((answeredCount / requiredFields.length) * 100)}%`,
                       }}
                     />
                   </span>

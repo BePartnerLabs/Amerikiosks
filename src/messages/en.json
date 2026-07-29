@@ -96,7 +96,7 @@
       "uploading": "Upload progress"
     },
     "summary": "{count, plural, one {1 field needs attention} other {# fields need attention}}",
-    "progressLabel": "Form completion",
+    "progressLabel": "Required fields completed",
     "sending": "Sending…",
     "charactersLeft": "{count, plural, one {1 character left} other {# characters left}}"
   }
