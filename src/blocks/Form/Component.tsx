@@ -417,13 +417,19 @@ export const FormBlock: React.FC<
                   </span>
                 </div>
               )}
+              {/* The label carries the pending state, not just the disabled
+                  attribute: in the drawer the submit button is sticky at the
+                  bottom while the status message sits at the top of a scrolled
+                  form, so the button is the only thing the visitor is looking
+                  at when they click it. */}
               <button
                 className="bp-btn bp-btn--dark ak-form__submit"
                 form={formID}
                 type="submit"
                 disabled={isLoading}
+                aria-busy={isLoading}
               >
-                {submitButtonLabel}
+                {isLoading ? t('sending') : submitButtonLabel}
               </button>
             </div>
 

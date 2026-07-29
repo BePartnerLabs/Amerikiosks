@@ -108,6 +108,15 @@
   box-shadow: var(--_shadow);
 }
 
+/* The button was already disabled while the request was in flight, but nothing
+   in the DS styles `.bp-btn:disabled`, so it looked and felt clickable — the
+   visitor got no signal that anything was happening. */
+.ak-form__submit:disabled {
+  box-shadow: none;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .ak-form__actions {
   display: flex;
   flex-direction: column;
