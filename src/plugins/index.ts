@@ -7,6 +7,7 @@ import type { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import { s3Storage } from '@payloadcms/storage-s3'
 import type { Plugin, TextFieldValidation } from 'payload'
+import { attachmentUrlEndpoint } from '@/collections/FormSubmissions/endpoints/attachmentUrl'
 import { resyncEndpoint } from '@/collections/FormSubmissions/endpoints/resync'
 import { revalidateFormGlobals } from '@/collections/Forms/hooks/revalidateFormGlobals'
 import type { Insight, Machine, Page, Project } from '@/payload-types'
@@ -269,6 +270,7 @@ export const plugins: Plugin[] = [
           edit: {
             beforeDocumentControls: [
               '@/collections/FormSubmissions/components/ResyncDocButton#ResyncDocButton',
+              '@/collections/FormSubmissions/components/ViewAttachmentsButton#ViewAttachmentsButton',
             ],
           },
         },
@@ -306,6 +308,27 @@ export const plugins: Plugin[] = [
           },
         },
         {
+          // Form attachments go to the private R2 bucket, not the public
+          // `media` collection: a placement application can carry a lease, an
+          // invoice or a floor plan, and `media` is world-readable and about
+          // to be served straight off R2's public URL. Same model as
+          // Claims.photoKey — the durable reference is an object key, and a
+          // presigned URL is minted on demand for staff who need to look.
+          name: 'attachments',
+          type: 'array',
+          admin: {
+            readOnly: true,
+            description:
+              'Files submitted with this form. Stored in the private bucket — use the View button above, the key alone is not a URL.',
+          },
+          fields: [
+            { name: 'field', type: 'text' },
+            { name: 'key', type: 'text' },
+            { name: 'filename', type: 'text' },
+            { name: 'mimeType', type: 'text' },
+          ],
+        },
+        {
           name: 'consentGiven',
           type: 'checkbox',
           admin: {
@@ -334,7 +357,7 @@ export const plugins: Plugin[] = [
       // after the submission is committed, from /next/form-submissions (see
       // syncFormSubmission's own comment). As an afterChange it shared the
       // create's transaction and could roll the visitor's lead back.
-      endpoints: [resyncEndpoint],
+      endpoints: [resyncEndpoint, attachmentUrlEndpoint],
     },
   }),
   searchPlugin({

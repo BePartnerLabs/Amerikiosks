@@ -9,6 +9,7 @@ import {
 } from '@/blocks/Form/validation'
 import { syncFormSubmission } from '@/collections/FormSubmissions/hooks/syncFormSubmission'
 import { detectImageMimeType } from '@/utilities/detectImageMimeType'
+import { uploadPrivateFile } from '@/utilities/privateUpload'
 
 const MAX_UPLOAD_BYTES = 8 * 1024 * 1024 // 8MB — mirrors Form/Upload/index.tsx
 
@@ -155,10 +156,12 @@ export async function POST(req: Request) {
     return Response.json({ error: 'Validation failed.', issues }, { status: 400 })
   }
 
-  // Payload's REST endpoint resolved upload fields into media docs for us.
-  // Going through the Local API means doing it by hand: create the media doc
-  // first, then store its id as the field's value.
-  const uploadedValues: SubmissionEntry[] = []
+  // Attachments go to the private R2 bucket, never to the public `media`
+  // collection: `media` is world-readable and its objects are served straight
+  // off R2's public URL, and these files are business documents attached to a
+  // lead. What lands on the submission is the object key, exactly like
+  // Claims.photoKey — see the `attachments` field in src/plugins/index.ts.
+  const attachments: { field: string; key: string; filename: string; mimeType: string }[] = []
   for (const [fieldName, file] of files) {
     if (file.size > MAX_UPLOAD_BYTES) {
       return Response.json({ error: 'File exceeds the 8MB size limit.' }, { status: 400 })
@@ -172,17 +175,9 @@ export async function POST(req: Request) {
         { status: 400 },
       )
     }
-    const media = await payload.create({
-      collection: 'media',
-      data: { alt: file.name || 'Form upload' },
-      file: {
-        data: Buffer.from(arrayBuffer),
-        mimetype: detectedType,
-        name: file.name || 'upload',
-        size: file.size,
-      },
-    })
-    uploadedValues.push({ field: fieldName, value: media.id })
+    const filename = file.name || 'upload'
+    const key = await uploadPrivateFile(Buffer.from(arrayBuffer), detectedType, filename)
+    attachments.push({ field: fieldName, key, filename, mimeType: detectedType })
   }
 
   const normalized = submissionData.map((entry) => {
@@ -198,7 +193,8 @@ export async function POST(req: Request) {
       collection: 'form-submissions',
       data: {
         form: body.form,
-        submissionData: [...normalized, ...uploadedValues],
+        submissionData: normalized,
+        ...(attachments.length > 0 ? { attachments } : {}),
         // The consent checkbox is a real form field, so it arrives inside
         // submissionData; these mirror it onto the document itself so the
         // record stands on its own as proof.

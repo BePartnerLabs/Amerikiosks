@@ -1,14 +1,15 @@
 import type { Payload } from 'payload'
 import { GenericMondayRepository, MondayApiError } from '@/repositories/GenericMondayRepository'
 import type { MondayBoardsCache } from '@/utilities/detectMondayDrift'
-import { getServerSideURL } from '@/utilities/getURL'
+import { getPrivateFileBuffer } from '@/utilities/privateUpload'
 
 type FormField = { name?: string; externalId?: string; blockType?: string }
 type SubmissionDataItem = { field: string; value: unknown }
-type MediaDoc = { url?: string | null; filename?: string | null; mimeType?: string | null }
-type SubmissionUploadItem = {
-  field: string
-  value: Array<{ value: number | string | MediaDoc }>
+type AttachmentRow = {
+  field?: string | null
+  key?: string | null
+  filename?: string | null
+  mimeType?: string | null
 }
 
 // Whichever submitted field carries one of these externalIds becomes the
@@ -108,7 +109,7 @@ type SubmissionDoc = {
   id: number | string
   form: number | { id: number }
   submissionData?: unknown
-  submissionUploads?: unknown
+  attachments?: unknown
 }
 
 /**
@@ -233,60 +234,31 @@ async function run(payload: Payload, doc: SubmissionDoc): Promise<void> {
       ))
     }
 
-    // Uploads live in submissionUploads (media relationships), not
-    // submissionData — see the plugin's handleUploads.js. Fetch each
-    // uploaded media doc's real bytes and attach it to the matching
-    // Monday file column, when that upload field has an externalId set.
+    // Attachments live in the private R2 bucket (see the route that writes
+    // them); the bytes are pulled server-side with credentials and forwarded
+    // to Monday as a real file. There is deliberately no URL involved — the
+    // objects have no public access, which is the whole point of storing
+    // business documents there instead of in the public `media` collection.
     const externalIdByFieldName = new Map(
       formFields
         .filter((f) => f.name && f.externalId)
         .map((f) => [f.name as string, f.externalId as string]),
     )
-    for (const { field, value } of (doc.submissionUploads ?? []) as SubmissionUploadItem[]) {
-      const columnId = externalIdByFieldName.get(field)
-      if (!columnId) continue
+    for (const attachment of (doc.attachments ?? []) as AttachmentRow[]) {
+      const columnId = attachment.field ? externalIdByFieldName.get(attachment.field) : undefined
+      if (!columnId || !attachment.key) continue
 
-      for (const { value: mediaRef } of value ?? []) {
-        // Same depth caveat as `doc.form` above: at the REST API's default
-        // depth the relationship arrives as the populated media doc, not an
-        // id. Passing that object straight into findByID sent an object as a
-        // SQL param, which failed the query, poisoned the request's
-        // transaction, and surfaced to the browser as a bare 404 on POST
-        // /api/form-submissions — the submission itself never got committed.
-        const media =
-          typeof mediaRef === 'object' && mediaRef !== null
-            ? (mediaRef as MediaDoc)
-            : ((await payload.findByID({
-                collection: 'media',
-                id: mediaRef,
-                depth: 0,
-              })) as MediaDoc)
-        if (!media.url) continue
-
-        // media.url is relative when Payload serves the file itself
-        // (`/api/media/file/<name>`). Node's fetch has no document base, so a
-        // relative URL throws `Failed to parse URL from /api/media/file/...`.
-        // Absolute URLs (external storage with a public base) pass through.
-        const fileUrl = /^https?:\/\//.test(media.url)
-          ? media.url
-          : `${getServerSideURL()}${media.url}`
-
-        const res = await fetch(fileUrl)
-        if (!res.ok) {
-          throw new Error(`could not read upload ${media.filename ?? media.url}: ${res.status}`)
-        }
-        const buffer = Buffer.from(await res.arrayBuffer())
-        await GenericMondayRepository.addFile(
-          itemId,
-          columnId,
-          {
-            buffer,
-            filename: media.filename ?? 'upload',
-            contentType: media.mimeType ?? 'application/octet-stream',
-          },
-          apiToken,
-        )
-      }
+      const { buffer, contentType } = await getPrivateFileBuffer(attachment.key)
+      await GenericMondayRepository.addFile(
+        itemId,
+        columnId,
+        {
+          buffer,
+          filename: attachment.filename ?? 'upload',
+          contentType: attachment.mimeType ?? contentType,
+        },
+        apiToken,
+      )
     }
 
     await updateStatus({

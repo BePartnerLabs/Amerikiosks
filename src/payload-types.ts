@@ -2076,6 +2076,18 @@ export interface FormSubmission {
   syncError?: string | null;
   syncedAt?: string | null;
   /**
+   * Files submitted with this form. Stored in the private bucket — use the View button above, the key alone is not a URL.
+   */
+  attachments?:
+    | {
+        field?: string | null;
+        key?: string | null;
+        filename?: string | null;
+        mimeType?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
    * Whether the visitor ticked the consent box on a form that requires it. Written by the submission route — a consent record only counts if it was stored at the moment of capture.
    */
   consentGiven?: boolean | null;
@@ -3488,6 +3500,15 @@ export interface FormSubmissionsSelect<T extends boolean = true> {
   syncStatus?: T;
   syncError?: T;
   syncedAt?: T;
+  attachments?:
+    | T
+    | {
+        field?: T;
+        key?: T;
+        filename?: T;
+        mimeType?: T;
+        id?: T;
+      };
   consentGiven?: T;
   consentAt?: T;
   updatedAt?: T;

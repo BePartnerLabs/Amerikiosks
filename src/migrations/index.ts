@@ -62,6 +62,7 @@ import * as migration_20260728_051500_redirects_normalize_from from './20260728_
 import * as migration_20260728_192449_forms_consent_and_turnstile from './20260728_192449_forms_consent_and_turnstile';
 import * as migration_20260728_194219_forms_description_footnote_confirmation from './20260728_194219_forms_description_footnote_confirmation';
 import * as migration_20260728_215733_form_block_panel_fields from './20260728_215733_form_block_panel_fields';
+import * as migration_20260729_000725_form_submission_private_attachments from './20260729_000725_form_submission_private_attachments';
 
 export const migrations = [
   {
@@ -382,6 +383,11 @@ export const migrations = [
   {
     up: migration_20260728_215733_form_block_panel_fields.up,
     down: migration_20260728_215733_form_block_panel_fields.down,
-    name: '20260728_215733_form_block_panel_fields'
+    name: '20260728_215733_form_block_panel_fields',
+  },
+  {
+    up: migration_20260729_000725_form_submission_private_attachments.up,
+    down: migration_20260729_000725_form_submission_private_attachments.down,
+    name: '20260729_000725_form_submission_private_attachments'
   },
 ];

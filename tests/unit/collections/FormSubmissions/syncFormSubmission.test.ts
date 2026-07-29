@@ -20,6 +20,11 @@ vi.mock('@/repositories/GenericMondayRepository', () => ({
   MondayApiError: MockMondayApiError,
 }))
 
+const getPrivateFileBufferMock = vi.fn()
+vi.mock('@/utilities/privateUpload', () => ({
+  getPrivateFileBuffer: (...args: unknown[]) => getPrivateFileBufferMock(...args),
+}))
+
 const findByIDMock = vi.fn()
 const updateMock = vi.fn()
 const findGlobalMock = vi.fn()
@@ -224,22 +229,18 @@ describe('syncFormSubmission', () => {
     )
   })
 
-  it('fetches and attaches uploaded files to their mapped Monday column', async () => {
-    findByIDMock.mockImplementation(async ({ collection }: { collection: string }) => {
-      if (collection === 'forms') return baseForm
-      return {
-        id: 5,
-        url: 'https://example.com/photo.jpg',
-        filename: 'photo.jpg',
-        mimeType: 'image/jpeg',
-      }
-    })
+  it('pulls attachments from the private bucket and forwards them to their Monday column', async () => {
+    findByIDMock.mockResolvedValue(baseForm)
     findGlobalMock.mockResolvedValue({ mondayApiToken: 'test-token' })
     submitMock.mockResolvedValue({ id: '999' })
-    global.fetch = vi.fn().mockResolvedValue({
-      ok: true,
-      arrayBuffer: async () => new Uint8Array([1, 2, 3]).buffer,
-    }) as never
+    getPrivateFileBufferMock.mockResolvedValue({
+      buffer: Buffer.from([1, 2, 3]),
+      contentType: 'image/jpeg',
+    })
+    // No URL is ever involved: the bucket has no public access, which is the
+    // reason attachments live there rather than in the public media collection.
+    const fetchSpy = vi.fn()
+    global.fetch = fetchSpy as never
 
     const { syncFormSubmission } = await import(
       '@/collections/FormSubmissions/hooks/syncFormSubmission'
@@ -250,10 +251,14 @@ describe('syncFormSubmission', () => {
         id: 1,
         form: 10,
         submissionData: [{ field: 'contact-name', value: 'Jane Doe' }],
-        submissionUploads: [{ field: 'photo', value: [{ value: 5 }] }],
+        attachments: [
+          { field: 'photo', key: 'abc-123.jpg', filename: 'photo.jpg', mimeType: 'image/jpeg' },
+        ],
       } as never,
     })
 
+    expect(getPrivateFileBufferMock).toHaveBeenCalledWith('abc-123.jpg')
+    expect(fetchSpy).not.toHaveBeenCalled()
     expect(addFileMock).toHaveBeenCalledWith(
       '999',
       'files3',

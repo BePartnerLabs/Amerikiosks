@@ -27,6 +27,7 @@ import { MondayGroupPicker as MondayGroupPicker_c2baa8ef80b258ef1470bf62c2896b44
 import { MondayColumnsReference as MondayColumnsReference_95f847eafd6912a2696cfbfe6d063868 } from '@/plugins/components/MondayColumnsReference'
 import { ResyncListButton as ResyncListButton_c0dbca6e89bb7d7fd9be66f3d66a2567 } from '@/collections/FormSubmissions/components/ResyncListButton'
 import { ResyncDocButton as ResyncDocButton_3945a2bb2a35b49d41089f1a1aa72546 } from '@/collections/FormSubmissions/components/ResyncDocButton'
+import { ViewAttachmentsButton as ViewAttachmentsButton_dfd915d015f639829a0e4f0a355130ec } from '@/collections/FormSubmissions/components/ViewAttachmentsButton'
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { FolderTypeField as FolderTypeField_2b8867833a34864a02ddf429b0728a40 } from '@payloadcms/next/client'
@@ -75,6 +76,7 @@ export const importMap = {
   "@/plugins/components/MondayColumnsReference#MondayColumnsReference": MondayColumnsReference_95f847eafd6912a2696cfbfe6d063868,
   "@/collections/FormSubmissions/components/ResyncListButton#ResyncListButton": ResyncListButton_c0dbca6e89bb7d7fd9be66f3d66a2567,
   "@/collections/FormSubmissions/components/ResyncDocButton#ResyncDocButton": ResyncDocButton_3945a2bb2a35b49d41089f1a1aa72546,
+  "@/collections/FormSubmissions/components/ViewAttachmentsButton#ViewAttachmentsButton": ViewAttachmentsButton_dfd915d015f639829a0e4f0a355130ec,
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/next/client#FolderTypeField": FolderTypeField_2b8867833a34864a02ddf429b0728a40,

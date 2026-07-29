@@ -2,6 +2,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('@payload-config', () => ({ default: {} }))
 vi.mock('payload', () => ({ getPayload: vi.fn() }))
+const uploadPrivateFileMock = vi.fn()
+vi.mock('@/utilities/privateUpload', () => ({
+  uploadPrivateFile: (...args: unknown[]) => uploadPrivateFileMock(...args),
+}))
+// The sync runs after the create commits; it has its own tests.
+vi.mock('@/collections/FormSubmissions/hooks/syncFormSubmission', () => ({
+  syncFormSubmission: vi.fn(),
+}))
 
 import { getPayload } from 'payload'
 
@@ -366,11 +374,9 @@ describe('POST /next/form-submissions', () => {
       fields: [...CONTACT_FIELDS, { blockType: 'upload', name: 'photo' }],
     }
 
-    it('creates a media doc and stores its id as the field value', async () => {
-      const create = vi
-        .fn()
-        .mockResolvedValueOnce({ id: 'media-7' })
-        .mockResolvedValueOnce({ id: 42 })
+    it('stores the upload in the private bucket and records only its key', async () => {
+      const create = vi.fn().mockResolvedValue({ id: 42 })
+      uploadPrivateFileMock.mockResolvedValue('abc-123.jpg')
       const stub = stubPayload({ form: formWithUpload, create })
 
       const res = await callPOST(
@@ -381,16 +387,29 @@ describe('POST /next/form-submissions', () => {
       )
 
       expect(res.status).toBe(201)
-      const [mediaArgs] = stub.create.mock.calls[0]
-      expect(mediaArgs.collection).toBe('media')
-      // Sniffed from the magic bytes, never from the filename or File.type.
-      expect(mediaArgs.file.mimetype).toBe('image/jpeg')
 
-      const [submissionArgs] = stub.create.mock.calls[1]
-      expect(submissionArgs.data.submissionData).toContainEqual({
-        field: 'photo',
-        value: 'media-7',
-      })
+      // Never the public `media` collection: these are business documents
+      // attached to a lead, and media is world-readable.
+      for (const [args] of stub.create.mock.calls) {
+        expect(args.collection).not.toBe('media')
+      }
+
+      // Sniffed from the magic bytes, never from the filename or File.type.
+      expect(uploadPrivateFileMock).toHaveBeenCalledWith(
+        expect.anything(),
+        'image/jpeg',
+        'kiosk.jpg',
+      )
+
+      const [submissionArgs] = stub.create.mock.calls[0]
+      expect(submissionArgs.data.attachments).toEqual([
+        { field: 'photo', key: 'abc-123.jpg', filename: 'kiosk.jpg', mimeType: 'image/jpeg' },
+      ])
+      // The key must not leak into submissionData, which is what gets mapped
+      // to Monday columns as plain text.
+      expect(submissionArgs.data.submissionData).not.toContainEqual(
+        expect.objectContaining({ field: 'photo' }),
+      )
     })
 
     it('rejects a file over the 8MB cap before reading it', async () => {
