@@ -2,6 +2,7 @@ import type { Payload } from 'payload'
 import { GenericMondayRepository, MondayApiError } from '@/repositories/GenericMondayRepository'
 import type { MondayBoardsCache } from '@/utilities/detectMondayDrift'
 import { getPrivateFileBuffer } from '@/utilities/privateUpload'
+import { resolveMondayToken } from '@/utilities/resolveMondayToken'
 
 type FormField = { name?: string; externalId?: string; blockType?: string }
 type SubmissionDataItem = { field: string; value: unknown }
@@ -212,7 +213,7 @@ async function run(payload: Payload, doc: SubmissionDoc): Promise<void> {
     }
 
     const settings = await payload.findGlobal({ slug: 'settings' })
-    const apiToken = settings.mondayApiToken ?? ''
+    const apiToken = resolveMondayToken(settings)
 
     const boardsCache = settings.mondayBoardsCache as MondayBoardsCache | undefined
     const board = boardsCache?.boards.find((b) => b.id === boardId)

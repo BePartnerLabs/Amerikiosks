@@ -1,4 +1,5 @@
 import type { PayloadRequest } from 'payload'
+import { resolveMondayToken } from '@/utilities/resolveMondayToken'
 import { CLAIM_REASON_LABEL, PAYMENT_METHOD_LABEL } from './claimLabels'
 import type { ClaimSubmission } from './claimTypes'
 import { serverHttpClient } from './clients/ServerHttpClient'
@@ -115,7 +116,7 @@ export const MondayRepository = {
     // regardless of the field's own access.read: authenticatedFieldAccess
     // restriction (that gate is for external REST/GraphQL requests only).
     const settings = await req.payload.findGlobal({ slug: 'settings', req })
-    const apiToken = settings.mondayApiToken ?? ''
+    const apiToken = resolveMondayToken(settings)
 
     if (isMondayMocked) {
       logMockedMondayCall('create_item (claim)', {

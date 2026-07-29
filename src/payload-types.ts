@@ -4074,7 +4074,7 @@ export interface Setting {
    */
   defaultClaimIntegrationTarget?: ('odoo' | 'monday') | null;
   /**
-   * API token for the Monday.com GraphQL API (used by the Claims refund flow). Only visible to logged-in admin users — never exposed in the public Settings API response.
+   * API token for the Monday.com GraphQL API (the Claims refund flow and the form-builder sync). Only visible to logged-in admin users — never exposed in the public Settings API response. In local development a MONDAY_API_TOKEN in .env.local overrides this value and the field turns read-only.
    */
   mondayApiToken?: string | null;
   mondayBoardsCache?:
