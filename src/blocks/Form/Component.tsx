@@ -10,6 +10,7 @@ import type { FieldValues, UseFormRegister } from 'react-hook-form'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import RichText from '@/components/RichText'
 import { FormsRepository } from '@/repositories'
+import { toSnakeCase } from '@/utilities/toSnakeCase'
 import { fields } from './fields'
 import { useTurnstile } from './useTurnstile'
 import './styles.css'
@@ -51,6 +52,8 @@ export const FormBlock: React.FC<
   } & FormBlockType
 > = (props) => {
   const {
+    blockName,
+    blockType,
     enableIntro,
     form: formFromProps,
     form: {
@@ -484,8 +487,33 @@ export const FormBlock: React.FC<
   // markup mirrors the mega menu's left panel (accent bar → eyebrow →
   // headline → description) so the two read as the same component family.
   const hasPanelContent = panelLabel || panelHeadline || (enableIntro && introContent)
-  if (layout === 'split' && hasPanelContent) {
+  const isSplit = layout === 'split' && Boolean(hasPanelContent)
+
+  // Only a Form rendered straight from a page's `layout` array gets the section
+  // chrome (landmark, GA attributes, DS grid). `blockType` is what tells the two
+  // apart: RenderBlocks spreads the whole block, while FormDrawer and
+  // FAQWithForm mount this component by hand inside their own section — those
+  // must not grow a nested landmark or a second grid.
+  const withChrome = (content: React.ReactNode) => {
+    if (blockType !== 'formBlock') return content
     return (
+      <section
+        className="ak-form-block"
+        aria-label={blockName ?? title ?? undefined}
+        data-ga-block={toSnakeCase(blockType)}
+        data-ga-section={blockName ?? undefined}
+      >
+        {/* The content zone (max 1344px) is wider than both layouts — 48rem
+            stacked, 64rem split — so neither needs breakout; what the grid adds
+            is the shared page gutter on narrow screens, which .ak-form's own
+            max-width was not providing. */}
+        <div className="bp-content-grid">{content}</div>
+      </section>
+    )
+  }
+
+  if (isSplit) {
+    return withChrome(
       <div
         className="ak-form ak-form--split"
         data-layout="split"
@@ -506,11 +534,11 @@ export const FormBlock: React.FC<
           )}
         </aside>
         {body}
-      </div>
+      </div>,
     )
   }
 
-  return (
+  return withChrome(
     <div className="ak-form">
       {intro}
       {/* The drawer has no block-level intro of its own — this is the Form
@@ -524,6 +552,6 @@ export const FormBlock: React.FC<
         />
       )}
       {body}
-    </div>
+    </div>,
   )
 }
