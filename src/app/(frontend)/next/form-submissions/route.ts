@@ -115,7 +115,11 @@ export async function POST(req: Request) {
   const payload = await getPayload({ config: configPromise })
   const settings = await payload.findGlobal({ slug: 'settings' })
 
-  if (settings.turnstileEnabled && settings.turnstileSecretKey) {
+  // Both keys, not just the secret: the widget only renders when the layout
+  // finds a site key, so enforcing with the secret alone would mean the browser
+  // never produces a token and every genuine submission 403s. Half-configured
+  // must behave like off, not like a wall.
+  if (settings.turnstileEnabled && settings.turnstileSecretKey && settings.turnstileSiteKey) {
     const ok = await verifyTurnstile(body.turnstileToken, settings.turnstileSecretKey, ip)
     if (!ok) {
       return Response.json({ error: 'Bot verification failed.' }, { status: 403 })

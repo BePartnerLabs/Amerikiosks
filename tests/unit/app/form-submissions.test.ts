@@ -241,7 +241,11 @@ describe('POST /next/form-submissions', () => {
   describe('Turnstile', () => {
     it('rejects with 403 when verification says the token is not valid', async () => {
       const stub = stubPayload({
-        settings: { turnstileEnabled: true, turnstileSecretKey: 'secret' },
+        settings: {
+          turnstileEnabled: true,
+          turnstileSecretKey: 'secret',
+          turnstileSiteKey: 'site',
+        },
       })
       vi.spyOn(globalThis, 'fetch').mockResolvedValue(
         new Response(JSON.stringify({ success: false })),
@@ -257,7 +261,11 @@ describe('POST /next/form-submissions', () => {
 
     it('rejects with 403 when no token was sent at all', async () => {
       const stub = stubPayload({
-        settings: { turnstileEnabled: true, turnstileSecretKey: 'secret' },
+        settings: {
+          turnstileEnabled: true,
+          turnstileSecretKey: 'secret',
+          turnstileSiteKey: 'site',
+        },
       })
       const fetchSpy = vi.spyOn(globalThis, 'fetch')
 
@@ -272,7 +280,11 @@ describe('POST /next/form-submissions', () => {
     it('lets the submission through when Cloudflare itself is unreachable', async () => {
       // Fail open on purpose: an outage there must not take every form down.
       const stub = stubPayload({
-        settings: { turnstileEnabled: true, turnstileSecretKey: 'secret' },
+        settings: {
+          turnstileEnabled: true,
+          turnstileSecretKey: 'secret',
+          turnstileSiteKey: 'site',
+        },
       })
       vi.spyOn(globalThis, 'fetch').mockRejectedValue(new Error('network down'))
       vi.spyOn(console, 'error').mockImplementation(() => {})
@@ -287,6 +299,19 @@ describe('POST /next/form-submissions', () => {
 
     it('skips verification entirely when Turnstile is disabled', async () => {
       stubPayload({ settings: { turnstileEnabled: false, turnstileSecretKey: 'secret' } })
+      const fetchSpy = vi.spyOn(globalThis, 'fetch')
+
+      const res = await callPOST(jsonRequest({ form: 'contact', submissionData: validSubmission }))
+
+      expect(res.status).toBe(201)
+      expect(fetchSpy).not.toHaveBeenCalled()
+    })
+
+    // Turning the toggle on and filling only one of the two keys is the easy
+    // mistake to make in /admin. The widget needs the site key to render, so
+    // enforcing on the secret alone would 403 every real visitor.
+    it('does not enforce when it is enabled but only half configured', async () => {
+      stubPayload({ settings: { turnstileEnabled: true, turnstileSecretKey: 'secret' } })
       const fetchSpy = vi.spyOn(globalThis, 'fetch')
 
       const res = await callPOST(jsonRequest({ form: 'contact', submissionData: validSubmission }))
