@@ -68,6 +68,7 @@ import * as migration_20260729_040952_form_autocomplete_select from './20260729_
 import * as migration_20260729_041456_form_toggle_field from './20260729_041456_form_toggle_field';
 import * as migration_20260729_043724_form_radio_date_blocks from './20260729_043724_form_radio_date_blocks';
 import * as migration_20260729_043748_drop_upload_accepted_file_types from './20260729_043748_drop_upload_accepted_file_types';
+import * as migration_20260729_194248_form_block_localized_panel from './20260729_194248_form_block_localized_panel';
 
 export const migrations = [
   {
@@ -418,6 +419,11 @@ export const migrations = [
   {
     up: migration_20260729_043748_drop_upload_accepted_file_types.up,
     down: migration_20260729_043748_drop_upload_accepted_file_types.down,
-    name: '20260729_043748_drop_upload_accepted_file_types'
+    name: '20260729_043748_drop_upload_accepted_file_types',
+  },
+  {
+    up: migration_20260729_194248_form_block_localized_panel.up,
+    down: migration_20260729_194248_form_block_localized_panel.down,
+    name: '20260729_194248_form_block_localized_panel'
   },
 ];

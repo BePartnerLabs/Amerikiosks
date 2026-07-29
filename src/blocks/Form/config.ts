@@ -24,6 +24,7 @@ export const FormBlock: Block = {
     {
       name: 'introContent',
       type: 'richText',
+      localized: true,
       admin: {
         condition: (_, { enableIntro }) => Boolean(enableIntro),
       },
@@ -45,6 +46,7 @@ export const FormBlock: Block = {
     {
       name: 'panelLabel',
       type: 'text',
+      localized: true,
       label: 'Panel eyebrow',
       admin: {
         condition: (_, siblingData) => siblingData?.layout === 'split',
@@ -54,6 +56,7 @@ export const FormBlock: Block = {
     {
       name: 'panelHeadline',
       type: 'text',
+      localized: true,
       label: 'Panel headline',
       admin: {
         condition: (_, siblingData) => siblingData?.layout === 'split',
