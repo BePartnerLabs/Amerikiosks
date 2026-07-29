@@ -80,7 +80,7 @@
       "email": "Introduce un email válido, p. ej. nombre@empresa.com",
       "number": "Introduce un número",
       "phone": "Introduce un teléfono válido",
-      "maxLength": "Esta respuesta es demasiado larga",
+      "maxLength": "Esta respuesta es demasiado larga — máximo {max} caracteres",
       "generic": "Revisa este campo",
       "website": "Introduce un sitio web válido, p. ej. acme.com",
       "date": "Elige una fecha válida"
@@ -97,6 +97,7 @@
     },
     "summary": "{count, plural, one {1 campo requiere atención} other {# campos requieren atención}}",
     "progressLabel": "Progreso del formulario",
-    "sending": "Enviando…"
+    "sending": "Enviando…",
+    "charactersLeft": "{count, plural, one {queda 1 carácter} other {quedan # caracteres}}"
   }
 }

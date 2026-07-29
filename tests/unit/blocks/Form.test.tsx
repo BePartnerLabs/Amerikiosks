@@ -193,4 +193,17 @@ describe('FormBlock', () => {
     const [payload] = submitMock.mock.calls[0]
     expect(payload.submissionData).toEqual([{ field: 'email', value: 'someone@example.com' }])
   })
+
+  // 'website' and 'date' were added to the rule engine but not to FormError's
+  // known-code list, so both fell back to "This field is required" — a wrong
+  // message is worse than a generic one, because it sends the visitor looking
+  // in the wrong place.
+  it('translates every code the rule engine can return', async () => {
+    const { KNOWN_ERROR_CODES } = await import('@/blocks/Form/Error')
+    const messages = (await import('@/messages/en.json')).default
+
+    for (const code of KNOWN_ERROR_CODES) {
+      expect(messages.form.errors).toHaveProperty(code)
+    }
+  })
 })

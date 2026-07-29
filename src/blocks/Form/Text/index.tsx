@@ -4,7 +4,7 @@ import type { FieldErrorsImpl, FieldValues, UseFormRegister } from 'react-hook-f
 
 import { FormError } from '../Error'
 import { RequiredMark } from '../RequiredMark'
-import { registerOptions } from '../validation'
+import { MAX_TEXT_LENGTH, registerOptions } from '../validation'
 import { Width } from '../Width'
 
 export const Text: React.FC<
@@ -51,11 +51,13 @@ export const Text: React.FC<
         aria-invalid={hasError}
         aria-describedby={hasError ? errorId : undefined}
         autoComplete={autocomplete || 'off'}
+        maxLength={MAX_TEXT_LENGTH}
         {...register(name, registerOptions({ blockType, name, label, required, valueType }))}
       />
       {hasError && (
         <FormError
           id={errorId}
+          max={MAX_TEXT_LENGTH}
           name={name}
         />
       )}

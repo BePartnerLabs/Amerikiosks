@@ -3,18 +3,15 @@
    from frontend.css), with brand-specific Level 2 overrides here.
    ═══════════════════════════════════════════════════════════════ */
 
-/* Vertical rhythm at block level, matching every other block on the page
-   (CardGrid, Content, Metrics all use --bp-space-16). Without it the form sat
-   flush against whatever came before and after it. The drawer overrides this
-   back to zero — it provides its own padding. */
+/* Vertical rhythm at block level, matching what every other block spends
+   (CardGrid, Content and Metrics all use --bp-space-16). Margin, not padding:
+   the split layout is a rounded card with a shadow and overflow: hidden, so
+   padding would push the dark panel away from its own edges. The drawer
+   overrides this back to its own spacing. */
 .ak-form {
   max-width: 48rem;
   margin-inline: auto;
-  padding-block: var(--bp-space-16, 4rem);
-}
-
-.ak-form--split {
-  padding-block: var(--bp-space-16, 4rem);
+  margin-block: var(--bp-space-16, 4rem);
 }
 
 .ak-form__intro {
@@ -827,4 +824,14 @@
   --_color: var(--ak-color-heading);
   color: var(--_color);
   font-size: var(--bp-text-sm, 0.875rem);
+}
+
+/* Character counter — only rendered near the limit, see the component. */
+.ak-field__counter {
+  --_color: var(--ak-color-muted);
+  margin: var(--bp-space-1, 0.25rem) 0 0;
+  color: var(--_color);
+  font-size: var(--bp-text-xs, 0.75rem);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
 }

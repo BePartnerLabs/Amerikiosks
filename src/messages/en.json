@@ -80,7 +80,7 @@
       "email": "Enter a valid email address, e.g. name@company.com",
       "number": "Enter a number",
       "phone": "Enter a valid phone number",
-      "maxLength": "This answer is too long",
+      "maxLength": "This answer is too long — {max} characters maximum",
       "generic": "Check this field",
       "website": "Enter a valid website, e.g. acme.com",
       "date": "Choose a valid date"
@@ -97,6 +97,7 @@
     },
     "summary": "{count, plural, one {1 field needs attention} other {# fields need attention}}",
     "progressLabel": "Form completion",
-    "sending": "Sending…"
+    "sending": "Sending…",
+    "charactersLeft": "{count, plural, one {1 character left} other {# characters left}}"
   }
 }
