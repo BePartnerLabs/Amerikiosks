@@ -1,12 +1,19 @@
 name: CI Lint and Test
 
+# `develop` is the integration branch: feature PRs target it, and main only
+# receives consolidated work. Without it listed here a PR into develop would
+# run no checks at all, since a workflow's pull_request filter matches the
+# *base* branch. release-draft.yml stays on main on purpose — releases still
+# ship from there.
 on:
   push:
     branches:
       - main
+      - develop
   pull_request:
     branches:
       - main
+      - develop
 
 concurrency:
   group: ci-${{ github.ref }}
