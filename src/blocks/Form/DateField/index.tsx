@@ -7,21 +7,32 @@ import { Width } from '../Width'
 
 /**
  * The browser's own date control rather than a picker component: it is
- * localised, keyboard-accessible and touch-friendly for free, and it submits
- * an unambiguous ISO `YYYY-MM-DD` — which is what Monday's date columns
- * expect, unlike anything a free-text field would produce.
+ * localised, keyboard-accessible and touch-friendly for free, and it submits an
+ * unambiguous `YYYY-MM-DD` (or `YYYY-MM-DDTHH:mm` with time) — which is what a
+ * Monday date column needs, unlike anything a free-text field would produce.
+ *
+ * Same approach ClaimForm already takes for `transactionDateTime`.
  */
 export const DateField: React.FC<{
   name: string
   label?: string
   defaultValue?: string
+  /** 'date' (default) or 'dateAndTime', set per field in /admin. */
+  granularity?: string
   required?: boolean
   width?: number
   errors: Partial<FieldErrorsImpl>
   register: UseFormRegister<FieldValues>
-}> = ({ name, defaultValue, errors, label, register, required, width }) => {
+}> = ({ name, defaultValue, errors, granularity, label, register, required, width }) => {
   const hasError = Boolean(errors[name])
   const errorId = `${name}-error`
+  const withTime = granularity === 'dateAndTime'
+
+  // The plugin stores this as a full timestamp, and each control accepts only
+  // its own slice of one: 10 characters for a date, 16 for a local datetime.
+  // Anything longer is silently ignored by the browser, leaving the field
+  // looking empty even though a default was set.
+  const value = defaultValue?.slice(0, withTime ? 16 : 10)
 
   return (
     <Width
@@ -37,11 +48,9 @@ export const DateField: React.FC<{
       </label>
       <input
         className="bp-input"
-        // The plugin stores this as a full timestamp; the control wants a bare
-        // date, so anything longer is trimmed rather than silently ignored.
-        defaultValue={defaultValue?.slice(0, 10)}
+        defaultValue={value}
         id={name}
-        type="date"
+        type={withTime ? 'datetime-local' : 'date'}
         aria-invalid={hasError}
         aria-describedby={hasError ? errorId : undefined}
         {...register(name, { required })}

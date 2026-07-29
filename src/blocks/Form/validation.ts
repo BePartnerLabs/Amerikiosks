@@ -25,6 +25,10 @@ export const PHONE_PATTERN = /^\+?[\d\s().-]{7,25}$/
 // formality. What it does insist on is a dotted domain.
 export const URL_PATTERN = /^(https?:\/\/)?[^\s.]+\.[^\s]{2,}$/
 
+// `<input type="date">` and `type="datetime-local"` — the seconds part is
+// optional because some browsers add it once a step is set.
+export const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2})?)?$/
+
 /**
  * Declared per field in /admin (the "Value type" select on text blocks), not
  * guessed from the field's name — a heuristic missed anything an editor called
@@ -93,8 +97,9 @@ export function validateValue(field: FieldSpec, value: unknown): ValidationCode 
     case 'number':
       return Number.isFinite(Number(str)) ? null : 'number'
     case 'date':
-      // The control emits YYYY-MM-DD; anything else came from a script.
-      return /^\d{4}-\d{2}-\d{2}$/.test(str) ? null : 'date'
+      // The controls emit YYYY-MM-DD, or YYYY-MM-DDTHH:mm when the field asks
+      // for time. Anything else came from a script, not from a browser.
+      return DATE_PATTERN.test(str) ? null : 'date'
     case 'toggle':
       // Boolean: `required` on a toggle means "must be switched on", which the
       // empty check above already enforces.

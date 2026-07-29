@@ -31,6 +31,20 @@ function buildColumnValue(type: string | undefined, value: string): unknown {
   switch (type) {
     case 'long_text':
       return { text: value }
+    case 'date': {
+      // Monday wants {date, time} with the time separate, so the ISO-ish string
+      // an <input type="date"> or "datetime-local" produces has to be split.
+      // Sending it whole is rejected outright — the same class of mismatch that
+      // made the phone column reject formatted numbers in ffd890a.
+      const [date, time] = value.split('T')
+      return time ? { date, time: time.length === 5 ? `${time}:00` : time } : { date }
+    }
+    case 'checkbox':
+      // Monday reads the string "true"; anything else, a real boolean included,
+      // leaves the box unchecked.
+      return value === 'true' || value === 'on' ? { checked: 'true' } : {}
+    case 'dropdown':
+      return { labels: [value] }
     case 'link':
       return { url: value, text: value }
     case 'email':

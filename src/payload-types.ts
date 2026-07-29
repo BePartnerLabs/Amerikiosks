@@ -821,6 +821,10 @@ export interface Form {
             required?: boolean | null;
             defaultValue?: string | null;
             /**
+             * Date and time also fills the time part of a Monday.com date column; date only leaves it empty.
+             */
+            granularity?: ('date' | 'dateAndTime') | null;
+            /**
              * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
              */
             externalId?: string | null;
@@ -3613,6 +3617,7 @@ export interface FormsSelect<T extends boolean = true> {
               width?: T;
               required?: T;
               defaultValue?: T;
+              granularity?: T;
               externalId?: T;
               id?: T;
               blockName?: T;

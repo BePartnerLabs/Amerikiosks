@@ -192,6 +192,24 @@ export const plugins: Plugin[] = [
               })
             }
 
+            // Date or date+time, chosen per field. One block rather than two
+            // types: it is the same control with or without the time part.
+            if (block.slug === 'date') {
+              addOnce(block, {
+                name: 'granularity',
+                type: 'select',
+                defaultValue: 'date',
+                options: [
+                  { label: 'Date only', value: 'date' },
+                  { label: 'Date and time', value: 'dateAndTime' },
+                ],
+                admin: {
+                  description:
+                    'Date and time also fills the time part of a Monday.com date column; date only leaves it empty.',
+                },
+              })
+            }
+
             // What a field *means*, chosen explicitly rather than guessed from
             // its name. The previous heuristic (a regex over name and label)
             // missed anything an editor called "Cell" or "Número de contacto",

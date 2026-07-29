@@ -69,6 +69,7 @@ import * as migration_20260729_041456_form_toggle_field from './20260729_041456_
 import * as migration_20260729_043724_form_radio_date_blocks from './20260729_043724_form_radio_date_blocks';
 import * as migration_20260729_043748_drop_upload_accepted_file_types from './20260729_043748_drop_upload_accepted_file_types';
 import * as migration_20260729_194248_form_block_localized_panel from './20260729_194248_form_block_localized_panel';
+import * as migration_20260729_215731_form_date_granularity from './20260729_215731_form_date_granularity';
 
 export const migrations = [
   {
@@ -424,6 +425,11 @@ export const migrations = [
   {
     up: migration_20260729_194248_form_block_localized_panel.up,
     down: migration_20260729_194248_form_block_localized_panel.down,
-    name: '20260729_194248_form_block_localized_panel'
+    name: '20260729_194248_form_block_localized_panel',
+  },
+  {
+    up: migration_20260729_215731_form_date_granularity.up,
+    down: migration_20260729_215731_form_date_granularity.down,
+    name: '20260729_215731_form_date_granularity'
   },
 ];

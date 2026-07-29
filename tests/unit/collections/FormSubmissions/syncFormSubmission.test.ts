@@ -401,4 +401,54 @@ describe('syncFormSubmission', () => {
       'test-token',
     )
   })
+  // Column types Monday will not accept as a plain string. Each of these was
+  // rejected outright before it had a branch, the same way the phone column
+  // rejected formatted numbers in ffd890a.
+  it.each([
+    ['date, date only', 'date', '2026-08-01', { date: '2026-08-01' }],
+    ['date, with time', 'date', '2026-08-01T14:30', { date: '2026-08-01', time: '14:30:00' }],
+    ['checkbox, on', 'checkbox', 'true', { checked: 'true' }],
+    ['checkbox, off', 'checkbox', 'false', {}],
+    ['dropdown', 'dropdown', 'Retail', { labels: ['Retail'] }],
+  ])('builds the right column value for %s', async (_label, columnType, submitted, expected) => {
+    findByIDMock.mockResolvedValue(baseForm)
+    findGlobalMock.mockResolvedValue({
+      mondayApiToken: 'test-token',
+      mondayBoardsCache: {
+        syncedAt: '2026-01-01T00:00:00.000Z',
+        boards: [
+          {
+            id: '4024476985',
+            name: 'Board',
+            groups: [],
+            columns: [{ id: 'text0', title: 'Column', type: columnType }],
+          },
+        ],
+      },
+    })
+    submitMock.mockResolvedValue({ id: '999' })
+
+    const { syncFormSubmission } = await import(
+      '@/collections/FormSubmissions/hooks/syncFormSubmission'
+    )
+    await syncFormSubmission({
+      payload: fakePayload(),
+      doc: {
+        id: 1,
+        form: 10,
+        submissionData: [
+          { field: 'contact-name', value: 'Jane Doe' },
+          { field: 'property-name', value: submitted },
+        ],
+      } as never,
+    })
+
+    expect(submitMock).toHaveBeenCalledWith(
+      '4024476985',
+      'topics',
+      'Jane Doe',
+      { text0: expected },
+      'test-token',
+    )
+  })
 })
