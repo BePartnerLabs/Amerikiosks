@@ -19,8 +19,18 @@ export const revalidateFormGlobals: CollectionAfterChangeHook = ({
 }) => {
   if (!context.disableRevalidate) {
     for (const tag of GLOBALS_EMBEDDING_FORMS) {
-      payload.logger.info(`Revalidating ${tag} after a form change`)
-      revalidateTag(tag, 'max')
+      try {
+        payload.logger.info(`Revalidating ${tag} after a form change`)
+        revalidateTag(tag, 'max')
+      } catch (err) {
+        // revalidateTag needs Next's request store, which a script, a seed or
+        // a queued job does not have — and there is no page cache to bust in
+        // that context anyway. Busting the cache is best-effort; refusing to
+        // save the form because of it is not acceptable.
+        payload.logger.warn(
+          `Could not revalidate ${tag} outside a request context: ${(err as Error).message}`,
+        )
+      }
     }
   }
 

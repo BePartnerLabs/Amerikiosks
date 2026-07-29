@@ -20,16 +20,15 @@ const IMAGE_TYPES = 'image/jpeg,image/png,image/webp,image/heic'
 const PDF_TYPE = 'application/pdf'
 
 /**
- * Built from the field's own `acceptedFileTypes` (set in /admin), not a fixed
- * constant — a placement application may legitimately need a lease or a floor
- * plan. Empty falls back to images, which is what every existing field means.
- * The server re-checks the real bytes regardless; this only drives the picker.
+ * Built from the upload field's own `mimeTypes` rows — the form-builder plugin
+ * already ships that field, so this reads it rather than adding a second place
+ * to declare the same thing. Empty falls back to images, which is what every
+ * existing field means. The server re-checks the real bytes regardless; this
+ * only drives the file picker's filter.
  */
-function buildAccept(types?: string[] | null): string {
-  const chosen = types?.length ? types : ['image']
-  return [chosen.includes('image') ? IMAGE_TYPES : '', chosen.includes('pdf') ? PDF_TYPE : '']
-    .filter(Boolean)
-    .join(',')
+function buildAccept(mimeTypes?: { mimeType?: string | null }[] | null): string {
+  const declared = (mimeTypes ?? []).map((row) => row.mimeType).filter(Boolean) as string[]
+  return declared.length > 0 ? declared.join(',') : IMAGE_TYPES
 }
 
 function formatFileSize(bytes: number): string {
@@ -47,7 +46,7 @@ function fileExtension(name: string): string {
 // a BPL DS component defined globally in frontend.css, not ClaimForm-only).
 export const Upload: React.FC<
   UploadField & {
-    acceptedFileTypes?: string[] | null
+    mimeTypes?: { mimeType?: string | null }[] | null
     errors: Partial<FieldErrorsImpl>
     register: UseFormRegister<FieldValues>
     // biome-ignore lint/suspicious/noExplicitAny: react-hook-form's FieldValues generic doesn't cover a dynamically-keyed form-builder submission
@@ -55,17 +54,7 @@ export const Upload: React.FC<
     /** 0-100 while the submission that carries this file is uploading. */
     uploadPercent?: number
   }
-> = ({
-  acceptedFileTypes,
-  name,
-  errors,
-  label,
-  register,
-  required,
-  setValue,
-  uploadPercent,
-  width,
-}) => {
+> = ({ mimeTypes, name, errors, label, register, required, setValue, uploadPercent, width }) => {
   const t = useTranslations('form.upload')
   const [file, setFile] = useState<File | undefined>(undefined)
   const [previewUrl, setPreviewUrl] = useState<string | undefined>(undefined)
@@ -82,7 +71,7 @@ export const Upload: React.FC<
   const dragDepth = useRef(0)
   const hasError = Boolean(errors[name]) || Boolean(error)
   const errorId = `${name}-error`
-  const accept = buildAccept(acceptedFileTypes)
+  const accept = buildAccept(mimeTypes)
   const isUploading = typeof uploadPercent === 'number' && uploadPercent < 100
 
   // The dropzone holds its File in component state and pushes it through

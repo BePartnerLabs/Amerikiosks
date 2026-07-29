@@ -65,6 +65,9 @@ import * as migration_20260728_215733_form_block_panel_fields from './20260728_2
 import * as migration_20260729_000725_form_submission_private_attachments from './20260729_000725_form_submission_private_attachments';
 import * as migration_20260729_025009_form_field_value_type_autocomplete from './20260729_025009_form_field_value_type_autocomplete';
 import * as migration_20260729_040952_form_autocomplete_select from './20260729_040952_form_autocomplete_select';
+import * as migration_20260729_041456_form_toggle_field from './20260729_041456_form_toggle_field';
+import * as migration_20260729_043724_form_radio_date_blocks from './20260729_043724_form_radio_date_blocks';
+import * as migration_20260729_043748_drop_upload_accepted_file_types from './20260729_043748_drop_upload_accepted_file_types';
 
 export const migrations = [
   {
@@ -400,6 +403,21 @@ export const migrations = [
   {
     up: migration_20260729_040952_form_autocomplete_select.up,
     down: migration_20260729_040952_form_autocomplete_select.down,
-    name: '20260729_040952_form_autocomplete_select'
+    name: '20260729_040952_form_autocomplete_select',
+  },
+  {
+    up: migration_20260729_041456_form_toggle_field.up,
+    down: migration_20260729_041456_form_toggle_field.down,
+    name: '20260729_041456_form_toggle_field',
+  },
+  {
+    up: migration_20260729_043724_form_radio_date_blocks.up,
+    down: migration_20260729_043724_form_radio_date_blocks.down,
+    name: '20260729_043724_form_radio_date_blocks',
+  },
+  {
+    up: migration_20260729_043748_drop_upload_accepted_file_types.up,
+    down: migration_20260729_043748_drop_upload_accepted_file_types.down,
+    name: '20260729_043748_drop_upload_accepted_file_types'
   },
 ];

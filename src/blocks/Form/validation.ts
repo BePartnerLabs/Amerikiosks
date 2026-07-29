@@ -69,6 +69,7 @@ export type ValidationCode =
   | 'number'
   | 'phone'
   | 'website'
+  | 'date'
   | 'maxLength'
   | 'unknownField'
 
@@ -91,6 +92,13 @@ export function validateValue(field: FieldSpec, value: unknown): ValidationCode 
       return EMAIL_PATTERN.test(str) ? null : 'email'
     case 'number':
       return Number.isFinite(Number(str)) ? null : 'number'
+    case 'date':
+      // The control emits YYYY-MM-DD; anything else came from a script.
+      return /^\d{4}-\d{2}-\d{2}$/.test(str) ? null : 'date'
+    case 'toggle':
+      // Boolean: `required` on a toggle means "must be switched on", which the
+      // empty check above already enforces.
+      return null
     case 'textarea':
       return str.length > MAX_TEXTAREA_LENGTH ? 'maxLength' : null
     case 'text':

@@ -75,6 +75,10 @@ export const plugins: Plugin[] = [
   formBuilderPlugin({
     fields: {
       payment: false,
+      // Defined by the plugin but not on by default in this version, so an
+      // editor could not add either until they were named here.
+      radio: true,
+      date: true,
       // Not enabled by the plugin's own defaults — required for the
       // kiosk-development/placement-application forms' photo attachment.
       upload: true,
@@ -87,6 +91,20 @@ export const plugins: Plugin[] = [
           { type: 'row', fields: [{ name: 'name', type: 'text', required: true }] },
           { name: 'label', type: 'text', localized: true },
           { name: 'width', type: 'number' },
+          { name: 'required', type: 'checkbox' },
+        ],
+        // biome-ignore lint/suspicious/noExplicitAny: matches a Payload Block shape, not the plugin's own narrower FieldConfig type
+      } as any,
+      // Also not a plugin builtin. A yes/no question rendered as the same
+      // switch the cookie preferences panel uses — stored as a boolean, like
+      // `checkbox`; a two-option select costs a click and hides the options.
+      toggle: {
+        slug: 'toggle',
+        fields: [
+          { type: 'row', fields: [{ name: 'name', type: 'text', required: true }] },
+          { name: 'label', type: 'text', localized: true },
+          { name: 'width', type: 'number' },
+          { name: 'defaultValue', type: 'checkbox' },
           { name: 'required', type: 'checkbox' },
         ],
         // biome-ignore lint/suspicious/noExplicitAny: matches a Payload Block shape, not the plugin's own narrower FieldConfig type
@@ -104,6 +122,17 @@ export const plugins: Plugin[] = [
         const fieldsBlocksField = defaultFields.find(
           (field) => 'name' in field && field.name === 'fields',
         )
+        // The plugin exports its block definitions as shared objects, and this
+        // config is evaluated more than once (dev hot-reload, repeated
+        // imports). Pushing straight onto block.fields therefore appended the
+        // same field again on every pass, and Payload refused to boot with
+        // "A field with the name 'valueType' was found multiple times".
+        // biome-ignore lint/suspicious/noExplicitAny: Payload's Block/Field union is narrower than what the plugin's own block objects satisfy here
+        const addOnce = (block: any, field: { name: string } & Record<string, unknown>) => {
+          if (block.fields.some((f: { name?: string }) => f.name === field.name)) return
+          block.fields.push(field)
+        }
+
         if (fieldsBlocksField && 'blocks' in fieldsBlocksField) {
           for (const block of fieldsBlocksField.blocks) {
             if (block.slug === 'message' || block.slug === 'payment') continue
@@ -115,7 +144,7 @@ export const plugins: Plugin[] = [
             // developer. Off by default: a wrong token is worse than none, e.g.
             // "name" on a company field offers the visitor's own name.
             if (['text', 'email', 'number', 'textarea'].includes(block.slug)) {
-              block.fields.push({
+              addOnce(block, {
                 name: 'autocomplete',
                 type: 'select',
                 options: [
@@ -147,7 +176,7 @@ export const plugins: Plugin[] = [
             // and a missed phone reaches Monday unnormalised — which is what
             // its phone column rejected in ffd890a.
             if (block.slug === 'text') {
-              block.fields.push({
+              addOnce(block, {
                 name: 'valueType',
                 type: 'select',
                 defaultValue: 'text',
@@ -163,23 +192,29 @@ export const plugins: Plugin[] = [
               })
             }
 
-            if (block.slug === 'upload') {
-              block.fields.push({
-                name: 'acceptedFileTypes',
+            // What a field *means*, chosen explicitly rather than guessed from
+            // its name. The previous heuristic (a regex over name and label)
+            // missed anything an editor called "Cell" or "Número de contacto",
+            // and a missed phone reaches Monday unnormalised — which is what
+            // its phone column rejected in ffd890a.
+            if (block.slug === 'text') {
+              addOnce(block, {
+                name: 'valueType',
                 type: 'select',
-                hasMany: true,
-                defaultValue: ['image'],
+                defaultValue: 'text',
                 options: [
-                  { label: 'Images (JPEG, PNG, WEBP, HEIC)', value: 'image' },
-                  { label: 'PDF', value: 'pdf' },
+                  { label: 'Plain text', value: 'text' },
+                  { label: 'Phone number', value: 'phone' },
+                  { label: 'Website / URL', value: 'website' },
                 ],
                 admin: {
                   description:
-                    "Checked against the file's real bytes, not its extension. Leave empty to fall back to images only.",
+                    'Phone strips formatting before the value is sent on (Monday phone columns require it). Website accepts "acme.com" and adds the https:// people leave out.',
                 },
               })
             }
-            block.fields.push({
+
+            addOnce(block, {
               name: 'externalId',
               type: 'text',
               admin: {

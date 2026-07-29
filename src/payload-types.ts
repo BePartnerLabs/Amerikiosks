@@ -786,16 +786,61 @@ export interface Form {
             required?: boolean | null;
             multiple?: boolean | null;
             /**
-             * Checked against the file's real bytes, not its extension. Leave empty to fall back to images only.
-             */
-            acceptedFileTypes?: ('image' | 'pdf')[] | null;
-            /**
              * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
              */
             externalId?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'upload';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            defaultValue?: string | null;
+            options?:
+              | {
+                  label: string;
+                  value: string;
+                  id?: string | null;
+                }[]
+              | null;
+            required?: boolean | null;
+            /**
+             * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
+             */
+            externalId?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'radio';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            required?: boolean | null;
+            defaultValue?: string | null;
+            /**
+             * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
+             */
+            externalId?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'date';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            defaultValue?: boolean | null;
+            required?: boolean | null;
+            /**
+             * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
+             */
+            externalId?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'toggle';
           }
       )[]
     | null;
@@ -3537,7 +3582,49 @@ export interface FormsSelect<T extends boolean = true> {
               maxFileSize?: T;
               required?: T;
               multiple?: T;
-              acceptedFileTypes?: T;
+              externalId?: T;
+              id?: T;
+              blockName?: T;
+            };
+        radio?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              defaultValue?: T;
+              options?:
+                | T
+                | {
+                    label?: T;
+                    value?: T;
+                    id?: T;
+                  };
+              required?: T;
+              externalId?: T;
+              id?: T;
+              blockName?: T;
+            };
+        date?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              required?: T;
+              defaultValue?: T;
+              externalId?: T;
+              id?: T;
+              blockName?: T;
+            };
+        toggle?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              defaultValue?: T;
+              required?: T;
               externalId?: T;
               id?: T;
               blockName?: T;

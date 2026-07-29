@@ -82,7 +82,8 @@
       "phone": "Introduce un teléfono válido",
       "maxLength": "Esta respuesta es demasiado larga",
       "generic": "Revisa este campo",
-      "website": "Introduce un sitio web válido, p. ej. acme.com"
+      "website": "Introduce un sitio web válido, p. ej. acme.com",
+      "date": "Elige una fecha válida"
     },
     "upload": {
       "prompt": "Arrastra un archivo aquí o búscalo",

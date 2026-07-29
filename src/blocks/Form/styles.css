@@ -762,3 +762,38 @@
     animation: none;
   }
 }
+
+/* ── Radio group ───────────────────────────────────────────────
+   Options laid out in a row while they fit, so a two-option yes/no reads as
+   one line rather than a stack. */
+.ak-radio-field__group {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.ak-radio-field__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bp-space-3, 0.75rem) var(--bp-space-6, 1.5rem);
+  margin-top: var(--bp-space-2, 0.5rem);
+}
+
+.ak-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bp-space-2, 0.5rem);
+  cursor: pointer;
+}
+
+.ak-radio__input {
+  accent-color: var(--ak-accent);
+  width: 1rem;
+  height: 1rem;
+}
+
+.ak-radio__label {
+  --_color: var(--ak-color-heading);
+  color: var(--_color);
+  font-size: var(--bp-text-sm, 0.875rem);
+}
