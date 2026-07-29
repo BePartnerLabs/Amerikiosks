@@ -60,8 +60,15 @@ export const GenericMondayRepository = {
       return { id: `mock-${Date.now()}` }
     }
 
+    // create_labels_if_missing is not optional in practice: a dropdown column
+    // rejects any label it does not already know
+    // ("The dropdown label 'Retail' does not exist, possible labels are: {}"),
+    // and the labels come from options an editor typed in the CMS. Without
+    // this, every select mapped to a dropdown column fails until someone
+    // mirrors the wording by hand on the board. Verified against the real API
+    // on a throwaway board.
     const mutation = `mutation ($boardId: ID!, $groupId: String!, $itemName: String!, $columnValues: JSON!) {
-      create_item (board_id: $boardId, group_id: $groupId, item_name: $itemName, column_values: $columnValues) {
+      create_item (board_id: $boardId, group_id: $groupId, item_name: $itemName, column_values: $columnValues, create_labels_if_missing: true) {
         id
       }
     }`

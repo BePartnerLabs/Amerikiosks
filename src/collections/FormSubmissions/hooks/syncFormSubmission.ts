@@ -36,6 +36,12 @@ function buildColumnValue(type: string | undefined, value: string): unknown {
       // an <input type="date"> or "datetime-local" produces has to be split.
       // Sending it whole is rejected outright — the same class of mismatch that
       // made the phone column reject formatted numbers in ffd890a.
+      //
+      // Caveat found while verifying this against the real API: Monday reads
+      // the time as UTC and renders it in the viewer's timezone, so 14:30 sent
+      // from a form showed as 10:30 on the board. The value stored is exactly
+      // what was sent; only the display shifts. Converting here would need the
+      // visitor's timezone, which the submission does not carry.
       const [date, time] = value.split('T')
       return time ? { date, time: time.length === 5 ? `${time}:00` : time } : { date }
     }
