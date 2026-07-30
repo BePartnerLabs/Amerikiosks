@@ -1,3 +1,4 @@
+import { posix } from 'node:path'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { mcpPlugin } from '@payloadcms/plugin-mcp'
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
@@ -29,6 +30,26 @@ export const generateURL: GenerateURL<Insight | Page | Project | Machine> = ({ d
   return doc?.slug ? `${url}/${doc.slug}` : url
 }
 
+/**
+ * Public URL for a stored media file, on the bucket's own host.
+ *
+ * Both hosts in play are path-style — the R2 custom domain
+ * (`https://cdn.amerikiosks.com/<bucket>/<key>`) and MinIO locally — so the
+ * bucket is always part of the path. Only the last path segment is encoded,
+ * matching what @payloadcms/storage-s3 does internally; several files in the
+ * bucket have spaces and non-ASCII whitespace in their names.
+ */
+const buildPublicFileURL = (filename: string, prefix?: string): string => {
+  const base = process.env.S3_PUBLIC_URL?.replace(/\/+$/, '')
+  const key = [prefix, filename].filter(Boolean).join('/')
+  const dir = posix.dirname(key)
+  const encoded = encodeURIComponent(posix.basename(key))
+
+  return [base, process.env.S3_BUCKET, dir === '.' ? encoded : posix.join(dir, encoded)]
+    .filter(Boolean)
+    .join('/')
+}
+
 export const plugins: Plugin[] = [
   mcpPlugin({
     collections: {
@@ -37,10 +58,28 @@ export const plugins: Plugin[] = [
   }),
   // Use Cloudflare R2 (S3-compatible) when credentials are set.
   // Locally, Payload falls back to the staticDir in Media.ts (/public/media).
-  ...(process.env.S3_BUCKET && process.env.S3_ACCESS_KEY_ID && process.env.S3_SECRET_ACCESS_KEY
+  // S3_PUBLIC_URL is part of the condition, not optional: media URLs are built
+  // from it, so without it every image would resolve to a broken path.
+  ...(process.env.S3_BUCKET &&
+  process.env.S3_ACCESS_KEY_ID &&
+  process.env.S3_SECRET_ACCESS_KEY &&
+  process.env.S3_PUBLIC_URL
     ? [
         s3Storage({
-          collections: { media: true },
+          collections: {
+            media: {
+              // Serve media straight from the public bucket host instead of
+              // through Payload's /api/media/file/... route. Without this,
+              // Payload keeps access control over the files and proxies every
+              // byte out of R2 — a serverless function invocation plus a DB
+              // read per image (Media.read is `anyone` anyway), and it puts all
+              // site media behind the `maintenance-api` firewall rule that
+              // closes /api during a release migration, so images 403 for the
+              // length of every deploy.
+              disablePayloadAccessControl: true,
+              generateFileURL: ({ filename, prefix }) => buildPublicFileURL(filename, prefix),
+            },
+          },
           bucket: process.env.S3_BUCKET,
           // Uploads go browser → R2 directly via a presigned URL, bypassing
           // the Vercel serverless function entirely — without this, any file
