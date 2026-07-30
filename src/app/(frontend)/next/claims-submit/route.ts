@@ -106,10 +106,11 @@ export async function POST(req: Request) {
   }
 
   try {
+    // Claims.access.create is `() => false` — this trusted, already-validated
+    // route is the only way in, via the Local API's default overrideAccess.
     const claim = await payload.create({
       collection: 'claims',
       data: { ...data, photoKey } as unknown as RequiredDataFromCollectionSlug<'claims'>,
-      overrideAccess: false,
     })
 
     return Response.json(claim, { status: 201 })
