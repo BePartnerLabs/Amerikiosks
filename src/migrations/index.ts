@@ -70,6 +70,7 @@ import * as migration_20260729_043724_form_radio_date_blocks from './20260729_04
 import * as migration_20260729_043748_drop_upload_accepted_file_types from './20260729_043748_drop_upload_accepted_file_types';
 import * as migration_20260729_194248_form_block_localized_panel from './20260729_194248_form_block_localized_panel';
 import * as migration_20260729_215731_form_date_granularity from './20260729_215731_form_date_granularity';
+import * as migration_20260730_001956_form_submission_external_item_id from './20260730_001956_form_submission_external_item_id';
 
 export const migrations = [
   {
@@ -430,6 +431,11 @@ export const migrations = [
   {
     up: migration_20260729_215731_form_date_granularity.up,
     down: migration_20260729_215731_form_date_granularity.down,
-    name: '20260729_215731_form_date_granularity'
+    name: '20260729_215731_form_date_granularity',
+  },
+  {
+    up: migration_20260730_001956_form_submission_external_item_id.up,
+    down: migration_20260730_001956_form_submission_external_item_id.down,
+    name: '20260730_001956_form_submission_external_item_id'
   },
 ];

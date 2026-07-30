@@ -286,6 +286,7 @@ async function run(payload: Payload, doc: SubmissionDoc): Promise<void> {
       syncStatus: 'synced',
       syncedAt: new Date().toISOString(),
       syncError: null,
+      externalItemId: itemId,
     })
   } catch (err) {
     payload.logger.error(

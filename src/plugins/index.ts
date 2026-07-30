@@ -425,6 +425,19 @@ export const plugins: Plugin[] = [
           },
         },
         {
+          // The Monday item this submission became. Without it there is no way
+          // to get from a lead in /admin to the item the sales team works from,
+          // and a re-sync cannot tell "never synced" from "already an item" —
+          // it just creates a second one.
+          name: 'externalItemId',
+          type: 'text',
+          label: 'Monday.com item id',
+          admin: {
+            position: 'sidebar',
+            readOnly: true,
+          },
+        },
+        {
           name: 'syncedAt',
           type: 'date',
           admin: {

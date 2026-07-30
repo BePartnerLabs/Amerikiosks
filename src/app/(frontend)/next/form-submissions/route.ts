@@ -220,12 +220,18 @@ export async function POST(req: Request) {
   }
 
   const normalized = submissionData.map((entry) => {
+    // submission_data.value is NOT NULL in Postgres, and an untouched radio
+    // group reaches here as null — react-hook-form has no value to report for a
+    // group where nothing is selected. Unhandled, the insert failed on the
+    // *whole* submission: a visitor who skipped one optional radio lost
+    // everything they had typed and saw a generic error.
+    const value = entry.value ?? ''
     const spec = specs.find((f) => f.name === entry.field)
-    if (spec && typeof entry.value === 'string') {
-      if (isPhoneField(spec)) return { ...entry, value: normalizePhone(entry.value) }
-      if (isWebsiteField(spec)) return { ...entry, value: normalizeWebsite(entry.value) }
+    if (spec && typeof value === 'string') {
+      if (isPhoneField(spec)) return { ...entry, value: normalizePhone(value) }
+      if (isWebsiteField(spec)) return { ...entry, value: normalizeWebsite(value) }
     }
-    return entry
+    return { ...entry, value }
   })
 
   try {

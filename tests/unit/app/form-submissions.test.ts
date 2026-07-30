@@ -149,6 +149,26 @@ describe('POST /next/form-submissions', () => {
       expect(args.overrideAccess).toBe(true)
     })
 
+    it('stores an unanswered optional field as an empty string, not null', async () => {
+      // submission_data.value is NOT NULL in Postgres, and an untouched radio
+      // group arrives as null — which failed the insert for the whole
+      // submission, losing every other answer with it.
+      const stub = stubPayload({
+        form: { id: 'contact', fields: [...CONTACT_FIELDS, { blockType: 'radio', name: 'plan' }] },
+      })
+
+      const res = await callPOST(
+        jsonRequest({
+          form: 'contact',
+          submissionData: [...validSubmission, { field: 'plan', value: null }],
+        }),
+      )
+
+      expect(res.status).toBe(201)
+      const stored = stub.create.mock.calls[0][0].data.submissionData
+      expect(stored).toContainEqual({ field: 'plan', value: '' })
+    })
+
     it('normalizes phone values before storing them', async () => {
       const stub = stubPayload()
 

@@ -2215,6 +2215,7 @@ export interface FormSubmission {
     | null;
   syncStatus?: ('pending' | 'synced' | 'error') | null;
   syncError?: string | null;
+  externalItemId?: string | null;
   syncedAt?: string | null;
   /**
    * Files submitted with this form. Stored in the private bucket — use the View button above, the key alone is not a URL.
@@ -3689,6 +3690,7 @@ export interface FormSubmissionsSelect<T extends boolean = true> {
       };
   syncStatus?: T;
   syncError?: T;
+  externalItemId?: T;
   syncedAt?: T;
   attachments?:
     | T
