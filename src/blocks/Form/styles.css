@@ -9,6 +9,13 @@
    padding would push the dark panel away from its own edges. The drawer
    overrides this back to its own spacing. */
 .ak-form {
+  /* `width: 100%` is load-bearing, not redundant with max-width. Inside the
+     block this sits in a `.bp-content-grid` cell, and a grid item with `auto`
+     inline margins shrink-wraps to its content instead of filling the track and
+     capping at max-width — which rendered the stacked form ~470px wide in a
+     1344px column. Giving it a definite width restores the intended behaviour:
+     fill the cell, cap at 48rem, stay centred. */
+  width: 100%;
   max-width: 48rem;
   margin-inline: auto;
   margin-block: var(--bp-space-16, 4rem);
