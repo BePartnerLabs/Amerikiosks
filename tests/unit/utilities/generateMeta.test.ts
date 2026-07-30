@@ -21,18 +21,38 @@ describe('generateMeta', () => {
     expect(result.description).toBe('Brand programs')
   })
 
-  it('joins array slugs into a single OG url path', async () => {
+  it('uses the given path as both the OG url and the canonical', async () => {
     const result = await generateMeta({
-      doc: { slug: ['insights', 'my-post'], meta: { title: 'My Post' } } as never,
+      doc: { slug: 'my-post', meta: { title: 'My Post' } },
+      path: '/es/insights/mi-articulo',
     })
-    expect(result.openGraph?.url).toBe('insights/my-post')
+    expect(result.openGraph?.url).toBe('/es/insights/mi-articulo')
+    expect(result.alternates?.canonical).toBe('/es/insights/mi-articulo')
   })
 
-  it('falls back to the root OG url path for a string slug', async () => {
+  it('emits hreflang alternates only when languages are given', async () => {
+    const withLanguages = await generateMeta({
+      doc: { slug: 'faq', meta: { title: 'FAQ' } },
+      path: '/faq',
+      languages: { en: '/faq', es: '/es/faq' },
+    })
+    expect(withLanguages.alternates?.languages).toEqual({ en: '/faq', es: '/es/faq' })
+
+    // Routes whose slug is translated per locale pass no `languages` — a wrong
+    // hreflang is worse than none.
+    const withoutLanguages = await generateMeta({
+      doc: { slug: 'faq', meta: { title: 'FAQ' } },
+      path: '/faq',
+    })
+    expect(withoutLanguages.alternates?.languages).toBeUndefined()
+  })
+
+  it('falls back to the root OG url and emits no canonical when no path is given', async () => {
     const result = await generateMeta({
       doc: { slug: 'faq', meta: { title: 'FAQ' } },
     })
     expect(result.openGraph?.url).toBe('/')
+    expect(result.alternates).toBeUndefined()
   })
 
   it('uses the meta image size when the image is a populated media doc', async () => {
