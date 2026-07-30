@@ -8,36 +8,10 @@ import { cache } from 'react'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import RichText from '@/components/RichText'
-import { routing } from '@/i18n/routing'
 import type { Media } from '@/payload-types'
 import { generateMeta } from '@/utilities/generateMeta'
 import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 import PageClient from './page.client'
-
-export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const params: { locale: string; slug: string }[] = []
-
-  for (const locale of routing.locales) {
-    const projects = await payload.find({
-      collection: 'projects',
-      draft: false,
-      limit: 1000,
-      overrideAccess: false,
-      pagination: false,
-      locale,
-      select: { slug: true },
-    })
-
-    for (const doc of projects.docs) {
-      if (doc.slug) {
-        params.push({ locale, slug: doc.slug })
-      }
-    }
-  }
-
-  return params
-}
 
 type Args = {
   params: Promise<{ slug?: string; locale: string }>

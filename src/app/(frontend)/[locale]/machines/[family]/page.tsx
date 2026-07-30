@@ -33,14 +33,14 @@ export async function getFamilyBySlug(slug: string, locale: 'en' | 'es') {
   return (result.docs[0] as MachineFamily) ?? null
 }
 
-// No generateStaticParams: this route was the only one in the app using it,
-// and that combination (App Router SSG + next-intl's plugin wrapping)
-// throws DYNAMIC_SERVER_USAGE the moment Next tries to regenerate the page
-// after a content edit — reproduced locally via `next build && next start`,
-// confirmed fixed by dropping static generation. Every other content-driven
-// route in this app (insights/[slug], projects/[slug], pages/[slug]) is
-// already server-rendered on demand the same way; this just matches that
-// proven-working pattern instead of being the one exception.
+// No generateStaticParams: content routes in this app must NOT use SSG.
+// App Router SSG combined with next-intl's plugin wrapping throws
+// DYNAMIC_SERVER_USAGE the moment Next tries to regenerate a page after a
+// content edit — reproduced locally via `next build && next start`,
+// confirmed fixed by dropping static generation. Every content-driven route
+// in this app (insights/[slug], projects/[slug], pages/[slug], insights
+// listing pages) is server-rendered on demand the same way — match that
+// pattern instead of trying SSG again on a content route.
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { family: familySlug, locale: rawLocale } = await params
   const locale = rawLocale as 'en' | 'es'

@@ -7,8 +7,8 @@ import {
 } from '@payloadcms/plugin-seo/fields'
 import type { CollectionConfig } from 'payload'
 import { slugField } from 'payload'
-import { anyone } from '../../access/anyone'
 import { authenticated } from '../../access/authenticated'
+import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { link } from '../../fields/link'
 import { generateMachinePreviewPath } from '../../utilities/generateMachinePreviewPath'
 
@@ -31,7 +31,7 @@ export const Machines: CollectionConfig = {
   access: {
     create: authenticated,
     delete: authenticated,
-    read: anyone,
+    read: authenticatedOrPublished,
     update: authenticated,
   },
   versions: {

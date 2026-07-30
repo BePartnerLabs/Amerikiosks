@@ -75,8 +75,10 @@ jobs:
   unlock:
     needs: [lock, migrate, deploy]
     # Unconditional on purpose: a failed migrate or deploy must not leave the
-    # client locked out of /admin with no obvious cause.
-    if: always() && needs.lock.result == 'success'
+    # client locked out of /admin with no obvious cause. `!= 'skipped'` (not
+    # `== 'success'`) so a release cancelled mid-lock still gets unlocked —
+    # disabling already-disabled rules is a no-op, so over-running is safe.
+    if: always() && needs.lock.result != 'skipped'
     runs-on: ubuntu-latest
     environment: production
     env:

@@ -70,7 +70,7 @@ function callPOST(fields: Record<string, string>, photo?: FakeFile) {
 }
 
 describe('POST /next/claims-submit', () => {
-  it('creates a claim via the Local API (overrideAccess: false) and returns 201', async () => {
+  it('creates a claim via the Local API (default overrideAccess — collection create is closed) and returns 201', async () => {
     const create = vi.fn().mockResolvedValue({ id: 1, ...validFields })
     mockGetPayload.mockResolvedValue({ create } as unknown as Awaited<
       ReturnType<typeof getPayload>
@@ -86,9 +86,11 @@ describe('POST /next/claims-submit', () => {
           customerLastName: 'Prueba',
           machineId: 'AK-0231',
         }),
-        overrideAccess: false,
       }),
     )
+    // The route must NOT restore overrideAccess: false — Claims.access.create
+    // is `() => false`, so an access-checked create would reject every submission.
+    expect(create.mock.calls[0][0]).not.toHaveProperty('overrideAccess')
     expect(res.status).toBe(201)
     const json = await res.json()
     expect(json).toMatchObject({ id: 1 })

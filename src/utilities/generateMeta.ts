@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 
 import type { Config, Insight, Machine, Media, Page, Project } from '../payload-types'
+import { absoluteUrl } from './absoluteUrl'
 import { getServerSideURL } from './getURL'
 import { mergeOpenGraph } from './mergeOpenGraph'
 
@@ -12,7 +13,8 @@ const getImageURL = (image?: Media | Config['db']['defaultIDType'] | null) => {
   if (image && typeof image === 'object' && 'url' in image) {
     const ogUrl = image.sizes?.og?.url
 
-    url = ogUrl ? serverUrl + ogUrl : serverUrl + image.url
+    const candidate = ogUrl || image.url
+    if (candidate) url = absoluteUrl(candidate, serverUrl)
   }
 
   return url

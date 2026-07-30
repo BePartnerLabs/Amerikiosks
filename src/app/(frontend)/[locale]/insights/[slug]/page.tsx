@@ -9,34 +9,8 @@ import { PayloadRedirects } from '@/components/PayloadRedirects'
 import RichText from '@/components/RichText'
 
 import { PostHero } from '@/heros/PostHero'
-import { routing } from '@/i18n/routing'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
-
-export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const params: { locale: string; slug: string }[] = []
-
-  for (const locale of routing.locales) {
-    const posts = await payload.find({
-      collection: 'insights',
-      draft: false,
-      limit: 1000,
-      overrideAccess: false,
-      pagination: false,
-      locale,
-      select: { slug: true },
-    })
-
-    for (const doc of posts.docs) {
-      if (doc.slug) {
-        params.push({ locale, slug: doc.slug as string })
-      }
-    }
-  }
-
-  return params
-}
 
 type Args = {
   params: Promise<{

@@ -1,5 +1,4 @@
 import type { CollectionConfig } from 'payload'
-import { anyone } from '../../access/anyone'
 import { authenticated } from '../../access/authenticated'
 import { photoUrlEndpoint } from './endpoints/photoUrl'
 import { resyncEndpoint } from './endpoints/resync'
@@ -30,8 +29,11 @@ export const Claims: CollectionConfig = {
     },
   },
   access: {
-    // Anonymous kiosk visitors must be able to submit a claim without logging in.
-    create: anyone,
+    // Public claim submission goes exclusively through /next/claims-submit,
+    // which rate-limits, sniffs the photo, and caps size — its Local API
+    // create bypasses access control. Direct REST create would skip all of
+    // that and still trigger the Monday sync hook.
+    create: () => false,
     // Only staff should be able to see, edit, or remove claim records.
     read: authenticated,
     update: authenticated,
