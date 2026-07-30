@@ -32,7 +32,7 @@
 - [ ] Contrast ratio minimum 7:1
 - [ ] All interactive elements keyboard navigable
 - [ ] ARIA labels on elements without visible text
-- [ ] Correct HTML landmarks (`header`, `main`, `nav`, `section`, etc.)
+- [ ] Correct HTML landmarks (`header`, `main`, `nav`, `section`, etc.) — the `<section>` on a registered block is enforced by `scripts/validate-block-markup.mjs`
 - [ ] Focus visible on all interactive elements
 
 ### HTML Semantics
@@ -64,7 +64,7 @@
 - [ ] State expressed via ARIA attributes / native pseudo-classes — not `.is-active`, `.active`, `.hidden` style classes
 - [ ] Component breakpoints use `@container`; full-viewport layouts (hero, header, footer) use `@media`
 - [ ] Animations respect `prefers-reduced-motion`
-- [ ] DS grid used correctly: content in `bp-content-grid` direct children with zone class (`breakout`, `popout`, `full-width`); no custom `max-width` containers duplicating grid behaviour
+- [ ] DS grid used correctly: content in `bp-content-grid` direct children with zone class (`breakout`, `popout`, `full-width`); no custom `max-width` containers duplicating grid behaviour — the presence of `bp-content-grid`, like `<section>` and `data-ga-block`, is enforced by `scripts/validate-block-markup.mjs` (pre-commit)
 
 ### Delivery
 - [ ] Unit tests added
