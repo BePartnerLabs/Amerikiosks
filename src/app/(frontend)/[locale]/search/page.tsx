@@ -8,11 +8,16 @@ import { Search } from '@/search/Component'
 import PageClient from './page.client'
 
 type Args = {
+  params: Promise<{ locale: string }>
   searchParams: Promise<{
     q: string
   }>
 }
-export default async function Page({ searchParams: searchParamsPromise }: Args) {
+export default async function Page({
+  params: paramsPromise,
+  searchParams: searchParamsPromise,
+}: Args) {
+  const { locale } = await paramsPromise
   const { q: query } = await searchParamsPromise
   const t = await getTranslations('search')
   const payload = await getPayload({ config: configPromise })
@@ -21,6 +26,8 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
     collection: 'search',
     depth: 1,
     limit: 12,
+    locale: locale as 'en' | 'es',
+    overrideAccess: false,
     select: {
       title: true,
       slug: true,
