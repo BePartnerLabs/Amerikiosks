@@ -87,11 +87,14 @@ describe('generateMeta', () => {
     expect(images?.[0]?.url).toContain('/media/hero.png')
   })
 
-  it('falls back to the default OG image when meta.image is absent', async () => {
+  it('falls back to a raster default OG image when meta.image is absent', async () => {
     const result = await generateMeta({
       doc: { slug: 'machines', meta: { title: 'Machines' } },
     })
     const images = result.openGraph?.images as { url: string }[] | undefined
-    expect(images?.[0]?.url).toContain('/logos/logo-1.svg')
+    // Must not be an SVG: social crawlers don't render them, so an SVG fallback
+    // is the same as having no preview image.
+    expect(images?.[0]?.url).toContain('/og-default.png')
+    expect(images?.[0]?.url).not.toContain('.svg')
   })
 })
