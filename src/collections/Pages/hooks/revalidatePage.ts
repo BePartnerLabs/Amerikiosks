@@ -3,6 +3,16 @@ import type { CollectionAfterChangeHook, CollectionAfterDeleteHook } from 'paylo
 
 import type { Page } from '../../../payload-types'
 
+/**
+ * The redirect table drops any row whose `from` matches a published page, so a
+ * stale redirect can't shadow a live page (see `plugins/redirects`). That set is
+ * computed when the `redirects` tag is built, so publishing or unpublishing a
+ * page has to bust it too — otherwise unpublishing a page leaves its redirect
+ * asleep, and publishing one leaves the redirect shadowing it, until something
+ * else touches the redirects collection.
+ */
+const REDIRECTS_TAG = 'redirects'
+
 const localePath = (slug: string, locale: string) => {
   const base = slug === 'home' ? '/' : `/${slug}`
   return locale === 'en' ? base : `/${locale}${base}`
@@ -21,6 +31,7 @@ export const revalidatePage: CollectionAfterChangeHook<Page> = ({
 
       revalidatePath(path)
       revalidateTag('pages-sitemap', 'max')
+      revalidateTag(REDIRECTS_TAG, 'max')
     }
 
     // If the page was previously published, we need to revalidate the old path
@@ -31,6 +42,7 @@ export const revalidatePage: CollectionAfterChangeHook<Page> = ({
 
       revalidatePath(oldPath)
       revalidateTag('pages-sitemap', 'max')
+      revalidateTag(REDIRECTS_TAG, 'max')
     }
   }
   return doc
@@ -44,6 +56,8 @@ export const revalidateDelete: CollectionAfterDeleteHook<Page> = ({
     const path = localePath(doc?.slug as string, (locale as string) ?? 'en')
     revalidatePath(path)
     revalidateTag('pages-sitemap', 'max')
+    // Deleting a page frees its slug, so a redirect on that path is live again.
+    revalidateTag(REDIRECTS_TAG, 'max')
   }
 
   return doc
