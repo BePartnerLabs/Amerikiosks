@@ -5,6 +5,8 @@ import { getPayload } from 'payload'
 import type { CardPostData } from '@/components/Card'
 import { CollectionArchive } from '@/components/CollectionArchive'
 import { Search } from '@/search/Component'
+import { type AppLocale, withLocale } from '@/utilities/localeUrl'
+import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import PageClient from './page.client'
 
 type Args = {
@@ -90,8 +92,19 @@ export default async function Page({
   )
 }
 
-export function generateMetadata(): Metadata {
+export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
+  const { locale } = await paramsPromise
+  const t = await getTranslations('search')
+  const title = t('metaTitle')
+  const description = t('metaDescription')
+  const canonical = withLocale('/search', locale as AppLocale)
+
   return {
-    title: `Search | Amerikiosks`,
+    title,
+    description,
+    alternates: { canonical },
+    openGraph: mergeOpenGraph({ title, description, url: canonical }),
+    // Search-result pages are dynamic/query-driven and shouldn't be indexed
+    robots: { index: false, follow: true },
   }
 }

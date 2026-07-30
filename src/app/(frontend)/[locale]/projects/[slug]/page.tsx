@@ -11,6 +11,7 @@ import RichText from '@/components/RichText'
 import type { Media } from '@/payload-types'
 import { generateMeta } from '@/utilities/generateMeta'
 import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
+import { type AppLocale, withLocale } from '@/utilities/localeUrl'
 import PageClient from './page.client'
 
 type Args = {
@@ -76,8 +77,12 @@ export default async function ProjectPage({ params: paramsPromise }: Args) {
 
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
   const { slug = '', locale } = await paramsPromise
-  const project = await queryProjectBySlug({ slug: decodeURIComponent(slug), locale })
+  const decodedSlug = decodeURIComponent(slug)
+  const project = await queryProjectBySlug({ slug: decodedSlug, locale })
   if (!project) return {}
+  // No `languages`: project slugs are translated per locale, and a wrong
+  // hreflang would be worse than none.
+  const path = withLocale(`/projects/${decodedSlug}`, locale as AppLocale)
   return generateMeta({
     doc: {
       ...project,
@@ -87,6 +92,7 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
         image: project.meta?.image ?? project.image,
       },
     },
+    path,
   })
 }
 

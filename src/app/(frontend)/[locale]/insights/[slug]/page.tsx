@@ -10,6 +10,7 @@ import RichText from '@/components/RichText'
 
 import { PostHero } from '@/heros/PostHero'
 import { generateMeta } from '@/utilities/generateMeta'
+import { type AppLocale, withLocale } from '@/utilities/localeUrl'
 import PageClient from './page.client'
 
 type Args = {
@@ -68,7 +69,11 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
   const decodedSlug = decodeURIComponent(slug)
   const post = await queryPostBySlug({ slug: decodedSlug, locale })
 
-  return generateMeta({ doc: post })
+  // No `languages`: insights slugs are translated per locale, and a wrong
+  // hreflang would be worse than none.
+  const path = withLocale(`/insights/${decodedSlug}`, locale as AppLocale)
+
+  return generateMeta({ doc: post, path })
 }
 
 const queryPostBySlug = cache(async ({ slug, locale }: { slug: string; locale: string }) => {

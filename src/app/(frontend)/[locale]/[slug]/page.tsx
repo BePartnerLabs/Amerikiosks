@@ -11,6 +11,7 @@ import { homeStatic } from '@/endpoints/seed/home-static'
 import { RenderHero } from '@/heros/RenderHero'
 import { routing } from '@/i18n/routing'
 import { generateMeta } from '@/utilities/generateMeta'
+import { type AppLocale, withLocale } from '@/utilities/localeUrl'
 import PageClient from './page.client'
 
 type Args = {
@@ -83,7 +84,11 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
   const decodedSlug = decodeURIComponent(slug)
   const page = await queryPageBySlug({ slug: decodedSlug, locale })
 
-  return generateMeta({ doc: page })
+  // No `languages`: pages slugs are translated per locale, and a wrong
+  // hreflang would be worse than none.
+  const path = withLocale(decodedSlug === 'home' ? '/' : `/${decodedSlug}`, locale as AppLocale)
+
+  return generateMeta({ doc: page, path })
 }
 
 const queryPageBySlug = cache(async ({ slug, locale }: { slug: string; locale: string }) => {

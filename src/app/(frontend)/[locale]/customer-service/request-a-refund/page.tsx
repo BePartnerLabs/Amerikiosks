@@ -8,6 +8,7 @@ import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import { RenderHero } from '@/heros/RenderHero'
 import { generateMeta } from '@/utilities/generateMeta'
+import { type AppLocale, languageAlternates, withLocale } from '@/utilities/localeUrl'
 import PageClient from '../../[slug]/page.client'
 
 // Dedicated route (not the generic single-segment [slug] page) so this URL
@@ -51,7 +52,11 @@ export default async function CustomerServiceRequestARefundPage({ params: params
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
   const { locale } = await paramsPromise
   const page = await queryPage({ locale })
-  return generateMeta({ doc: page })
+  return generateMeta({
+    doc: page,
+    path: withLocale('/customer-service/request-a-refund', locale as AppLocale),
+    languages: languageAlternates('/customer-service/request-a-refund'),
+  })
 }
 
 const queryPage = cache(async ({ locale }: { locale: string }) => {

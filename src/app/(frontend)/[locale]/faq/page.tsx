@@ -6,12 +6,31 @@ import { getLocale, getTranslations } from 'next-intl/server'
 import { getPayload } from 'payload'
 import type { FaqItem } from '@/payload-types'
 import { jsonLdString } from '@/utilities/jsonLdString'
+import { type AppLocale, languageAlternates, withLocale } from '@/utilities/localeUrl'
+import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { FaqClient } from './FaqClient'
 import './faq.css'
 
-export async function generateMetadata(): Promise<Metadata> {
+type Args = {
+  params: Promise<{ locale: string }>
+}
+
+export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
+  const { locale } = await paramsPromise
   const t = await getTranslations('faq')
-  return { title: t('title'), description: t('description') }
+  const title = t('title')
+  const description = t('description')
+  const canonical = withLocale('/faq', locale as AppLocale)
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical,
+      languages: languageAlternates('/faq'),
+    },
+    openGraph: mergeOpenGraph({ title, description, url: canonical }),
+  }
 }
 
 export default async function FaqPage() {
