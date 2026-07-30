@@ -15,9 +15,12 @@
 | `columns[].label` | text | ✓ | ✓ | Column heading |
 | `columns[].links` | array (max 8) | ✗ | ✗ | Links within this column |
 | `columns[].links[].link` | link | ✓ | ✗ | Link URL and label |
+| `contactHeading` | text | ✗ | ✓ | Contact column heading — empty falls back to the translated default ("Contact" / "Contacto") |
 | `contactEmail` | email | ✗ | ✗ | Contact email address |
 | `contactCta` | text | ✗ | ✓ | Contact call-to-action label |
-| `contactCtaUrl` | text | ✗ | ✗ | Contact CTA URL |
+| `contactCtaUrl` | text | ✗ | ✓ | Contact CTA URL — localized, per-locale slugs differ |
+| `contactCtaType` | select | ✗ | ✗ | Go to a URL, or open a modal form |
+| `contactCtaForm` | relationship | ✗ | ✗ | Form opened when the CTA behaviour is modal |
 
 ## Variants
 

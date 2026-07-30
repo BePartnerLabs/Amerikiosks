@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl'
 import type React from 'react'
 import { BrandIcon } from '@/components/Icon/BrandIcon'
 import type { Setting } from '@/payload-types'
@@ -27,6 +28,7 @@ const PLATFORM_NAMES: Record<string, string> = {
  * sizing and colour, so there is a single markup/a11y/analytics implementation.
  */
 export const SocialLinks: React.FC<Props> = ({ links, variant, className }) => {
+  const t = useTranslations('footer')
   const items = (links ?? []).filter((link) => link.platform && link.url)
   if (items.length === 0) return null
 
@@ -39,7 +41,10 @@ export const SocialLinks: React.FC<Props> = ({ links, variant, className }) => {
             target="_blank"
             rel="noopener noreferrer"
             className="ak-social__link"
-            aria-label={link.label ?? `Amerikiosks on ${PLATFORM_NAMES[link.platform] ?? ''}`}
+            aria-label={
+              link.label ??
+              t('socialAriaLabel', { platform: PLATFORM_NAMES[link.platform] ?? link.platform })
+            }
             data-ga-event="social_link_click"
             data-ga-section={variant}
             data-ga-label={link.platform}

@@ -19,7 +19,8 @@ describe('SocialLinks', () => {
     )
 
     expect(screen.getAllByRole('link')).toHaveLength(2)
-    expect(screen.getByLabelText('Amerikiosks on Instagram')).toHaveAttribute(
+    // Localized now — the label used to be a hardcoded English template.
+    expect(screen.getByLabelText('Amerikiosks en Instagram')).toHaveAttribute(
       'href',
       'https://www.instagram.com/amerikiosks',
     )

@@ -67,6 +67,18 @@ export const Footer: GlobalConfig = {
       ],
     },
     {
+      // The contact column's heading used to be the string "Contact" hardcoded
+      // in FooterContent, so it stayed English in /es while the three nav
+      // columns beside it translated — and no editor could reach it. Editable
+      // like the others, but optional: left empty it falls back to the
+      // translated `footer.contact`, which is already correct per locale.
+      name: 'contactHeading',
+      type: 'text',
+      label: 'Contact column heading',
+      localized: true,
+      admin: { description: 'Leave empty to use the default ("Contact" / "Contacto").' },
+    },
+    {
       name: 'contactEmail',
       type: 'email',
       label: 'Contact email',
