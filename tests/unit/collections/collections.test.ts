@@ -63,7 +63,7 @@ describe('collection configs', () => {
     expect(Brands.access?.read).toBeDefined()
   })
 
-  it('Claims has the expected slug and access: public create, authenticated read/update/delete', () => {
+  it('Claims has the expected slug and access: REST create closed, authenticated read/update/delete', () => {
     expect(Claims.slug).toBe('claims')
     expect(Claims.fields.length).toBeGreaterThan(0)
 
@@ -75,8 +75,12 @@ describe('collection configs', () => {
     expect(Claims.access?.update).toBeDefined()
     expect(Claims.access?.delete).toBeDefined()
 
-    // create must be open to anonymous submitters (QR/kiosk flow)
-    expect(Claims.access?.create?.(fakeUnauthedReq)).toBe(true)
+    // create is closed even for authenticated users: anonymous kiosk submissions
+    // go exclusively through /next/claims-submit (rate limit, photo sniffing,
+    // size cap), which creates via the Local API's default overrideAccess.
+    // A public REST create would bypass all of that and still fire the Monday sync.
+    expect(Claims.access?.create?.(fakeUnauthedReq)).toBe(false)
+    expect(Claims.access?.create?.(fakeAuthedReq)).toBe(false)
     // read/update/delete must require an authenticated staff user
     expect(Claims.access?.read?.(fakeUnauthedReq)).toBe(false)
     expect(Claims.access?.read?.(fakeAuthedReq)).toBe(true)
