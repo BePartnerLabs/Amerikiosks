@@ -1,24 +1,41 @@
 import config from '@payload-config'
 import type { Metadata } from 'next'
-import { getLocale } from 'next-intl/server'
+import { getLocale, getTranslations } from 'next-intl/server'
 import { getPayload } from 'payload'
 import { ModelLinesRow } from '@/components/ModelLinesRow'
 import { Link } from '@/i18n/routing'
 import type { MachineFamily } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
+import { type AppLocale, machinesAlternates, machinesPath } from '@/utilities/localeUrl'
+import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import './machines-catalog.css'
 
-export async function generateMetadata(): Promise<Metadata> {
+type Args = {
+  params: Promise<{ locale: string }>
+}
+
+export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
+  const { locale } = await paramsPromise
+  const t = await getTranslations('machines')
+  const title = t('metaTitle')
+  const description = t('metaDescription')
+  const canonical = machinesPath(locale as AppLocale)
+
   return {
-    title: 'Model Lines — Amerikiosks',
-    description: 'Discover our kiosk model lines, from premium hot-food to ultra-compact retail.',
-    alternates: { canonical: '/machines' },
+    title,
+    description,
+    alternates: {
+      canonical,
+      languages: machinesAlternates(),
+    },
+    openGraph: mergeOpenGraph({ title, description, url: canonical }),
   }
 }
 
 export default async function MachinesLandingPage() {
   const payload = await getPayload({ config })
   const locale = (await getLocale()) as 'en' | 'es'
+  const t = await getTranslations('machines')
 
   const result = await payload.find({
     collection: 'machine-families',
@@ -55,7 +72,7 @@ export default async function MachinesLandingPage() {
       <section className="ak-machines-landing__nav">
         <div className="bp-content-grid">
           <div className="breakout">
-            <h1 className="ak-machines-landing__title">Discover our model lines</h1>
+            <h1 className="ak-machines-landing__title">{t('heading')}</h1>
             <ModelLinesRow
               families={families}
               locale={locale}
@@ -96,7 +113,7 @@ export default async function MachinesLandingPage() {
                     href={{ pathname: '/machines/[family]', params: { family: family.slug ?? '' } }}
                     className="bp-btn bp-btn--secondary"
                   >
-                    {family.ctaLabel || 'Know more'}
+                    {family.ctaLabel || t('knowMore')}
                   </Link>
                 </div>
 

@@ -9,7 +9,9 @@
   "search": {
     "placeholder": "Search...",
     "noResults": "No results found for",
-    "heading": "Search Results"
+    "heading": "Search Results",
+    "metaTitle": "Search | Amerikiosks",
+    "metaDescription": "Search Amerikiosks machines, insights, and pages."
   },
   "faq": {
     "title": "FAQ — Amerikiosks",
@@ -19,6 +21,15 @@
   "insights": {
     "heading": "Insights",
     "readMore": "Read more",
+    "knowMore": "Know more",
+    "metaTitle": "Amerikiosks Insights",
+    "metaDescription": "News, updates, and insights from Amerikiosks on kiosk technology and retail automation.",
+    "pageMetaTitle": "Amerikiosks Insights — Page {page}"
+  },
+  "machines": {
+    "metaTitle": "Model Lines — Amerikiosks",
+    "metaDescription": "Discover our kiosk model lines, from premium hot-food to ultra-compact retail.",
+    "heading": "Discover our model lines",
     "knowMore": "Know more"
   },
   "pagination": {

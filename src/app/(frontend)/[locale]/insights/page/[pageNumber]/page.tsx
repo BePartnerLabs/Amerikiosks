@@ -6,6 +6,8 @@ import { getPayload } from 'payload'
 import { CollectionArchive } from '@/components/CollectionArchive'
 import { PageRange } from '@/components/PageRange'
 import { Pagination } from '@/components/Pagination'
+import { type AppLocale, languageAlternates, withLocale } from '@/utilities/localeUrl'
+import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import PageClient from './page.client'
 
 type Args = {
@@ -67,8 +69,20 @@ export default async function Page({ params: paramsPromise }: Args) {
 }
 
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
-  const { pageNumber } = await paramsPromise
+  const { pageNumber, locale } = await paramsPromise
+  const t = await getTranslations('insights')
+  const title = t('pageMetaTitle', { page: pageNumber || '' })
+  const description = t('metaDescription')
+  const path = `/insights/page/${pageNumber}`
+  const canonical = withLocale(path, locale as AppLocale)
+
   return {
-    title: `Amerikiosks Insights — Page ${pageNumber || ''}`,
+    title,
+    description,
+    alternates: {
+      canonical,
+      languages: languageAlternates(path),
+    },
+    openGraph: mergeOpenGraph({ title, description, url: canonical }),
   }
 }
