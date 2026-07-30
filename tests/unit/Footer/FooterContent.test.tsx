@@ -2,25 +2,6 @@ import { cleanup, render, screen } from '@testing-library/react'
 import type React from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-// Resolved against the real es.json rather than echoing the key back. The point
-// of the footer i18n fix is that the Spanish strings exist and are reachable —
-// a mock returning "footer.contact" would pass even if the key were missing.
-vi.mock('next-intl', async () => {
-  const es = (await import('@/messages/es.json')).default as unknown as Record<
-    string,
-    Record<string, string>
-  >
-  return {
-    useTranslations: (namespace: string) => (key: string, values?: Record<string, string>) => {
-      let value = es[namespace]?.[key] ?? `${namespace}.${key}`
-      for (const [name, replacement] of Object.entries(values ?? {})) {
-        value = value.replace(`{${name}}`, replacement)
-      }
-      return value
-    },
-  }
-})
-
 vi.mock('next/link', () => ({
   default: ({
     href,

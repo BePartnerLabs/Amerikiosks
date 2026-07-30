@@ -1,24 +1,5 @@
 import { cleanup, render, screen } from '@testing-library/react'
-import { afterEach, describe, expect, it, vi } from 'vitest'
-
-// Resolved against the real es.json so the aria-label assertions below prove
-// the Spanish string exists, not just that a key was looked up.
-vi.mock('next-intl', async () => {
-  const es = (await import('@/messages/es.json')).default as unknown as Record<
-    string,
-    Record<string, string>
-  >
-  return {
-    useTranslations: (namespace: string) => (key: string, values?: Record<string, string>) => {
-      let value = es[namespace]?.[key] ?? `${namespace}.${key}`
-      for (const [name, replacement] of Object.entries(values ?? {})) {
-        value = value.replace(`{${name}}`, replacement)
-      }
-      return value
-    },
-  }
-})
-
+import { afterEach, describe, expect, it } from 'vitest'
 import { type SocialLink, SocialLinks } from '@/components/SocialLinks'
 
 afterEach(cleanup)
