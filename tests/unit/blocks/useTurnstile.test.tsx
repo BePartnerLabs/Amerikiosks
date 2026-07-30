@@ -156,17 +156,19 @@ describe('useTurnstile', () => {
     expect(turnstileRender).not.toHaveBeenCalled()
   })
   // Each modal drawer mounts its own FormBlock, so a widget per form meant a
-  // dozen Cloudflare challenges on one page load. Nothing may happen until the
-  // form is actually engaged.
-  it('does nothing at all until it is activated', async () => {
+  // dozen Cloudflare challenges on one page load. Neither the script nor the
+  // widget may exist until the form is actually engaged — but `enabled` reports
+  // true from the start, which is what lets the form reserve the widget's space
+  // instead of having 72px appear above the submit button mid-typing.
+  it('loads nothing until it is activated, while still reporting itself enabled', async () => {
     document.head.innerHTML = '<meta name="turnstile-site-key" content="site-key" />'
 
     render(<Probe active={false} />)
 
     await waitFor(() => {
-      expect(document.getElementById('cf-turnstile-script')).toBeNull()
+      expect(current.enabled).toBe(true)
     })
+    expect(document.getElementById('cf-turnstile-script')).toBeNull()
     expect(turnstileRender).not.toHaveBeenCalled()
-    expect(current.enabled).toBe(false)
   })
 })
