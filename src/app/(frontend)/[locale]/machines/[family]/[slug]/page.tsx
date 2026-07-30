@@ -6,6 +6,7 @@ import { getPayload } from 'payload'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { MachineHero } from '@/components/MachineHero'
 import type { Machine, MachineFamily, Media } from '@/payload-types'
+import { absoluteUrl } from '@/utilities/absoluteUrl'
 import { generateMeta } from '@/utilities/generateMeta'
 import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 import { getServerSideURL } from '@/utilities/getURL'
@@ -103,7 +104,7 @@ export default async function MachineDetailPage({ params }: Props) {
         '@type': 'Product',
         name: machine.name,
         description: machine.tagline || machine.meta?.description || undefined,
-        image: image?.url ? `${siteUrl}${image.url}` : undefined,
+        image: image?.url ? absoluteUrl(image.url, siteUrl) : undefined,
         brand: { '@type': 'Brand', name: 'Amerikiosks' },
         ...(family ? { category: family.name } : {}),
         url: `${siteUrl}${canonicalPath}`,
