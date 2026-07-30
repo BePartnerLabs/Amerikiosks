@@ -3,6 +3,7 @@ import type React from 'react'
 import type { FieldErrorsImpl, FieldValues, UseFormRegister } from 'react-hook-form'
 
 import { FormError } from '../Error'
+import { RequiredMark } from '../RequiredMark'
 import { Width } from '../Width'
 
 export const Checkbox: React.FC<
@@ -30,11 +31,7 @@ export const Checkbox: React.FC<
           {...register(name, { required })}
         />
         {label}
-        {required && (
-          <span className="required">
-            * <span className="sr-only">(required)</span>
-          </span>
-        )}
+        {required && <RequiredMark />}
       </label>
       {hasError && (
         <FormError

@@ -1,9 +1,12 @@
 name: Deploy
 
 on:
+  # `main` is deliberately absent. Merging to main used to fire a preview
+  # deploy nobody looked at, and publishing the release then rebuilt the same
+  # commit for production — two builds per change. Previews now come only from
+  # `preview/**` branches, where they are actually reviewed.
   push:
     branches:
-      - main
       - 'preview/**'
   release:
     types: [published]
@@ -50,6 +53,14 @@ jobs:
 
   deploy:
     needs: migrate
+    # Same reason as `migrate` above, one step further down the chain: a
+    # skipped job cascades to everything that depends on it, transitively.
+    # `migrate` opting out of the cascade was not enough — `deploy` inherited
+    # it through `migrate`'s own `needs: [lock]`, so a push to preview/**
+    # migrated the database and then quietly shipped nothing.
+    # `!failure()` still holds the gate: if the migration fails, this is
+    # skipped rather than deploying against a half-migrated database.
+    if: always() && !failure() && !cancelled()
     uses: BePartnerLabs/centralized-workflows/.github/workflows/deploy-vercel.yml@v1
     with:
       environment: ${{ github.event_name == 'release' && 'production' || 'preview' }}

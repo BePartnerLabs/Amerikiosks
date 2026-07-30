@@ -3,14 +3,31 @@ import type React from 'react'
 import type { FieldErrorsImpl, FieldValues, UseFormRegister } from 'react-hook-form'
 
 import { FormError } from '../Error'
+import { RequiredMark } from '../RequiredMark'
+import { MAX_TEXT_LENGTH, registerOptions } from '../validation'
 import { Width } from '../Width'
 
 export const Text: React.FC<
   TextField & {
+    // Added to every field block in src/plugins/index.ts, so they are not
+    // part of the plugin's own field types.
+    autocomplete?: string
+    valueType?: string
     errors: Partial<FieldErrorsImpl>
     register: UseFormRegister<FieldValues>
   }
-> = ({ name, defaultValue, errors, label, register, required, width }) => {
+> = ({
+  autocomplete,
+  blockType,
+  valueType,
+  name,
+  defaultValue,
+  errors,
+  label,
+  register,
+  required,
+  width,
+}) => {
   const hasError = Boolean(errors[name])
   const errorId = `${name}-error`
 
@@ -24,24 +41,23 @@ export const Text: React.FC<
         htmlFor={name}
       >
         {label}
-        {required && (
-          <span className="required">
-            * <span className="sr-only">(required)</span>
-          </span>
-        )}
+        {required && <RequiredMark />}
       </label>
       <input
         className="bp-input"
         defaultValue={defaultValue}
         id={name}
-        type="text"
+        type={valueType === 'website' ? 'url' : valueType === 'phone' ? 'tel' : 'text'}
         aria-invalid={hasError}
         aria-describedby={hasError ? errorId : undefined}
-        {...register(name, { required })}
+        autoComplete={autocomplete || 'off'}
+        maxLength={MAX_TEXT_LENGTH}
+        {...register(name, registerOptions({ blockType, name, label, required, valueType }))}
       />
       {hasError && (
         <FormError
           id={errorId}
+          max={MAX_TEXT_LENGTH}
           name={name}
         />
       )}

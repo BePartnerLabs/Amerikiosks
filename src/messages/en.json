@@ -66,5 +66,38 @@
     "reset": "Reset all",
     "on": "on",
     "off": "off"
+  },
+  "form": {
+    "loading": "Sending your details…",
+    "requiredMark": "(required)",
+    "close": "Close",
+    "closeForm": "Close form",
+    "retry": "Try again",
+    "submitError": "We could not send your form. Your details are still here — try again.",
+    "successClose": "Close",
+    "errors": {
+      "required": "This field is required",
+      "email": "Enter a valid email address, e.g. name@company.com",
+      "number": "Enter a number",
+      "phone": "Enter a valid phone number",
+      "maxLength": "This answer is too long — {max} characters maximum",
+      "generic": "Check this field",
+      "website": "Enter a valid website, e.g. acme.com",
+      "date": "Choose a valid date"
+    },
+    "upload": {
+      "prompt": "Drag a file here or browse",
+      "dismiss": "Dismiss",
+      "tooLarge": "File exceeds the 8MB size limit.",
+      "wrongType": "File must be a JPEG, PNG, WEBP or HEIC image.",
+      "hint": "JPEG, PNG, WEBP or HEIC · max 8MB",
+      "hintWithPdf": "JPEG, PNG, WEBP, HEIC or PDF · max 8MB",
+      "remove": "Remove file",
+      "uploading": "Upload progress"
+    },
+    "summary": "{count, plural, one {1 field needs attention} other {# fields need attention}}",
+    "progressLabel": "Required fields completed",
+    "sending": "Sending…",
+    "charactersLeft": "{count, plural, one {1 character left} other {# characters left}}"
   }
 }

@@ -10,14 +10,29 @@
   display: none;
 
   position: fixed;
-  inset-block: 0;
+  /* Pinned to the *visual* viewport, not the layout one: on iOS the keyboard
+     slides the visual viewport up and scrolls the document, and a drawer
+     anchored to the layout viewport travels with the page — which read as the
+     drawer sliding down on every field tap. FormDrawer sets these two
+     properties from window.visualViewport while the drawer is open; the
+     fallbacks are what every other browser uses. */
+  top: var(--ak-drawer-top, 0px);
+  bottom: auto;
   inset-inline-end: 0;
   inset-inline-start: auto;
   /* Leaves a sliver of the page visible on narrow screens so the drawer
      reads as an overlay, not a full takeover. */
-  width: min(28rem, calc(100vw - 10px));
-  max-width: calc(100vw - 10px);
-  height: 100vh;
+  /* dvi (dynamic viewport inline size) rather than vw: vw includes the width
+     of a classic scrollbar, which is what makes a "full width minus a sliver"
+     drawer overflow by a few px on desktop. */
+  width: min(28rem, calc(100dvi - 10px));
+  max-width: calc(100dvi - 10px);
+  /* 100vh on iOS Safari is the height with the URL bar *collapsed*, so the
+     bottom of the drawer — where the sticky submit lives — sits underneath the
+     bar and is unreachable. dvh tracks the actually-visible viewport instead.
+     No vh fallback: dvh/dvi ship in every browser this project targets
+     (Safari 15.4+, Chrome 108+, Firefox 101+). */
+  height: var(--ak-drawer-height, 100dvh);
   margin: 0;
   padding: 0;
   border: none;
@@ -51,13 +66,29 @@
   background-color: var(--_backdrop);
 }
 
+/* Brand rule across the top of the panel — the drawer's only piece of
+   decoration, and the first thing that identifies it as Amerikiosks. */
+.ak-link-drawer__accent {
+  flex: none;
+  height: 4px;
+
+  --_background: var(--ak-accent);
+  background-color: var(--_background);
+}
+
 .ak-link-drawer__header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--bp-space-4, 1rem);
   padding: var(--bp-space-5, 1.25rem) var(--bp-space-6, 1.5rem);
   border-bottom: 1px solid var(--ak-color-border);
+
+  --_background: var(--ak-color-surface);
+  background-color: var(--_background);
 }
 
 .ak-link-drawer__title {
@@ -94,7 +125,10 @@
 
 /* Fixes a container-type + flex-column interaction: an element with
    container-type set doesn't reliably stretch to its flex parent's cross
-   size on its own — it needs an explicit width. */
+   size on its own — it needs an explicit width.
+   `margin: 0` also drops the block's page-level vertical rhythm: 4rem above
+   and below belongs to a page, not to a panel that already has its own padding
+   and a sticky header. */
 .ak-link-drawer .ak-form {
   width: 100%;
   max-width: none;
@@ -118,4 +152,50 @@
 
 .ak-link-drawer .ak-form__field {
   grid-column: span 1;
+}
+
+/* Split is a full-page layout; 28rem never has room for two columns. */
+.ak-link-drawer .ak-form--split {
+  display: block;
+  max-width: none;
+}
+
+.ak-link-drawer .ak-form__aside {
+  display: none;
+}
+
+/* The submit bar stays reachable no matter how long the form is — the
+   16-field applications otherwise bury it under a full screen of scroll.
+   It needs an opaque background of its own: sticky content sitting over the
+   fields it is scrolling past reads as a rendering bug. */
+.ak-link-drawer .ak-form__actions {
+  position: sticky;
+  bottom: 0;
+  align-items: stretch;
+  margin-inline: calc(var(--bp-space-6, 1.5rem) * -1);
+  margin-top: var(--bp-space-4, 1rem);
+  /* The extra bottom padding keeps the button clear of the iOS home indicator
+     once dvh has pulled the panel up above the URL bar. */
+  padding: var(--bp-space-4, 1rem) var(--bp-space-6, 1.5rem)
+    calc(var(--bp-space-4, 1rem) + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--ak-color-border);
+
+  --_background: var(--ak-color-surface);
+  background-color: var(--_background);
+}
+
+.ak-link-drawer .ak-form__progress {
+  justify-content: center;
+}
+
+.ak-link-drawer .ak-form__submit {
+  width: 100%;
+}
+
+/* A `message` block between fields reads as a section separator here, which
+   is what turns 16 flat inputs into three legible groups. */
+.ak-link-drawer .ak-form__message-block {
+  margin-block: var(--bp-space-6, 1.5rem) var(--bp-space-2, 0.5rem);
+  padding-bottom: var(--bp-space-2, 0.5rem);
+  border-bottom: 1px solid var(--ak-color-border);
 }

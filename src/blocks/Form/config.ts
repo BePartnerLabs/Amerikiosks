@@ -24,6 +24,7 @@ export const FormBlock: Block = {
     {
       name: 'introContent',
       type: 'richText',
+      localized: true,
       admin: {
         condition: (_, { enableIntro }) => Boolean(enableIntro),
       },
@@ -38,6 +39,42 @@ export const FormBlock: Block = {
         },
       }),
       label: 'Intro Content',
+    },
+    // Deliberately the same three field names the mega menu's left panel uses
+    // (src/Header/config.ts → megaMenu), so an editor who has filled in one
+    // already knows what these do.
+    {
+      name: 'panelLabel',
+      type: 'text',
+      localized: true,
+      label: 'Panel eyebrow',
+      admin: {
+        condition: (_, siblingData) => siblingData?.layout === 'split',
+        description: 'Small uppercase label above the headline, e.g. "Get in touch".',
+      },
+    },
+    {
+      name: 'panelHeadline',
+      type: 'text',
+      localized: true,
+      label: 'Panel headline',
+      admin: {
+        condition: (_, siblingData) => siblingData?.layout === 'split',
+        description: "The hook. Short and specific — this is the panel's whole job.",
+      },
+    },
+    {
+      name: 'layout',
+      type: 'select',
+      defaultValue: 'stacked',
+      options: [
+        { label: 'Stacked — intro above the form', value: 'stacked' },
+        { label: 'Split — intro in a panel beside the form', value: 'split' },
+      ],
+      admin: {
+        description:
+          'Split puts the intro content in a dark panel to the left of the fields. Use it on a full page like /contact; it falls back to stacked on narrow screens and inside the modal drawer, which is always too narrow for two columns.',
+      },
     },
   ],
   graphQL: {

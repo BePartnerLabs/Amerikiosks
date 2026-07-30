@@ -7,8 +7,9 @@ import type { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import { s3Storage } from '@payloadcms/storage-s3'
 import type { Plugin, TextFieldValidation } from 'payload'
+import { attachmentUrlEndpoint } from '@/collections/FormSubmissions/endpoints/attachmentUrl'
 import { resyncEndpoint } from '@/collections/FormSubmissions/endpoints/resync'
-import { dispatchFormSync } from '@/collections/FormSubmissions/hooks/dispatchFormSync'
+import { revalidateFormGlobals } from '@/collections/Forms/hooks/revalidateFormGlobals'
 import type { Insight, Machine, Page, Project } from '@/payload-types'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
 import { searchFields } from '@/search/fieldOverrides'
@@ -74,6 +75,10 @@ export const plugins: Plugin[] = [
   formBuilderPlugin({
     fields: {
       payment: false,
+      // Defined by the plugin but not on by default in this version, so an
+      // editor could not add either until they were named here.
+      radio: true,
+      date: true,
       // Not enabled by the plugin's own defaults — required for the
       // kiosk-development/placement-application forms' photo attachment.
       upload: true,
@@ -90,9 +95,26 @@ export const plugins: Plugin[] = [
         ],
         // biome-ignore lint/suspicious/noExplicitAny: matches a Payload Block shape, not the plugin's own narrower FieldConfig type
       } as any,
+      // Also not a plugin builtin. A yes/no question rendered as the same
+      // switch the cookie preferences panel uses — stored as a boolean, like
+      // `checkbox`; a two-option select costs a click and hides the options.
+      toggle: {
+        slug: 'toggle',
+        fields: [
+          { type: 'row', fields: [{ name: 'name', type: 'text', required: true }] },
+          { name: 'label', type: 'text', localized: true },
+          { name: 'width', type: 'number' },
+          { name: 'defaultValue', type: 'checkbox' },
+          { name: 'required', type: 'checkbox' },
+        ],
+        // biome-ignore lint/suspicious/noExplicitAny: matches a Payload Block shape, not the plugin's own narrower FieldConfig type
+      } as any,
     },
     uploadCollections: ['media'],
     formOverrides: {
+      hooks: {
+        afterChange: [revalidateFormGlobals],
+      },
       fields: ({ defaultFields }) => {
         // Per-field-block "externalId" — the Monday column id that field's
         // value maps to (see GenericMondayRepository). Added to every block
@@ -100,10 +122,117 @@ export const plugins: Plugin[] = [
         const fieldsBlocksField = defaultFields.find(
           (field) => 'name' in field && field.name === 'fields',
         )
+        // The plugin exports its block definitions as shared objects, and this
+        // config is evaluated more than once (dev hot-reload, repeated
+        // imports). Pushing straight onto block.fields therefore appended the
+        // same field again on every pass, and Payload refused to boot with
+        // "A field with the name 'valueType' was found multiple times".
+        // biome-ignore lint/suspicious/noExplicitAny: Payload's Block/Field union is narrower than what the plugin's own block objects satisfy here
+        const addOnce = (block: any, field: { name: string } & Record<string, unknown>) => {
+          if (block.fields.some((f: { name?: string }) => f.name === field.name)) return
+          block.fields.push(field)
+        }
+
         if (fieldsBlocksField && 'blocks' in fieldsBlocksField) {
           for (const block of fieldsBlocksField.blocks) {
             if (block.slug === 'message' || block.slug === 'payment') continue
-            block.fields.push({
+
+            // A select, not free text: these are HTML spec tokens, and a typo
+            // like "e-mail" fails silently — the browser ignores an unknown
+            // token, so nothing autofills and nobody finds out. Labelled in
+            // plain language because the person choosing is an editor, not a
+            // developer. Off by default: a wrong token is worse than none, e.g.
+            // "name" on a company field offers the visitor's own name.
+            if (['text', 'email', 'number', 'textarea'].includes(block.slug)) {
+              addOnce(block, {
+                name: 'autocomplete',
+                type: 'select',
+                options: [
+                  { label: "Don't autofill", value: 'off' },
+                  { label: 'Full name', value: 'name' },
+                  { label: 'First name', value: 'given-name' },
+                  { label: 'Last name', value: 'family-name' },
+                  { label: 'Email', value: 'email' },
+                  { label: 'Phone', value: 'tel' },
+                  { label: 'Company / brand name', value: 'organization' },
+                  { label: 'Job title', value: 'organization-title' },
+                  { label: 'Website', value: 'url' },
+                  { label: 'Street address', value: 'street-address' },
+                  { label: 'City', value: 'address-level2' },
+                  { label: 'State / region', value: 'address-level1' },
+                  { label: 'Postal code', value: 'postal-code' },
+                  { label: 'Country', value: 'country-name' },
+                ],
+                admin: {
+                  description:
+                    'Lets the browser offer the visitor’s saved details for this field. Leave empty on B2B fields where a personal value would be wrong — a company field should use “Company / brand name”, never “Full name”.',
+                },
+              })
+            }
+
+            // What a field *means*, chosen explicitly rather than guessed from
+            // its name. The previous heuristic (a regex over name and label)
+            // missed anything an editor called "Cell" or "Número de contacto",
+            // and a missed phone reaches Monday unnormalised — which is what
+            // its phone column rejected in ffd890a.
+            if (block.slug === 'text') {
+              addOnce(block, {
+                name: 'valueType',
+                type: 'select',
+                defaultValue: 'text',
+                options: [
+                  { label: 'Plain text', value: 'text' },
+                  { label: 'Phone number', value: 'phone' },
+                  { label: 'Website / URL', value: 'website' },
+                ],
+                admin: {
+                  description:
+                    'Phone strips formatting before the value is sent on (Monday phone columns require it). Website accepts "acme.com" and adds the https:// people leave out.',
+                },
+              })
+            }
+
+            // Date or date+time, chosen per field. One block rather than two
+            // types: it is the same control with or without the time part.
+            if (block.slug === 'date') {
+              addOnce(block, {
+                name: 'granularity',
+                type: 'select',
+                defaultValue: 'date',
+                options: [
+                  { label: 'Date only', value: 'date' },
+                  { label: 'Date and time', value: 'dateAndTime' },
+                ],
+                admin: {
+                  description:
+                    'Date and time also fills the time part of a Monday.com date column; date only leaves it empty.',
+                },
+              })
+            }
+
+            // What a field *means*, chosen explicitly rather than guessed from
+            // its name. The previous heuristic (a regex over name and label)
+            // missed anything an editor called "Cell" or "Número de contacto",
+            // and a missed phone reaches Monday unnormalised — which is what
+            // its phone column rejected in ffd890a.
+            if (block.slug === 'text') {
+              addOnce(block, {
+                name: 'valueType',
+                type: 'select',
+                defaultValue: 'text',
+                options: [
+                  { label: 'Plain text', value: 'text' },
+                  { label: 'Phone number', value: 'phone' },
+                  { label: 'Website / URL', value: 'website' },
+                ],
+                admin: {
+                  description:
+                    'Phone strips formatting before the value is sent on (Monday phone columns require it). Website accepts "acme.com" and adds the https:// people leave out.',
+                },
+              })
+            }
+
+            addOnce(block, {
               name: 'externalId',
               type: 'text',
               admin: {
@@ -195,6 +324,65 @@ export const plugins: Plugin[] = [
                 },
               },
             },
+            {
+              name: 'description',
+              type: 'richText',
+              localized: true,
+              admin: {
+                description:
+                  'Short paragraph shown under the form title. This is what appears inside the modal drawer, which has no block-level intro of its own.',
+              },
+            },
+            {
+              name: 'footnote',
+              type: 'richText',
+              localized: true,
+              admin: {
+                description:
+                  'Small print under the submit button — reassurance, not instructions (e.g. "No staffing required. Amerikiosks handles placement, setup and daily operations.").',
+              },
+            },
+            {
+              name: 'confirmationHeading',
+              type: 'text',
+              localized: true,
+              admin: {
+                condition: (data) => data?.confirmationType !== 'redirect',
+                description:
+                  'Headline of the thank-you state, e.g. "Request received". The rich text below becomes the body.',
+              },
+            },
+            {
+              name: 'confirmationNext',
+              type: 'text',
+              localized: true,
+              admin: {
+                condition: (data) => data?.confirmationType !== 'redirect',
+                description:
+                  'What happens next, with a real timeframe — e.g. "We\'ll email you within 2 business days." This is the line that decides whether the site reads as serious.',
+              },
+            },
+            {
+              name: 'requiresConsent',
+              type: 'checkbox',
+              defaultValue: false,
+              admin: {
+                position: 'sidebar',
+                description:
+                  'Adds a required consent checkbox above the submit button. Turn this on for any form that collects personal data (name, email, phone). The answer and its timestamp are stored on each submission as proof.',
+              },
+            },
+            {
+              name: 'consentText',
+              type: 'richText',
+              localized: true,
+              admin: {
+                position: 'sidebar',
+                condition: (data) => Boolean(data?.requiresConsent),
+                description:
+                  'Wording shown next to the consent checkbox. State what the data is used for and link to the privacy policy.',
+              },
+            },
           ])
       },
     },
@@ -207,6 +395,7 @@ export const plugins: Plugin[] = [
           edit: {
             beforeDocumentControls: [
               '@/collections/FormSubmissions/components/ResyncDocButton#ResyncDocButton',
+              '@/collections/FormSubmissions/components/ViewAttachmentsButton#ViewAttachmentsButton',
             ],
           },
         },
@@ -236,6 +425,19 @@ export const plugins: Plugin[] = [
           },
         },
         {
+          // The Monday item this submission became. Without it there is no way
+          // to get from a lead in /admin to the item the sales team works from,
+          // and a re-sync cannot tell "never synced" from "already an item" —
+          // it just creates a second one.
+          name: 'externalItemId',
+          type: 'text',
+          label: 'Monday.com item id',
+          admin: {
+            position: 'sidebar',
+            readOnly: true,
+          },
+        },
+        {
           name: 'syncedAt',
           type: 'date',
           admin: {
@@ -243,11 +445,57 @@ export const plugins: Plugin[] = [
             readOnly: true,
           },
         },
+        {
+          // Form attachments go to the private R2 bucket, not the public
+          // `media` collection: a placement application can carry a lease, an
+          // invoice or a floor plan, and `media` is world-readable and about
+          // to be served straight off R2's public URL. Same model as
+          // Claims.photoKey — the durable reference is an object key, and a
+          // presigned URL is minted on demand for staff who need to look.
+          name: 'attachments',
+          type: 'array',
+          admin: {
+            readOnly: true,
+            description:
+              'Files submitted with this form. Stored in the private bucket — use the View button above, the key alone is not a URL.',
+          },
+          fields: [
+            { name: 'field', type: 'text' },
+            { name: 'key', type: 'text' },
+            { name: 'filename', type: 'text' },
+            { name: 'mimeType', type: 'text' },
+          ],
+        },
+        {
+          name: 'consentGiven',
+          type: 'checkbox',
+          admin: {
+            position: 'sidebar',
+            readOnly: true,
+            description:
+              'Whether the visitor ticked the consent box on a form that requires it. Written by the submission route — a consent record only counts if it was stored at the moment of capture.',
+          },
+        },
+        {
+          name: 'consentAt',
+          type: 'date',
+          admin: {
+            position: 'sidebar',
+            readOnly: true,
+          },
+        },
       ],
-      hooks: {
-        afterChange: [dispatchFormSync],
+      access: {
+        // The public path is /next/form-submissions, which rate-limits,
+        // screens for bots and validates before writing. Leaving the plugin's
+        // own REST endpoint open would be a bypass around all of that.
+        create: () => false,
       },
-      endpoints: [resyncEndpoint],
+      // No afterChange sync hook here on purpose: the Monday dispatch runs
+      // after the submission is committed, from /next/form-submissions (see
+      // syncFormSubmission's own comment). As an afterChange it shared the
+      // create's transaction and could roll the visitor's lead back.
+      endpoints: [resyncEndpoint, attachmentUrlEndpoint],
     },
   }),
   searchPlugin({

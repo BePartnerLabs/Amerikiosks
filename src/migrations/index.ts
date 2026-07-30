@@ -58,7 +58,20 @@ import * as migration_20260728_025847_footer_cta_modal_form from './20260728_025
 import * as migration_20260728_041216_settings_social_links from './20260728_041216_settings_social_links';
 import * as migration_20260728_050000_brands_backfill_versions from './20260728_050000_brands_backfill_versions';
 import * as migration_20260728_051222_redirects_type_field from './20260728_051222_redirects_type_field';
-import * as migration_20260728_051500_redirects_normalize_from from './20260728_051500_redirects_normalize_from'
+import * as migration_20260728_051500_redirects_normalize_from from './20260728_051500_redirects_normalize_from';
+import * as migration_20260728_192449_forms_consent_and_turnstile from './20260728_192449_forms_consent_and_turnstile';
+import * as migration_20260728_194219_forms_description_footnote_confirmation from './20260728_194219_forms_description_footnote_confirmation';
+import * as migration_20260728_215733_form_block_panel_fields from './20260728_215733_form_block_panel_fields';
+import * as migration_20260729_000725_form_submission_private_attachments from './20260729_000725_form_submission_private_attachments';
+import * as migration_20260729_025009_form_field_value_type_autocomplete from './20260729_025009_form_field_value_type_autocomplete';
+import * as migration_20260729_040952_form_autocomplete_select from './20260729_040952_form_autocomplete_select';
+import * as migration_20260729_041456_form_toggle_field from './20260729_041456_form_toggle_field';
+import * as migration_20260729_043724_form_radio_date_blocks from './20260729_043724_form_radio_date_blocks';
+import * as migration_20260729_043748_drop_upload_accepted_file_types from './20260729_043748_drop_upload_accepted_file_types';
+import * as migration_20260729_194248_form_block_localized_panel from './20260729_194248_form_block_localized_panel';
+import * as migration_20260729_215731_form_date_granularity from './20260729_215731_form_date_granularity';
+import * as migration_20260730_001956_form_submission_external_item_id from './20260730_001956_form_submission_external_item_id';
+import * as migration_20260730_012000_backfill_text_field_value_type from './20260730_012000_backfill_text_field_value_type';
 
 export const migrations = [
   {
@@ -359,11 +372,76 @@ export const migrations = [
   {
     up: migration_20260728_051222_redirects_type_field.up,
     down: migration_20260728_051222_redirects_type_field.down,
-    name: '20260728_051222_redirects_type_field'
+    name: '20260728_051222_redirects_type_field',
   },
   {
     up: migration_20260728_051500_redirects_normalize_from.up,
     down: migration_20260728_051500_redirects_normalize_from.down,
     name: '20260728_051500_redirects_normalize_from',
+  },
+  {
+    up: migration_20260728_192449_forms_consent_and_turnstile.up,
+    down: migration_20260728_192449_forms_consent_and_turnstile.down,
+    name: '20260728_192449_forms_consent_and_turnstile',
+  },
+  {
+    up: migration_20260728_194219_forms_description_footnote_confirmation.up,
+    down: migration_20260728_194219_forms_description_footnote_confirmation.down,
+    name: '20260728_194219_forms_description_footnote_confirmation',
+  },
+  {
+    up: migration_20260728_215733_form_block_panel_fields.up,
+    down: migration_20260728_215733_form_block_panel_fields.down,
+    name: '20260728_215733_form_block_panel_fields',
+  },
+  {
+    up: migration_20260729_000725_form_submission_private_attachments.up,
+    down: migration_20260729_000725_form_submission_private_attachments.down,
+    name: '20260729_000725_form_submission_private_attachments',
+  },
+  {
+    up: migration_20260729_025009_form_field_value_type_autocomplete.up,
+    down: migration_20260729_025009_form_field_value_type_autocomplete.down,
+    name: '20260729_025009_form_field_value_type_autocomplete',
+  },
+  {
+    up: migration_20260729_040952_form_autocomplete_select.up,
+    down: migration_20260729_040952_form_autocomplete_select.down,
+    name: '20260729_040952_form_autocomplete_select',
+  },
+  {
+    up: migration_20260729_041456_form_toggle_field.up,
+    down: migration_20260729_041456_form_toggle_field.down,
+    name: '20260729_041456_form_toggle_field',
+  },
+  {
+    up: migration_20260729_043724_form_radio_date_blocks.up,
+    down: migration_20260729_043724_form_radio_date_blocks.down,
+    name: '20260729_043724_form_radio_date_blocks',
+  },
+  {
+    up: migration_20260729_043748_drop_upload_accepted_file_types.up,
+    down: migration_20260729_043748_drop_upload_accepted_file_types.down,
+    name: '20260729_043748_drop_upload_accepted_file_types',
+  },
+  {
+    up: migration_20260729_194248_form_block_localized_panel.up,
+    down: migration_20260729_194248_form_block_localized_panel.down,
+    name: '20260729_194248_form_block_localized_panel',
+  },
+  {
+    up: migration_20260729_215731_form_date_granularity.up,
+    down: migration_20260729_215731_form_date_granularity.down,
+    name: '20260729_215731_form_date_granularity',
+  },
+  {
+    up: migration_20260730_001956_form_submission_external_item_id.up,
+    down: migration_20260730_001956_form_submission_external_item_id.down,
+    name: '20260730_001956_form_submission_external_item_id'
+  },
+  {
+    up: migration_20260730_012000_backfill_text_field_value_type.up,
+    down: migration_20260730_012000_backfill_text_field_value_type.down,
+    name: '20260730_012000_backfill_text_field_value_type',
   },
 ];

@@ -83,11 +83,18 @@
     animation: none;
   }
 }
+/* Same Bracket Lock entrance as desktop — it is the mark's own animation, and
+   the mobile logo is that mark. The chevrons fly in from outside the viewBox,
+   so this needs overflow: visible too. */
 .logo-mobile {
   display: block;
   width: 40px;
-  height: 40px;
-  object-fit: contain;
+  height: auto;
+  overflow: visible;
+}
+
+.logo-mobile g {
+  transform-box: view-box;
 }
 
 @media (min-width: 60rem) {

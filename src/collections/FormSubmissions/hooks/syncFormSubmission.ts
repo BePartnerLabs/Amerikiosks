@@ -1,14 +1,16 @@
-import type { CollectionAfterChangeHook } from 'payload'
+import type { Payload } from 'payload'
 import { GenericMondayRepository, MondayApiError } from '@/repositories/GenericMondayRepository'
 import type { MondayBoardsCache } from '@/utilities/detectMondayDrift'
-import { getServerSideURL } from '@/utilities/getURL'
+import { getPrivateFileBuffer } from '@/utilities/privateUpload'
+import { resolveMondayToken } from '@/utilities/resolveMondayToken'
 
 type FormField = { name?: string; externalId?: string; blockType?: string }
 type SubmissionDataItem = { field: string; value: unknown }
-type MediaDoc = { url?: string | null; filename?: string | null; mimeType?: string | null }
-type SubmissionUploadItem = {
-  field: string
-  value: Array<{ value: number | string | MediaDoc }>
+type AttachmentRow = {
+  field?: string | null
+  key?: string | null
+  filename?: string | null
+  mimeType?: string | null
 }
 
 // Whichever submitted field carries one of these externalIds becomes the
@@ -30,6 +32,26 @@ function buildColumnValue(type: string | undefined, value: string): unknown {
   switch (type) {
     case 'long_text':
       return { text: value }
+    case 'date': {
+      // Monday wants {date, time} with the time separate, so the ISO-ish string
+      // an <input type="date"> or "datetime-local" produces has to be split.
+      // Sending it whole is rejected outright — the same class of mismatch that
+      // made the phone column reject formatted numbers in ffd890a.
+      //
+      // Caveat found while verifying this against the real API: Monday reads
+      // the time as UTC and renders it in the viewer's timezone, so 14:30 sent
+      // from a form showed as 10:30 on the board. The value stored is exactly
+      // what was sent; only the display shifts. Converting here would need the
+      // visitor's timezone, which the submission does not carry.
+      const [date, time] = value.split('T')
+      return time ? { date, time: time.length === 5 ? `${time}:00` : time } : { date }
+    }
+    case 'checkbox':
+      // Monday reads the string "true"; anything else, a real boolean included,
+      // leaves the box unchecked.
+      return value === 'true' || value === 'on' ? { checked: 'true' } : {}
+    case 'dropdown':
+      return { labels: [value] }
     case 'link':
       return { url: value, text: value }
     case 'email':
@@ -104,9 +126,52 @@ function correctColumnValuesFromError(
   return corrected
 }
 
-export const dispatchFormSync: CollectionAfterChangeHook = async ({ doc, operation, req }) => {
-  if (operation !== 'create' || req.context?.skipFormSync) return doc
+type SubmissionDoc = {
+  id: number | string
+  form: number | { id: number }
+  submissionData?: unknown
+  attachments?: unknown
+}
 
+/**
+ * Pushes a stored submission to its form's configured integration.
+ *
+ * Deliberately NOT a collection hook. It used to run as `afterChange`, which
+ * meant it executed inside the create's transaction: any DB-level error in
+ * here aborted that transaction and took the visitor's submission down with
+ * it — the lead was lost and the browser got a bare 404 (see the media-id
+ * caveat further down, and commit d9fe37e). It also held a Postgres
+ * connection open for the duration of an HTTP round-trip to Monday.
+ *
+ * Callers run it *after* the submission is committed and pass a plain
+ * `payload` instance rather than the request's transactional `req`, so a sync
+ * failure can no longer reach the stored row. The cost is that a crash
+ * between commit and sync leaves the submission on `syncStatus: 'pending'` —
+ * which is exactly what the manual resync button in /admin is for.
+ */
+export async function syncFormSubmission({
+  payload,
+  doc,
+}: {
+  payload: Payload
+  doc: SubmissionDoc
+}): Promise<void> {
+  // Belt and braces around everything below. The per-step handling further
+  // down records failures on the document, but the very first lookups (the
+  // form, the settings global) happen before that machinery exists — and an
+  // exception escaping here would reach the caller, which is awaiting this
+  // after the submission is already committed. Nothing in this function is
+  // allowed to become the visitor's problem.
+  try {
+    await run(payload, doc)
+  } catch (err) {
+    payload.logger.error(
+      `syncFormSubmission: unrecoverable failure for submission ${doc.id}: ${(err as Error).message}`,
+    )
+  }
+}
+
+async function run(payload: Payload, doc: SubmissionDoc): Promise<void> {
   // `doc.form` is a relationship — it arrives as a plain id when the create
   // request used depth 0, but as the populated Form object when depth > 0
   // (e.g. the default REST depth). Resolve either shape to a numeric id.
@@ -115,23 +180,20 @@ export const dispatchFormSync: CollectionAfterChangeHook = async ({ doc, operati
       ? ((doc.form as { id: number }).id as number)
       : (doc.form as number)
 
-  const form = await req.payload.findByID({
+  const form = await payload.findByID({
     collection: 'forms',
     id: formId,
     depth: 0,
-    req,
   })
 
   const integrationTarget = (form as { integrationTarget?: string }).integrationTarget ?? 'none'
-  if (integrationTarget === 'none') return doc
+  if (integrationTarget === 'none') return
 
   const updateStatus = async (data: Record<string, unknown>) =>
-    req.payload.update({
+    payload.update({
       collection: 'form-submissions',
       id: doc.id,
       data,
-      context: { skipFormSync: true },
-      req,
     })
 
   if (integrationTarget !== 'monday') {
@@ -140,7 +202,7 @@ export const dispatchFormSync: CollectionAfterChangeHook = async ({ doc, operati
       syncStatus: 'error',
       syncError: `${integrationTarget} integration not yet implemented`,
     })
-    return doc
+    return
   }
 
   try {
@@ -150,8 +212,8 @@ export const dispatchFormSync: CollectionAfterChangeHook = async ({ doc, operati
       throw new Error('Form is missing externalId (board id) or mondayGroupId')
     }
 
-    const settings = await req.payload.findGlobal({ slug: 'settings', req })
-    const apiToken = settings.mondayApiToken ?? ''
+    const settings = await payload.findGlobal({ slug: 'settings' })
+    const apiToken = resolveMondayToken(settings)
 
     const boardsCache = settings.mondayBoardsCache as MondayBoardsCache | undefined
     const board = boardsCache?.boards.find((b) => b.id === boardId)
@@ -181,8 +243,8 @@ export const dispatchFormSync: CollectionAfterChangeHook = async ({ doc, operati
       const corrected = correctColumnValuesFromError(columnValues, rawValueById, err)
       if (!corrected) throw err
 
-      req.payload.logger.warn(
-        `dispatchFormSync: retrying submission ${doc.id} with column types from Monday's own error response (mondayBoardsCache may be stale — consider re-syncing it)`,
+      payload.logger.warn(
+        `syncFormSubmission: retrying submission ${doc.id} with column types from Monday's own error response (mondayBoardsCache may be stale — consider re-syncing it)`,
       )
       ;({ id: itemId } = await GenericMondayRepository.submit(
         boardId,
@@ -193,84 +255,60 @@ export const dispatchFormSync: CollectionAfterChangeHook = async ({ doc, operati
       ))
     }
 
-    // Uploads live in submissionUploads (media relationships), not
-    // submissionData — see the plugin's handleUploads.js. Fetch each
-    // uploaded media doc's real bytes and attach it to the matching
-    // Monday file column, when that upload field has an externalId set.
+    // Recorded before the attachments, not with the final 'synced' status: the
+    // item already exists in Monday at this point, and if attaching a file
+    // fails, saving the id only at the end loses the reference to it entirely.
+    // A re-sync then creates a *second* item and nobody can find the first.
+    // Observed exactly that way — a file Monday rejected left an orphan item on
+    // the board and `externalItemId: null` on the submission.
+    await updateStatus({ externalItemId: itemId })
+
+    // Attachments live in the private R2 bucket (see the route that writes
+    // them); the bytes are pulled server-side with credentials and forwarded
+    // to Monday as a real file. There is deliberately no URL involved — the
+    // objects have no public access, which is the whole point of storing
+    // business documents there instead of in the public `media` collection.
     const externalIdByFieldName = new Map(
       formFields
         .filter((f) => f.name && f.externalId)
         .map((f) => [f.name as string, f.externalId as string]),
     )
-    for (const { field, value } of (doc.submissionUploads ?? []) as SubmissionUploadItem[]) {
-      const columnId = externalIdByFieldName.get(field)
-      if (!columnId) continue
+    for (const attachment of (doc.attachments ?? []) as AttachmentRow[]) {
+      const columnId = attachment.field ? externalIdByFieldName.get(attachment.field) : undefined
+      if (!columnId || !attachment.key) continue
 
-      for (const { value: mediaRef } of value ?? []) {
-        // Same depth caveat as `doc.form` above: at the REST API's default
-        // depth the relationship arrives as the populated media doc, not an
-        // id. Passing that object straight into findByID sent an object as a
-        // SQL param, which failed the query, poisoned the request's
-        // transaction, and surfaced to the browser as a bare 404 on POST
-        // /api/form-submissions — the submission itself never got committed.
-        const media =
-          typeof mediaRef === 'object' && mediaRef !== null
-            ? (mediaRef as MediaDoc)
-            : ((await req.payload.findByID({
-                collection: 'media',
-                id: mediaRef,
-                depth: 0,
-                req,
-              })) as MediaDoc)
-        if (!media.url) continue
-
-        // media.url is relative when Payload serves the file itself
-        // (`/api/media/file/<name>`). Node's fetch has no document base, so a
-        // relative URL throws `Failed to parse URL from /api/media/file/...`.
-        // Absolute URLs (external storage with a public base) pass through.
-        const fileUrl = /^https?:\/\//.test(media.url)
-          ? media.url
-          : `${getServerSideURL()}${media.url}`
-
-        const res = await fetch(fileUrl)
-        if (!res.ok) {
-          throw new Error(`could not read upload ${media.filename ?? media.url}: ${res.status}`)
-        }
-        const buffer = Buffer.from(await res.arrayBuffer())
-        await GenericMondayRepository.addFile(
-          itemId,
-          columnId,
-          {
-            buffer,
-            filename: media.filename ?? 'upload',
-            contentType: media.mimeType ?? 'application/octet-stream',
-          },
-          apiToken,
-        )
-      }
+      const { buffer, contentType } = await getPrivateFileBuffer(attachment.key)
+      await GenericMondayRepository.addFile(
+        itemId,
+        columnId,
+        {
+          buffer,
+          filename: attachment.filename ?? 'upload',
+          contentType: attachment.mimeType ?? contentType,
+        },
+        apiToken,
+      )
     }
 
     await updateStatus({
       syncStatus: 'synced',
       syncedAt: new Date().toISOString(),
       syncError: null,
+      externalItemId: itemId,
     })
   } catch (err) {
-    req.payload.logger.error(
-      `dispatchFormSync: failed to sync submission ${doc.id}: ${(err as Error).message}`,
+    payload.logger.error(
+      `syncFormSubmission: failed to sync submission ${doc.id}: ${(err as Error).message}`,
     )
-    // A sync failure must never fail the submission itself. If the error came
-    // from the DB, the request's transaction is already aborted and this
-    // status write throws too — swallow it rather than turning a stored
-    // submission into an error response for the visitor.
+    // Recording the failure is best-effort: the submission is already
+    // committed and must survive regardless, so a second failure here is
+    // logged and dropped rather than propagated.
     try {
       await updateStatus({ syncStatus: 'error', syncError: (err as Error).message })
     } catch (statusErr) {
-      req.payload.logger.error(
-        `dispatchFormSync: could not record sync error on submission ${doc.id}: ${(statusErr as Error).message}`,
+      payload.logger.error(
+        `syncFormSubmission: could not record sync error on submission ${doc.id}: ${(statusErr as Error).message}`,
       )
     }
   }
-
-  return doc
 }

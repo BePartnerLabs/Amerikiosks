@@ -3,9 +3,15 @@
    from frontend.css), with brand-specific Level 2 overrides here.
    ═══════════════════════════════════════════════════════════════ */
 
+/* Vertical rhythm at block level, matching what every other block spends
+   (CardGrid, Content and Metrics all use --bp-space-16). Margin, not padding:
+   the split layout is a rounded card with a shadow and overflow: hidden, so
+   padding would push the dark panel away from its own edges. The drawer
+   overrides this back to its own spacing. */
 .ak-form {
   max-width: 48rem;
   margin-inline: auto;
+  margin-block: var(--bp-space-16, 4rem);
 }
 
 .ak-form__intro {
@@ -108,6 +114,724 @@
   box-shadow: var(--_shadow);
 }
 
+/* The button was already disabled while the request was in flight, but nothing
+   in the DS styles `.bp-btn:disabled`, so it looked and felt clickable — the
+   visitor got no signal that anything was happening. */
+.ak-form__submit:disabled {
+  box-shadow: none;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ak-form__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bp-space-3, 0.75rem);
+}
+
+.ak-form__progress {
+  display: flex;
+  align-items: center;
+  gap: var(--bp-space-3, 0.75rem);
+
+  --_color: var(--ak-color-muted);
+  color: var(--_color);
+  font-size: var(--bp-text-xs, 0.75rem);
+}
+
+.ak-form__progress-count {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.ak-form__progress-track {
+  flex: 1;
+  height: 3px;
+  border-radius: 999px;
+  overflow: hidden;
+
+  --_background: var(--ak-color-border);
+  background-color: var(--_background);
+}
+
+.ak-form__progress-bar {
+  display: block;
+  block-size: 100%;
+
+  --_background: var(--ak-accent);
+  background-color: var(--_background);
+  transition: inline-size 0.25s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ak-form__progress-bar {
+    transition: none;
+  }
+}
+
 .ak-form__message-block {
   margin-block: var(--bp-space-12, 3rem);
+}
+
+.ak-form__description {
+  margin-bottom: var(--bp-space-6, 1.5rem);
+}
+
+.ak-form__description p {
+  --_color: var(--ak-color-muted);
+  margin: 0;
+  color: var(--_color);
+  font-size: var(--bp-text-sm, 0.875rem);
+}
+
+/* The gap is the point: this sits under the submit button, and butted up
+   against it the copy read as part of the button rather than as a separate
+   note. */
+.ak-form__footnote {
+  margin-top: var(--bp-space-8, 2rem);
+}
+
+.ak-form__footnote p {
+  --_color: var(--ak-color-muted);
+  margin: 0;
+  color: var(--_color);
+  /* xs sat too tight under the submit button to read as reassurance rather
+     than legal small print — this is copy meant to be read. */
+  font-size: var(--bp-text-sm, 0.875rem);
+  line-height: 1.6;
+}
+
+/* ── Error summary ─────────────────────────────────────────────
+   Submitting a long form and seeing nothing change (because the bad field
+   is above the fold) is the failure this exists to prevent. */
+.ak-form__summary {
+  --_color: var(--ak-accent);
+  --_border-color: var(--ak-accent);
+  margin-bottom: var(--bp-space-6, 1.5rem);
+  padding: var(--bp-space-3, 0.75rem) var(--bp-space-4, 1rem);
+  border: 1px solid var(--_border-color);
+  border-radius: var(--bp-radius, 0.625rem);
+  color: var(--_color);
+}
+
+.ak-form__summary-title {
+  margin: 0 0 var(--bp-space-2, 0.5rem);
+  font-size: var(--bp-text-sm, 0.875rem);
+  font-weight: 700;
+}
+
+.ak-form__summary-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bp-space-2, 0.5rem) var(--bp-space-4, 1rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ak-form__summary-list button {
+  --_color: var(--ak-accent);
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--_color);
+  font-size: var(--bp-text-sm, 0.875rem);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ── Confirmation ──────────────────────────────────────────────
+   The state takes focus on submit (see Component.tsx) — hence the reset
+   outline, and the animation below marks the change as a completion rather
+   than a glitch. */
+.ak-form__success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--bp-space-3, 0.75rem);
+  text-align: center;
+}
+
+.ak-form__success:focus {
+  outline: none;
+}
+
+.ak-form__success-check {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  font-size: 1.25rem;
+  font-weight: 700;
+
+  --_color: var(--ak-color-heading);
+  --_background: color-mix(in srgb, var(--ak-accent) 12%, transparent);
+  color: var(--_color);
+  background-color: var(--_background);
+}
+
+.ak-form__success-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+
+  --_border-color: var(--ak-accent);
+  border: 2px solid var(--_border-color);
+  opacity: 0;
+}
+
+.ak-form__success-heading {
+  --_color: var(--ak-color-heading);
+  margin: 0;
+  color: var(--_color);
+  font-size: var(--bp-text-xl, 1.25rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.ak-form__success-body p:last-child {
+  margin-bottom: 0;
+}
+
+.ak-form__success-next {
+  --_color: var(--ak-color-muted);
+  --_background: var(--ak-color-surface-muted, transparent);
+  --_border-color: var(--ak-color-border);
+  width: 100%;
+  margin: 0;
+  padding: var(--bp-space-3, 0.75rem);
+  border: 1px dashed var(--_border-color);
+  border-radius: var(--bp-radius, 0.625rem);
+  background-color: var(--_background);
+  color: var(--_color);
+  font-size: var(--bp-text-sm, 0.875rem);
+}
+
+.ak-form__success-close {
+  margin-top: var(--bp-space-3, 0.75rem);
+  align-self: stretch;
+}
+
+/* One element with character (the check), everything else in a minor key,
+   all of it under 750ms — the visitor already waited for the server. */
+.ak-form__success-check {
+  animation: ak-form-pop 420ms cubic-bezier(0.2, 0.8, 0.3, 1.2) both;
+}
+
+.ak-form__success-ring {
+  animation: ak-form-ripple 700ms ease-out both;
+}
+
+.ak-form__success-heading {
+  animation: ak-form-rise 380ms ease-out 90ms both;
+}
+
+.ak-form__success-body {
+  animation: ak-form-rise 380ms ease-out 160ms both;
+}
+
+.ak-form__success-next {
+  animation: ak-form-rise 380ms ease-out 240ms both;
+}
+
+.ak-form__success-close {
+  animation: ak-form-rise 380ms ease-out 320ms both;
+}
+
+@keyframes ak-form-pop {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+
+  60% {
+    transform: scale(1.06);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes ak-form-rise {
+  from {
+    transform: translateY(6px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes ak-form-ripple {
+  from {
+    transform: scale(0.6);
+    opacity: 0.55;
+  }
+
+  to {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+/* Reduced motion means "show it complete", not "show it slower". */
+@media (prefers-reduced-motion: reduce) {
+  .ak-form__success-check,
+  .ak-form__success-heading,
+  .ak-form__success-body,
+  .ak-form__success-next,
+  .ak-form__success-close {
+    animation: none;
+  }
+
+  .ak-form__success-ring {
+    display: none;
+  }
+}
+
+/* ── Split layout ──────────────────────────────────────────────
+   Full-page only (e.g. /contact). The drawer overrides this back to a single
+   column — 28rem never has room for two. */
+/* Same panel language as the mega menu (src/Header/Nav/megamenu.css): dark
+   left column, white right column, one rounded card with the seam hidden. The
+   --ak-mega-* tokens are shared on purpose — if the mega menu is restyled,
+   this follows it instead of drifting into a second, nearly-identical look. */
+.ak-form--split {
+  display: grid;
+  grid-template-columns: 36% 1fr;
+  gap: 0;
+  max-width: 64rem;
+  overflow: hidden;
+  border-radius: var(--bp-radius-lg, 0.75rem);
+  box-shadow: var(--bp-shadow-xl);
+}
+
+.ak-form--split .ak-form__aside {
+  --_background: var(--form-panel-background, var(--ak-mega-left-bg));
+  --_color: var(--form-panel-color, var(--ak-mega-fg));
+  display: flex;
+  flex-direction: column;
+  gap: var(--md-size-space-20, 1.25rem);
+  padding: var(--bp-space-8, 2rem);
+  background-color: var(--_background);
+  color: var(--_color);
+}
+
+.ak-form__aside-accent {
+  --_background: var(--ak-accent);
+  display: block;
+  width: var(--bp-space-8, 2rem);
+  height: 2px;
+  border-radius: var(--bp-radius-full, 999px);
+  background-color: var(--_background);
+}
+
+.ak-form__aside-eyebrow {
+  --_color: var(--form-panel-eyebrow-color, var(--ak-mega-eyebrow-color));
+  margin: 0;
+  color: var(--_color);
+  font-size: var(--bp-text-xs);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.ak-form__aside-headline {
+  margin: 0;
+  color: inherit;
+  font-size: var(--bp-text-2xl);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.ak-form__aside-description :is(p, li) {
+  margin: 0;
+  color: inherit;
+  font-size: var(--bp-text-sm);
+  line-height: 1.6;
+}
+
+.ak-form--split .ak-form__card {
+  --_background: var(--form-panel-form-background, var(--ak-mega-right-bg));
+  padding: var(--bp-space-8, 2rem);
+  border: none;
+  border-radius: 0;
+  background-color: var(--_background);
+}
+
+@media (max-width: 48rem) {
+  .ak-form--split {
+    grid-template-columns: 1fr;
+  }
+
+  /* Stacked, the panel sits directly above the fields, so it works as a
+     heading rather than a column of its own: accent rule, eyebrow, headline.
+     The description would just push the first input further down the page. */
+  .ak-form--split .ak-form__aside-description {
+    display: none;
+  }
+
+  .ak-form--split .ak-form__aside {
+    gap: var(--bp-space-3, 0.75rem);
+    padding: var(--bp-space-6, 1.5rem);
+  }
+}
+
+.ak-form__retry {
+  --_color: var(--ak-accent);
+  margin-left: var(--bp-space-3, 0.75rem);
+  color: var(--_color);
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.ak-form__consent {
+  margin-bottom: var(--bp-space-6, 1.5rem);
+}
+
+/* Keeps the .bp-checkbox class even though this is a div, not a label — see
+   Component.tsx for why the wording cannot be a <label>. The class is what
+   defines the private custom properties .bp-checkbox__input reads for its
+   size, border and background; without it the input collapses to nothing. */
+.ak-form__consent-row {
+  align-items: flex-start;
+  /* The row itself is not clickable any more, only the box and the link. */
+  cursor: default;
+}
+
+.ak-form__consent-row .bp-checkbox__input {
+  flex: none;
+  margin-top: 0.15rem;
+}
+
+.ak-form__consent-text p {
+  margin: 0;
+  font-size: var(--bp-text-sm, 0.875rem);
+}
+
+/* The privacy-policy link has to look like a link inside small print. */
+.ak-form__consent-text a {
+  --_color: var(--ak-accent);
+  color: var(--_color);
+  text-decoration: underline;
+}
+
+.ak-form__turnstile:not(:empty) {
+  margin-bottom: var(--bp-space-6, 1.5rem);
+}
+
+/* Bot bait. Kept out of the accessibility tree and off-screen rather than
+   display:none — some bots skip hidden inputs, which defeats the point. */
+.ak-form__honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Upload dropzone ───────────────────────────────────────────
+   Option A from the design comparison: the existing box, with the states it
+   was missing — a pointer-tracking spotlight while a file is dragged over, a
+   ring that expands from where it landed, and the chosen file as a row with
+   its own progress. */
+/* The stage outlives the swap from dropzone to file row, so the drop ring can
+   finish playing after the file has been accepted. Anchoring it to the zone
+   meant it was unmounted in the same tick and never drew a frame. */
+.ak-upload__stage {
+  position: relative;
+}
+
+.ak-upload__zone {
+  position: relative;
+  transition:
+    border-color var(--bp-duration-fast, 0.15s) var(--bp-ease, ease),
+    background-color var(--bp-duration-fast, 0.15s) var(--bp-ease, ease),
+    transform var(--bp-duration-fast, 0.15s) var(--bp-ease, ease);
+}
+
+.ak-upload__zone[data-dragover] {
+  --_border-color: var(--ak-accent);
+  --_background: color-mix(in srgb, var(--ak-accent) 7%, transparent);
+  border-color: var(--_border-color);
+  border-style: solid;
+  background-color: var(--_background);
+  transform: scale(1.015);
+}
+
+/* No transition on the gradient's position: a lag between the cursor and the
+   light reads as jank rather than polish. Only the fade in/out is eased. */
+.ak-upload__zone::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--bp-duration-fast, 0.15s) var(--bp-ease, ease);
+  background: radial-gradient(
+    14rem circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--ak-accent) 26%, transparent),
+    transparent 70%
+  );
+}
+
+.ak-upload__zone[data-dragover]::after {
+  opacity: 1;
+}
+
+.ak-upload__ripple {
+  position: absolute;
+  left: var(--mx, 50%);
+  top: var(--my, 50%);
+  width: 0;
+  height: 0;
+  border-radius: 999px;
+  pointer-events: none;
+  opacity: 0;
+  translate: -50% -50%;
+
+  --_border-color: var(--ak-accent);
+  border: 2px solid var(--_border-color);
+}
+
+.ak-upload__stage[data-dropped] .ak-upload__ripple {
+  animation: ak-upload-ring 460ms cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+}
+
+.ak-upload__stage[data-dropped] {
+  animation: ak-upload-settle 320ms cubic-bezier(0.2, 0.8, 0.3, 1.1);
+}
+
+/* The row arrives while the ring is still expanding, so it fades in rather
+   than popping into place mid-animation. */
+.ak-upload__file {
+  animation: ak-upload-arrive 260ms ease-out both;
+}
+
+@keyframes ak-upload-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ak-upload-ring {
+  from {
+    width: 0;
+    height: 0;
+    opacity: 0.85;
+  }
+
+  to {
+    width: 22rem;
+    height: 22rem;
+    opacity: 0;
+  }
+}
+
+@keyframes ak-upload-settle {
+  0% {
+    transform: scale(0.97);
+  }
+
+  60% {
+    transform: scale(1.01);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.ak-upload__hint {
+  --_color: var(--ak-color-muted);
+  color: var(--_color);
+  font-size: var(--bp-text-xs, 0.75rem);
+}
+
+.ak-upload__file {
+  display: flex;
+  align-items: center;
+  gap: var(--bp-space-3, 0.75rem);
+
+  --_border-color: var(--ak-color-border);
+  padding: var(--bp-space-2, 0.5rem) var(--bp-space-3, 0.75rem);
+  border: 1px solid var(--_border-color);
+  border-radius: var(--bp-radius, 0.625rem);
+}
+
+.ak-upload__thumb {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  overflow: hidden;
+
+  --_background: var(--ak-color-surface-muted, transparent);
+  --_border-color: var(--ak-color-border);
+  --_color: var(--ak-color-muted);
+  border: 1px solid var(--_border-color);
+  border-radius: var(--bp-radius-sm, 0.375rem);
+  background-color: var(--_background);
+  color: var(--_color);
+  font-size: var(--bp-text-xs, 0.75rem);
+  font-weight: 700;
+}
+
+.ak-upload__thumb {
+  background-position: center;
+  background-size: cover;
+}
+
+.ak-upload__meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.ak-upload__name {
+  --_color: var(--ak-color-heading);
+  color: var(--_color);
+  font-size: var(--bp-text-sm, 0.875rem);
+  font-weight: 600;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.ak-upload__size {
+  --_color: var(--ak-color-muted);
+  color: var(--_color);
+  font-size: var(--bp-text-xs, 0.75rem);
+  font-variant-numeric: tabular-nums;
+}
+
+.ak-upload__bar {
+  display: block;
+  height: 3px;
+  margin-top: 0.2rem;
+  border-radius: 999px;
+  overflow: hidden;
+
+  --_background: var(--ak-color-border);
+  background-color: var(--_background);
+}
+
+.ak-upload__bar-fill {
+  display: block;
+  block-size: 100%;
+
+  --_background: var(--ak-accent);
+  background-color: var(--_background);
+  transition: inline-size 0.25s ease;
+}
+
+.ak-upload__remove {
+  flex: none;
+  border: none;
+  background: none;
+  padding: 0.2rem;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+
+  --_color: var(--ak-color-muted);
+  color: var(--_color);
+}
+
+.ak-upload__remove:hover:not(:disabled) {
+  --_color: var(--ak-accent);
+  color: var(--_color);
+}
+
+.ak-upload__remove:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ak-upload__error {
+  --_color: var(--ak-accent);
+  margin: var(--bp-space-2, 0.5rem) 0 0;
+  color: var(--_color);
+  font-size: var(--bp-text-xs, 0.75rem);
+}
+
+/* The border and the copy carry the message; the rest is decoration. */
+@media (prefers-reduced-motion: reduce) {
+  .ak-upload__zone,
+  .ak-upload__bar-fill {
+    transition: none;
+  }
+
+  .ak-upload__zone[data-dragover] {
+    transform: none;
+  }
+
+  .ak-upload__stage[data-dropped],
+  .ak-upload__stage[data-dropped] .ak-upload__ripple,
+  .ak-upload__file {
+    animation: none;
+  }
+}
+
+/* ── Radio group ───────────────────────────────────────────────
+   Options laid out in a row while they fit, so a two-option yes/no reads as
+   one line rather than a stack. */
+.ak-radio-field__group {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.ak-radio-field__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bp-space-3, 0.75rem) var(--bp-space-6, 1.5rem);
+  margin-top: var(--bp-space-2, 0.5rem);
+}
+
+.ak-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bp-space-2, 0.5rem);
+  cursor: pointer;
+}
+
+.ak-radio__input {
+  accent-color: var(--ak-accent);
+  width: 1rem;
+  height: 1rem;
+}
+
+.ak-radio__label {
+  --_color: var(--ak-color-heading);
+  color: var(--_color);
+  font-size: var(--bp-text-sm, 0.875rem);
+}
+
+/* Character counter — only rendered near the limit, see the component. */
+.ak-field__counter {
+  --_color: var(--ak-color-muted);
+  margin: var(--bp-space-1, 0.25rem) 0 0;
+  color: var(--_color);
+  font-size: var(--bp-text-xs, 0.75rem);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
 }

@@ -580,6 +580,27 @@ export interface Form {
             width?: number | null;
             required?: boolean | null;
             /**
+             * Lets the browser offer the visitor’s saved details for this field. Leave empty on B2B fields where a personal value would be wrong — a company field should use “Company / brand name”, never “Full name”.
+             */
+            autocomplete?:
+              | (
+                  | 'off'
+                  | 'name'
+                  | 'given-name'
+                  | 'family-name'
+                  | 'email'
+                  | 'tel'
+                  | 'organization'
+                  | 'organization-title'
+                  | 'url'
+                  | 'street-address'
+                  | 'address-level2'
+                  | 'address-level1'
+                  | 'postal-code'
+                  | 'country-name'
+                )
+              | null;
+            /**
              * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
              */
             externalId?: string | null;
@@ -612,6 +633,27 @@ export interface Form {
             label?: string | null;
             width?: number | null;
             required?: boolean | null;
+            /**
+             * Lets the browser offer the visitor’s saved details for this field. Leave empty on B2B fields where a personal value would be wrong — a company field should use “Company / brand name”, never “Full name”.
+             */
+            autocomplete?:
+              | (
+                  | 'off'
+                  | 'name'
+                  | 'given-name'
+                  | 'family-name'
+                  | 'email'
+                  | 'tel'
+                  | 'organization'
+                  | 'organization-title'
+                  | 'url'
+                  | 'street-address'
+                  | 'address-level2'
+                  | 'address-level1'
+                  | 'postal-code'
+                  | 'country-name'
+                )
+              | null;
             /**
              * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
              */
@@ -662,6 +704,31 @@ export interface Form {
             defaultValue?: string | null;
             required?: boolean | null;
             /**
+             * Lets the browser offer the visitor’s saved details for this field. Leave empty on B2B fields where a personal value would be wrong — a company field should use “Company / brand name”, never “Full name”.
+             */
+            autocomplete?:
+              | (
+                  | 'off'
+                  | 'name'
+                  | 'given-name'
+                  | 'family-name'
+                  | 'email'
+                  | 'tel'
+                  | 'organization'
+                  | 'organization-title'
+                  | 'url'
+                  | 'street-address'
+                  | 'address-level2'
+                  | 'address-level1'
+                  | 'postal-code'
+                  | 'country-name'
+                )
+              | null;
+            /**
+             * Phone strips formatting before the value is sent on (Monday phone columns require it). Website accepts "acme.com" and adds the https:// people leave out.
+             */
+            valueType?: ('text' | 'phone' | 'website') | null;
+            /**
              * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
              */
             externalId?: string | null;
@@ -675,6 +742,27 @@ export interface Form {
             width?: number | null;
             defaultValue?: string | null;
             required?: boolean | null;
+            /**
+             * Lets the browser offer the visitor’s saved details for this field. Leave empty on B2B fields where a personal value would be wrong — a company field should use “Company / brand name”, never “Full name”.
+             */
+            autocomplete?:
+              | (
+                  | 'off'
+                  | 'name'
+                  | 'given-name'
+                  | 'family-name'
+                  | 'email'
+                  | 'tel'
+                  | 'organization'
+                  | 'organization-title'
+                  | 'url'
+                  | 'street-address'
+                  | 'address-level2'
+                  | 'address-level1'
+                  | 'postal-code'
+                  | 'country-name'
+                )
+              | null;
             /**
              * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
              */
@@ -704,6 +792,59 @@ export interface Form {
             id?: string | null;
             blockName?: string | null;
             blockType: 'upload';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            defaultValue?: string | null;
+            options?:
+              | {
+                  label: string;
+                  value: string;
+                  id?: string | null;
+                }[]
+              | null;
+            required?: boolean | null;
+            /**
+             * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
+             */
+            externalId?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'radio';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            required?: boolean | null;
+            defaultValue?: string | null;
+            /**
+             * Date and time also fills the time part of a Monday.com date column; date only leaves it empty.
+             */
+            granularity?: ('date' | 'dateAndTime') | null;
+            /**
+             * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
+             */
+            externalId?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'date';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            defaultValue?: boolean | null;
+            required?: boolean | null;
+            /**
+             * Monday.com column id this field's value maps to (e.g. "text7", "dropdown0"). Leave blank to exclude this field from the sync.
+             */
+            externalId?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'toggle';
           }
       )[]
     | null;
@@ -765,6 +906,72 @@ export interface Form {
    * Monday.com group id within the board (e.g. "topics").
    */
   mondayGroupId?: string | null;
+  /**
+   * Short paragraph shown under the form title. This is what appears inside the modal drawer, which has no block-level intro of its own.
+   */
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Small print under the submit button — reassurance, not instructions (e.g. "No staffing required. Amerikiosks handles placement, setup and daily operations.").
+   */
+  footnote?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Headline of the thank-you state, e.g. "Request received". The rich text below becomes the body.
+   */
+  confirmationHeading?: string | null;
+  /**
+   * What happens next, with a real timeframe — e.g. "We'll email you within 2 business days." This is the line that decides whether the site reads as serious.
+   */
+  confirmationNext?: string | null;
+  /**
+   * Adds a required consent checkbox above the submit button. Turn this on for any form that collects personal data (name, email, phone). The answer and its timestamp are stored on each submission as proof.
+   */
+  requiresConsent?: boolean | null;
+  /**
+   * Wording shown next to the consent checkbox. State what the data is used for and link to the privacy policy.
+   */
+  consentText?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -940,6 +1147,18 @@ export interface FormBlock {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * Small uppercase label above the headline, e.g. "Get in touch".
+   */
+  panelLabel?: string | null;
+  /**
+   * The hook. Short and specific — this is the panel's whole job.
+   */
+  panelHeadline?: string | null;
+  /**
+   * Split puts the intro content in a dark panel to the left of the fields. Use it on a full page like /contact; it falls back to stacked on narrow screens and inside the modal drawer, which is always too narrow for two columns.
+   */
+  layout?: ('stacked' | 'split') | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'formBlock';
@@ -1996,7 +2215,25 @@ export interface FormSubmission {
     | null;
   syncStatus?: ('pending' | 'synced' | 'error') | null;
   syncError?: string | null;
+  externalItemId?: string | null;
   syncedAt?: string | null;
+  /**
+   * Files submitted with this form. Stored in the private bucket — use the View button above, the key alone is not a URL.
+   */
+  attachments?:
+    | {
+        field?: string | null;
+        key?: string | null;
+        filename?: string | null;
+        mimeType?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Whether the visitor ticked the consent box on a form that requires it. Written by the submission route — a consent record only counts if it was stored at the moment of capture.
+   */
+  consentGiven?: boolean | null;
+  consentAt?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2493,6 +2730,9 @@ export interface FormBlockSelect<T extends boolean = true> {
   form?: T;
   enableIntro?: T;
   introContent?: T;
+  panelLabel?: T;
+  panelHeadline?: T;
+  layout?: T;
   id?: T;
   blockName?: T;
 }
@@ -3249,6 +3489,7 @@ export interface FormsSelect<T extends boolean = true> {
               label?: T;
               width?: T;
               required?: T;
+              autocomplete?: T;
               externalId?: T;
               id?: T;
               blockName?: T;
@@ -3267,6 +3508,7 @@ export interface FormsSelect<T extends boolean = true> {
               label?: T;
               width?: T;
               required?: T;
+              autocomplete?: T;
               externalId?: T;
               id?: T;
               blockName?: T;
@@ -3310,6 +3552,8 @@ export interface FormsSelect<T extends boolean = true> {
               width?: T;
               defaultValue?: T;
               required?: T;
+              autocomplete?: T;
+              valueType?: T;
               externalId?: T;
               id?: T;
               blockName?: T;
@@ -3322,6 +3566,7 @@ export interface FormsSelect<T extends boolean = true> {
               width?: T;
               defaultValue?: T;
               required?: T;
+              autocomplete?: T;
               externalId?: T;
               id?: T;
               blockName?: T;
@@ -3342,6 +3587,50 @@ export interface FormsSelect<T extends boolean = true> {
               maxFileSize?: T;
               required?: T;
               multiple?: T;
+              externalId?: T;
+              id?: T;
+              blockName?: T;
+            };
+        radio?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              defaultValue?: T;
+              options?:
+                | T
+                | {
+                    label?: T;
+                    value?: T;
+                    id?: T;
+                  };
+              required?: T;
+              externalId?: T;
+              id?: T;
+              blockName?: T;
+            };
+        date?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              required?: T;
+              defaultValue?: T;
+              granularity?: T;
+              externalId?: T;
+              id?: T;
+              blockName?: T;
+            };
+        toggle?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              defaultValue?: T;
+              required?: T;
               externalId?: T;
               id?: T;
               blockName?: T;
@@ -3370,6 +3659,12 @@ export interface FormsSelect<T extends boolean = true> {
   integrationTarget?: T;
   externalId?: T;
   mondayGroupId?: T;
+  description?: T;
+  footnote?: T;
+  confirmationHeading?: T;
+  confirmationNext?: T;
+  requiresConsent?: T;
+  consentText?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -3395,7 +3690,19 @@ export interface FormSubmissionsSelect<T extends boolean = true> {
       };
   syncStatus?: T;
   syncError?: T;
+  externalItemId?: T;
   syncedAt?: T;
+  attachments?:
+    | T
+    | {
+        field?: T;
+        key?: T;
+        filename?: T;
+        mimeType?: T;
+        id?: T;
+      };
+  consentGiven?: T;
+  consentAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -3753,11 +4060,23 @@ export interface Setting {
    */
   llmsIncludeInsights?: boolean | null;
   /**
+   * Adds an invisible bot check to every public form. Leave off until both keys below are filled in — with it on and the keys missing, submissions would be rejected. The other protections (rate limiting, honeypot, timing) run regardless of this setting.
+   */
+  turnstileEnabled?: boolean | null;
+  /**
+   * Public key from the Cloudflare dashboard (Turnstile → your widget). It is rendered into the page by design — it is not a secret.
+   */
+  turnstileSiteKey?: string | null;
+  /**
+   * Private key used server-side to verify each submission against Cloudflare. Only visible to logged-in admin users — never exposed in the public Settings API response.
+   */
+  turnstileSecretKey?: string | null;
+  /**
    * Where new refund claims sync to by default when submitted from the public ClaimForm. Changing this takes effect immediately for claims created after the change — existing claims keep whatever target they already have. Staff can still override a specific claim's target afterward in Claims → Integration target, but that only affects future re-syncs, not one already dispatched.
    */
   defaultClaimIntegrationTarget?: ('odoo' | 'monday') | null;
   /**
-   * API token for the Monday.com GraphQL API (used by the Claims refund flow). Only visible to logged-in admin users — never exposed in the public Settings API response.
+   * API token for the Monday.com GraphQL API (the Claims refund flow and the form-builder sync). Only visible to logged-in admin users — never exposed in the public Settings API response. In local development a MONDAY_API_TOKEN in .env.local overrides this value and the field turns read-only.
    */
   mondayApiToken?: string | null;
   mondayBoardsCache?:
@@ -3920,6 +4239,9 @@ export interface SettingsSelect<T extends boolean = true> {
   llmsSiteDescription?: T;
   llmsIncludePages?: T;
   llmsIncludeInsights?: T;
+  turnstileEnabled?: T;
+  turnstileSiteKey?: T;
+  turnstileSecretKey?: T;
   defaultClaimIntegrationTarget?: T;
   mondayApiToken?: T;
   mondayBoardsCache?: T;

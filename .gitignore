@@ -29,3 +29,6 @@ tsconfig.tsbuildinfo
 .env*
 .claude/*.local.md
 coverage/
+
+# Local doctor/backup artifacts — never part of a PR
+.claude/settings.local.json.doctor-backup

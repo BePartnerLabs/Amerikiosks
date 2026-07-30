@@ -3,6 +3,7 @@ import type React from 'react'
 import type { FieldErrorsImpl, FieldValues, UseFormRegister } from 'react-hook-form'
 
 import { FormError } from '../Error'
+import { RequiredMark } from '../RequiredMark'
 import { Width } from '../Width'
 import './select.css'
 
@@ -25,11 +26,7 @@ export const Select: React.FC<
         htmlFor={name}
       >
         {label}
-        {required && (
-          <span className="required">
-            * <span className="sr-only">(required)</span>
-          </span>
-        )}
+        {required && <RequiredMark />}
       </label>
       <select
         className="ak-form__native-select"

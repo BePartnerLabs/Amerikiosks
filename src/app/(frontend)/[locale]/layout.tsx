@@ -56,6 +56,11 @@ export default async function LocaleLayout({ children, params }: Props) {
   const settings = await getCachedGlobal('settings', 1)()
   const footer = await getCachedGlobal('footer', 1)()
   const gaId = (settings as { googleAnalyticsId?: string } | null)?.googleAnalyticsId
+  const turnstile = settings as {
+    turnstileEnabled?: boolean
+    turnstileSiteKey?: string
+  } | null
+  const turnstileSiteKey = turnstile?.turnstileEnabled ? turnstile.turnstileSiteKey : undefined
   const brandDescription = (footer as { brandDescription?: string } | null)?.brandDescription
   const contactEmail = (footer as { contactEmail?: string } | null)?.contactEmail
 
@@ -77,6 +82,15 @@ export default async function LocaleLayout({ children, params }: Props) {
       suppressHydrationWarning
     >
       <head>
+        {turnstileSiteKey && (
+          // Published once here rather than threaded as a prop through every
+          // FormBlock call site (blocks, FAQWithForm, the modal drawer, the
+          // header/footer CTAs). A Turnstile site key is public by design.
+          <meta
+            content={turnstileSiteKey}
+            name="turnstile-site-key"
+          />
+        )}
         <script
           type="application/ld+json"
           // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD is server-generated structured data, not user input
@@ -155,6 +169,11 @@ export default async function LocaleLayout({ children, params }: Props) {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  // Makes the layout viewport shrink when the on-screen keyboard opens instead
+  // of the keyboard covering it. Without this a fixed overlay — the form drawer
+  // — keeps the height of the whole screen while the visible area is half that,
+  // so focusing a field pushes its content out of view.
+  interactiveWidget: 'resizes-content',
 }
 
 export const metadata: Metadata = {

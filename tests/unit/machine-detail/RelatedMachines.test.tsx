@@ -58,5 +58,11 @@ describe('RelatedMachines', () => {
     // Reuses the home page's ModelLinesBlock carousel — each family panel
     // links to its own /machines/[family] page; there's no aggregate link.
     expect(screen.getByRole('link', { name: /Delta/ })).toHaveAttribute('href', '/machines/delta')
-  })
+
+    // The dynamic import above pulls in a whole route component (Payload
+    // config, next-intl, the block tree). On a cold transform that alone runs
+    // past vitest's 5s default, which made this fail intermittently — always
+    // at ~5.1-5.6s, never on an assertion. The budget was the problem, not the
+    // test.
+  }, 20_000)
 })

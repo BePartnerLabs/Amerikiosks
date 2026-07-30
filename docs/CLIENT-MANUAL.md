@@ -58,9 +58,20 @@ Working outline for the final content-editor usage manual. Each bullet is a topi
 
 ## 8. Forms
 
-- Creating/editing a form (form-builder plugin): fields, confirmation message, notification email
+- Creating/editing a form (form-builder plugin): fields, confirmation message
+- **Leads arrive in Monday.com, not by email.** The plugin shows an "Emails" panel on each form — it does nothing, because this site sends no email. Which board a form feeds is set per form in `Integration target` + the board/group pickers
 - Connecting a form to a button via the Link field's modal type
 - Where form submissions go / how to check them
+- **The consent checkbox** — turn on `Requires consent` in the form's sidebar for anything that collects personal data (name, email, phone, company). The checkbox is then added automatically above the submit button and is required; `Consent text` is where the opt-in wording and the privacy-policy link go. Nothing to add field by field
+- **Reading the consent record** — each submission shows a read-only "Consent given" tick and a "Consent at" date in its sidebar. They are written at the moment of capture and cannot be edited by hand, which is the whole point: they stand as evidence
+- **Spam protection is automatic** — submissions are rate-limited, screened for bots, and validated before anything is stored. Nothing to configure per form. Optionally, `Settings → Security` holds the Cloudflare Turnstile toggle and its two keys; turning it on adds an invisible bot check across every form at once. Leave it off until both keys are filled in — on without keys would reject real submissions
+- **The text around the form** — each form document has its own `Description` (the paragraph under the title, which is what shows inside the modal drawer) and `Footnote` (the small print under the submit button, for reassurance rather than instructions)
+- **The thank-you message** — `Confirmation heading`, the rich text body, and `What happens next`. Fill in the last one with a real timeframe ("we'll email you within 2 business days"); it is the line that decides whether the page reads as serious
+- **Form block layout** — on a full page like `/contact`, the Form block can be set to `Split`, which puts a dark panel beside the fields, styled like the mega menu: `Panel eyebrow`, `Panel headline` and the block's Intro Content as the description. On phones the description drops and only the eyebrow and headline remain. Inside the modal drawer the layout is always stacked — it is too narrow for two columns
+- **Field types available** — text, email, number, textarea, select, **radio** (all options visible, best for yes/no), **toggle** (a switch, same control as the cookie preferences panel), **date**, checkbox, country, state, upload, and *message* (not a question — a block of text that reads as a section separator between fields)
+- **Text fields have a "Value type"** — *Plain text*, *Phone number* or *Website*. It is not cosmetic: Phone strips formatting before the value reaches Monday (its phone columns reject formatted numbers), and Website accepts "acme.com" and adds the https:// people leave out
+- **"Autocomplete" on a field** lets the browser offer the visitor's saved details. Pick the meaning, not the field name — a company field should use *Company / brand name*, never *Full name*, or the browser offers the person's own name. Leave it empty to switch autofill off
+- **Upload fields** — accept JPEG, PNG, WEBP and HEIC images up to 8MB. The file type is checked against the file's real content, so renaming something to `.jpg` will not get it through
 
 ## 9. Header & Footer (site-wide)
 

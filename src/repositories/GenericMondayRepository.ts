@@ -1,4 +1,5 @@
 import { serverHttpClient } from './clients/ServerHttpClient'
+import { isMondayMocked, logMockedMondayCall } from './mondayMock'
 
 const MONDAY_API_URL = 'https://api.monday.com/v2'
 
@@ -54,8 +55,20 @@ export const GenericMondayRepository = {
     columnValues: Record<string, unknown>,
     apiToken: string,
   ): Promise<{ id: string }> {
+    if (isMondayMocked) {
+      logMockedMondayCall('create_item', { boardId, groupId, itemName, columnValues })
+      return { id: `mock-${Date.now()}` }
+    }
+
+    // create_labels_if_missing is not optional in practice: a dropdown column
+    // rejects any label it does not already know
+    // ("The dropdown label 'Retail' does not exist, possible labels are: {}"),
+    // and the labels come from options an editor typed in the CMS. Without
+    // this, every select mapped to a dropdown column fails until someone
+    // mirrors the wording by hand on the board. Verified against the real API
+    // on a throwaway board.
     const mutation = `mutation ($boardId: ID!, $groupId: String!, $itemName: String!, $columnValues: JSON!) {
-      create_item (board_id: $boardId, group_id: $groupId, item_name: $itemName, column_values: $columnValues) {
+      create_item (board_id: $boardId, group_id: $groupId, item_name: $itemName, column_values: $columnValues, create_labels_if_missing: true) {
         id
       }
     }`
@@ -87,6 +100,17 @@ export const GenericMondayRepository = {
     file: { buffer: Buffer; filename: string; contentType: string },
     apiToken: string,
   ): Promise<void> {
+    if (isMondayMocked) {
+      logMockedMondayCall('add_file_to_column', {
+        itemId,
+        columnId,
+        filename: file.filename,
+        contentType: file.contentType,
+        bytes: file.buffer.length,
+      })
+      return
+    }
+
     const query = `mutation ($file: File!) {
       add_file_to_column (item_id: ${itemId}, column_id: "${columnId}", file: $file) {
         id

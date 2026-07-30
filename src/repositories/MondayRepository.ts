@@ -1,7 +1,9 @@
 import type { PayloadRequest } from 'payload'
+import { resolveMondayToken } from '@/utilities/resolveMondayToken'
 import { CLAIM_REASON_LABEL, PAYMENT_METHOD_LABEL } from './claimLabels'
 import type { ClaimSubmission } from './claimTypes'
 import { serverHttpClient } from './clients/ServerHttpClient'
+import { isMondayMocked, logMockedMondayCall } from './mondayMock'
 
 export const MONDAY_BOARD_ID = 4498706759
 export const MONDAY_GROUP_ID = 'topics'
@@ -74,6 +76,17 @@ async function addFileToColumn(
   photo: NonNullable<ClaimSubmission['photo']>,
   apiToken: string,
 ): Promise<void> {
+  if (isMondayMocked) {
+    logMockedMondayCall('add_file_to_column (claim photo)', {
+      itemId,
+      columnId: 'files3',
+      filename: photo.filename,
+      contentType: photo.contentType,
+      bytes: photo.buffer.length,
+    })
+    return
+  }
+
   const query = `mutation ($file: File!) {
     add_file_to_column (item_id: ${itemId}, column_id: "files3", file: $file) {
       id
@@ -103,7 +116,18 @@ export const MondayRepository = {
     // regardless of the field's own access.read: authenticatedFieldAccess
     // restriction (that gate is for external REST/GraphQL requests only).
     const settings = await req.payload.findGlobal({ slug: 'settings', req })
-    const apiToken = settings.mondayApiToken ?? ''
+    const apiToken = resolveMondayToken(settings)
+
+    if (isMondayMocked) {
+      logMockedMondayCall('create_item (claim)', {
+        boardId: MONDAY_BOARD_ID,
+        groupId: MONDAY_GROUP_ID,
+        itemName: `${claim.customerFirstName} ${claim.customerLastName}`.trim(),
+        columnValues: buildColumnValues(claim),
+        photo: claim.photo ? claim.photo.filename : null,
+      })
+      return { responseCode: 200, message: 'success (mocked)' }
+    }
 
     const mutation = `mutation ($boardId: ID!, $groupId: String!, $itemName: String!, $columnValues: JSON!) {
       create_item (board_id: $boardId, group_id: $groupId, item_name: $itemName, column_values: $columnValues) {

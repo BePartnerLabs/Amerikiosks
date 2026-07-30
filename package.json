@@ -99,7 +99,8 @@
   "lint-staged": {
     "*.{ts,tsx,js,jsx,json,css}": "biome check --write --no-errors-on-unmatched",
     "*.css": "node scripts/validate-ds-tokens.mjs",
-    "*.{ts,tsx,jsx}": "node scripts/validate-no-raw-icon-image.mjs"
+    "*.{ts,tsx,jsx}": "node scripts/validate-no-raw-icon-image.mjs",
+    "src/blocks/*/{Component,Server}.tsx": "node scripts/validate-block-markup.mjs"
   },
   "engines": {
     "node": ">=24.0.0",

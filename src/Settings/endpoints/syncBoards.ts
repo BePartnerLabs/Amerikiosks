@@ -1,4 +1,5 @@
 import type { Endpoint } from 'payload'
+import { resolveMondayToken } from '@/utilities/resolveMondayToken'
 
 const MONDAY_API_URL = 'https://api.monday.com/v2'
 
@@ -37,7 +38,7 @@ export const syncBoardsEndpoint: Endpoint = {
     }
 
     const settings = await req.payload.findGlobal({ slug: 'settings', req })
-    const apiToken = settings.mondayApiToken
+    const apiToken = resolveMondayToken(settings)
 
     if (!apiToken) {
       return Response.json(

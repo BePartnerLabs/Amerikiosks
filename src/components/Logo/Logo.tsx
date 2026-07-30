@@ -1,20 +1,48 @@
-import Image from 'next/image'
 import './logo.css'
 
-interface Props {
-  className?: string
-  loading?: 'lazy' | 'eager'
-  priority?: 'auto' | 'high' | 'low'
-}
-
-export const Logo = (props: Props) => {
-  const { loading: loadingFromProps, priority: priorityFromProps } = props
-
-  const loading = loadingFromProps || 'lazy'
-  const priority = priorityFromProps || 'low'
-
+// Both marks are inline SVG now — there is no raster image left to hint
+// loading/priority for, so those props are gone rather than kept as no-ops.
+export const Logo = () => {
   return (
     <>
+      {/* Mobile: the mark on its own, inline for the same reason as desktop —
+          it used to be a next/image of logo-1.svg, which meant the Bracket Lock
+          animation below could not reach inside it (and, being alt="" +
+          aria-hidden, left the logo with no accessible name on small screens
+          once the labelled desktop SVG was display:none). */}
+      <svg
+        aria-label="Amerikiosks"
+        role="img"
+        className="logo-mobile"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 108.25 65.74"
+        width="40"
+        height="24"
+      >
+        <g className="logo-mark-left">
+          <polygon
+            fill="#ec254e"
+            points="0 52.16 19.31 32.85 0 13.53 0 1.26 13.63 1.26 45.06 32.85 13.63 64.44 0 64.44 0 52.16"
+          />
+        </g>
+        <g className="logo-mark-core">
+          <polygon
+            fill="#ec254e"
+            points="45.06 64.44 63.18 64.44 63.18 32.85 45.06 52.16 45.06 64.44"
+          />
+          <polygon
+            fill="#ec254e"
+            points="45.06 1.26 45.06 13.56 63.18 32.85 63.18 1.26 45.06 1.26"
+          />
+        </g>
+        <g className="logo-mark-right">
+          <polygon
+            fill="#ec254e"
+            points="108.25 52.16 88.93 32.85 108.25 13.53 108.25 1.26 94.91 1.26 63.18 32.85 94.91 64.44 108.25 64.44 108.25 52.16"
+          />
+        </g>
+      </svg>
+
       {/* Desktop: inline SVG so currentColor inherits from parent */}
       <svg
         aria-label="Amerikiosks"
@@ -64,18 +92,6 @@ export const Logo = (props: Props) => {
           <path d="M1148.51,9.05c1.88-2.88,4.52-5.11,7.94-6.69,3.42-1.57,7.35-2.36,11.81-2.36s8.31.77,11.74,2.32c3.44,1.53,6.12,3.71,8.04,6.54,1.93,2.82,2.89,6.11,2.89,9.86h-11.89c-.06-2.7-1.13-4.87-3.2-6.52-2.06-1.65-4.78-2.48-8.15-2.48-3.08,0-5.54.77-7.39,2.29-1.84,1.52-2.76,3.49-2.76,5.9s.81,4.12,2.43,5.24c1.62,1.13,3.77,2,6.47,2.65l10.35,2.54c4.72,1.13,8.53,3.18,11.45,6.18,2.92,3.01,4.38,6.86,4.38,11.57,0,3.95-.99,7.4-2.96,10.35-1.97,2.95-4.77,5.23-8.37,6.86-3.61,1.62-7.81,2.43-12.58,2.43-7.09,0-12.85-1.72-17.3-5.17-4.44-3.45-6.86-8.14-7.24-14.08h11.89c.13,2.96,1.36,5.27,3.71,6.96,2.34,1.68,5.39,2.53,9.15,2.53s6.46-.77,8.52-2.32c2.06-1.54,3.08-3.66,3.08-6.35,0-2.31-.72-4.06-2.17-5.25-1.44-1.18-3.34-2.06-5.68-2.64l-10.58-2.54c-5.2-1.26-9.22-3.35-12.08-6.28-2.86-2.94-4.29-6.73-4.29-11.38,0-3.88.94-7.27,2.81-10.16Z" />
         </g>
       </svg>
-
-      <Image
-        alt=""
-        aria-hidden="true"
-        width={140}
-        height={34}
-        loading={loading}
-        fetchPriority={priority}
-        decoding="async"
-        className="logo-mobile"
-        src="/logos/logo-1.svg"
-      />
     </>
   )
 }

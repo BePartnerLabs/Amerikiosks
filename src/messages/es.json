@@ -66,5 +66,38 @@
     "reset": "Restablecer todo",
     "on": "activado",
     "off": "desactivado"
+  },
+  "form": {
+    "loading": "Enviando tus datos…",
+    "requiredMark": "(obligatorio)",
+    "close": "Cerrar",
+    "closeForm": "Cerrar formulario",
+    "retry": "Reintentar",
+    "submitError": "No pudimos enviar tu formulario. Tus datos siguen aquí — inténtalo de nuevo.",
+    "successClose": "Cerrar",
+    "errors": {
+      "required": "Este campo es obligatorio",
+      "email": "Introduce un email válido, p. ej. nombre@empresa.com",
+      "number": "Introduce un número",
+      "phone": "Introduce un teléfono válido",
+      "maxLength": "Esta respuesta es demasiado larga — máximo {max} caracteres",
+      "generic": "Revisa este campo",
+      "website": "Introduce un sitio web válido, p. ej. acme.com",
+      "date": "Elige una fecha válida"
+    },
+    "upload": {
+      "prompt": "Arrastra un archivo aquí o búscalo",
+      "dismiss": "Quitar",
+      "tooLarge": "El archivo supera el límite de 8MB.",
+      "wrongType": "El archivo debe ser una imagen JPEG, PNG, WEBP o HEIC.",
+      "hint": "JPEG, PNG, WEBP o HEIC · máx. 8MB",
+      "hintWithPdf": "JPEG, PNG, WEBP, HEIC o PDF · máx. 8MB",
+      "remove": "Quitar archivo",
+      "uploading": "Progreso de subida"
+    },
+    "summary": "{count, plural, one {1 campo requiere atención} other {# campos requieren atención}}",
+    "progressLabel": "Campos obligatorios completados",
+    "sending": "Enviando…",
+    "charactersLeft": "{count, plural, one {queda 1 carácter} other {quedan # caracteres}}"
   }
 }

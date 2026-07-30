@@ -1,4 +1,5 @@
 import type { FieldAccess, GlobalConfig } from 'payload'
+import { isMondayTokenFromEnv } from '@/utilities/resolveMondayToken'
 import { syncBoardsEndpoint } from './endpoints/syncBoards'
 import { revalidateSettings } from './hooks/revalidateSettings'
 
@@ -201,6 +202,47 @@ export const Settings: GlobalConfig = {
           ],
         },
         {
+          label: 'Security',
+          fields: [
+            {
+              name: 'turnstileEnabled',
+              type: 'checkbox',
+              label: 'Enable Cloudflare Turnstile on public forms',
+              defaultValue: false,
+              admin: {
+                description:
+                  'Adds an invisible bot check to every public form. Leave off until both keys below are filled in — with it on and the keys missing, submissions would be rejected. The other protections (rate limiting, honeypot, timing) run regardless of this setting.',
+              },
+            },
+            {
+              name: 'turnstileSiteKey',
+              type: 'text',
+              label: 'Turnstile Site Key',
+              admin: {
+                description:
+                  'Public key from the Cloudflare dashboard (Turnstile → your widget). It is rendered into the page by design — it is not a secret.',
+                condition: (data) => Boolean(data?.turnstileEnabled),
+              },
+            },
+            {
+              name: 'turnstileSecretKey',
+              type: 'text',
+              label: 'Turnstile Secret Key',
+              access: {
+                read: authenticatedFieldAccess,
+              },
+              admin: {
+                description:
+                  'Private key used server-side to verify each submission against Cloudflare. Only visible to logged-in admin users — never exposed in the public Settings API response.',
+                condition: (data) => Boolean(data?.turnstileEnabled),
+                components: {
+                  Field: '@payloadcms/ui#PasswordField',
+                },
+              },
+            },
+          ],
+        },
+        {
           label: 'Integrations',
           fields: [
             {
@@ -224,9 +266,19 @@ export const Settings: GlobalConfig = {
               access: {
                 read: authenticatedFieldAccess,
               },
+              // Read-only while a local MONDAY_API_TOKEN is overriding it
+              // (resolveMondayToken), so the panel cannot claim to control a
+              // value it is not the source of. Evaluated once when the config
+              // loads on the server — which is fine: the env var cannot change
+              // without restarting the process anyway.
               admin: {
+                readOnly: isMondayTokenFromEnv(),
+                // Deliberately one fixed string covering both states rather
+                // than a conditional one: `description` is baked into
+                // payload-types.ts, so branching on an env var would make
+                // `generate:types` produce a different file on each machine.
                 description:
-                  'API token for the Monday.com GraphQL API (used by the Claims refund flow). Only visible to logged-in admin users — never exposed in the public Settings API response.',
+                  'API token for the Monday.com GraphQL API (the Claims refund flow and the form-builder sync). Only visible to logged-in admin users — never exposed in the public Settings API response. In local development a MONDAY_API_TOKEN in .env.local overrides this value and the field turns read-only.',
                 components: {
                   Field: '@payloadcms/ui#PasswordField',
                 },
