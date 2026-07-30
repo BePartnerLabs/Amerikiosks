@@ -1,13 +1,15 @@
 /**
  * Processes media resource URL to ensure proper formatting.
  *
- * Local paths (e.g. `/api/media/file/image.webp`) are kept relative so
- * Next.js image optimization treats them as local rather than fetching
- * through `remotePatterns`, which blocks private IPs since Next.js 16.
+ * With `disablePayloadAccessControl` on the s3Storage adapter (see
+ * `src/plugins/index.ts`), stored media is absolute and points at
+ * `S3_PUBLIC_URL`, so the cache tag applies to it — the bucket host ignores
+ * the query param and Next.js folds it into the image cache key.
  *
- * Cache tags are only appended to external URLs — Payload's local file
- * endpoint does not accept query parameters and returns 400 when they
- * are present. Next.js Image handles caching for local paths internally.
+ * Relative paths still reach here from media that predates that setup or is
+ * served off `/public` (e.g. `/claim-form/...`). Those are left untouched:
+ * Payload's own file endpoint returns 400 on query params, and Next.js
+ * handles caching for local paths internally.
  */
 export const getMediaUrl = (url: string | null | undefined, cacheTag?: string | null): string => {
   if (!url) return ''

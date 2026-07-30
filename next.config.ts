@@ -18,6 +18,9 @@ const NEXT_PUBLIC_SERVER_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
 const nextConfig: NextConfig = {
   images: {
     localPatterns: [
+      // Still needed: without S3 credentials Payload falls back to the
+      // staticDir in Media.ts and serves media from /api/media/file/... again.
+      // With R2 configured, media is absolute and matched by remotePatterns.
       {
         pathname: '/api/media/file/**',
       },
@@ -26,6 +29,11 @@ const nextConfig: NextConfig = {
       },
     ],
     qualities: [100],
+    // Media now resolves to S3_PUBLIC_URL, which locally is MinIO on
+    // http://localhost:9000. Next 16 refuses to optimize images from a local IP
+    // unless this is set, so without it every image 500s in dev. Development
+    // only — in production S3_PUBLIC_URL is the R2 custom domain.
+    dangerouslyAllowLocalIP: process.env.NODE_ENV === 'development',
     remotePatterns: [
       ...[NEXT_PUBLIC_SERVER_URL /* 'https://example.com' */].map((item) => {
         const url = new URL(item)
