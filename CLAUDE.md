@@ -56,23 +56,11 @@ Antes de escribir cualquier componente visual, invoca la skill `bpl-design-syste
 
 ## Repository Pattern
 
-All API calls (internal `/next/*` routes and external services) must follow the repository pattern:
-
-```
-fetch() / axios
-    ↓
-src/repositories/clients/ApiClient.ts   ← HTTP concern only
-    ↓
-src/repositories/<Domain>Repository.ts  ← business methods, error handling, fallbacks
-    ↓
-src/repositories/index.ts               ← named exports consumed by components
-```
-
-- `ApiClient` wraps `fetch`, builds URLs, throws on non-OK responses.
-- Repositories expose domain methods (`PagesRepository.translateSlug()`), catch errors, return safe fallbacks.
-- Components import from `@/repositories`, never call `fetch` directly.
-
-Reference: `https://www.giorgiosaud.io/notebook/repository-pattern.md`
+The org-wide rule and its diagram live in the parent `CLAUDE.md`, which loads in
+this project too. The concrete paths here: `src/repositories/clients/ApiClient.ts`
+(HTTP only) → `src/repositories/<Domain>Repository.ts` (domain methods, error
+handling, safe fallbacks) → `src/repositories/index.ts` (the named exports
+components import from, e.g. `PagesRepository.translateSlug()`).
 
 ## Client Deliverables
 
