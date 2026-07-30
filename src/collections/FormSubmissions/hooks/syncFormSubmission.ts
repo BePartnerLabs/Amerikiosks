@@ -255,6 +255,14 @@ async function run(payload: Payload, doc: SubmissionDoc): Promise<void> {
       ))
     }
 
+    // Recorded before the attachments, not with the final 'synced' status: the
+    // item already exists in Monday at this point, and if attaching a file
+    // fails, saving the id only at the end loses the reference to it entirely.
+    // A re-sync then creates a *second* item and nobody can find the first.
+    // Observed exactly that way — a file Monday rejected left an orphan item on
+    // the board and `externalItemId: null` on the submission.
+    await updateStatus({ externalItemId: itemId })
+
     // Attachments live in the private R2 bucket (see the route that writes
     // them); the bytes are pulled server-side with credentials and forwarded
     // to Monday as a real file. There is deliberately no URL involved — the
