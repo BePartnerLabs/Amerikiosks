@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { FormDrawerTrigger } from '@/components/FormDrawer'
 import { CMSLink } from '@/components/Link'
 import { Logo } from '@/components/Logo/Logo'
@@ -11,9 +12,11 @@ interface FooterContentProps {
 }
 
 export function FooterContent({ footer, socialLinks }: FooterContentProps) {
+  const t = useTranslations('footer')
   const {
     brandDescription,
     columns,
+    contactHeading,
     contactEmail,
     contactCta,
     contactCtaUrl,
@@ -47,7 +50,7 @@ export function FooterContent({ footer, socialLinks }: FooterContentProps) {
             <Link
               href="/"
               className="ak-footer__logo"
-              aria-label="Go to homepage"
+              aria-label={t('home')}
             >
               <Logo />
             </Link>
@@ -87,7 +90,7 @@ export function FooterContent({ footer, socialLinks }: FooterContentProps) {
           {/* Contact column */}
           {(contactCta || contactEmail) && (
             <div className="ak-footer__col">
-              <p className="ak-footer__col-heading">Contact</p>
+              <p className="ak-footer__col-heading">{contactHeading || t('contact')}</p>
               <ul className="ak-footer__col-links">
                 {contactCta && (
                   <li
@@ -134,7 +137,11 @@ export function FooterContent({ footer, socialLinks }: FooterContentProps) {
         </div>
 
         <div className="breakout ak-footer__bottom">
-          <p className="ak-footer__copyright">© {new Date().getFullYear()} Amerikiosks</p>
+          {/* `footer.rights` existed in both locales but nothing rendered it —
+              the wording was dropped in a refactor and left the key orphaned. */}
+          <p className="ak-footer__copyright">
+            © {new Date().getFullYear()} Amerikiosks. {t('rights')}.
+          </p>
           <SocialLinks
             links={socialLinks}
             variant="footer"

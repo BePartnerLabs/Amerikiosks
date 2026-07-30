@@ -3982,6 +3982,10 @@ export interface Footer {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Leave empty to use the default ("Contact" / "Contacto").
+   */
+  contactHeading?: string | null;
   contactEmail?: string | null;
   /**
    * e.g. "Start a partnership"
@@ -4198,6 +4202,7 @@ export interface FooterSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  contactHeading?: T;
   contactEmail?: T;
   contactCta?: T;
   contactCtaType?: T;

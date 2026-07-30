@@ -74,6 +74,7 @@ import * as migration_20260730_001956_form_submission_external_item_id from './2
 import * as migration_20260730_012000_backfill_text_field_value_type from './20260730_012000_backfill_text_field_value_type';
 import * as migration_20260730_214026_form_display_title from './20260730_214026_form_display_title';
 import * as migration_20260730_220000_drop_orphaned_autosave_columns from './20260730_220000_drop_orphaned_autosave_columns';
+import * as migration_20260730_224141_footer_contact_heading from './20260730_224141_footer_contact_heading';
 
 export const migrations = [
   {
@@ -449,11 +450,16 @@ export const migrations = [
   {
     up: migration_20260730_214026_form_display_title.up,
     down: migration_20260730_214026_form_display_title.down,
-    name: '20260730_214026_form_display_title'
+    name: '20260730_214026_form_display_title',
   },
   {
     up: migration_20260730_220000_drop_orphaned_autosave_columns.up,
     down: migration_20260730_220000_drop_orphaned_autosave_columns.down,
-    name: '20260730_220000_drop_orphaned_autosave_columns'
+    name: '20260730_220000_drop_orphaned_autosave_columns',
+  },
+  {
+    up: migration_20260730_224141_footer_contact_heading.up,
+    down: migration_20260730_224141_footer_contact_heading.down,
+    name: '20260730_224141_footer_contact_heading'
   },
 ];

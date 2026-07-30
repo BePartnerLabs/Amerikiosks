@@ -4,7 +4,10 @@
     "close": "Cerrar menú"
   },
   "footer": {
-    "rights": "Todos los derechos reservados"
+    "rights": "Todos los derechos reservados",
+    "contact": "Contacto",
+    "home": "Ir a la página de inicio",
+    "socialAriaLabel": "Amerikiosks en {platform}"
   },
   "search": {
     "placeholder": "Buscar...",

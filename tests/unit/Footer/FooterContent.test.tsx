@@ -2,6 +2,25 @@ import { cleanup, render, screen } from '@testing-library/react'
 import type React from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
+// Resolved against the real es.json rather than echoing the key back. The point
+// of the footer i18n fix is that the Spanish strings exist and are reachable —
+// a mock returning "footer.contact" would pass even if the key were missing.
+vi.mock('next-intl', async () => {
+  const es = (await import('@/messages/es.json')).default as unknown as Record<
+    string,
+    Record<string, string>
+  >
+  return {
+    useTranslations: (namespace: string) => (key: string, values?: Record<string, string>) => {
+      let value = es[namespace]?.[key] ?? `${namespace}.${key}`
+      for (const [name, replacement] of Object.entries(values ?? {})) {
+        value = value.replace(`{${name}}`, replacement)
+      }
+      return value
+    },
+  }
+})
+
 vi.mock('next/link', () => ({
   default: ({
     href,
@@ -129,16 +148,31 @@ describe('FooterContent', () => {
     expect(data['@type']).toBe('WPFooter')
   })
 
-  it('renders copyright with current year', () => {
+  // `footer.rights` was translated in both locales but nothing rendered it.
+  it('renders copyright with current year and the localized rights notice', () => {
     render(<FooterContent footer={baseFooter} />)
-    expect(screen.getByText(`© ${new Date().getFullYear()} Amerikiosks`)).toBeInTheDocument()
+    expect(
+      screen.getByText(`© ${new Date().getFullYear()} Amerikiosks. Todos los derechos reservados.`),
+    ).toBeInTheDocument()
+  })
+
+  it('uses the editable contact heading when one is set', () => {
+    render(<FooterContent footer={{ ...baseFooter, contactHeading: 'Hablemos' }} />)
+    expect(screen.getByText('Hablemos')).toBeInTheDocument()
+  })
+
+  // The bug this fixes: the heading was the literal string "Contact" in JSX, so
+  // it stayed English in /es beside three translated column headings.
+  it('falls back to the localized default when no contact heading is set', () => {
+    render(<FooterContent footer={baseFooter} />)
+    expect(screen.getByText('Contacto')).toBeInTheDocument()
   })
 
   it('renders nothing in contact column when both contactEmail and contactCta are absent', () => {
     const { container } = render(
       <FooterContent footer={{ ...baseFooter, contactEmail: undefined, contactCta: undefined }} />,
     )
-    expect(container.querySelector('.ak-footer__col-heading')?.textContent).not.toBe('Contact')
+    expect(container.querySelector('.ak-footer__col-heading')?.textContent).not.toBe('Contacto')
   })
 
   it('renders footer landmark', () => {
