@@ -41,12 +41,35 @@ jobs:
 
   # Deploys only fire on `preview/**` and on published releases, so without
   # this nothing proves main still compiles until a release is being cut.
-  # Compile only — no DB is reached, the values below just satisfy the config
-  # that `payload generate:importmap` loads before `next build` runs.
+  #
+  # It needs a real database, not placeholder connection values: `next build`
+  # collects page data, which runs `generateStaticParams` on four content routes
+  # and prerenders /robots.txt, /sitemap.xml and /llms.txt — all of which read
+  # from Payload. With an unreachable DATABASE_URL the build died on
+  # ECONNREFUSED, which is what this job was reporting as a build failure.
+  #
+  # An empty Postgres plus `payload migrate` is enough: the pages render with no
+  # content, and the migrations get exercised on a clean database as a side
+  # benefit — the one thing the preview rehearsal cannot show, since preview
+  # always migrates a restore that already has data.
   build:
     needs: setup
     name: Build
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: ci
+          POSTGRES_PASSWORD: ci
+          POSTGRES_DB: ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
@@ -59,6 +82,10 @@ jobs:
           key: ${{ needs.setup.outputs.cache-key }}
           restore-keys: ${{ runner.os }}-pnpm-
       - run: pnpm install --frozen-lockfile
+      - run: pnpm payload migrate
+        env:
+          DATABASE_URL: postgres://ci:ci@localhost:5432/ci
+          PAYLOAD_SECRET: ci-build-only-not-a-real-secret
       - run: pnpm build
         env:
           DATABASE_URL: postgres://ci:ci@localhost:5432/ci
