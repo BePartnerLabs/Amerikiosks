@@ -1,20 +1,23 @@
 import config from '@payload-config'
+import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
+import { convertLexicalToPlaintext } from '@payloadcms/richtext-lexical/plaintext'
 import type { Metadata } from 'next'
-import { getLocale } from 'next-intl/server'
+import { getLocale, getTranslations } from 'next-intl/server'
 import { getPayload } from 'payload'
 import type { FaqItem } from '@/payload-types'
+import { jsonLdString } from '@/utilities/jsonLdString'
 import { FaqClient } from './FaqClient'
 import './faq.css'
 
-export const metadata: Metadata = {
-  title: 'FAQ — Amerikiosks',
-  description:
-    'Frequently asked questions about Amerikiosks brand programs, venue partnerships, and operations.',
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('faq')
+  return { title: t('title'), description: t('description') }
 }
 
 export default async function FaqPage() {
   const payload = await getPayload({ config })
   const locale = await getLocale()
+  const t = await getTranslations('faq')
 
   const result = await payload.find({
     collection: 'faqItems',
@@ -28,7 +31,7 @@ export default async function FaqPage() {
   const faqs = result.docs as FaqItem[]
 
   const allTags = Array.from(
-    new Set(faqs.flatMap((f) => (f.tags ?? []).map((t) => t.label)).filter(Boolean)),
+    new Set(faqs.flatMap((f) => (f.tags ?? []).map((tag) => tag.label)).filter(Boolean)),
   ) as string[]
 
   const jsonLd = {
@@ -39,7 +42,7 @@ export default async function FaqPage() {
       name: item.question,
       acceptedAnswer: {
         '@type': 'Answer',
-        text: item.question,
+        text: convertLexicalToPlaintext({ data: item.answer as unknown as SerializedEditorState }),
       },
     })),
   }
@@ -48,12 +51,12 @@ export default async function FaqPage() {
     <main className="ak-faq-page">
       <script
         type="application/ld+json"
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD is server-generated structured data, not user input
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD is escaped via jsonLdString, but CMS-entered content still passes through this tag
+        dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }}
       />
       <div className="bp-content-grid">
         <div className="content ak-faq-page__inner">
-          <h1 className="ak-faq-page__heading">Frequently Asked Questions</h1>
+          <h1 className="ak-faq-page__heading">{t('heading')}</h1>
           <FaqClient
             faqs={faqs}
             allTags={allTags}
