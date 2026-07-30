@@ -895,6 +895,10 @@ export interface Form {
       }[]
     | null;
   /**
+   * Heading shown to the visitor above the form. Translate it per locale. Leave empty to fall back to the Title above, which is an internal name (admin list, analytics) and is not translated.
+   */
+  displayTitle?: string | null;
+  /**
    * External system this form syncs submissions to. Odoo is not yet implemented — reserved for when that integration is ready.
    */
   integrationTarget?: ('none' | 'monday' | 'odoo') | null;
@@ -3656,6 +3660,7 @@ export interface FormsSelect<T extends boolean = true> {
         message?: T;
         id?: T;
       };
+  displayTitle?: T;
   integrationTarget?: T;
   externalId?: T;
   mondayGroupId?: T;
