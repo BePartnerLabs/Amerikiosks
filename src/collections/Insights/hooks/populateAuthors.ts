@@ -1,35 +1,33 @@
 import type { CollectionAfterReadHook } from 'payload'
-import type { User } from '@/payload-types'
 
 // The `user` collection has access control locked so that users are not publicly accessible
 // This means that we need to populate the authors manually here to protect user privacy
 // GraphQL will not return mutated user data that differs from the underlying schema
 // So we use an alternative `populatedAuthors` field to populate the user data, hidden from the admin UI
-export const populateAuthors: CollectionAfterReadHook = async ({ doc, req: { payload } }) => {
+export const populateAuthors: CollectionAfterReadHook = async ({ doc, req }) => {
   if (doc?.authors && doc?.authors?.length > 0) {
-    const authorDocs: User[] = []
+    const ids = doc.authors
+      .map((author: { id?: number } | number) => (typeof author === 'object' ? author?.id : author))
+      .filter(Boolean)
 
-    for (const author of doc.authors) {
-      try {
-        const authorDoc = await payload.findByID({
-          id: typeof author === 'object' ? author?.id : author,
-          collection: 'users',
-          depth: 0,
-        })
+    try {
+      const { docs } = await req.payload.find({
+        collection: 'users',
+        depth: 0,
+        limit: ids.length,
+        pagination: false,
+        req,
+        where: { id: { in: ids } },
+      })
 
-        if (authorDoc) {
-          authorDocs.push(authorDoc)
-        }
-
-        if (authorDocs.length > 0) {
-          doc.populatedAuthors = authorDocs.map((authorDoc) => ({
-            id: authorDoc.id,
-            name: authorDoc.name,
-          }))
-        }
-      } catch {
-        // swallow error
+      if (docs.length > 0) {
+        doc.populatedAuthors = docs.map((authorDoc) => ({
+          id: authorDoc.id,
+          name: authorDoc.name,
+        }))
       }
+    } catch {
+      // swallow error — an unpopulated author list must not break reads
     }
   }
 
