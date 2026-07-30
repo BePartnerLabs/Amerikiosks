@@ -9,7 +9,10 @@ import { mergeOpenGraph } from './mergeOpenGraph'
 const getImageURL = (image?: Media | Config['db']['defaultIDType'] | null) => {
   const serverUrl = getServerSideURL()
 
-  let url = `${serverUrl}/logos/logo-1.svg`
+  // A raster, not the SVG logo: social crawlers don't render SVG, so an SVG
+  // fallback means no preview image at all. Regenerate with
+  // `node scripts/generate-og-default.mjs`.
+  let url = `${serverUrl}/og-default.png`
 
   if (image && typeof image === 'object' && 'url' in image) {
     const ogUrl = image.sizes?.og?.url
