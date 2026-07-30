@@ -16,12 +16,72 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Does this release drop or rename anything?
+  #
+  # It decides whether the *public* site is closed during the migrate→deploy
+  # window, so it deliberately errs toward "yes": a false positive costs a
+  # couple of minutes of maintenance page, a false negative costs 500s.
+  #
+  # Only migrations added since the previous tag can run, so those are the only
+  # files worth reading. An `ADD COLUMN` is invisible to the old build; a
+  # `DROP COLUMN` is not, which is the whole point of this job.
+  plan:
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    outputs:
+      destructive: ${{ steps.check.outputs.destructive }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - id: check
+        run: |
+          set -euo pipefail
+          CURRENT="${{ github.event.release.tag_name }}"
+          PREV="$(git tag --sort=-creatordate | grep -Fxv "$CURRENT" | head -1 || true)"
+
+          if [ -z "$PREV" ]; then
+            echo "No previous tag to compare against — assuming destructive."
+            echo "destructive=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          FILES="$(git diff --name-only --diff-filter=A "$PREV".."$CURRENT" -- 'src/migrations/*.ts' || true)"
+
+          if [ -z "$FILES" ]; then
+            echo "No new migrations between $PREV and $CURRENT."
+            echo "destructive=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "New migrations:"; echo "$FILES"
+
+          if echo "$FILES" | xargs grep -lEi 'DROP COLUMN|DROP TABLE|RENAME COLUMN|RENAME TO'; then
+            echo "→ drops/renames present: the old build will query columns that no longer exist."
+            echo "destructive=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "→ additive only: the old build keeps working against the new schema."
+            echo "destructive=false" >> "$GITHUB_OUTPUT"
+          fi
+
   # `migrate` runs against the live database while the OLD build is still
-  # serving, so between it and the promotion there is a window where new
-  # schema meets old code. Reads survive that; writes can corrupt. These two
-  # jobs close /admin and /api at the edge for the duration — production only,
-  # since a preview deploy has no editors to protect.
+  # serving, so between it and the promotion there is a window where new schema
+  # meets old code.
+  #
+  # `/admin` and `/api` are always closed for that window — an editor writing
+  # mid-migration can corrupt data.
+  #
+  # The public site is closed too, but ONLY when `plan` saw a drop or a rename.
+  # This used to be left open on the assumption that "reads survive"; they do
+  # not. v1.38.0 moved the Form block's panel columns into a `_locales` table
+  # and dropped the originals, and for ~90 seconds every page carrying that
+  # block answered 500 with `column pages__blocks_formBlock.intro_content does
+  # not exist` — the home page and /contact among them. A maintenance page is
+  # the honest answer there; closing the site on every release would be
+  # needless downtime, since most carry no migrations at all.
   lock:
+    needs: [plan]
     if: github.event_name == 'release'
     runs-on: ubuntu-latest
     # Same GitHub Environment the reusable deploy workflow uses — the Vercel
@@ -39,6 +99,18 @@ jobs:
         run: |
           vercel firewall rules enable "maintenance-admin"
           vercel firewall rules enable "maintenance-api"
+          vercel firewall publish --yes
+
+      # `|| true`: the rule is created by hand in the Vercel dashboard, like
+      # the other two. Until it exists this is a no-op rather than a failed
+      # release — a missing maintenance page must never be what stops a deploy.
+      - name: Close the public site (drops/renames only)
+        if: needs.plan.outputs.destructive == 'true'
+        run: |
+          vercel firewall rules enable "maintenance-site" || {
+            echo "::warning::maintenance-site rule not configured — visitors will see errors during the migrate→deploy window."
+            exit 0
+          }
           vercel firewall publish --yes
 
   migrate:
@@ -93,4 +165,7 @@ jobs:
         run: |
           vercel firewall rules disable "maintenance-admin"
           vercel firewall rules disable "maintenance-api"
+          # Unconditional, unlike the enable: if `plan` was wrong, or the job
+          # that set it never ran, the site must still come back.
+          vercel firewall rules disable "maintenance-site" || true
           vercel firewall publish --yes
