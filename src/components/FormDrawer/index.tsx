@@ -44,11 +44,47 @@ export const FormDrawerTrigger: React.FC<FormDrawerTriggerProps> = ({
   useEffect(() => {
     const el = drawerRef.current
     if (!el) return
-    const onToggle = (event: Event) => {
-      if ((event as ToggleEvent).newState === 'closed') setInstance((n) => n + 1)
+
+    // iOS does not shrink the layout viewport for the keyboard: it keeps the
+    // page the same size and slides the *visual* viewport up, then scrolls the
+    // document to reveal the focused field. A `position: fixed` drawer is
+    // anchored to the layout viewport, so it stays where the page went — which
+    // is why every tap on an input appeared to drag the drawer downwards.
+    //
+    // Pinning it to the visual viewport's own top and height cancels exactly
+    // that offset. `interactiveWidget: 'resizes-content'` (see the layout's
+    // viewport export) covers Chromium; this covers Safari, which ignores it.
+    const viewport = window.visualViewport
+    const pin = () => {
+      if (!viewport) return
+      el.style.setProperty('--ak-drawer-top', `${viewport.offsetTop}px`)
+      el.style.setProperty('--ak-drawer-height', `${viewport.height}px`)
     }
+    const unpin = () => {
+      el.style.removeProperty('--ak-drawer-top')
+      el.style.removeProperty('--ak-drawer-height')
+    }
+
+    const onToggle = (event: Event) => {
+      const open = (event as ToggleEvent).newState === 'open'
+      if (open) {
+        pin()
+        viewport?.addEventListener('resize', pin)
+        viewport?.addEventListener('scroll', pin)
+        return
+      }
+      viewport?.removeEventListener('resize', pin)
+      viewport?.removeEventListener('scroll', pin)
+      unpin()
+      setInstance((n) => n + 1)
+    }
+
     el.addEventListener('toggle', onToggle)
-    return () => el.removeEventListener('toggle', onToggle)
+    return () => {
+      el.removeEventListener('toggle', onToggle)
+      viewport?.removeEventListener('resize', pin)
+      viewport?.removeEventListener('scroll', pin)
+    }
   }, [mounted])
 
   const close = useCallback(() => {

@@ -10,7 +10,14 @@
   display: none;
 
   position: fixed;
-  inset-block: 0;
+  /* Pinned to the *visual* viewport, not the layout one: on iOS the keyboard
+     slides the visual viewport up and scrolls the document, and a drawer
+     anchored to the layout viewport travels with the page — which read as the
+     drawer sliding down on every field tap. FormDrawer sets these two
+     properties from window.visualViewport while the drawer is open; the
+     fallbacks are what every other browser uses. */
+  top: var(--ak-drawer-top, 0px);
+  bottom: auto;
   inset-inline-end: 0;
   inset-inline-start: auto;
   /* Leaves a sliver of the page visible on narrow screens so the drawer
@@ -25,7 +32,7 @@
      bar and is unreachable. dvh tracks the actually-visible viewport instead.
      No vh fallback: dvh/dvi ship in every browser this project targets
      (Safari 15.4+, Chrome 108+, Firefox 101+). */
-  height: 100dvh;
+  height: var(--ak-drawer-height, 100dvh);
   margin: 0;
   padding: 0;
   border: none;

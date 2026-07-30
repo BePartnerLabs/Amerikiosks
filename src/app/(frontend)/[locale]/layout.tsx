@@ -169,6 +169,11 @@ export default async function LocaleLayout({ children, params }: Props) {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  // Makes the layout viewport shrink when the on-screen keyboard opens instead
+  // of the keyboard covering it. Without this a fixed overlay — the form drawer
+  // — keeps the height of the whole screen while the visible area is half that,
+  // so focusing a field pushes its content out of view.
+  interactiveWidget: 'resizes-content',
 }
 
 export const metadata: Metadata = {
