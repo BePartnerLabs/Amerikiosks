@@ -33,10 +33,6 @@ export default async function ProjectPage({ params: paramsPromise }: Args) {
   return (
     <article>
       <PageClient />
-      <PayloadRedirects
-        disableNotFound
-        url={url}
-      />
       {draft && <LivePreviewListener />}
 
       {heroImg?.url && (

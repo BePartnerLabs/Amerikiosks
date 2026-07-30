@@ -34,12 +34,6 @@ export default async function Post({ params: paramsPromise }: Args) {
     <article className="">
       <PageClient />
 
-      {/* Allows redirects for valid pages too */}
-      <PayloadRedirects
-        disableNotFound
-        url={url}
-      />
-
       {draft && <LivePreviewListener />}
 
       <PostHero post={post} />

@@ -35,10 +35,6 @@ export default async function CustomerServiceRequestARefundPage({ params: params
   return (
     <article data-slug={SLUG}>
       <PageClient />
-      <PayloadRedirects
-        disableNotFound
-        url="/customer-service/request-a-refund"
-      />
       {draft && <LivePreviewListener />}
       <RenderHero
         {...hero}

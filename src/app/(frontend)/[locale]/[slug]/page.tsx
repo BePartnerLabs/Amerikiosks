@@ -56,12 +56,6 @@ export default async function Page({ params: paramsPromise }: Args) {
       data-slug={decodedSlug}
     >
       <PageClient />
-      {/* Allows redirects for valid pages too */}
-      <PayloadRedirects
-        disableNotFound
-        url={url}
-      />
-
       {draft && <LivePreviewListener />}
 
       <RenderHero
