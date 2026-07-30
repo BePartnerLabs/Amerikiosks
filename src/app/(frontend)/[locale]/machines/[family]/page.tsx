@@ -8,6 +8,7 @@ import { SectionHeader } from '@/components/SectionHeader'
 import type { Machine, MachineFamily, MachineInstallation } from '@/payload-types'
 import { generateMeta } from '@/utilities/generateMeta'
 import { getServerSideURL } from '@/utilities/getURL'
+import { machinesAlternates, machinesPath } from '@/utilities/localeUrl'
 import { FamilyHero } from './FamilyHero'
 import { FamilyHighlights } from './FamilyHighlights'
 import { InstallationsGallery } from './InstallationsGallery'
@@ -53,9 +54,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       meta: {
         title: family.meta?.title ?? family.name,
         description: family.meta?.description ?? family.tagline,
-        image: family.meta?.image,
+        image: family.meta?.image ?? family.heroLineupImage ?? family.thumbnail,
       },
     },
+    path: machinesPath(locale, familySlug),
+    languages: machinesAlternates(familySlug),
   })
 }
 

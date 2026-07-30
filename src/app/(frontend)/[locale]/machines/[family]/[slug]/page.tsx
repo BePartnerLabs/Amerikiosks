@@ -10,6 +10,7 @@ import { absoluteUrl } from '@/utilities/absoluteUrl'
 import { generateMeta } from '@/utilities/generateMeta'
 import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 import { getServerSideURL } from '@/utilities/getURL'
+import { machinesAlternates, machinesPath } from '@/utilities/localeUrl'
 import { Capabilities } from './Capabilities'
 import { Dimensions } from './Dimensions'
 import { Highlights } from './Highlights'
@@ -58,6 +59,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         image: machine.meta?.image ?? machine.image,
       },
     },
+    path: machinesPath(locale, family, slug),
+    languages: machinesAlternates(family, slug),
   })
 }
 
