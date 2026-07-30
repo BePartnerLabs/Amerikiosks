@@ -52,11 +52,13 @@ export function useTurnstile(active: boolean) {
   const [token, setToken] = useState<string | undefined>(undefined)
   const [siteKey, setSiteKey] = useState<string | undefined>(undefined)
 
+  // Read on mount, not on first interaction: knowing Turnstile is configured is
+  // what lets the form reserve the widget's space up front. Reading a meta tag
+  // costs nothing — the script and the widget itself still wait for `active`.
   useEffect(() => {
-    if (!active) return
     const key = document.querySelector('meta[name="turnstile-site-key"]')?.getAttribute('content')
     if (key) setSiteKey(key)
-  }, [active])
+  }, [])
 
   useEffect(() => {
     if (!active || !siteKey || !containerRef.current || widgetIdRef.current) return
