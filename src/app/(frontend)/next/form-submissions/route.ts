@@ -71,7 +71,11 @@ async function verifyTurnstile(token: string | undefined, secret: string, ip: st
   if (!token) return false
   try {
     const body = new URLSearchParams({ secret, response: token, remoteip: ip })
-    const res = await fetch(TURNSTILE_VERIFY_URL, { method: 'POST', body })
+    const res = await fetch(TURNSTILE_VERIFY_URL, {
+      method: 'POST',
+      body,
+      signal: AbortSignal.timeout(5_000),
+    })
     const json = (await res.json()) as { success?: boolean }
     return json.success === true
   } catch (err) {
