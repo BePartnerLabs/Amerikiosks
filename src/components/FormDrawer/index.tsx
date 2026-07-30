@@ -103,7 +103,11 @@ export const FormDrawerTrigger: React.FC<FormDrawerTriggerProps> = ({
         aria-hidden="true"
       />
       <div className="ak-link-drawer__header">
-        {form.title && <h2 className="ak-link-drawer__title">{form.title}</h2>}
+        {/* displayTitle is the localized, visitor-facing heading; title is the
+            internal name and only stands in when no translation was written. */}
+        {(form.displayTitle || form.title) && (
+          <h2 className="ak-link-drawer__title">{form.displayTitle || form.title}</h2>
+        )}
         <button
           type="button"
           popoverTarget={drawerId}

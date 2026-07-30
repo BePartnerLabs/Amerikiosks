@@ -23,6 +23,7 @@ type Gtag = (
 
 /** Fields the formOverrides in src/plugins/index.ts add on top of the plugin's own. */
 type ExtendedForm = FormType & {
+  displayTitle?: string | null
   description?: DefaultTypedEditorState
   footnote?: DefaultTypedEditorState
   confirmationHeading?: string
@@ -74,6 +75,7 @@ export const FormBlock: React.FC<
   const t = useTranslations('form')
 
   const {
+    displayTitle,
     description,
     footnote,
     confirmationHeading,
@@ -497,9 +499,12 @@ export const FormBlock: React.FC<
   const withChrome = (content: React.ReactNode) => {
     if (blockType !== 'formBlock') return content
     return (
+      // aria-label is read aloud, so it follows the page language: displayTitle
+      // first, `title` only as the untranslated fallback. The GA attributes
+      // keep `title` on purpose — that one is an identifier, not copy.
       <section
         className="ak-form-block"
-        aria-label={blockName ?? title ?? undefined}
+        aria-label={blockName ?? displayTitle ?? title ?? undefined}
         data-ga-block={toSnakeCase(blockType)}
         data-ga-section={blockName ?? undefined}
       >

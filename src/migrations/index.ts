@@ -72,6 +72,8 @@ import * as migration_20260729_194248_form_block_localized_panel from './2026072
 import * as migration_20260729_215731_form_date_granularity from './20260729_215731_form_date_granularity';
 import * as migration_20260730_001956_form_submission_external_item_id from './20260730_001956_form_submission_external_item_id';
 import * as migration_20260730_012000_backfill_text_field_value_type from './20260730_012000_backfill_text_field_value_type';
+import * as migration_20260730_214026_form_display_title from './20260730_214026_form_display_title';
+import * as migration_20260730_220000_drop_orphaned_autosave_columns from './20260730_220000_drop_orphaned_autosave_columns';
 
 export const migrations = [
   {
@@ -437,11 +439,21 @@ export const migrations = [
   {
     up: migration_20260730_001956_form_submission_external_item_id.up,
     down: migration_20260730_001956_form_submission_external_item_id.down,
-    name: '20260730_001956_form_submission_external_item_id'
+    name: '20260730_001956_form_submission_external_item_id',
   },
   {
     up: migration_20260730_012000_backfill_text_field_value_type.up,
     down: migration_20260730_012000_backfill_text_field_value_type.down,
     name: '20260730_012000_backfill_text_field_value_type',
+  },
+  {
+    up: migration_20260730_214026_form_display_title.up,
+    down: migration_20260730_214026_form_display_title.down,
+    name: '20260730_214026_form_display_title'
+  },
+  {
+    up: migration_20260730_220000_drop_orphaned_autosave_columns.up,
+    down: migration_20260730_220000_drop_orphaned_autosave_columns.down,
+    name: '20260730_220000_drop_orphaned_autosave_columns'
   },
 ];

@@ -83,6 +83,37 @@ describe('FormDrawerTrigger', () => {
     expect(close).toHaveAttribute('popovertargetaction', 'hide')
   })
 
+  // `title` is the internal identifier (admin list, GA form_name); displayTitle
+  // is the localized copy the visitor reads. The heading must prefer the latter.
+  it('prefers displayTitle over title for the heading', () => {
+    render(
+      <FormDrawerTrigger form={{ ...form, displayTitle: 'Sé nuestro socio' } as unknown as Form}>
+        Open
+      </FormDrawerTrigger>,
+    )
+
+    expect(
+      screen.getByRole('heading', { name: 'Sé nuestro socio', hidden: true }),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByRole('heading', { name: 'Start a Partnership', hidden: true }),
+    ).not.toBeInTheDocument()
+  })
+
+  // An untranslated locale leaves displayTitle empty; falling through to `title`
+  // is what keeps the drawer from opening with no heading at all.
+  it('falls back to title when displayTitle is empty', () => {
+    render(
+      <FormDrawerTrigger form={{ ...form, displayTitle: '' } as unknown as Form}>
+        Open
+      </FormDrawerTrigger>,
+    )
+
+    expect(
+      screen.getByRole('heading', { name: 'Start a Partnership', hidden: true }),
+    ).toBeInTheDocument()
+  })
+
   it('omits the heading when the form has no title', () => {
     render(<FormDrawerTrigger form={{ id: 2 } as unknown as Form}>Open</FormDrawerTrigger>)
 

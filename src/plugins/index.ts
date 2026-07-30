@@ -273,28 +273,6 @@ export const plugins: Plugin[] = [
               })
             }
 
-            // What a field *means*, chosen explicitly rather than guessed from
-            // its name. The previous heuristic (a regex over name and label)
-            // missed anything an editor called "Cell" or "Número de contacto",
-            // and a missed phone reaches Monday unnormalised — which is what
-            // its phone column rejected in ffd890a.
-            if (block.slug === 'text') {
-              addOnce(block, {
-                name: 'valueType',
-                type: 'select',
-                defaultValue: 'text',
-                options: [
-                  { label: 'Plain text', value: 'text' },
-                  { label: 'Phone number', value: 'phone' },
-                  { label: 'Website / URL', value: 'website' },
-                ],
-                admin: {
-                  description:
-                    'Phone strips formatting before the value is sent on (Monday phone columns require it). Website accepts "acme.com" and adds the https:// people leave out.',
-                },
-              })
-            }
-
             addOnce(block, {
               name: 'externalId',
               type: 'text',
@@ -336,6 +314,23 @@ export const plugins: Plugin[] = [
             return field
           })
           .concat([
+            // The public heading. `title` stays the internal identifier — it is
+            // what the admin list shows, what GA receives as `form_name`, and
+            // what the Monday connected-forms panel links by, so localizing it
+            // would split every one of those in two by locale. This is the one
+            // the visitor reads, so it is the one that gets translated.
+            // Optional with a fallback to `title`: an empty ES must not leave
+            // the drawer headless.
+            {
+              name: 'displayTitle',
+              type: 'text',
+              localized: true,
+              admin: {
+                position: 'sidebar',
+                description:
+                  'Heading shown to the visitor above the form. Translate it per locale. Leave empty to fall back to the Title above, which is an internal name (admin list, analytics) and is not translated.',
+              },
+            },
             {
               name: 'integrationTarget',
               type: 'select',
