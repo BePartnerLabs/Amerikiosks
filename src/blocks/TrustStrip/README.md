@@ -84,7 +84,12 @@ Partners are managed at **Partners** in the main admin menu. Each partner has:
 
 | Event name | Trigger | `data-ga-section` | Required | Implemented |
 |------------|---------|-------------------|----------|-------------|
-| `partner_logo_dwell` | Logo card leaves viewport after being ≥50% visible | `trust_strip` | ✓ | ✓ |
+| `trust_strip_dwell` | Strip leaves the viewport (or the page/route is left) after being ≥50% visible — once per page view | `trust_strip` | ✓ | ✓ |
+
+Carries `dwell_seconds` and `partner_count`. Replaced the per-logo
+`partner_logo_dwell`, which fired once per card and accounted for 80% of every
+event in the property; the strip is an autoplaying marquee, so per-logo dwell
+measured the animation speed rather than anything the visitor did.
 
 ## Schema.org
 
