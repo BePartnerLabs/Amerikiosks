@@ -50,6 +50,25 @@ const buildPublicFileURL = (filename: string, prefix?: string): string => {
     .join('/')
 }
 
+const s3Vars = {
+  S3_BUCKET: process.env.S3_BUCKET,
+  S3_ACCESS_KEY_ID: process.env.S3_ACCESS_KEY_ID,
+  S3_SECRET_ACCESS_KEY: process.env.S3_SECRET_ACCESS_KEY,
+  S3_PUBLIC_URL: process.env.S3_PUBLIC_URL,
+}
+const s3Missing = Object.entries(s3Vars)
+  .filter(([, v]) => !v)
+  .map(([k]) => k)
+const s3Enabled = s3Missing.length === 0
+
+// All-or-nothing: a partially configured bucket on Vercel would silently write
+// uploads to ephemeral serverless disk and 404 every existing R2 URL.
+if (!s3Enabled && s3Missing.length < Object.keys(s3Vars).length) {
+  const msg = `S3 storage partially configured — missing ${s3Missing.join(', ')}`
+  if (process.env.VERCEL) throw new Error(msg)
+  console.warn(`[plugins] ${msg}; falling back to local staticDir`)
+}
+
 export const plugins: Plugin[] = [
   mcpPlugin({
     collections: {
@@ -60,10 +79,7 @@ export const plugins: Plugin[] = [
   // Locally, Payload falls back to the staticDir in Media.ts (/public/media).
   // S3_PUBLIC_URL is part of the condition, not optional: media URLs are built
   // from it, so without it every image would resolve to a broken path.
-  ...(process.env.S3_BUCKET &&
-  process.env.S3_ACCESS_KEY_ID &&
-  process.env.S3_SECRET_ACCESS_KEY &&
-  process.env.S3_PUBLIC_URL
+  ...(s3Enabled
     ? [
         s3Storage({
           collections: {
@@ -80,7 +96,8 @@ export const plugins: Plugin[] = [
               generateFileURL: ({ filename, prefix }) => buildPublicFileURL(filename, prefix),
             },
           },
-          bucket: process.env.S3_BUCKET,
+          // biome-ignore lint/style/noNonNullAssertion: s3Enabled guarantees all four vars — TS can't narrow process.env through the boolean
+          bucket: process.env.S3_BUCKET!,
           // Uploads go browser → R2 directly via a presigned URL, bypassing
           // the Vercel serverless function entirely — without this, any file
           // over ~4.5MB hits FUNCTION_PAYLOAD_TOO_LARGE, since the upload
@@ -94,8 +111,10 @@ export const plugins: Plugin[] = [
             region: process.env.S3_REGION ?? 'auto',
             forcePathStyle: process.env.S3_FORCE_PATH_STYLE === 'true',
             credentials: {
-              accessKeyId: process.env.S3_ACCESS_KEY_ID,
-              secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+              // biome-ignore lint/style/noNonNullAssertion: guarded by s3Enabled above
+              accessKeyId: process.env.S3_ACCESS_KEY_ID!,
+              // biome-ignore lint/style/noNonNullAssertion: guarded by s3Enabled above
+              secretAccessKey: process.env.S3_SECRET_ACCESS_KEY!,
             },
           },
         }),
