@@ -5,7 +5,12 @@ import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
 import { searchPlugin } from '@payloadcms/plugin-search'
 import { seoPlugin } from '@payloadcms/plugin-seo'
 import type { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
-import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
+import {
+  FixedToolbarFeature,
+  HeadingFeature,
+  InlineToolbarFeature,
+  lexicalEditor,
+} from '@payloadcms/richtext-lexical'
 import { s3Storage } from '@payloadcms/storage-s3'
 import type { Plugin, TextFieldValidation } from 'payload'
 import { attachmentUrlEndpoint } from '@/collections/FormSubmissions/endpoints/attachmentUrl'
@@ -434,6 +439,19 @@ export const plugins: Plugin[] = [
               name: 'consentText',
               type: 'richText',
               localized: true,
+              // The root editor (defaultLexical) ships Bold/Italic/Underline/Link
+              // as *features* but no toolbar to reach them, so the link drawer was
+              // unreachable here — selecting text and trying to link it silently
+              // dropped the selection instead. Bold/Italic have keyboard shortcuts;
+              // Link has none, and this is the one field whose whole job is to
+              // carry a privacy-policy link.
+              editor: lexicalEditor({
+                features: ({ rootFeatures }) => [
+                  ...rootFeatures,
+                  FixedToolbarFeature(),
+                  InlineToolbarFeature(),
+                ],
+              }),
               admin: {
                 position: 'sidebar',
                 condition: (data) => Boolean(data?.requiresConsent),
