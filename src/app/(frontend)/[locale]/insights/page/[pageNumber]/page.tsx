@@ -6,10 +6,7 @@ import { getPayload } from 'payload'
 import { CollectionArchive } from '@/components/CollectionArchive'
 import { PageRange } from '@/components/PageRange'
 import { Pagination } from '@/components/Pagination'
-import { routing } from '@/i18n/routing'
 import PageClient from './page.client'
-
-export const revalidate = 600
 
 type Args = {
   params: Promise<{
@@ -74,23 +71,4 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
   return {
     title: `Amerikiosks Insights — Page ${pageNumber || ''}`,
   }
-}
-
-export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const { totalDocs } = await payload.count({
-    collection: 'insights',
-    overrideAccess: false,
-  })
-
-  const totalPages = Math.ceil(totalDocs / 10)
-  const params: { locale: string; pageNumber: string }[] = []
-
-  for (const locale of routing.locales) {
-    for (let i = 1; i <= totalPages; i++) {
-      params.push({ locale, pageNumber: String(i) })
-    }
-  }
-
-  return params
 }

@@ -13,31 +13,6 @@ import { routing } from '@/i18n/routing'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 
-export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const params: { locale: string; slug: string }[] = []
-
-  for (const locale of routing.locales) {
-    const pages = await payload.find({
-      collection: 'pages',
-      draft: false,
-      limit: 1000,
-      overrideAccess: false,
-      pagination: false,
-      locale,
-      select: { slug: true },
-    })
-
-    for (const doc of pages.docs) {
-      if (doc.slug && doc.slug !== 'home') {
-        params.push({ locale, slug: doc.slug as string })
-      }
-    }
-  }
-
-  return params
-}
-
 type Args = {
   params: Promise<{
     slug?: string
