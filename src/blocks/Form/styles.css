@@ -524,7 +524,16 @@
   text-decoration: underline;
 }
 
-.ak-form__turnstile:not(:empty) {
+/* Space is reserved before the widget exists. The widget only renders once the
+   visitor touches a field (one challenge per page instead of one per portaled
+   form), and a 65px iframe appearing right above the submit button pushed the
+   whole end of the form down mid-typing — on a phone that reads as the panel
+   jumping. 72px is what Cloudflare's managed widget actually measures once
+   rendered (its iframe is 65px plus the wrapper) — measured, not from the docs,
+   because reserving the documented 65 still left a 7px jump. min-height, so a
+   compact or flexible variant that renders shorter does not shift either. */
+.ak-form__turnstile {
+  min-height: 72px;
   margin-bottom: var(--bp-space-6, 1.5rem);
 }
 
