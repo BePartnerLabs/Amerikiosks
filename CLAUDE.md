@@ -72,6 +72,18 @@ components import from, e.g. `PagesRepository.translateSlug()`).
 
 **A branch that adds migrations should end on a `preview/**` branch before it ships.** Push the finished work to e.g. `preview/<feature>` and let the pipeline run `pnpm payload migrate` against the preview database first. A release goes straight to production: the migration runs there with no rehearsal, and `deploy.yml` closes `/admin` and `/api` behind the maintenance firewall rules while it does. Finding out there that a migration is slow, locks a table, or fails halfway means finding out with the client's site in maintenance mode.
 
+**`preview/**` is mandatory, not advisory, when the migration has not been round-tripped locally against a production restore.** The rehearsal has to happen somewhere. Either it happened on your machine —
+
+```bash
+./scripts/restore-prod-dump.sh
+./scripts/verify-forms-migration.sh --round-trip   # forms migrations
+pnpm payload migrate && pnpm payload migrate:down && pnpm payload migrate
+```
+
+— against real production data, with the result written into the PR; or it happens on preview, and then the branch **must** end on `preview/<feature>` before the release. What is not an option is neither: a release with a migration nobody has ever run against production-shaped data is the case that takes the site down during the maintenance window.
+
+A local round-trip only substitutes for preview when it ran on an actual production restore. A fresh or seeded local database proves nothing — it has no real content to lose, so it passes regardless.
+
 Releases are published by hand from GitHub, so a deploy in flight can still be stopped from the Actions tab.
 
 ## Known gotchas (learned the hard way)
