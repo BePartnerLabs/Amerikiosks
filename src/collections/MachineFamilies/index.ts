@@ -39,7 +39,8 @@ export const MachineFamilies: CollectionConfig = {
     update: authenticated,
   },
   versions: {
-    drafts: { autosave: { interval: 100 } },
+    // No autosave — see the note in Insights. Saving is explicit ("Save draft").
+    drafts: true,
     maxPerDoc: 50,
   },
   fields: [

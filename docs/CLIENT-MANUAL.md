@@ -9,7 +9,8 @@ Working outline for the final content-editor usage manual. Each bullet is a topi
 - Logging in to `/admin`, resetting a forgotten password
 - Layout of the admin UI: sidebar collections vs. globals, the top account menu
 - Draft vs. Published state — what "Save draft" vs. "Publish" actually does
-- Live Preview — previewing a page before it's public
+- **Nothing saves by itself.** There is no autosave: changes live only in the browser until you press "Save draft" (keeps it private) or "Publish changes" (makes it public). Leaving the page without saving loses the edit — the admin warns first.
+- Live Preview — previewing a page before it's public. It shows the last *saved* draft, so press "Save draft" to see a change reflected there.
 
 ## 2. Pages
 

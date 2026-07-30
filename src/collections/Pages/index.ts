@@ -159,10 +159,9 @@ export const Pages: CollectionConfig<'pages'> = {
     afterDelete: [revalidateDelete],
   },
   versions: {
+    // No autosave on purpose — see the note in Insights: a version row every
+    // 100ms while typing. Saving is explicit ("Save draft").
     drafts: {
-      autosave: {
-        interval: 100, // We set this interval for optimal live preview
-      },
       schedulePublish: true,
     },
     maxPerDoc: 50,

@@ -233,10 +233,11 @@ export const Insights: CollectionConfig<'insights'> = {
     afterDelete: [revalidateDelete],
   },
   versions: {
+    // No autosave on purpose. The Payload template ships `interval: 100` "for
+    // optimal live preview", but that writes a version row every 100ms while an
+    // editor types. Saving is explicit instead: "Save draft" updates the draft
+    // and refreshes Live Preview.
     drafts: {
-      autosave: {
-        interval: 100, // We set this interval for optimal live preview
-      },
       schedulePublish: true,
     },
     maxPerDoc: 50,
