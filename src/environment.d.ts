@@ -5,6 +5,9 @@ declare global {
       DATABASE_URL: string
       NEXT_PUBLIC_SERVER_URL: string
       VERCEL_PROJECT_PRODUCTION_URL: string
+      /** Comma-separated mime types an editor may upload to `media`. Optional —
+       *  see src/utilities/mediaMimeTypes.ts for the defaults. */
+      SUPPORTED_MEDIA_TYPES?: string
     }
   }
 }
