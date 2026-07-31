@@ -33,7 +33,17 @@
     "metaTitle": "Líneas de modelos — Amerikiosks",
     "metaDescription": "Descubre nuestras líneas de modelos de kioscos, desde comida caliente premium hasta retail ultracompacto.",
     "heading": "Descubre nuestras líneas de modelos",
-    "knowMore": "Saber más"
+    "knowMore": "Saber más",
+    "eyebrow": "Líneas de modelo",
+    "trustEyebrow": "Confían en nosotros",
+    "trustHeading": "Las marcas que ya operan estas máquinas.",
+    "theLine": "La línea",
+    "modelsHeading": "Modelos {family}",
+    "seeMachine": "Ver la máquina",
+    "noModels": "Los modelos de esta línea están en camino. Escribinos y te mostramos la configuración.",
+    "mainHighlight": "Característica principal",
+    "feature": "Característica",
+    "modelsInLine": "Modelos en la línea"
   },
   "pagination": {
     "previous": "Anterior",
