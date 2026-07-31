@@ -1,4 +1,3 @@
-import { posix } from 'node:path'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { mcpPlugin } from '@payloadcms/plugin-mcp'
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
@@ -19,6 +18,7 @@ import { revalidateFormGlobals } from '@/collections/Forms/hooks/revalidateFormG
 import type { Insight, Machine, Page, Project } from '@/payload-types'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
 import { searchFields } from '@/search/fieldOverrides'
+import { buildPublicFileURL } from '@/utilities/buildPublicFileURL'
 import { type MondayBoardsCache, validateMondayColumnId } from '@/utilities/detectMondayDrift'
 import { getServerSideURL } from '@/utilities/getURL'
 import { amerikiosksRedirectsPlugin } from './redirects'
@@ -33,26 +33,6 @@ export const generateURL: GenerateURL<Insight | Page | Project | Machine> = ({ d
   const url = getServerSideURL()
 
   return doc?.slug ? `${url}/${doc.slug}` : url
-}
-
-/**
- * Public URL for a stored media file, on the bucket's own host.
- *
- * Both hosts in play are path-style — the R2 custom domain
- * (`https://cdn.amerikiosks.com/<bucket>/<key>`) and MinIO locally — so the
- * bucket is always part of the path. Only the last path segment is encoded,
- * matching what @payloadcms/storage-s3 does internally; several files in the
- * bucket have spaces and non-ASCII whitespace in their names.
- */
-const buildPublicFileURL = (filename: string, prefix?: string): string => {
-  const base = process.env.S3_PUBLIC_URL?.replace(/\/+$/, '')
-  const key = [prefix, filename].filter(Boolean).join('/')
-  const dir = posix.dirname(key)
-  const encoded = encodeURIComponent(posix.basename(key))
-
-  return [base, process.env.S3_BUCKET, dir === '.' ? encoded : posix.join(dir, encoded)]
-    .filter(Boolean)
-    .join('/')
 }
 
 const s3Vars = {
