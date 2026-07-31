@@ -1,5 +1,6 @@
 import Script from 'next/script'
 import { getLocale } from 'next-intl/server'
+import { isGatedPath } from '@/utilities/gatedPaths'
 import { getCachedGlobal } from '@/utilities/getGlobals'
 import { HeaderClient } from './Component.client'
 
@@ -9,6 +10,15 @@ export async function Header() {
     getCachedGlobal('header', 1, locale)(),
     getCachedGlobal('settings', 0, locale)(),
   ])
+
+  // Offering a language nobody can reach is worse than not offering it: with
+  // /es gated, the switcher would send every anonymous visitor into a redirect
+  // back to where they started.
+  const spanishIsGated = isGatedPath('/es')
+  const data = {
+    ...headerData,
+    showLanguageSwitcher: headerData.showLanguageSwitcher && !spanishIsGated,
+  }
 
   return (
     <>
@@ -25,7 +35,7 @@ export async function Header() {
         }}
       />
       <HeaderClient
-        data={headerData}
+        data={data}
         socialLinks={settings?.socialLinks}
       />
     </>
