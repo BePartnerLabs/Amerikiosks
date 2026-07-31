@@ -12,7 +12,7 @@ import {
 import { syncFormSubmission } from '@/collections/FormSubmissions/hooks/syncFormSubmission'
 import { detectImageMimeType } from '@/utilities/detectImageMimeType'
 import { uploadPrivateFile } from '@/utilities/privateUpload'
-import { createRateLimiter, getClientIp } from '@/utilities/rateLimit'
+import { createRateLimiter, getClientIp, RATE_LIMITS } from '@/utilities/rateLimit'
 
 const MAX_UPLOAD_BYTES = 8 * 1024 * 1024 // 8MB — mirrors Form/Upload/index.tsx
 
@@ -22,7 +22,7 @@ const MIN_FILL_MS = 3_000
 const TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
 
 // Own bucket, so a burst here cannot spend the consent log's allowance.
-const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 5 })
+const isRateLimited = createRateLimiter(RATE_LIMITS.formSubmissions)
 
 // Duck-typed instead of `instanceof File` — the File constructed by a real
 // browser/undici request and the one jsdom's test environment provides are

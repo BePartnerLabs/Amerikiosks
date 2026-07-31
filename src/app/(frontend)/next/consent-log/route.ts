@@ -1,12 +1,12 @@
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
-import { createRateLimiter, getClientIp } from '@/utilities/rateLimit'
+import { createRateLimiter, getClientIp, RATE_LIMITS } from '@/utilities/rateLimit'
 
 // More generous than the form endpoints: one visitor legitimately writes
 // several rows in a sitting (accept, then reopen the panel and save again), and
 // unlike a lead form there is nothing lost by being lenient. The point is only
 // to stop an unauthenticated endpoint from growing a table without bound.
-const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 20 })
+const isRateLimited = createRateLimiter(RATE_LIMITS.consentLog)
 
 // consentId is a UUID (or a base36 timestamp fallback) and policyVersion a
 // short tag. Both come from our own client, so anything longer is a bug or an

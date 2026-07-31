@@ -16,8 +16,16 @@ const ALLOWED_MIME_TYPES = [
   'image/webp',
   'image/avif',
   'image/gif',
+  // Straight off a phone. HEIC/HEIF is what an iPhone produces by default, and
+  // an editor uploading a photo they just took is the most ordinary thing this
+  // collection will ever be asked to do — leaving it out would have turned a
+  // security tweak into "the CMS rejects my pictures".
+  'image/heic',
+  'image/heif',
+  'image/tiff',
   'video/mp4',
   'video/webm',
+  'video/quicktime',
   'application/pdf',
 ]
 
