@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { createRateLimiter, getClientIp } from '@/utilities/rateLimit'
+import { createRateLimiter, getClientIp, RATE_LIMITS } from '@/utilities/rateLimit'
 
 afterEach(() => {
   vi.useRealTimers()
@@ -75,5 +75,22 @@ describe('createRateLimiter eviction', () => {
     // address gets a full allowance again.
     const verdicts = Array.from({ length: 5 }, () => isRateLimited('1.1.1.1'))
     expect(verdicts).toEqual([false, false, false, false, false])
+  })
+})
+
+describe('RATE_LIMITS', () => {
+  // Not one shared number on purpose: a visitor legitimately writes several
+  // consent rows in one sitting, while submitting a form happens rarely. One
+  // value would either leave the lead endpoint loose or block a form send
+  // because someone reopened the cookie panel.
+  it('gives the consent log more headroom than the lead endpoints', () => {
+    expect(RATE_LIMITS.consentLog.max).toBeGreaterThan(RATE_LIMITS.formSubmissions.max)
+    expect(RATE_LIMITS.claims.max).toBe(RATE_LIMITS.formSubmissions.max)
+  })
+
+  it('uses a one-minute window everywhere', () => {
+    for (const limit of Object.values(RATE_LIMITS)) {
+      expect(limit.windowMs).toBe(60_000)
+    }
   })
 })

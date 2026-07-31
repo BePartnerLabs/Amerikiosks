@@ -3,12 +3,12 @@ import type { RequiredDataFromCollectionSlug } from 'payload'
 import { getPayload } from 'payload'
 import { detectImageMimeType } from '@/utilities/detectImageMimeType'
 import { uploadPrivateFile } from '@/utilities/privateUpload'
-import { createRateLimiter, getClientIp } from '@/utilities/rateLimit'
+import { createRateLimiter, getClientIp, RATE_LIMITS } from '@/utilities/rateLimit'
 
 const MAX_PHOTO_BYTES = 8 * 1024 * 1024 // 8MB
 
 // Own bucket — a claims burst must not spend the form endpoint's allowance.
-const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 5 })
+const isRateLimited = createRateLimiter(RATE_LIMITS.claims)
 
 function stringField(formData: FormData, name: string): string | undefined {
   const value = formData.get(name)

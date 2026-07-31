@@ -1,20 +1,42 @@
 /**
+ * Per-route limits, kept together so tuning one does not mean hunting through
+ * three route files.
+ *
+ * Deliberately not one shared number. `consentLog` is called several times by a
+ * single legitimate visitor — accept, reopen the panel, save again — while
+ * submitting a form happens once in a very long while. A single value would
+ * either be loose enough to leave the lead endpoint unguarded, or tight enough
+ * that someone fiddling with the cookie banner can no longer send the form.
+ * Losing a lead to the cookie notice is not a trade worth making.
+ */
+export const RATE_LIMITS = {
+  formSubmissions: { windowMs: 60_000, max: 5 },
+  claims: { windowMs: 60_000, max: 5 },
+  consentLog: { windowMs: 60_000, max: 20 },
+} as const
+
+/**
  * In-memory sliding-window rate limiting for the public, unauthenticated POST
  * routes.
  *
- * Was copy-pasted in `next/form-submissions` and `next/claims-submit`, and
- * missing entirely from `next/consent-log` — which is the failure mode this
- * exists to prevent: a guard that has to be re-typed for each new route is a
- * guard the next route forgets.
+ * **Be clear about what this buys.** State lives in the process. Vercel's Fluid
+ * Compute reuses instances, so the map does survive between requests — but it
+ * is wiped by any cold start or deploy, and under load the platform runs
+ * several instances (and regions) in parallel, so the same client can be spread
+ * across them and the effective limit becomes `max × instances`. It stops a
+ * naive script hammering one endpoint from one address. It is not a defence,
+ * and it does not protect spend: by the time it answers, the function has
+ * already been invoked and billed.
  *
- * Each caller gets its **own** bucket. A shared map would let form submissions
- * eat the consent log's allowance and vice versa, so one busy endpoint would
- * start rejecting traffic on an unrelated one.
+ * The real limit belongs in the Vercel WAF, which counts outside the function
+ * and whose blocked traffic is not billed at all. This stays as the backstop
+ * that still works in preview, locally, and if a firewall rule is ever removed.
+ * If it ever has to be exact, use Vercel's Rate Limiting SDK rather than
+ * growing this.
  *
- * State lives in the process, so it resets on redeploy or cold start and is not
- * shared across instances or regions. That is an accepted tradeoff for a
- * low-effort abuse guard, not a substitute for a shared store (Redis) if this
- * ever needs to hold globally.
+ * Each caller gets its own bucket — see RATE_LIMITS above for why. Note that a
+ * shared module would not give a shared counter anyway: each route handler is
+ * bundled and run as its own function, so they do not share a process.
  */
 export function createRateLimiter({ windowMs, max }: { windowMs: number; max: number }) {
   const requestLog = new Map<string, number[]>()
