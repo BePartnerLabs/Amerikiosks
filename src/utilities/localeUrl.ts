@@ -17,6 +17,36 @@ export const withLocale = (path: string, locale: AppLocale): string => {
 }
 
 /**
+ * Prefix a CMS-authored href with the current locale, leaving alone anything
+ * that must not be touched.
+ *
+ * `localePrefix: 'as-needed'` means an un-prefixed path always resolves to the
+ * default locale (`en`). Every link built from CMS data — CMSLink, Card,
+ * Pagination, RichText's internal links — was emitting exactly that, so a link
+ * clicked from an `/es` page landed on the EN route. Where slugs are translated
+ * (pages, insights, projects) the EN route does not have that slug, so it 404s
+ * outright; the live consent text was linking Spanish visitors to a dead
+ * privacy policy this way.
+ *
+ * Left untouched:
+ * - absolute URLs and non-http schemes (`mailto:`, `tel:`), which are not ours
+ * - fragments and query-only hrefs, which stay on the current page
+ * - anything already carrying a locale prefix, so an editor who typed
+ *   `/es/politica-de-privacidad` by hand does not end up at `/es/es/...`
+ */
+export const localizeHref = (href: string, locale: AppLocale): string => {
+  if (!href) return href
+  if (/^[a-z][a-z0-9+.-]*:/i.test(href) || href.startsWith('//')) return href
+  if (href.startsWith('#') || href.startsWith('?')) return href
+  if (!href.startsWith('/')) return href
+
+  const [first] = href.slice(1).split('/')
+  if ((routing.locales as readonly string[]).includes(first)) return href
+
+  return withLocale(href, locale)
+}
+
+/**
  * `/machines` is the only route family whose path segment is localized
  * (`routing.pathnames`: `/machines` → `/maquinas`). The `[family]` and `[slug]`
  * params are NOT translated — the language switcher reuses the same params

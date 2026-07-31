@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import type React from 'react'
 import { SectionHeader } from '@/components/SectionHeader'
-import { Link } from '@/i18n/routing'
+import { Link } from '@/i18n/navigation'
 import type {
   FormatsGridBlock as FormatsGridBlockProps,
   Machine,

@@ -1,11 +1,19 @@
 import Link from 'next/link'
+import { useLocale } from 'next-intl'
 import type React from 'react'
+import { type AppLocale, localizeHref } from '@/utilities/localeUrl'
 
 export const Pagination: React.FC<{
   className?: string
   page: number
   totalPages: number
 }> = ({ className, page, totalPages }) => {
+  const locale = useLocale() as AppLocale
+  // Pagination hrefs are built here rather than coming from the CMS, but they
+  // hit the same trap: un-prefixed, they resolve as EN, so paging from /es
+  // silently walked the visitor into the English archive.
+  const insightsPage = (n: number) => localizeHref(`/insights/page/${n}`, locale)
+
   const hasNextPage = page < totalPages
   const hasPrevPage = page > 1
   const hasExtraPrevPages = page - 1 > 1
@@ -22,7 +30,7 @@ export const Pagination: React.FC<{
             aria-disabled={!hasPrevPage}
             aria-label="Go to previous page"
             className="bp-pagination__link"
-            href={hasPrevPage ? `/insights/page/${page - 1}` : '#'}
+            href={hasPrevPage ? insightsPage(page - 1) : '#'}
             tabIndex={hasPrevPage ? undefined : -1}
           >
             ← Prev
@@ -39,7 +47,7 @@ export const Pagination: React.FC<{
           <li className="bp-pagination__item">
             <Link
               className="bp-pagination__link"
-              href={`/insights/page/${page - 1}`}
+              href={insightsPage(page - 1)}
             >
               {page - 1}
             </Link>
@@ -50,7 +58,7 @@ export const Pagination: React.FC<{
           <Link
             aria-current="page"
             className="bp-pagination__link"
-            href={`/insights/page/${page}`}
+            href={insightsPage(page)}
           >
             {page}
           </Link>
@@ -60,7 +68,7 @@ export const Pagination: React.FC<{
           <li className="bp-pagination__item">
             <Link
               className="bp-pagination__link"
-              href={`/insights/page/${page + 1}`}
+              href={insightsPage(page + 1)}
             >
               {page + 1}
             </Link>
@@ -78,7 +86,7 @@ export const Pagination: React.FC<{
             aria-disabled={!hasNextPage}
             aria-label="Go to next page"
             className="bp-pagination__link"
-            href={hasNextPage ? `/insights/page/${page + 1}` : '#'}
+            href={hasNextPage ? insightsPage(page + 1) : '#'}
             tabIndex={hasNextPage ? undefined : -1}
           >
             Next →

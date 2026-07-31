@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { FormatsGridBlock } from '@/blocks/FormatsGrid/Component'
 import type { FormatsGridBlock as FormatsGridBlockType, Machine, Media } from '@/payload-types'
 
-vi.mock('@/i18n/routing', () => ({
+vi.mock('@/i18n/navigation', () => ({
   Link: ({
     href,
     children,

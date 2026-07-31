@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import { ModelLinesCarousel } from '@/blocks/ModelLines/CarouselNav'
 import '@/blocks/ModelLines/styles.css'
-import { Link } from '@/i18n/routing'
+import { Link } from '@/i18n/navigation'
 import type { Machine, Media } from '@/payload-types'
 import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 import { vtName } from '@/utilities/viewTransitionName'

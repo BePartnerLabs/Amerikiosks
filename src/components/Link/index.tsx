@@ -1,8 +1,10 @@
 'use client'
 import Link from 'next/link'
+import { useLocale } from 'next-intl'
 import type React from 'react'
 import { FormDrawerTrigger } from '@/components/FormDrawer'
 import type { Form, Insight, Page } from '@/payload-types'
+import { type AppLocale, localizeHref } from '@/utilities/localeUrl'
 
 type CMSLinkType = {
   appearance?: 'inline' | 'default' | 'outline' | 'link' | 'ghost' | 'dark' | null
@@ -41,6 +43,8 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
     url,
   } = props
 
+  const locale = useLocale() as AppLocale
+
   if (type === 'modal') {
     if (!modalForm || typeof modalForm !== 'object') return null
 
@@ -60,12 +64,18 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
     )
   }
 
-  const href =
+  const rawHref =
     type === 'reference' && typeof reference?.value === 'object' && reference.value.slug
       ? `${reference?.relationTo !== 'pages' ? `/${reference?.relationTo}` : ''}/${reference.value.slug}`
       : url
 
-  if (!href) return null
+  if (!rawHref) return null
+
+  // The document arrives already resolved in the request's locale, so its slug
+  // is the right one — what was missing is the `/es` in front of it. Without
+  // that, `localePrefix: 'as-needed'` resolves the path as EN and a translated
+  // slug 404s.
+  const href = localizeHref(rawHref, locale)
 
   const newTabProps = newTab ? { rel: 'noopener noreferrer', target: '_blank' } : {}
 
