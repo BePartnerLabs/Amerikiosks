@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import { type PointerEvent, useEffect, useRef, useState } from 'react'
-import { Link } from '@/i18n/routing'
+import { Link } from '@/i18n/navigation'
 import { useActiveFamily } from './Provider'
 
 type TileProps = {

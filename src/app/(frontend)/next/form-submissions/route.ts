@@ -12,6 +12,7 @@ import {
 import { syncFormSubmission } from '@/collections/FormSubmissions/hooks/syncFormSubmission'
 import { detectImageMimeType } from '@/utilities/detectImageMimeType'
 import { uploadPrivateFile } from '@/utilities/privateUpload'
+import { createRateLimiter, getClientIp, RATE_LIMITS } from '@/utilities/rateLimit'
 
 const MAX_UPLOAD_BYTES = 8 * 1024 * 1024 // 8MB — mirrors Form/Upload/index.tsx
 
@@ -20,27 +21,8 @@ const MIN_FILL_MS = 3_000
 
 const TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
 
-// Basic in-memory sliding-window rate limit — resets on redeploy/cold start,
-// which is an accepted tradeoff for a low-effort abuse guard on a public,
-// unauthenticated POST endpoint. Same approach (and same caveat) as
-// next/claims-submit/route.ts. Not a substitute for a shared store (e.g.
-// Redis) if this ever needs to hold across instances/regions.
-const RATE_LIMIT_WINDOW_MS = 60_000
-const RATE_LIMIT_MAX_REQUESTS = 5
-const requestLog = new Map<string, number[]>()
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now()
-  const timestamps = (requestLog.get(ip) ?? []).filter((t) => now - t < RATE_LIMIT_WINDOW_MS)
-  timestamps.push(now)
-  requestLog.set(ip, timestamps)
-  return timestamps.length > RATE_LIMIT_MAX_REQUESTS
-}
-
-function getClientIp(req: Request): string {
-  const forwardedFor = req.headers.get('x-forwarded-for')
-  return forwardedFor?.split(',')[0]?.trim() || 'unknown'
-}
+// Own bucket, so a burst here cannot spend the consent log's allowance.
+const isRateLimited = createRateLimiter(RATE_LIMITS.formSubmissions)
 
 // Duck-typed instead of `instanceof File` — the File constructed by a real
 // browser/undici request and the one jsdom's test environment provides are
@@ -96,15 +78,22 @@ export async function POST(req: Request) {
   let body: RequestPayload
   const files = new Map<string, File>()
 
-  if (contentType.includes('multipart/form-data')) {
-    const formData = await req.formData()
-    const raw = formData.get('_payload')
-    body = typeof raw === 'string' ? JSON.parse(raw) : {}
-    for (const [key, value] of formData.entries()) {
-      if (key !== '_payload' && isFileLike(value)) files.set(key, value)
+  // Both parses used to throw straight out of the handler, so a garbage body on
+  // the site's main lead endpoint answered 500 — a server fault for what is a
+  // caller error, and noise in the logs that looks like an outage.
+  try {
+    if (contentType.includes('multipart/form-data')) {
+      const formData = await req.formData()
+      const raw = formData.get('_payload')
+      body = typeof raw === 'string' ? JSON.parse(raw) : {}
+      for (const [key, value] of formData.entries()) {
+        if (key !== '_payload' && isFileLike(value)) files.set(key, value)
+      }
+    } else {
+      body = (await req.json()) as RequestPayload
     }
-  } else {
-    body = (await req.json()) as RequestPayload
+  } catch {
+    return Response.json({ error: 'Invalid request body.' }, { status: 400 })
   }
 
   // Honeypot + timing. Both answer 201 without writing anything: a bot that
@@ -267,7 +256,12 @@ export async function POST(req: Request) {
     // document as syncStatus: 'error', so this await cannot throw.
     await syncFormSubmission({ payload, doc: submission as never })
 
-    return Response.json(submission, { status: 201 })
+    // The whole submission document, echoed back, carried the populated form
+    // with it — integrationTarget, the Monday board id, the group id and every
+    // field's column mapping, straight to an anonymous caller. Closing the REST
+    // read on `forms` does nothing while this route hands the same data out.
+    // The client only ever reads the id, so that is all it gets.
+    return Response.json({ id: (submission as { id: number | string }).id }, { status: 201 })
   } catch (err) {
     console.error('[form-submissions] create failed:', err)
     return Response.json({ error: (err as Error).message }, { status: 400 })

@@ -1,4 +1,3 @@
-import { posix } from 'node:path'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { mcpPlugin } from '@payloadcms/plugin-mcp'
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
@@ -19,6 +18,7 @@ import { revalidateFormGlobals } from '@/collections/Forms/hooks/revalidateFormG
 import type { Insight, Machine, Page, Project } from '@/payload-types'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
 import { searchFields } from '@/search/fieldOverrides'
+import { buildPublicFileURL } from '@/utilities/buildPublicFileURL'
 import { type MondayBoardsCache, validateMondayColumnId } from '@/utilities/detectMondayDrift'
 import { getServerSideURL } from '@/utilities/getURL'
 import { amerikiosksRedirectsPlugin } from './redirects'
@@ -33,26 +33,6 @@ export const generateURL: GenerateURL<Insight | Page | Project | Machine> = ({ d
   const url = getServerSideURL()
 
   return doc?.slug ? `${url}/${doc.slug}` : url
-}
-
-/**
- * Public URL for a stored media file, on the bucket's own host.
- *
- * Both hosts in play are path-style — the R2 custom domain
- * (`https://cdn.amerikiosks.com/<bucket>/<key>`) and MinIO locally — so the
- * bucket is always part of the path. Only the last path segment is encoded,
- * matching what @payloadcms/storage-s3 does internally; several files in the
- * bucket have spaces and non-ASCII whitespace in their names.
- */
-const buildPublicFileURL = (filename: string, prefix?: string): string => {
-  const base = process.env.S3_PUBLIC_URL?.replace(/\/+$/, '')
-  const key = [prefix, filename].filter(Boolean).join('/')
-  const dir = posix.dirname(key)
-  const encoded = encodeURIComponent(posix.basename(key))
-
-  return [base, process.env.S3_BUCKET, dir === '.' ? encoded : posix.join(dir, encoded)]
-    .filter(Boolean)
-    .join('/')
 }
 
 const s3Vars = {
@@ -72,6 +52,20 @@ if (!s3Enabled && s3Missing.length < Object.keys(s3Vars).length) {
   const msg = `S3 storage partially configured — missing ${s3Missing.join(', ')}`
   if (process.env.VERCEL) throw new Error(msg)
   console.warn(`[plugins] ${msg}; falling back to local staticDir`)
+}
+
+// `forms` has to stay publicly readable: the blocks that render a form
+// (AudienceShowcase, FAQWithForm, ModelLines) fetch it through the Local API
+// with `overrideAccess: false`, so a public request has no user and an
+// authenticated-only collection would return null — the form would vanish from
+// the site. What does not belong in the public payload is the integration
+// wiring: board ids, group ids and the per-field Monday column mapping. Hidden
+// per field instead, which the server still reads because the submission route
+// and the sync hook query with `overrideAccess` at its default (true).
+//
+// Boolean-only by necessity: Payload field-level access cannot return a query.
+const integrationFieldAccess = {
+  read: ({ req }: { req: { user?: unknown } }) => Boolean(req.user),
 }
 
 export const plugins: Plugin[] = [
@@ -274,6 +268,7 @@ export const plugins: Plugin[] = [
             }
 
             addOnce(block, {
+              access: integrationFieldAccess,
               name: 'externalId',
               type: 'text',
               admin: {
@@ -332,6 +327,7 @@ export const plugins: Plugin[] = [
               },
             },
             {
+              access: integrationFieldAccess,
               name: 'integrationTarget',
               type: 'select',
               defaultValue: 'none',
@@ -347,6 +343,7 @@ export const plugins: Plugin[] = [
               },
             },
             {
+              access: integrationFieldAccess,
               name: 'externalId',
               type: 'text',
               admin: {
@@ -360,6 +357,7 @@ export const plugins: Plugin[] = [
               },
             },
             {
+              access: integrationFieldAccess,
               name: 'mondayGroupId',
               type: 'text',
               admin: {

@@ -10,6 +10,7 @@ let mutationState: {
 } = { isPending: false, isSuccess: false, error: null }
 
 vi.mock('next-intl', () => ({
+  useLocale: () => 'en',
   useTranslations: () => (key: string) => key,
 }))
 

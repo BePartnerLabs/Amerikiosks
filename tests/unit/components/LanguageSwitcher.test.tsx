@@ -12,7 +12,7 @@ vi.mock('next-intl', () => ({
   useLocale: () => 'en',
 }))
 
-vi.mock('@/i18n/routing', () => ({
+vi.mock('@/i18n/navigation', () => ({
   useRouter: () => ({ replace }),
 }))
 

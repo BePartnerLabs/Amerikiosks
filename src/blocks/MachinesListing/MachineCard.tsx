@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { Link } from '@/i18n/routing'
+import { Link } from '@/i18n/navigation'
 import type { Machine, MachineFamily, Media } from '@/payload-types'
 import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 import { useInView } from '@/utilities/useInView'

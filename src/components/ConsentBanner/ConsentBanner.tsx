@@ -1,9 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { InfoTooltip } from './InfoTooltip'
 import './styles.css'
+import { type AppLocale, localizeHref } from '@/utilities/localeUrl'
 
 type Props = {
   expanded: boolean
@@ -32,6 +33,7 @@ export function ConsentBanner({
   onSave,
 }: Props) {
   const t = useTranslations('consent')
+  const locale = useLocale() as AppLocale
 
   return (
     <section
@@ -42,7 +44,9 @@ export function ConsentBanner({
         {t('description')}{' '}
         <Link
           className="ak-consent-card__link"
-          href="/cookie-policy"
+          // Same trap as every other CMS link: unprefixed, this resolves as
+          // EN, so the Spanish banner sent people to the English policy.
+          href={localizeHref('/cookie-policy', locale)}
         >
           {t('cookiePolicyLabel')}
         </Link>

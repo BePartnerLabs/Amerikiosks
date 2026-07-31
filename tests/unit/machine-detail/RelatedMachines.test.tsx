@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
 vi.mock('@payload-config', () => ({ default: {} }))
-vi.mock('@/i18n/routing', () => ({
+vi.mock('@/i18n/navigation', () => ({
   Link: ({
     href,
     children,

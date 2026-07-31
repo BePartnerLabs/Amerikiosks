@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation'
 import { useLocale } from 'next-intl'
 import type React from 'react'
 import { useState } from 'react'
-import { useRouter } from '@/i18n/routing'
+import { useRouter } from '@/i18n/navigation'
 import { PagesRepository } from '@/repositories'
 import './language-switcher.css'
 

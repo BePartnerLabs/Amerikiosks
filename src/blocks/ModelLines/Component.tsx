@@ -2,7 +2,7 @@ import Image from 'next/image'
 import type React from 'react'
 import { FormDrawerTrigger } from '@/components/FormDrawer'
 import { SectionHeader } from '@/components/SectionHeader'
-import { Link } from '@/i18n/routing'
+import { Link } from '@/i18n/navigation'
 import type {
   Form,
   MachineFamily,

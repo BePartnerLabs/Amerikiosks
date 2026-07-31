@@ -1,6 +1,6 @@
 # Manual setup: kiosk-development & placement-application forms → Monday.com
 
-This site's generic Form/drawer system (form-builder plugin) now supports syncing any Form's submissions to a Monday.com board — see `src/plugins/index.ts` (`formBuilderPlugin` config) and `src/collections/FormSubmissions/hooks/dispatchFormSync.ts`. This doc is the manual, step-by-step `/admin` setup for the two new forms discussed — **do this directly in production `/admin`**, not via the local seed system (seeds are dev-only and must never run against real content, per `src/endpoints/seed/CLAUDE.md`).
+This site's generic Form/drawer system (form-builder plugin) now supports syncing any Form's submissions to a Monday.com board — see `src/plugins/index.ts` (`formBuilderPlugin` config) and `src/collections/FormSubmissions/hooks/dispatchFormSync.ts`. This doc is the manual, step-by-step `/admin` setup for the two new forms discussed. There is now a sandbox account with `[LAB]` copies of these boards — see the Monday section of `CLAUDE.md` and `scripts/move-monday-to-sandbox.mjs` — so integration changes can be exercised for real before touching the client's. The setup below is still done directly in production `/admin`, not via the local seed system (seeds are dev-only and must never run against real content, per `src/endpoints/seed/CLAUDE.md`).
 
 ## Prerequisites (one-time)
 

@@ -10,7 +10,7 @@ vi.mock('next/navigation', () => ({
 vi.mock('@/utilities/useInView', () => ({
   useInView: () => ({ ref: vi.fn(), inView: true }),
 }))
-vi.mock('@/i18n/routing', () => ({
+vi.mock('@/i18n/navigation', () => ({
   Link: ({
     href,
     children,

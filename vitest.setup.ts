@@ -24,6 +24,11 @@ vi.mock('next-intl', async () => {
     Record<string, string>
   >
   return {
+    // 'en' is the default locale, so hrefs come out unprefixed and the existing
+    // assertions still read as plain paths. The prefixed behaviour is covered
+    // directly in tests/unit/utilities/localeUrl.test.ts and by the components
+    // that mock `useLocale` themselves.
+    useLocale: () => 'en',
     useTranslations: (namespace: string) => (key: string, values?: Record<string, string>) => {
       let value = messages[namespace]?.[key] ?? `${namespace}.${key}`
       for (const [name, replacement] of Object.entries(values ?? {})) {
