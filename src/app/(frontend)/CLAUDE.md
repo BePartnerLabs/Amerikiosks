@@ -13,7 +13,7 @@ is whatever the `pages` collection holds.
 |---|---|---|---|
 | `/` | `[locale]/page.tsx` | re-exports `[slug]/page.tsx` | The home page is a `pages` document, not its own template |
 | `/[slug]` | `[locale]/[slug]/page.tsx` | `pages` | Every CMS page, incl. the legal ones. Slugs are localized |
-| `/machines` | `[locale]/machines/page.tsx` | `machine-families` | Localized path: `/maquinas` in ES (`i18n/routing.ts` `pathnames`) |
+| `/machines` | `[locale]/machines/page.tsx` | `machine-families`, `machines`, `partners` | Localized path: `/maquinas` in ES (`i18n/routing.ts` `pathnames`). Reads every machine to size the lineup to scale and list the models of the selected line; `partners` comes in through the `TrustStrip` block |
 | `/machines/[family]` | `[locale]/machines/[family]/page.tsx` | `machine-families`, `machines`, `machine-installations` | Localized path |
 | `/machines/[family]/[slug]` | `[locale]/machines/[family]/[slug]/page.tsx` | `machines` | Localized path |
 | `/insights` | `[locale]/insights/page.tsx` | `insights` | Listing, page 1 |
