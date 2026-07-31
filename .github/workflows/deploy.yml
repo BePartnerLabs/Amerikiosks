@@ -29,6 +29,7 @@ jobs:
     if: github.event_name == 'release'
     runs-on: ubuntu-latest
     outputs:
+      hasMigrations: ${{ steps.check.outputs.hasMigrations }}
       destructive: ${{ steps.check.outputs.destructive }}
     steps:
       - uses: actions/checkout@v4
@@ -42,7 +43,8 @@ jobs:
           PREV="$(git tag --sort=-creatordate | grep -Fxv "$CURRENT" | head -1 || true)"
 
           if [ -z "$PREV" ]; then
-            echo "No previous tag to compare against — assuming destructive."
+            echo "No previous tag to compare against — assuming the worst."
+            echo "hasMigrations=true" >> "$GITHUB_OUTPUT"
             echo "destructive=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
@@ -50,14 +52,22 @@ jobs:
           FILES="$(git diff --name-only --diff-filter=A "$PREV".."$CURRENT" -- 'src/migrations/*.ts' || true)"
 
           if [ -z "$FILES" ]; then
-            echo "No new migrations between $PREV and $CURRENT."
+            echo "No new migrations between $PREV and $CURRENT — nothing to lock for."
+            echo "hasMigrations=false" >> "$GITHUB_OUTPUT"
             echo "destructive=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
           echo "New migrations:"; echo "$FILES"
+          echo "hasMigrations=true" >> "$GITHUB_OUTPUT"
 
-          if echo "$FILES" | xargs grep -lEi 'DROP COLUMN|DROP TABLE|RENAME COLUMN|RENAME TO'; then
+          # Scoped to the `up` function on purpose. Reading the whole file made
+          # every migration look destructive: a `down` undoes an ADD COLUMN with
+          # a DROP COLUMN, so an additive migration always matched. Verified
+          # against real files — form_display_title and footer_contact_heading
+          # are pure ADD COLUMN and were both classified as destructive.
+          if echo "$FILES" | xargs awk '/export async function up/,/export async function down/' \
+            | grep -qEi 'DROP COLUMN|DROP TABLE|RENAME COLUMN|RENAME TO'; then
             echo "→ drops/renames present: the old build will query columns that no longer exist."
             echo "destructive=true" >> "$GITHUB_OUTPUT"
           else
@@ -69,8 +79,12 @@ jobs:
   # serving, so between it and the promotion there is a window where new schema
   # meets old code.
   #
-  # `/admin` and `/api` are always closed for that window — an editor writing
-  # mid-migration can corrupt data.
+  # `/admin` and `/api` are closed for that window — an editor writing
+  # mid-migration can corrupt data. Skipped entirely when the release adds no
+  # migration files: `migrate` is then a no-op, so there is nothing to write
+  # against and nothing to protect. That matters because `/api` and `/next/*`
+  # are how a form submission reaches the server, and closing them on a release
+  # that changes no schema is a window where a lead can be lost for no reason.
   #
   # The public site is closed too, but ONLY when `plan` saw a drop or a rename.
   # This used to be left open on the assumption that "reads survive"; they do
@@ -82,7 +96,7 @@ jobs:
   # needless downtime, since most carry no migrations at all.
   lock:
     needs: [plan]
-    if: github.event_name == 'release'
+    if: github.event_name == 'release' && needs.plan.outputs.hasMigrations == 'true'
     runs-on: ubuntu-latest
     # Same GitHub Environment the reusable deploy workflow uses — the Vercel
     # secrets are scoped to it and resolve to empty strings without this.

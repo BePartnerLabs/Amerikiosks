@@ -84,7 +84,9 @@ components import from, e.g. `PagesRepository.translateSlug()`).
 
 `.github/workflows/deploy.yml` only fires on push to `preview/**` and on a published release. Merging to `main` deploys nothing — production ships when you publish the release, and that is also when migrations run against the production DB.
 
-**A branch that adds migrations should end on a `preview/**` branch before it ships.** Push the finished work to e.g. `preview/<feature>` and let the pipeline run `pnpm payload migrate` against the preview database first. A release goes straight to production: the migration runs there with no rehearsal, and `deploy.yml` closes `/admin` and `/api` behind the maintenance firewall rules while it does. Finding out there that a migration is slow, locks a table, or fails halfway means finding out with the client's site in maintenance mode.
+**A branch that adds migrations should end on a `preview/**` branch before it ships.** Push the finished work to e.g. `preview/<feature>` and let the pipeline run `pnpm payload migrate` against the preview database first. A release goes straight to production: the migration runs there with no rehearsal, and `deploy.yml` closes `/admin` and `/api` behind the maintenance firewall rules while it does — only when the release actually adds migrations; one that adds none skips the lock entirely. Finding out there that a migration is slow, locks a table, or fails halfway means finding out with the client locked out of `/admin`.
+
+The rules are scoped: `maintenance-admin` covers `/admin` and `maintenance-api` covers `/api`. **Neither covers `/next/*`**, so form submissions keep working through a release — verified against the live rules on 2026-07-31. The public site stays up unless the release drops or renames a column, and even then only once someone creates the `maintenance-site` rule, which does not exist yet.
 
 **`preview/**` is mandatory, not advisory, when the migration has not been round-tripped locally against a production restore.** The rehearsal has to happen somewhere. Either it happened on your machine —
 
