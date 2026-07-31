@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   languageAlternates,
+  localizeHref,
   machinesAlternates,
   machinesPath,
   withLocale,
@@ -43,5 +44,46 @@ describe('hreflang maps', () => {
       en: '/machines/zeta',
       es: '/es/maquinas/zeta',
     })
+  })
+})
+
+describe('localizeHref', () => {
+  // The bug: `localePrefix: 'as-needed'` makes an un-prefixed path resolve to
+  // EN, and CMS slugs are translated per locale — so an ES link without the
+  // prefix does not just land on the wrong language, it 404s.
+  it('prefixes a CMS path when the locale is not the default', () => {
+    expect(localizeHref('/politica-de-privacidad', 'es')).toBe('/es/politica-de-privacidad')
+  })
+
+  it('leaves the default locale un-prefixed', () => {
+    expect(localizeHref('/privacy-policy', 'en')).toBe('/privacy-policy')
+  })
+
+  // An editor who typed the prefix by hand — which is the workaround people
+  // were told to use while this was broken — must not end up at /es/es/...
+  it('does not double-prefix an href that already carries a locale', () => {
+    expect(localizeHref('/es/politica-de-privacidad', 'es')).toBe('/es/politica-de-privacidad')
+    expect(localizeHref('/es/politica-de-privacidad', 'en')).toBe('/es/politica-de-privacidad')
+  })
+
+  it('leaves absolute urls and other schemes alone', () => {
+    expect(localizeHref('https://example.com/x', 'es')).toBe('https://example.com/x')
+    expect(localizeHref('//cdn.example.com/x', 'es')).toBe('//cdn.example.com/x')
+    expect(localizeHref('mailto:hola@example.com', 'es')).toBe('mailto:hola@example.com')
+    expect(localizeHref('tel:+15550100', 'es')).toBe('tel:+15550100')
+  })
+
+  it('leaves fragments and query-only hrefs on the current page', () => {
+    expect(localizeHref('#section', 'es')).toBe('#section')
+    expect(localizeHref('?page=2', 'es')).toBe('?page=2')
+  })
+
+  it('leaves relative hrefs and empty values alone', () => {
+    expect(localizeHref('contact', 'es')).toBe('contact')
+    expect(localizeHref('', 'es')).toBe('')
+  })
+
+  it('handles the site root without producing a trailing slash', () => {
+    expect(localizeHref('/', 'es')).toBe('/es')
   })
 })

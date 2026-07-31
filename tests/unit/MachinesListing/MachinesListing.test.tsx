@@ -12,7 +12,7 @@ vi.mock('next/navigation', () => ({
   useSearchParams: () => searchParamsValue,
 }))
 
-vi.mock('@/i18n/routing', () => ({
+vi.mock('@/i18n/navigation', () => ({
   Link: ({
     href,
     children,

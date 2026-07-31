@@ -1,9 +1,11 @@
 'use client'
 import Link from 'next/link'
+import { useLocale } from 'next-intl'
 import type React from 'react'
 import { Icon } from '@/components/Icon'
 import { Media } from '@/components/Media'
 import type { Insight, Media as MediaType } from '@/payload-types'
+import { type AppLocale, localizeHref } from '@/utilities/localeUrl'
 import useClickableCard from '@/utilities/useClickableCard'
 import './styles.css'
 
@@ -36,11 +38,15 @@ export type CardProps = {
 const PostCard: React.FC<CardProps> = (props) => {
   const { card, link: linkRef } = useClickableCard({})
   const { className = '', doc, relationTo, featured = false, title: titleProp } = props
+  const locale = useLocale() as AppLocale
 
   const { slug, meta, title } = doc || {}
   const { description, image: metaImage } = meta || {}
   const titleToUse = titleProp || title
-  const href = `/${relationTo}/${slug}`
+  // Cards are built from CMS data, so the slug is already the current locale's
+  // — only the `/es` prefix was missing, and without it the path resolves as EN
+  // and 404s on a translated slug.
+  const href = localizeHref(`/${relationTo}/${slug}`, locale)
 
   return (
     <article
