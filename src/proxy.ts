@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from 'next/server'
 import createMiddleware from 'next-intl/middleware'
 import { routing } from './i18n/routing'
 import { findRedirect } from './plugins/redirects/lookup'
+import { hasSessionCookie, isGatedPath } from './utilities/gatedPaths'
 
 const intlMiddleware = createMiddleware(routing)
 
@@ -19,6 +20,17 @@ export default async function middleware(req: NextRequest) {
       ? redirect.to
       : new URL(redirect.to, req.nextUrl.origin)
     return NextResponse.redirect(url, redirect.status)
+  }
+
+  // Content still being reviewed: GATED_PATHS keeps a path behind a Payload
+  // session. Hiding, not protecting — see src/utilities/gatedPaths.ts. A
+  // redirect rather than a 404 so a gated path is treated as moved rather than
+  // broken, and so the visitor lands somewhere useful.
+  if (
+    isGatedPath(req.nextUrl.pathname) &&
+    !hasSessionCookie(req.cookies.getAll().map((c) => c.name))
+  ) {
+    return NextResponse.redirect(new URL('/', req.nextUrl.origin), 307)
   }
 
   const res = intlMiddleware(req)

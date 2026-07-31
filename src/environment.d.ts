@@ -8,6 +8,9 @@ declare global {
       /** Comma-separated mime types an editor may upload to `media`. Optional —
        *  see src/utilities/mediaMimeTypes.ts for the defaults. */
       SUPPORTED_MEDIA_TYPES?: string
+      /** Comma-separated path prefixes that require a Payload session, e.g.
+       *  `/es,/machines`. Optional — see src/utilities/gatedPaths.ts. */
+      GATED_PATHS?: string
     }
   }
 }
