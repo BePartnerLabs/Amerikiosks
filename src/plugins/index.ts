@@ -74,6 +74,20 @@ if (!s3Enabled && s3Missing.length < Object.keys(s3Vars).length) {
   console.warn(`[plugins] ${msg}; falling back to local staticDir`)
 }
 
+// `forms` has to stay publicly readable: the blocks that render a form
+// (AudienceShowcase, FAQWithForm, ModelLines) fetch it through the Local API
+// with `overrideAccess: false`, so a public request has no user and an
+// authenticated-only collection would return null — the form would vanish from
+// the site. What does not belong in the public payload is the integration
+// wiring: board ids, group ids and the per-field Monday column mapping. Hidden
+// per field instead, which the server still reads because the submission route
+// and the sync hook query with `overrideAccess` at its default (true).
+//
+// Boolean-only by necessity: Payload field-level access cannot return a query.
+const integrationFieldAccess = {
+  read: ({ req }: { req: { user?: unknown } }) => Boolean(req.user),
+}
+
 export const plugins: Plugin[] = [
   mcpPlugin({
     collections: {
@@ -274,6 +288,7 @@ export const plugins: Plugin[] = [
             }
 
             addOnce(block, {
+              access: integrationFieldAccess,
               name: 'externalId',
               type: 'text',
               admin: {
@@ -332,6 +347,7 @@ export const plugins: Plugin[] = [
               },
             },
             {
+              access: integrationFieldAccess,
               name: 'integrationTarget',
               type: 'select',
               defaultValue: 'none',
@@ -347,6 +363,7 @@ export const plugins: Plugin[] = [
               },
             },
             {
+              access: integrationFieldAccess,
               name: 'externalId',
               type: 'text',
               admin: {
@@ -360,6 +377,7 @@ export const plugins: Plugin[] = [
               },
             },
             {
+              access: integrationFieldAccess,
               name: 'mondayGroupId',
               type: 'text',
               admin: {

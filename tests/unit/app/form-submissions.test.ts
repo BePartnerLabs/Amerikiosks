@@ -149,6 +149,50 @@ describe('POST /next/form-submissions', () => {
       expect(args.overrideAccess).toBe(true)
     })
 
+    // A garbage body on the site's main lead endpoint used to answer 500 — a
+    // server fault for what is a caller error.
+    it('answers 400 on a malformed body instead of throwing', async () => {
+      const stub = stubPayload()
+
+      const res = await callPOST(
+        new Request('http://localhost/next/form-submissions', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', 'x-forwarded-for': '198.51.100.77' },
+          body: '{ not json',
+        }),
+      )
+
+      expect(res.status).toBe(400)
+      expect(stub.create).not.toHaveBeenCalled()
+    })
+
+    // The route used to echo the whole submission back, and Payload populates
+    // `form` on the created doc — so an anonymous caller got integrationTarget,
+    // the Monday board id, the group id and every field's column mapping in the
+    // 201. Closing REST read on `forms` is worthless while this hands the same
+    // data out through another door.
+    it('answers with the id alone, never the populated form', async () => {
+      stubPayload({
+        create: vi.fn().mockResolvedValue({
+          id: 42,
+          form: {
+            id: 'contact',
+            integrationTarget: 'monday',
+            externalId: '4024508641',
+            mondayGroupId: 'topics',
+            fields: [{ name: 'email', externalId: 'email' }],
+          },
+        }),
+      })
+
+      const res = await callPOST(jsonRequest({ form: 'contact', submissionData: validSubmission }))
+      const body = await res.json()
+
+      expect(body).toEqual({ id: 42 })
+      expect(JSON.stringify(body)).not.toContain('4024508641')
+      expect(JSON.stringify(body)).not.toContain('monday')
+    })
+
     it('stores an unanswered optional field as an empty string, not null', async () => {
       // submission_data.value is NOT NULL in Postgres, and an untouched radio
       // group arrives as null — which failed the insert for the whole

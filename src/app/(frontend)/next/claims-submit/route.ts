@@ -3,29 +3,12 @@ import type { RequiredDataFromCollectionSlug } from 'payload'
 import { getPayload } from 'payload'
 import { detectImageMimeType } from '@/utilities/detectImageMimeType'
 import { uploadPrivateFile } from '@/utilities/privateUpload'
+import { createRateLimiter, getClientIp } from '@/utilities/rateLimit'
 
 const MAX_PHOTO_BYTES = 8 * 1024 * 1024 // 8MB
 
-// Basic in-memory sliding-window rate limit — resets on redeploy/cold start,
-// which is an accepted tradeoff for a low-effort abuse guard on a public,
-// unauthenticated POST endpoint. Not a substitute for a shared store (e.g.
-// Redis) if this ever needs to hold across instances/regions.
-const RATE_LIMIT_WINDOW_MS = 60_000
-const RATE_LIMIT_MAX_REQUESTS = 5
-const requestLog = new Map<string, number[]>()
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now()
-  const timestamps = (requestLog.get(ip) ?? []).filter((t) => now - t < RATE_LIMIT_WINDOW_MS)
-  timestamps.push(now)
-  requestLog.set(ip, timestamps)
-  return timestamps.length > RATE_LIMIT_MAX_REQUESTS
-}
-
-function getClientIp(req: Request): string {
-  const forwardedFor = req.headers.get('x-forwarded-for')
-  return forwardedFor?.split(',')[0]?.trim() || 'unknown'
-}
+// Own bucket — a claims burst must not spend the form endpoint's allowance.
+const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 5 })
 
 function stringField(formData: FormData, name: string): string | undefined {
   const value = formData.get(name)
