@@ -1,6 +1,5 @@
 'use client'
 import type { DefaultTypedEditorState } from '@payloadcms/richtext-lexical'
-import { useMutation } from '@tanstack/react-query'
 import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
 import type React from 'react'
@@ -8,8 +7,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { Path } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import RichText from '@/components/RichText'
-import { ClaimsRepository } from '@/repositories'
-import type { ClaimFormData } from '@/repositories/ClaimsRepository'
+import { type ClaimFormValues, useClaimSubmission } from '@/hooks/queries/useClaimSubmission'
 import './styles.css'
 
 export type ClaimFormBlockType = {
@@ -23,12 +21,9 @@ export type ClaimFormBlockType = {
 }
 
 type Brand = { id: number | string; name: string; logoUrl?: string }
-// sawCreditsAvailable is UI-only branching state (from the legacy JotForm's
-// qid 4 "Did you see credits available?", cash-only) — never sent to the backend, stripped
-// out in onSubmit before calling ClaimsRepository.submit.
-type FormValues = Omit<ClaimFormData, 'machineId' | 'photo'> & {
-  sawCreditsAvailable?: 'yes' | 'no'
-}
+// The submitted shape, including the UI-only branching flag, lives with the
+// hook that strips it — see useClaimSubmission.
+type FormValues = ClaimFormValues
 
 // Fixes a bug found in the audit of the legacy JotForm: its confirmation email
 // showed "Type a question" for 5 of 11 fields instead of the real label.
@@ -362,23 +357,12 @@ export const ClaimFormBlock: React.FC<{ id?: string; brands: Brand[] } & ClaimFo
     STEPS[step]?.key === 'creditsAvailableMessage' && sawCreditsAvailable === 'yes'
 
   const {
-    mutate,
-    isPending: isLoading,
-    isSuccess: hasSubmitted,
+    submit: onSubmit,
+    isLoading,
+    hasSubmitted,
     error: mutationError,
-    variables,
-  } = useMutation({
-    mutationFn: (data: ClaimFormData) => ClaimsRepository.submit(data),
-  })
-
-  const onSubmit = useCallback(
-    // Radio/select values are always strings in the DOM — kioskBrand is a
-    // numeric relationship ID server-side, so it must be coerced before send.
-    // sawCreditsAvailable is UI-only branching state, never sent.
-    ({ sawCreditsAvailable: _sawCreditsAvailable, ...data }: FormValues) =>
-      mutate({ ...data, kioskBrand: Number(data.kioskBrand), machineId, photo }),
-    [mutate, machineId, photo],
-  )
+    submitted,
+  } = useClaimSubmission({ machineId, photo })
 
   // GAListener only listens for clicks (see src/components/Analytics/GAListener.tsx).
   // A form success is async, so we dispatch a synthetic click on the success node
@@ -433,7 +417,6 @@ export const ClaimFormBlock: React.FC<{ id?: string; brands: Brand[] } & ClaimFo
     : undefined
 
   if (hasSubmitted) {
-    const submitted = (variables ?? {}) as Partial<ClaimFormData>
     return (
       <div className="ak-claim-form">
         <div
