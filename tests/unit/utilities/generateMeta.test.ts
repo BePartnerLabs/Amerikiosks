@@ -8,9 +8,45 @@ describe('generateMeta', () => {
     expect(result.description).toBeUndefined()
   })
 
-  it('falls back to the site default title when meta.title is missing', async () => {
+  // Only when there is genuinely nothing to say. A document with a title has
+  // one, and the site name alone is what made several production pages
+  // indistinguishable from each other.
+  it('falls back to the site default title only when the doc has no title either', async () => {
     const result = await generateMeta({ doc: { slug: 'no-meta' } })
     expect(result.title).toBe('Amerikiosks')
+  })
+
+  it("uses the document's own title when meta.title is empty", async () => {
+    const result = await generateMeta({ doc: { slug: 'no-meta', title: 'End-to-end operation' } })
+    expect(result.title).toBe('End-to-end operation | Amerikiosks')
+  })
+
+  // Machines and machine families are titled by `name`, everything else by
+  // `title` — the same pair the SEO plugin's generateTitle handles.
+  it('uses `name` for the collections titled that way', async () => {
+    const result = await generateMeta({ doc: { slug: 'gamma-10', name: 'Gamma 10' } as never })
+    expect(result.title).toBe('Gamma 10 | Amerikiosks')
+  })
+
+  it('prefers an explicit meta.title over the document title', async () => {
+    const result = await generateMeta({
+      doc: { slug: 'x', title: 'Internal name', meta: { title: 'What the visitor sees' } },
+    })
+    expect(result.title).toBe('What the visitor sees | Amerikiosks')
+  })
+
+  // An empty string is what an editor leaves behind by clearing the field, and
+  // it must behave like missing rather than producing " | Amerikiosks".
+  it('treats an empty meta.title as missing', async () => {
+    const result = await generateMeta({
+      doc: { slug: 'x', title: 'Real title', meta: { title: '' } },
+    })
+    expect(result.title).toBe('Real title | Amerikiosks')
+  })
+
+  it('carries the fallback into the OpenGraph title too', async () => {
+    const result = await generateMeta({ doc: { slug: 'x', title: 'Shared everywhere' } })
+    expect(result.openGraph?.title).toBe('Shared everywhere | Amerikiosks')
   })
 
   it('suffixes the page title with the site name', async () => {
