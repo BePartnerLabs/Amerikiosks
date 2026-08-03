@@ -37,6 +37,62 @@ describe('media mime types', () => {
   })
 })
 
+// The hook is the only gate that runs on the path this project actually uses:
+// with `clientUploads: true` the browser PUTs straight to R2 through a presigned
+// URL whose handler never sees the mime type, so `mimeTypes` alone is close to a
+// no-op in production. It cannot unsay the upload — the object is in the bucket
+// by the time this runs — but it stops the file from becoming a document, which
+// is what keeps it out of the CMS and off the site.
+describe('Media beforeValidate gate', () => {
+  const hook = (Media.hooks?.beforeValidate ?? [])[0] as (args: {
+    data?: Record<string, unknown>
+    req: { file?: { mimetype?: string } }
+  }) => unknown
+
+  const run = (mimeType?: string, fromReqFile = false) =>
+    hook({
+      data: fromReqFile ? {} : { mimeType },
+      req: fromReqFile ? { file: { mimetype: mimeType } } : {},
+    })
+
+  it('is wired up', () => {
+    expect(typeof hook).toBe('function')
+  })
+
+  it.each(['image/jpeg', 'image/png', 'image/svg+xml', 'image/heic', 'video/mp4'])(
+    'lets %s through',
+    (type) => {
+      expect(() => run(type)).not.toThrow()
+    },
+  )
+
+  it.each(['text/html', 'application/javascript', 'application/x-msdownload'])(
+    'rejects %s',
+    (type) => {
+      expect(() => run(type)).toThrow(/Unsupported file type/)
+    },
+  )
+
+  // Payload puts the type on `req.file` for a server-transiting upload and on
+  // `data` for a client upload. Missing either one would leave a real path
+  // unchecked.
+  it('reads the type from req.file when data does not carry it', () => {
+    expect(() => run('text/html', true)).toThrow(/Unsupported file type/)
+    expect(() => run('image/png', true)).not.toThrow()
+  })
+
+  // Every update to an existing document runs beforeValidate too — editing the
+  // alt text of a picture must not be rejected for lack of a mime type.
+  it('allows a document with no mime type at all', () => {
+    expect(() => hook({ data: { alt: 'a caption' }, req: {} })).not.toThrow()
+  })
+
+  it('names the offending type and the allowed ones in the error', () => {
+    expect(() => run('application/zip')).toThrow(/application\/zip/)
+    expect(() => run('application/zip')).toThrow(/image\/jpeg/)
+  })
+})
+
 describe('SUPPORTED_MEDIA_TYPES override', () => {
   it('replaces the defaults when set', () => {
     expect(resolveMediaMimeTypes('image/png,image/jpeg')).toEqual(['image/png', 'image/jpeg'])
