@@ -255,6 +255,27 @@ for (const form of forms) {
   }
 }
 
+// The cache came with the restore, so it describes the *client's* boards — and
+// its column types are what buildColumnValues consults to shape each value. Two
+// ways to get this wrong: leave the production cache (wrong types) or clear it
+// (no types at all). Both make the first sync attempt fail and only succeed on
+// the self-healing retry that reads the real types out of Monday's error
+// response. Rewriting it with the sandbox boards makes the first attempt
+// correct, which is the whole point of testing against a live API.
+if (apply) {
+  const cache = {
+    syncedAt: new Date().toISOString(),
+    boards: boards.map((b) => ({
+      id: b.id,
+      name: b.name,
+      groups: b.groups.map((g) => ({ id: g.id, title: g.title })),
+      columns: b.columns.map((c) => ({ id: c.id, title: c.title, type: c.type })),
+    })),
+  }
+  await db.query('UPDATE settings SET monday_boards_cache = $1', [JSON.stringify(cache)])
+  console.log(`\nRewrote mondayBoardsCache with ${cache.boards.length} sandbox boards.`)
+}
+
 await db.end()
 
 console.log(

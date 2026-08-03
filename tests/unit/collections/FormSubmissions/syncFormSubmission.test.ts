@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 const submitMock = vi.fn()
+const updateColumnsMock = vi.fn()
 const addFileMock = vi.fn()
 class MockMondayApiError extends Error {
   errors: Array<{
@@ -16,7 +17,11 @@ class MockMondayApiError extends Error {
   }
 }
 vi.mock('@/repositories/GenericMondayRepository', () => ({
-  GenericMondayRepository: { submit: submitMock, addFile: addFileMock },
+  GenericMondayRepository: {
+    submit: submitMock,
+    updateColumns: updateColumnsMock,
+    addFile: addFileMock,
+  },
   MondayApiError: MockMondayApiError,
 }))
 
@@ -77,6 +82,65 @@ describe('syncFormSubmission', () => {
         doc: { id: 1, form: 10, submissionData: [] } as never,
       }),
     ).resolves.toBeUndefined()
+  })
+
+  // The bug this prevents: the resync button exists for the error case, and the
+  // realistic error is an attachment Monday rejected *after* the item was
+  // created. Calling create_item again filed the same lead twice — items
+  // 12667673959 and 12667682604 on the live board are one person.
+  it('updates the existing item instead of filing a second one', async () => {
+    findByIDMock.mockResolvedValue(baseForm)
+    findGlobalMock.mockResolvedValue({ mondayApiToken: 'tok' })
+    updateColumnsMock.mockResolvedValue({ id: '12667673959' })
+    updateMock.mockResolvedValue({})
+
+    const { syncFormSubmission } = await import(
+      '@/collections/FormSubmissions/hooks/syncFormSubmission'
+    )
+    await syncFormSubmission({
+      payload: fakePayload(),
+      doc: {
+        id: 1,
+        form: 10,
+        externalItemId: '12667673959',
+        submissionData: [{ field: 'property-name', value: 'Hotel Bravo' }],
+      } as never,
+    })
+
+    expect(submitMock).not.toHaveBeenCalled()
+    expect(updateColumnsMock).toHaveBeenCalledWith(
+      '4024476985',
+      '12667673959',
+      expect.objectContaining({ text0: 'Hotel Bravo' }),
+      'tok',
+    )
+    expect(updateMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ syncStatus: 'synced', externalItemId: '12667673959' }),
+      }),
+    )
+  })
+
+  it('still creates an item on a first sync, when there is no external id yet', async () => {
+    findByIDMock.mockResolvedValue(baseForm)
+    findGlobalMock.mockResolvedValue({ mondayApiToken: 'tok' })
+    submitMock.mockResolvedValue({ id: 'new-1' })
+    updateMock.mockResolvedValue({})
+
+    const { syncFormSubmission } = await import(
+      '@/collections/FormSubmissions/hooks/syncFormSubmission'
+    )
+    await syncFormSubmission({
+      payload: fakePayload(),
+      doc: {
+        id: 2,
+        form: 10,
+        submissionData: [{ field: 'property-name', value: 'Hotel Alfa' }],
+      } as never,
+    })
+
+    expect(updateColumnsMock).not.toHaveBeenCalled()
+    expect(submitMock).toHaveBeenCalledTimes(1)
   })
 
   it('no-ops when the form has integrationTarget: none', async () => {
