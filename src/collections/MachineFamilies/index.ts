@@ -134,7 +134,13 @@ export const MachineFamilies: CollectionConfig = {
             {
               name: 'icon',
               type: 'text',
-              admin: { description: 'Material Symbols icon name, e.g. "inventory_2"' },
+              admin: {
+                description:
+                  'Pick from the list. A name typed by hand that is not in the set renders nothing at all, with no error — see src/components/Icon/icons.ts.',
+                components: {
+                  Field: '@/components/MaterialIconPicker#MaterialIconPicker',
+                },
+              },
             },
             {
               name: 'image',

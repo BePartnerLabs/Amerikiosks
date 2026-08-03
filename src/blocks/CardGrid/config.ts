@@ -115,7 +115,13 @@ export const CardGrid: Block = {
           name: 'icon',
           type: 'text',
           label: 'Icon',
-          admin: { description: 'Icon identifier. Used in icon variant.' },
+          admin: {
+            description:
+              'Used by the icon variant. Pick from the list — a name typed by hand that is not in the set renders nothing at all, with no error.',
+            components: {
+              Field: '@/components/MaterialIconPicker#MaterialIconPicker',
+            },
+          },
         },
         { name: 'title', type: 'text', required: true, localized: true },
         {
