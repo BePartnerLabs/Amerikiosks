@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { generateOrganizationJsonLd, generateWebsiteJsonLd } from '@/utilities/generateJsonLd'
+import {
+  generateArticleJsonLd,
+  generateOrganizationJsonLd,
+  generateWebsiteJsonLd,
+} from '@/utilities/generateJsonLd'
 
 describe('generateOrganizationJsonLd', () => {
   it('builds the minimal Organization schema without optional fields', () => {
@@ -83,5 +87,73 @@ describe('generateWebsiteJsonLd', () => {
         'query-input': 'required name=search_term_string',
       },
     })
+  })
+})
+
+describe('generateArticleJsonLd', () => {
+  const base = {
+    serverUrl: 'https://www.amerikiosks.com',
+    url: 'https://www.amerikiosks.com/insights/x',
+  }
+
+  it('emits an Article with the publisher attached', () => {
+    const ld = generateArticleJsonLd({ ...base, headline: 'What end-to-end operation includes' })
+    expect(ld['@type']).toBe('Article')
+    expect(ld.headline).toBe('What end-to-end operation includes')
+    expect(ld.publisher).toMatchObject({ '@type': 'Organization', name: 'Amerikiosks' })
+    expect(ld.mainEntityOfPage).toMatchObject({ '@id': base.url })
+  })
+
+  // The reason this exists: an engine quoting the article needs someone to
+  // attribute it to.
+  it('maps authors to Person entries', () => {
+    const ld = generateArticleJsonLd({ ...base, authors: ['Ada Lovelace', 'Grace Hopper'] })
+    expect(ld.author).toEqual([
+      { '@type': 'Person', name: 'Ada Lovelace' },
+      { '@type': 'Person', name: 'Grace Hopper' },
+    ])
+  })
+
+  it('drops empty author entries rather than emitting blanks', () => {
+    const ld = generateArticleJsonLd({ ...base, authors: [null, '', undefined, 'Ada'] })
+    expect(ld.author).toEqual([{ '@type': 'Person', name: 'Ada' }])
+  })
+
+  it('omits author entirely when there is nobody', () => {
+    expect(generateArticleJsonLd({ ...base, authors: [] })).not.toHaveProperty('author')
+  })
+
+  // An article nobody edited was last modified when it went out. Saying nothing
+  // loses the signal for no reason.
+  it('falls back to the publication date for dateModified', () => {
+    const ld = generateArticleJsonLd({ ...base, datePublished: '2026-07-01T00:00:00.000Z' })
+    expect(ld.dateModified).toBe('2026-07-01T00:00:00.000Z')
+  })
+
+  it('prefers a real modification date when there is one', () => {
+    const ld = generateArticleJsonLd({
+      ...base,
+      datePublished: '2026-07-01T00:00:00.000Z',
+      dateModified: '2026-08-01T00:00:00.000Z',
+    })
+    expect(ld.dateModified).toBe('2026-08-01T00:00:00.000Z')
+  })
+
+  // Schema.org accepts a partial Article, and `author: undefined` or an empty
+  // date is worse than an omission — a validator flags it and a consumer has to
+  // special-case it.
+  it('omits every field it was given nothing for', () => {
+    const ld = generateArticleJsonLd(base)
+    for (const key of [
+      'headline',
+      'description',
+      'image',
+      'datePublished',
+      'dateModified',
+      'author',
+    ]) {
+      expect(ld).not.toHaveProperty(key)
+    }
+    expect(ld['@type']).toBe('Article')
   })
 })
