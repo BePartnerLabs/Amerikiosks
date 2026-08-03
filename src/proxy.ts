@@ -56,5 +56,13 @@ export const config = {
   // of localhost (found live-debugging a mobile Safari session where every
   // client component's event handlers appeared dead: the corrupted HMR
   // connection broke hydration for the whole page, not just one component).
-  matcher: ['/((?!admin|api|next|_next|favicon|seed-assets|.*\\..*).*)'],
+  //
+  // The exclusions are anchored to a whole path segment — `(?:/|$)` — not left
+  // as bare prefixes. Unanchored, `admin` also excluded `/administracion`,
+  // `api` excluded `/apidocs` and `next` excluded `/next-generation`, and any
+  // such slug would silently skip i18n, the redirect lookup *and* the
+  // GATED_PATHS check. On a site with Spanish content `/administracion` is not
+  // a hypothetical. Same trap the gated-path matcher avoids by comparing
+  // segments (see utilities/gatedPaths.ts).
+  matcher: ['/((?!(?:admin|api|next|_next|favicon|seed-assets)(?:/|$)|.*\\..*).*)'],
 }
