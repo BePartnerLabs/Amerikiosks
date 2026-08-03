@@ -47,7 +47,21 @@ export const generateMeta = async (args: {
 
   const ogImage = getImageURL(doc?.meta?.image)
 
-  const title = doc?.meta?.title ? `${doc?.meta?.title} | Amerikiosks` : 'Amerikiosks'
+  // Falls back to the document's own title before falling back to the site
+  // name. An empty `meta.title` used to render `<title>Amerikiosks</title>` for
+  // the whole page — no article name, no context — which is the strongest
+  // signal Google has about what a page is, plus the browser tab and the search
+  // result. Several documents in production shipped exactly like that, and ten
+  // of them are ten indistinguishable pages competing for the same term.
+  //
+  // `title` on pages/insights/projects, `name` on machines and families — the
+  // same pair the SEO plugin's own generateTitle uses (see plugins/index.ts),
+  // except that one only fills the admin field when someone presses the button.
+  // This applies at render, so a document nobody got to still says what it is.
+  const label =
+    doc?.meta?.title || (doc as { title?: string })?.title || (doc as { name?: string })?.name
+
+  const title = label ? `${label} | Amerikiosks` : 'Amerikiosks'
 
   return {
     description: doc?.meta?.description,
