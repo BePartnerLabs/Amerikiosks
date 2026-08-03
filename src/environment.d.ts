@@ -11,6 +11,9 @@ declare global {
       /** Comma-separated path prefixes that require a Payload session, e.g.
        *  `/es,/machines`. Optional — see src/utilities/gatedPaths.ts. */
       GATED_PATHS?: string
+      /** Shared secret for /api/payload-jobs/run. Without it a queued claim
+       *  sync is never triggered — see collections/Claims/hooks/syncClaim.ts. */
+      CRON_SECRET?: string
     }
   }
 }
