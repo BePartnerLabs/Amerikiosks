@@ -94,6 +94,54 @@ export const GenericMondayRepository = {
     return { id }
   },
 
+  /**
+   * Updates an item that already exists, instead of filing a second one.
+   *
+   * The resync button's whole purpose is the `syncStatus: 'error'` case, and
+   * the realistic error is an attachment Monday rejected *after* the item was
+   * created. Calling create_item again then produces a duplicate lead: items
+   * 12667673959 and 12667682604 on the live board are the same person, filed
+   * twice for exactly this reason.
+   *
+   * Same `create_labels_if_missing` as create_item, and for the same reason —
+   * a dropdown column rejects any label it does not already know, and the
+   * labels come from options an editor typed into the CMS.
+   */
+  async updateColumns(
+    boardId: string,
+    itemId: string,
+    columnValues: Record<string, unknown>,
+    apiToken: string,
+  ): Promise<{ id: string }> {
+    if (isMondayMocked) {
+      logMockedMondayCall('change_multiple_column_values', { boardId, itemId, columnValues })
+      return { id: itemId }
+    }
+
+    const mutation = `mutation ($boardId: ID!, $itemId: ID!, $columnValues: JSON!) {
+      change_multiple_column_values (board_id: $boardId, item_id: $itemId, column_values: $columnValues, create_labels_if_missing: true) {
+        id
+      }
+    }`
+
+    const body = await serverHttpClient.post<MondayResponse>(
+      MONDAY_API_URL,
+      {
+        query: mutation,
+        variables: { boardId, itemId, columnValues: JSON.stringify(columnValues) },
+      },
+      { Authorization: apiToken },
+    )
+    assertNoGraphQLErrors(body)
+
+    const id = (body.data?.change_multiple_column_values as { id: string } | undefined)?.id
+    if (!id) {
+      throw new Error('GenericMondayRepository: change_multiple_column_values did not return an id')
+    }
+
+    return { id }
+  },
+
   async addFile(
     itemId: string,
     columnId: string,

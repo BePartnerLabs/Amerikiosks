@@ -228,15 +228,22 @@ async function run(payload: Payload, doc: SubmissionDoc): Promise<void> {
 
     const resolvedItemName = itemName ?? `${form.title} — submission #${doc.id}`
 
+    // An item we already filed. Re-running the sync then has to *update* it,
+    // not file another: the resync button exists for the `syncStatus: 'error'`
+    // case, and the realistic error is an attachment Monday rejected after the
+    // item was created. Calling create_item again produced duplicate leads —
+    // items 12667673959 and 12667682604 on the live board are one person,
+    // filed twice.
+    const existingItemId = (doc as { externalItemId?: string | null }).externalItemId ?? null
+
+    const send = (values: Record<string, unknown>) =>
+      existingItemId
+        ? GenericMondayRepository.updateColumns(boardId, existingItemId, values, apiToken)
+        : GenericMondayRepository.submit(boardId, groupId, resolvedItemName, values, apiToken)
+
     let itemId: string
     try {
-      ;({ id: itemId } = await GenericMondayRepository.submit(
-        boardId,
-        groupId,
-        resolvedItemName,
-        columnValues,
-        apiToken,
-      ))
+      ;({ id: itemId } = await send(columnValues))
     } catch (err) {
       if (!(err instanceof MondayApiError)) throw err
 
@@ -246,13 +253,7 @@ async function run(payload: Payload, doc: SubmissionDoc): Promise<void> {
       payload.logger.warn(
         `syncFormSubmission: retrying submission ${doc.id} with column types from Monday's own error response (mondayBoardsCache may be stale — consider re-syncing it)`,
       )
-      ;({ id: itemId } = await GenericMondayRepository.submit(
-        boardId,
-        groupId,
-        resolvedItemName,
-        corrected,
-        apiToken,
-      ))
+      ;({ id: itemId } = await send(corrected))
     }
 
     // Recorded before the attachments, not with the final 'synced' status: the
