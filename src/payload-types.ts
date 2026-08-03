@@ -1205,7 +1205,7 @@ export interface CardGridBlock {
          */
         eyebrow?: string | null;
         /**
-         * Icon identifier. Used in icon variant.
+         * Used by the icon variant. Pick from the list — a name typed by hand that is not in the set renders nothing at all, with no error.
          */
         icon?: string | null;
         title: string;
@@ -1564,7 +1564,7 @@ export interface Machine {
     items?:
       | {
           /**
-           * Material Symbols icon name, e.g. "inventory_2"
+           * Pick from the list. A name typed by hand that is not in the set renders nothing at all, with no error — see src/components/Icon/icons.ts.
            */
           icon?: string | null;
           title: string;
@@ -1713,7 +1713,7 @@ export interface MachineFamily {
     items?:
       | {
           /**
-           * Material Symbols icon name, e.g. "inventory_2"
+           * Pick from the list. A name typed by hand that is not in the set renders nothing at all, with no error — see src/components/Icon/icons.ts.
            */
           icon?: string | null;
           /**
