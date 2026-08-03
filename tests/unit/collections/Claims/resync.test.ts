@@ -54,7 +54,7 @@ describe('resyncEndpoint', () => {
   })
 
   it('resyncs every claim with syncStatus: error when no claimId is given', async () => {
-    findMock.mockResolvedValue({ docs: [{ id: 1 }, { id: 2 }] })
+    findMock.mockResolvedValue({ docs: [{ id: 1 }, { id: 2 }], totalDocs: 2 })
     findByIDMock.mockImplementation(async ({ id }: { id: number }) => ({ id }))
     dispatchClaimSyncMock
       .mockResolvedValueOnce(undefined)
@@ -73,5 +73,44 @@ describe('resyncEndpoint', () => {
     expect(json.processed).toBe(2)
     expect(json.succeeded).toBe(1)
     expect(json.failed).toEqual([{ id: 2, ok: false, error: 'still broken' }])
+  })
+
+  // It used to fetch every errored claim with `limit: 0` and walk them one at a
+  // time, each with a Monday round trip. A backlog of any size ran until the
+  // function timed out, and a run killed halfway leaves nobody able to say how
+  // far it got.
+  it('asks for a bounded batch rather than every errored claim', async () => {
+    findMock.mockResolvedValue({ docs: [], totalDocs: 0 })
+
+    const { resyncEndpoint } = await import('@/collections/Claims/endpoints/resync')
+    await resyncEndpoint.handler(fakeReq({ body: {} }))
+
+    const [args] = findMock.mock.calls[0]
+    expect(args.limit).toBeGreaterThan(0)
+    expect(args.limit).toBeLessThanOrEqual(50)
+  })
+
+  it('reports how many are left so the operator knows to press again', async () => {
+    findMock.mockResolvedValue({ docs: [{ id: 1 }], totalDocs: 40 })
+    findByIDMock.mockImplementation(async ({ id }: { id: number }) => ({ id }))
+    dispatchClaimSyncMock.mockResolvedValue(undefined)
+
+    const { resyncEndpoint } = await import('@/collections/Claims/endpoints/resync')
+    const res = await resyncEndpoint.handler(fakeReq({ body: {} }))
+
+    await expect(res.json()).resolves.toEqual(
+      expect.objectContaining({ processed: 1, remaining: 39 }),
+    )
+  })
+
+  it('reports nothing left when the batch covered everything', async () => {
+    findMock.mockResolvedValue({ docs: [{ id: 1 }], totalDocs: 1 })
+    findByIDMock.mockImplementation(async ({ id }: { id: number }) => ({ id }))
+    dispatchClaimSyncMock.mockResolvedValue(undefined)
+
+    const { resyncEndpoint } = await import('@/collections/Claims/endpoints/resync')
+    const res = await resyncEndpoint.handler(fakeReq({ body: {} }))
+
+    await expect(res.json()).resolves.toEqual(expect.objectContaining({ remaining: 0 }))
   })
 })
