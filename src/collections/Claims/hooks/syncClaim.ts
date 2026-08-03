@@ -1,3 +1,4 @@
+import { after } from 'next/server'
 import type { CollectionAfterChangeHook } from 'payload'
 import type { Claim } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
@@ -28,18 +29,41 @@ export const syncClaim: CollectionAfterChangeHook<Claim> = async ({ doc, operati
     req,
   })
 
-  // Fire-and-forget on purpose: triggering the run endpoint is the "webhook"
-  // that makes the queued job execute now instead of waiting for the next
-  // scheduled/cron run. Never awaited — the whole point is not blocking the
-  // customer's response on this.
-  const runUrl = `${getServerSideURL()}/api/payload-jobs/run`
-  fetch(runUrl, {
-    headers: { Authorization: `Bearer ${process.env.CRON_SECRET}` },
-  }).catch((err) => {
+  // Without a secret the run endpoint answers 401 and the job sits queued. It
+  // used to send `Bearer undefined` and swallow the rejection, so a missing env
+  // var looked exactly like everything working. Say so instead: the claim is
+  // stored either way, and someone has to press Resync.
+  if (!process.env.CRON_SECRET) {
     req.payload.logger.error(
-      `syncClaim: failed to trigger job run for claim ${doc.id}: ${err.message}`,
+      `syncClaim: CRON_SECRET is not set, so claim ${doc.id} was queued but not triggered. It will stay in syncStatus 'pending' until it is resynced from /admin.`,
     )
-  })
+    return doc
+  }
+
+  const runUrl = `${getServerSideURL()}/api/payload-jobs/run`
+  const trigger = () =>
+    fetch(runUrl, {
+      headers: { Authorization: `Bearer ${process.env.CRON_SECRET}` },
+    }).catch((err) => {
+      req.payload.logger.error(
+        `syncClaim: failed to trigger job run for claim ${doc.id}: ${err.message}`,
+      )
+    })
+
+  // Not awaited — the customer's submit must not wait on the integration's
+  // round trip. But not left dangling either: on Vercel the function can be
+  // frozen the moment the response is sent, and an un-awaited fetch is then
+  // simply never dispatched. That is how a claim ends up queued forever with
+  // syncStatus 'pending' and nobody the wiser.
+  //
+  // `after` keeps the invocation alive until the work finishes. It throws
+  // outside a Next request scope (a script, a seed, a test), where nothing is
+  // going to freeze anyway — so fall back to firing it directly there.
+  try {
+    after(trigger)
+  } catch {
+    void trigger()
+  }
 
   return doc
 }
