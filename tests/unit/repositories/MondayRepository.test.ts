@@ -147,7 +147,14 @@ describe('MondayRepository', () => {
     expect(url).toBe('https://api.monday.com/v2')
     expect(headers).toEqual({ Authorization: 'test-token' })
     expect(formData).toBeInstanceOf(FormData)
-    expect(String(formData.get('query'))).toContain('item_id: 999')
+    // Same as GenericMondayRepository.addFile: through a variable rather than
+    // pasted into the query text.
+    const query = String(formData.get('query'))
+    expect(query).toContain('$itemId: ID!')
+    expect(query).toContain('item_id: $itemId')
+    expect(query).not.toContain('999')
+    expect(formData.get('variables[itemId]')).toBe('999')
+    expect(formData.get('variables[columnId]')).toBe('files3')
     expect(formData.get('variables[file]')).toBeInstanceOf(Blob)
   })
 

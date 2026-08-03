@@ -87,14 +87,19 @@ async function addFileToColumn(
     return
   }
 
-  const query = `mutation ($file: File!) {
-    add_file_to_column (item_id: ${itemId}, column_id: "files3", file: $file) {
+  // Same change as GenericMondayRepository.addFile: the item id was pasted into
+  // the query text. The column is a literal here, so only the id moves, but
+  // leaving one call interpolated is how the pattern comes back.
+  const query = `mutation ($itemId: ID!, $columnId: String!, $file: File!) {
+    add_file_to_column (item_id: $itemId, column_id: $columnId, file: $file) {
       id
     }
   }`
 
   const formData = new FormData()
   formData.append('query', query)
+  formData.append('variables[itemId]', String(itemId))
+  formData.append('variables[columnId]', 'files3')
   formData.append(
     'variables[file]',
     new Blob([new Uint8Array(photo.buffer)], { type: photo.contentType }),

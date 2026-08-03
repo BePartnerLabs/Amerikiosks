@@ -72,9 +72,41 @@ describe('GenericMondayRepository', () => {
     const [url, formData, headers] = postMultipartMock.mock.calls[0]
     expect(url).toBe('https://api.monday.com/v2')
     expect(headers).toEqual({ Authorization: 'test-token' })
-    expect(String(formData.get('query'))).toContain('item_id: 999')
-    expect(String(formData.get('query'))).toContain('column_id: "files3"')
+    // Through variables, not concatenated into the query text. The ids are
+    // trusted today — itemId comes from Monday's own create_item response and
+    // columnId is an admin-entered value checked against the board — but this
+    // was the one place in the codebase where a value was pasted into a query,
+    // and the safety lived in nobody happening to map that id from somewhere
+    // user-controlled.
+    const query = String(formData.get('query'))
+    expect(query).toContain('$itemId: ID!')
+    expect(query).toContain('$columnId: String!')
+    expect(query).toContain('item_id: $itemId')
+    expect(query).toContain('column_id: $columnId')
+    expect(query).not.toContain('999')
+    expect(query).not.toContain('"files3"')
+    expect(formData.get('variables[itemId]')).toBe('999')
+    expect(formData.get('variables[columnId]')).toBe('files3')
     expect(formData.get('variables[file]')).toBeInstanceOf(Blob)
+  })
+
+  // The check that would actually catch a regression: a value crafted to close
+  // the string literal must stay a value.
+  it('addFile keeps an injection-shaped column id as data', async () => {
+    postMultipartMock.mockResolvedValue({ data: { add_file_to_column: { id: 'file-1' } } })
+    const { GenericMondayRepository } = await import('@/repositories/GenericMondayRepository')
+
+    const hostile = 'files3", extra: "x'
+    await GenericMondayRepository.addFile(
+      '1',
+      hostile,
+      { buffer: Buffer.from([1]), filename: 'a.jpg', contentType: 'image/jpeg' },
+      'test-token',
+    )
+
+    const [, formData] = postMultipartMock.mock.calls[0]
+    expect(String(formData.get('query'))).not.toContain('extra')
+    expect(formData.get('variables[columnId]')).toBe(hostile)
   })
 
   it('addFile throws when the Monday API response contains a GraphQL errors array', async () => {
