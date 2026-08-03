@@ -159,14 +159,27 @@ export const GenericMondayRepository = {
       return
     }
 
-    const query = `mutation ($file: File!) {
-      add_file_to_column (item_id: ${itemId}, column_id: "${columnId}", file: $file) {
+    // Everything through variables, like create_item — the item and column used
+    // to be concatenated into the query text. Not reachable today (itemId comes
+    // straight from Monday's own create_item response, columnId is an
+    // admin-entered externalId that validateMondayColumnId checks against the
+    // board), but it was the one place in the codebase where a value was pasted
+    // into a query, and the protection lived in nobody happening to map that id
+    // from somewhere user-controlled. Variables make it structural.
+    //
+    // The file still rides the GraphQL multipart spec: query in one FormData
+    // field, each variable in its own. Which is exactly why the others can be
+    // variables too — the same envelope carries them.
+    const query = `mutation ($itemId: ID!, $columnId: String!, $file: File!) {
+      add_file_to_column (item_id: $itemId, column_id: $columnId, file: $file) {
         id
       }
     }`
 
     const formData = new FormData()
     formData.append('query', query)
+    formData.append('variables[itemId]', itemId)
+    formData.append('variables[columnId]', columnId)
     formData.append(
       'variables[file]',
       new Blob([new Uint8Array(file.buffer)], { type: file.contentType }),
