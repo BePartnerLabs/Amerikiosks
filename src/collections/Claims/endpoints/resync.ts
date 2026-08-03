@@ -4,6 +4,12 @@ import { dispatchClaimSync } from '../dispatchClaimSync'
 
 type ResyncResult = { id: Claim['id']; ok: boolean; error?: string }
 
+// Same reasoning as the form-submissions endpoint: an unbounded run over a
+// backlog, each with a Monday round trip, ends at the function timeout, and a
+// run killed halfway leaves nobody able to say how far it got. Bounded batch,
+// with the leftover count in the response so the operator knows to press again.
+const RESYNC_BATCH_LIMIT = 25
+
 async function resyncOne(claimId: Claim['id'], req: Parameters<Endpoint['handler']>[0]) {
   const claim = await req.payload.findByID({ collection: 'claims', id: claimId, depth: 0, req })
   try {
@@ -35,11 +41,11 @@ export const resyncEndpoint: Endpoint = {
       return Response.json(result)
     }
 
-    const { docs } = await req.payload.find({
+    const { docs, totalDocs } = await req.payload.find({
       collection: 'claims',
       where: { syncStatus: { equals: 'error' } },
       depth: 0,
-      limit: 0,
+      limit: RESYNC_BATCH_LIMIT,
       req,
     })
 
@@ -52,6 +58,7 @@ export const resyncEndpoint: Endpoint = {
       processed: results.length,
       succeeded: results.filter((r) => r.ok).length,
       failed: results.filter((r) => !r.ok),
+      remaining: Math.max(0, totalDocs - docs.length),
     })
   },
 }
