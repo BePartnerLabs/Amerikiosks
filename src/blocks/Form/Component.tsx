@@ -1,25 +1,17 @@
 'use client'
 import type { FormFieldBlock, Form as FormType } from '@payloadcms/plugin-form-builder/types'
 import type { DefaultTypedEditorState } from '@payloadcms/richtext-lexical'
-import { useMutation } from '@tanstack/react-query'
-import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import type React from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { FieldValues, UseFormRegister } from 'react-hook-form'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import RichText from '@/components/RichText'
-import { FormsRepository } from '@/repositories'
+import { useFormSubmission } from '@/hooks/queries/useFormSubmission'
 import { toSnakeCase } from '@/utilities/toSnakeCase'
 import { fields } from './fields'
 import { useTurnstile } from './useTurnstile'
 import './styles.css'
-
-type Gtag = (
-  command: 'event',
-  eventName: string,
-  params: { form_name?: string; locale?: string },
-) => void
 
 /** Fields the formOverrides in src/plugins/index.ts add on top of the plugin's own. */
 type ExtendedForm = FormType & {
@@ -104,7 +96,6 @@ export const FormBlock: React.FC<
   const consentError = Boolean((errors as unknown as Record<string, unknown>).consent)
   const registerConsent = register as unknown as UseFormRegister<FieldValues>
 
-  const router = useRouter()
   // The widget is only worth creating once someone actually touches this form.
   // Every drawer on the page mounts its own FormBlock, so rendering one on
   // mount meant a dozen Cloudflare challenges competing on a single page load.
@@ -118,70 +109,27 @@ export const FormBlock: React.FC<
   // Submitting a long form and seeing nothing happen — because the offending
   // field is three screens up — is the worst failure mode in the drawer.
   const [invalidFields, setInvalidFields] = useState<{ name: string; label: string }[]>([])
-  // Only meaningful while a submission carrying a file is in flight; the
-  // Upload field renders its own bar from it.
-  const [uploadPercent, setUploadPercent] = useState<number | undefined>(undefined)
   const summaryRef = useRef<HTMLDivElement>(null)
 
   const {
-    mutate,
-    isPending: isLoading,
-    isSuccess: hasSubmitted,
+    submit,
+    retry: retrySubmission,
+    isLoading,
+    hasSubmitted,
     error: mutationError,
-    reset: resetMutation,
-  } = useMutation({
-    mutationFn: (data: FormFieldBlock[]) => {
-      // `useForm({ defaultValues: formFromProps.fields })` seeds the form state
-      // from the fields *array*, so `data` also carries its numeric indices
-      // ("0", "1", …) whose values are whole field-config objects. Payload's
-      // own endpoint ignored those; our route validates what it is given and
-      // rejects anything the form does not declare, which turned every real
-      // submission into a 400. Send only the declared fields.
-      const declared = new Set(
-        (formFromProps?.fields ?? [])
-          .filter((f) => 'name' in f)
-          .map((f) => (f as { name: string }).name),
-      )
-      if (requiresConsent) declared.add('consent')
-
-      const submissionData = Object.entries(data)
-        .filter(([field]) => declared.has(field))
-        .map(([field, value]) => ({ field, value }))
-      const hasFile = submissionData.some((entry) => entry.value instanceof File)
-      if (hasFile) setUploadPercent(0)
-
-      return FormsRepository.submit(
-        {
-          form: formID ?? '',
-          submissionData,
-          honeypot: honeypotRef.current?.value || undefined,
-          renderedAt: renderedAtRef.current,
-          turnstileToken: turnstile.token,
-        },
-        hasFile ? setUploadPercent : undefined,
-      )
-    },
-    onSuccess: () => {
-      if (confirmationType === 'redirect' && redirect?.url) {
-        // The success node below (which carries data-ga-event) never renders for
-        // redirect confirmations, so without this the lead goes untracked.
-        const g = (window as Window & { gtag?: Gtag }).gtag
-        if (typeof g === 'function') {
-          g('event', 'generate_lead', {
-            form_name: title,
-            locale: document.documentElement.lang || undefined,
-          })
-        }
-        router.push(redirect.url)
-      }
-    },
-    onSettled: () => setUploadPercent(undefined),
-    onError: (err) => {
-      // The visitor gets the sentence below; the technical detail belongs in
-      // the console, not on screen (this used to render as "500: Not Found").
-      console.error('[form] submission failed:', err)
-      turnstile.reset()
-    },
+    uploadPercent,
+  } = useFormSubmission({
+    formID: formID ? String(formID) : '',
+    declaredFields: (formFromProps?.fields ?? [])
+      .filter((f) => 'name' in f)
+      .map((f) => (f as { name: string }).name),
+    requiresConsent,
+    confirmationType,
+    redirectUrl: redirect?.url,
+    title,
+    honeypotRef,
+    renderedAtRef,
+    turnstile,
   })
 
   const lastDataRef = useRef<FormFieldBlock[] | undefined>(undefined)
@@ -189,9 +137,9 @@ export const FormBlock: React.FC<
     (data: FormFieldBlock[]) => {
       setInvalidFields([])
       lastDataRef.current = data
-      mutate(data)
+      submit(data)
     },
-    [mutate],
+    [submit],
   )
 
   const onInvalid = useCallback(() => {
@@ -216,9 +164,8 @@ export const FormBlock: React.FC<
   }, [errors, formFromProps, setFocus])
 
   const retry = useCallback(() => {
-    resetMutation()
-    if (lastDataRef.current) mutate(lastDataRef.current)
-  }, [mutate, resetMutation])
+    retrySubmission(lastDataRef.current)
+  }, [retrySubmission])
 
   // GAListener only listens for clicks, so an async form success (no click
   // of its own) needs a synthetic one on mount to dispatch generate_lead —
