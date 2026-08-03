@@ -94,6 +94,71 @@ which is the difference between a fix and a workaround.
    against the declared field list. That is the part most likely to be
    reimplemented badly by whoever builds the next client's forms.
 
+## Installing it
+
+One package, or two if you want an integration:
+
+```ts
+// payload.config.ts of a new project
+import { bplForms } from '@bpl/payload-forms'
+import { mondayTarget } from '@bpl/payload-monday'
+
+plugins: [
+  bplForms({
+    targets: [mondayTarget()],   // omit for a project with no CRM
+  }),
+]
+```
+
+`@payloadcms/plugin-form-builder` is a **dependency of `@bpl/payload-forms`**,
+not something the project installs. Nobody should have to know it is in there.
+
+## The target contract is a repository contract
+
+The forms package knows nothing about HTTP. It declares what an adapter must
+satisfy, and the adapter is a repository in the sense the org already uses —
+domain methods, typed errors, safe fallbacks, `fetch` confined to one layer.
+`GenericMondayRepository` already is one; extracting it is moving, not
+rewriting.
+
+The contract has **two halves**, and this is the part that decides whether the
+split works:
+
+```ts
+type SubmissionTarget = {
+  slug: string                     // 'monday'
+  label: string
+
+  // Schema: fields the adapter needs on the Form document, contributed by the
+  // adapter rather than declared in the forms package. This is what keeps
+  // `mondayGroupId` out of a schema shared with clients who do not use Monday.
+  formFields?: Field[]             // board id, group id…
+  fieldFields?: Field[]            // per-field column id…
+
+  // Behaviour
+  submit(submission, config): Promise<{ externalId: string }>
+  update?(externalId, submission, config): Promise<void>
+  attachFile?(externalId, file, fieldConfig, config): Promise<void>
+}
+```
+
+**Behaviour alone is not enough.** If the contract were only methods, the
+adapter's configuration fields would have to live in the forms package, and
+`mondayGroupId` would still be in a schema shared with clients who have never
+heard of Monday. Letting the adapter contribute fields is the whole point.
+
+**Capabilities are optional, and the plugin degrades rather than assumes.**
+`update` is what stops a resync filing a duplicate (#207) — a target without it
+can only create, and the resync UI should say so instead of silently doubling
+records. `attachFile` likewise: not every destination takes files, and a form
+with an upload field pointed at one that does not should fail at configuration
+time, not at the first submission carrying a photo.
+
+**What stays in the forms package**, because it is identical whatever the
+destination: retry and the self-healing second attempt, `syncStatus` /
+`syncError` / `externalItemId` on the submission, the resync endpoint and its
+bounded batch, and the rule that a sync failure never rolls back a stored lead.
+
 ## What this buys
 
 Not elegance. Today, standing up forms for another client means carrying the
@@ -117,6 +182,10 @@ plugin's adapter slice is what the Monday package would plug into.
 - **One package instead of two.** Simpler to build and wrong the first time a
   client uses anything other than Monday: the vendor's vocabulary would stay in
   the form schema, which is exactly the problem this is meant to remove.
+- **A target contract of methods only.** Half the job. The adapter's config
+  fields would fall back to the forms package, putting `mondayGroupId` in a
+  schema shared with clients who do not use Monday — the thing the split exists
+  to prevent.
 - **Keep growing `formOverrides`.** Works, and is what happens by default. The
   cost is not visible in this repo — it appears the day someone copies 450 lines
   of overrides into another project and copies the bugs with them.
