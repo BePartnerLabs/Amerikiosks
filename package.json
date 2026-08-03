@@ -26,8 +26,8 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "3.1093.0",
-    "@aws-sdk/s3-request-presigner": "3.1093.0",
+    "@aws-sdk/client-s3": "3.1101.0",
+    "@aws-sdk/s3-request-presigner": "3.1101.0",
     "@img/sharp-linux-x64": "^0.35.3",
     "@payloadcms/admin-bar": "3.87.0",
     "@payloadcms/db-postgres": "3.87.0",
@@ -71,7 +71,7 @@
     "@playwright/test": "1.62.1",
     "@tailwindcss/postcss": "^4.3.3",
     "@tailwindcss/typography": "^0.5.20",
-    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/jest-dom": "^7.0.0",
     "@testing-library/react": "16.3.2",
     "@types/escape-html": "^1.0.2",
     "@types/node": "26.1.2",
@@ -83,7 +83,7 @@
     "autoprefixer": "^10.5.4",
     "dotenv-cli": "^11.0.0",
     "husky": "^9.1.7",
-    "jsdom": "29.1.1",
+    "jsdom": "30.0.1",
     "lint-staged": "^17.3.0",
     "pg": "^8.22.0",
     "postcss": "^8.5.25",
