@@ -140,5 +140,15 @@ Audited 2026-07-19 — site did not comply, no consent mechanism existed at all.
 
 ## Launch checklist (WordPress decommission)
 
+- **Open the site to AI crawlers — deliberately last, once machines and the FAQ are finished.** Decided 2026-08-03. The goal is to be recommended by assistants, so the current `GPTBot: Disallow: /` and `Claude-Web: Disallow: /` come out; everything else is already covered by the existing `*: Allow: /`. Add `Google-Extended: Allow: /` too — it is not a crawler but the switch that decides whether the content feeds Google's AI answers, and leaving it undeclared leaves the choice to Google. All of it is `/admin` → Settings → Indexing, no code.
+
+  **Why last:** live-search agents re-fetch the page every time they answer, so anything wrong today fixes itself the moment you publish. Training crawlers take a snapshot that can take a long time to refresh. Arriving late costs almost nothing; arriving early with a half-finished catalogue is what sticks.
+
+  **Order matters, and two of these currently cancel each other out:**
+  1. Machines and FAQ content finished and published.
+  2. Remove `/machines` (and `/es` if the Spanish copy is signed off) from `GATED_PATHS` and redeploy — while it is gated, *no* crawler sees that section, so opening robots.txt first achieves nothing for the pages that most need recommending.
+  3. Write the missing `meta.title`s: `/llms.txt` builds its list from `doc.title`, so the file an assistant reads still lists a page as `get-the-most-innovative-kiosk-in-your-properties`.
+  4. Then open the crawlers, and check `/robots.txt` and `/llms.txt` in production afterwards.
+
 - **Scan a real QR code on a deployed kiosk** against a preview deploy before decommissioning WordPress — confirms the `machine_id` query param printed on physical kiosks still resolves correctly end to end. The QR encodes `/customer-service?machine_id=...` (the Support Hub landing page, not the refund form directly) — `SupportHub` (`src/blocks/SupportHub/Component.tsx`) reads `machine_id` off that page's own URL and forwards it onto the "Request a refund" link, so `ClaimForm` (a separate URL) still has it in its own `searchParams` when the customer arrives there. Full chain documented in `docs/superpowers/specs/2026-07-22-monday-claims-integration-design.md` § 5.
 - **Check Neon's branch-expiration setting** (dashboard, or the Vercel↔Neon integration config) — confirm whether preview-deployment branches auto-delete on a timer and after how long, so nobody loses a staging branch they meant to keep using. **Now load-bearing:** `preview/latest` was created 2026-07-30 as the standing preview branch, kept level with `main` **on demand** (`git merge --ff-only main`, deliberately not automated — a preview build per merge to `main` is the cost that was cut on purpose), and its Neon branch was reset from production so migrations rehearse against real content. If those branches expire on a timer, that whole setup disappears quietly.
