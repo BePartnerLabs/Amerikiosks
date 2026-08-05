@@ -78,8 +78,10 @@ reorderable blocks — which is the editability the client asked for.
 The layout becomes:
 
 ```
-Hero  →  machineLineup  →  TrustStrip  →  6 × machineFamily  →  CallToAction
+Hero  →  machineLineup  →  TrustStrip  →  5 × machineFamily  →  CallToAction
 ```
+
+Five families exist today: `alpha`, `delta`, `gamma`, `kappa`, `zeta`.
 
 - **Hero** — the `eyebrow` and `<h1>` currently welded into `Stage.tsx:20-21`
   move out to a standard hero. This is where the copy stops living in message
@@ -106,6 +108,45 @@ in `/admin` means also adding its block to the page. That is the price of
 ordering and interleaving, and with six slow-moving families it is the right
 trade — but it must be in the client manual, or a family will be added and
 silently not appear.
+
+## What lives in the block, what lives in the family
+
+`machine-families` is shared: the family page reads the same document the
+landing block does. So the dividing line is **not** "content vs layout" — it is
+**"must these two surfaces agree?"**
+
+**Content stays in the collection.** `name`, `tagline`, `description`,
+`thumbnail`, `hoverThumbnail`, `ctaLabel` and `highlights` are facts about the
+family. Duplicating any of them into block fields means the landing and the
+family page can disagree, and they will — that is exactly the drift the derived
+numbers rule guards against elsewhere in this document. `ctaLabel` is already
+per-family and already ignored by the family page; wiring it up serves both.
+
+**Presentation goes in the block.** How many highlights to show, whether to
+show the image variant, which side the render sits on, the section's own
+eyebrow/heading override. These are page-level decisions, and the same family
+legitimately looks different on a landing than on its own page.
+
+**The one real conflict is `highlights`.** The field was designed for the
+family page's full-width block: an item with an `image` renders as a large
+featured card. The landing wants the short version — general characteristics,
+no big cards. If the block simply renders `highlights`, then editing them for
+one surface silently changes the other.
+
+The block takes a **count** (default 4, matching today's landing) and reads the
+first N items, ignoring `image` unless a block-level toggle asks for it. No
+second copy of the text, and the family page keeps the full list. If the client
+later needs genuinely different copy per surface, the answer is a
+`landingSummary` field on the family — not block-level text.
+
+**What the block owns outright:** the link target (always
+`/machines/[family]`, derived from the relationship, not typed), and nothing
+else textual.
+
+**The CTA is not part of the family block.** The closing call to action is the
+existing `CallToAction` block at page level, added once at the bottom — not
+repeated five times. The per-family `ctaLabel` is a different thing: the "know
+more" link inside each family section.
 
 ## Also in scope
 
