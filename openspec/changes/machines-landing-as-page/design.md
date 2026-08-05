@@ -86,9 +86,33 @@ Five families exist today: `alpha`, `delta`, `gamma`, `kappa`, `zeta`.
 - **Hero** — the `eyebrow` and `<h1>` currently welded into `Stage.tsx:20-21`
   move out to a standard hero. This is where the copy stops living in message
   files.
-- **`machineLineup`** — the big pinned render (`Scene.tsx`) plus the headline
-  characteristics. No eyebrow, no title, no selector: it walks the families as
-  a panorama and filters nothing below it.
+- **`machineLineup`** — the scroll-pinned dark scene (`Scene.tsx`), which is
+  the part the client singled out as liking. Everything above it goes: the
+  `ak-machines-landing__intro` wrapper with its eyebrow and `<h1>`
+  (`Stage.tsx:17-24`), and `ak-lineup`, the family selector, which is what made
+  the navigation feel wrong.
+
+  What changes inside it is the axis. Today the scroll steps through *one*
+  family's highlights, chosen by the selector (`Scene.tsx:21-27`, driven by
+  `useActiveFamily()`). It now steps through the **families**: one machine per
+  family, its featured characteristic beside it, five steps. The pinning,
+  progress and tick mechanics are untouched — only the array that feeds them.
+
+  **Image source changes from the composed render to a single machine.**
+  `page.tsx:128` currently resolves `heroUrl` from `heroLineupImage`, which the
+  collection defines as a render of *every* model in the line. The block reads
+  `thumbnail` (front view of one machine) and `hoverThumbnail` (its
+  three-quarter view) instead — `hoverThumbnail` is what the scroll crossfades
+  via `--ak-scene-turn`, so it stays load-bearing even though the mouse-hover
+  swap it was named for disappears with `ak-lineup`.
+
+  This also removes the repetition: the landing shows one representative
+  machine, `/machines/[family]` opens with the whole line. Progression instead
+  of the same image twice.
+
+  Verified in the local restore: all five families have `thumbnail`,
+  `hoverThumbnail`, `heroLineupImage` and exactly 4 highlights, so nothing
+  renders degraded on day one.
 - **`TrustStrip`** — already a registered block; it stops being rendered
   straight from the route and becomes a movable block like any other.
 - **`machineFamily`** — new block with a relationship field to
@@ -129,14 +153,26 @@ legitimately looks different on a landing than on its own page.
 
 **The one real conflict is `highlights`.** The field was designed for the
 family page's full-width block: an item with an `image` renders as a large
-featured card. The landing wants the short version — general characteristics,
-no big cards. If the block simply renders `highlights`, then editing them for
-one surface silently changes the other.
+featured card. The landing wants one short characteristic per family. If the
+block simply renders `highlights`, then editing them for one surface silently
+changes the other.
 
-The block takes a **count** (default 4, matching today's landing) and reads the
-first N items, ignoring `image` unless a block-level toggle asks for it. No
-second copy of the text, and the family page keeps the full list. If the client
-later needs genuinely different copy per surface, the answer is a
+**Add a `featured` checkbox to `highlights.items`.** Which characteristic leads
+is a fact about the family, not a page-level decision — marked once, it serves
+the lineup scene, the family section and anything added later. The block reads
+the featured item; it never carries its own copy.
+
+Two rules this needs, or it fails silently:
+
+- **Fallback.** Use the first item flagged `featured`; if none is flagged, the
+  first item in the array. Without this, an unflagged family drops out of the
+  scroll sequence entirely.
+- **`featured` is not localized.** Flagging one characteristic in English and a
+  different one in Spanish is not a use case, and `highlights.items` already
+  carries the localized-array hazard from `CLAUDE.md`: any locale-scoped write
+  must send each existing item's `id` back or it wipes the sibling locale.
+
+If the client later needs genuinely different copy per surface, the answer is a
 `landingSummary` field on the family — not block-level text.
 
 **What the block owns outright:** the link target (always
@@ -163,10 +199,14 @@ more" link inside each family section.
 
 ## What must not regress
 
-- **The stage background stays dark.** Documented at `Stage.tsx:12-13`: the
-  cut-out renders are white machines, and they disappear on a light background.
-  A reorderable `machineLineup` block must carry its own dark surface rather
-  than inherit the page's, or reordering breaks it visually.
+- **The dark scene survives intact.** This is the one part the client named as
+  liking — the navy background with the machine and its characteristic. It is
+  also not merely a preference: `Stage.tsx:12-13` records that the cut-out
+  renders are white machines that disappear on a light background, the same
+  finding the rotation-frames spike hit independently. So the `machineLineup`
+  block must carry its own dark surface rather than inherit the page's, or
+  reordering it onto a light section breaks it. Strip the header off it, not
+  the scene.
 - **`/maquinas` keeps working.** Existing links, and anything the client has
   shared, point at it. The slug must be `maquinas` in ES from day one; a
   redirect row is the fallback, not the plan.
