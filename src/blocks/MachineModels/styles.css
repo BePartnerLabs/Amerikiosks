@@ -21,6 +21,13 @@
   --_models-background: var(--ak-section-bg-gradient-down);
   --_models-drop-light: color-mix(in srgb, var(--brand-color-palette-navy-900) 22%, transparent);
 
+  /* How far the machine leans out above its card. Declared once because two
+     rules depend on it: the render's height and the track's top padding. A
+     scroll container clips what overflows it — `overflow-x: auto` makes the
+     block axis a scrollport too — so if the padding is smaller than the
+     overhang, the effect gets sliced off instead of hanging over. */
+  --_models-overhang: clamp(3.5rem, 6vw, 6rem);
+
   padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(3.25rem, 8vw, 6rem);
   background: var(--_models-background);
 }
@@ -50,7 +57,7 @@
 .ak-model-cards__track {
   list-style: none;
   margin: 0;
-  padding: 2.875rem 0 0.75rem;
+  padding: calc(var(--_models-overhang) + 0.75rem) 0 0.75rem;
   display: grid;
   grid-auto-flow: column;
   /* The old grid was `repeat(auto-fit, minmax(13rem, 1fr))`, so cards stretched
@@ -134,7 +141,7 @@
   right: 0.625rem;
   bottom: 0;
   width: 46%;
-  height: 138%;
+  height: calc(100% + var(--_models-overhang));
   object-fit: contain;
   object-position: bottom right;
   pointer-events: none;
