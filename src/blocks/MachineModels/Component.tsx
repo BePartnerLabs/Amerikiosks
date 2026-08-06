@@ -59,7 +59,18 @@ export const MachineModelsBlock: React.FC<Props> = ({
           >
             {heading}
           </h2>
+        </div>
+      </div>
 
+      {/*
+        The rail runs edge to edge while the heading stays on the content grid:
+        a carousel that stops at the content margin reads as a finished row, and
+        the point here is that there is more to the right. The left inset is half
+        a card, so the first machine sits off the text column and the cards that
+        run off the right edge are obviously continuable.
+      */}
+      <div className="bp-content-grid">
+        <div className="full-width">
           <Carousel
             panelSelector=".ak-model-card"
             className="ak-model-cards__carousel"

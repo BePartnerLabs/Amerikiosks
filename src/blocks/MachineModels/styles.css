@@ -26,7 +26,16 @@
      scroll container clips what overflows it — `overflow-x: auto` makes the
      block axis a scrollport too — so if the padding is smaller than the
      overhang, the effect gets sliced off instead of hanging over. */
-  --_models-overhang: clamp(3.5rem, 6vw, 6rem);
+  --_models-overhang: 4rem;
+  --_models-card-height: 18rem;
+
+  /* The renders are 2640×3300 — a 0.8 aspect. With `object-fit: contain` the
+     image is height-limited only while the box is at least `0.8 × its height`
+     wide; any narrower and the width becomes the limit, the render scales down
+     to fit, and it lands entirely inside the card with no overhang at all.
+     That is what kept defeating us. 0.85 keeps a margin over the real ratio. */
+  --_models-shot-width: calc(0.85 * (var(--_models-card-height) + var(--_models-overhang)));
+  --_models-card-width: 42.5rem;
 
   padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(3.25rem, 8vw, 6rem);
   background: var(--_models-background);
@@ -57,7 +66,12 @@
 .ak-model-cards__track {
   list-style: none;
   margin: 0;
-  padding: calc(var(--_models-overhang) + 0.75rem) 0 0.75rem;
+  /* Half a card of runway on the left, and the same on the right so the last
+     card can still snap flush instead of jamming against the viewport edge.
+     `min()` keeps the inset from eating the whole screen on a phone. */
+  padding: calc(var(--_models-overhang) + 0.75rem) min(8vw, 2rem) 0.75rem
+    min(50vw, calc(var(--_models-card-width) / 2));
+  scroll-padding-left: min(50vw, calc(var(--_models-card-width) / 2));
   display: grid;
   grid-auto-flow: column;
   /* The old grid was `repeat(auto-fit, minmax(13rem, 1fr))`, so cards stretched
@@ -69,7 +83,7 @@
      that the card crops it and the effect is lost, so the width is stated
      rather than derived from how many cards would fit. `min(100%, …)` keeps a
      phone showing one full-width card instead of overflowing the viewport. */
-  grid-auto-columns: min(100%, 42.5rem);
+  grid-auto-columns: min(100%, var(--_models-card-width));
   gap: 0.875rem;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
@@ -92,6 +106,7 @@
 .ak-model-cards__carousel-nav {
   display: flex;
   justify-content: flex-end;
+  padding-inline: min(8vw, 2rem);
   gap: 0.5rem;
   margin-top: 0.75rem;
 }
@@ -126,9 +141,8 @@
   box-shadow: var(--_models-shadow);
   padding: 1.75rem;
   /* Shorter than the first pass: at 22rem the three specs floated in the middle
-     of a tall card. Less height also means proportionally more overhang, since
-     the machine is the card's height plus a fixed amount. */
-  min-height: 18rem;
+     of a tall card. */
+  min-height: var(--_models-card-height);
   display: flex;
   flex-direction: column;
   /* The name leads and the data sits under it, both centred against the
@@ -160,7 +174,7 @@
   position: absolute;
   right: 1.5rem;
   bottom: 0;
-  width: 12.5rem;
+  width: var(--_models-shot-width);
   height: calc(100% + var(--_models-overhang));
   object-fit: contain;
   object-position: bottom right;
