@@ -107,7 +107,7 @@ jobs:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
     steps:
       - name: Install Vercel CLI
-        run: npm install -g vercel@${{ vars.VERCEL_CLI_VERSION || '58.4.4' }}
+        run: npm install -g vercel@${{ vars.VERCEL_CLI_VERSION || '58.7.1' }}
 
       - name: Enable maintenance rules
         run: |
@@ -155,7 +155,7 @@ jobs:
       # release. `vars` (unlike `env`) is available in a reusable workflow's
       # `with:`, so setting the VERCEL_CLI_VERSION Actions variable bumps every
       # job at once — no edit to centralized-workflows needed.
-      vercel-cli-version: ${{ vars.VERCEL_CLI_VERSION || '58.4.4' }}
+      vercel-cli-version: ${{ vars.VERCEL_CLI_VERSION || '58.7.1' }}
     secrets: inherit
 
   unlock:
@@ -173,7 +173,7 @@ jobs:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
     steps:
       - name: Install Vercel CLI
-        run: npm install -g vercel@${{ vars.VERCEL_CLI_VERSION || '58.4.4' }}
+        run: npm install -g vercel@${{ vars.VERCEL_CLI_VERSION || '58.7.1' }}
 
       - name: Disable maintenance rules
         run: |
