@@ -73,8 +73,15 @@
   gap: 0.875rem;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  scrollbar-width: thin;
   overscroll-behavior-x: contain;
+  /* The bar is redundant once the arrows are there, and it draws a line right
+     under the cards that reads as part of the design. Hide the bar, keep the
+     scrolling — the track is still focusable and still pans with the keyboard. */
+  scrollbar-width: none;
+}
+
+.ak-model-cards__track::-webkit-scrollbar {
+  display: none;
 }
 
 .ak-model-cards__item {
@@ -117,10 +124,13 @@
   border-radius: var(--bp-radius-lg, 0.75rem);
   background: var(--_models-surface);
   box-shadow: var(--_models-shadow);
-  padding: 1.5rem;
+  padding: 1.75rem;
   min-height: 22rem;
   display: flex;
   flex-direction: column;
+  /* The name leads and the data sits under it, both centred against the
+     machine rather than pushed to the top and bottom edges. */
+  justify-content: center;
   gap: 0.5rem;
   text-decoration: none;
   color: inherit;
@@ -137,12 +147,17 @@
   box-shadow: var(--_models-shadow-hover);
 }
 
-/* The machine leans out over the top edge of its card. */
+/* The machine leans out over the top edge of its card.
+   The width is fixed rather than a percentage, and that is the whole trick:
+   with `object-fit: contain` a wide box makes the render width-constrained, so
+   it scales down and sits entirely inside the card — the wider the card, the
+   less overhang. A narrow, tall box makes the height the limit, so the machine
+   fills it and the overhang is real. */
 .ak-model-card__shot {
   position: absolute;
-  right: 0.625rem;
+  right: 1.5rem;
   bottom: 0;
-  width: 46%;
+  width: 12.5rem;
   height: calc(100% + var(--_models-overhang));
   object-fit: contain;
   object-position: bottom right;
@@ -173,49 +188,54 @@
   text-transform: uppercase;
   color: var(--_models-muted);
   margin: 0;
-  max-width: 60%;
+  max-width: 55%;
 }
 
 .ak-model-card__name {
-  font-size: 1.25rem;
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
   color: var(--_models-heading);
-  margin: 0;
-  max-width: 60%;
+  margin: 0 0 0.25rem;
+  max-width: 55%;
+  text-wrap: balance;
 }
 
+/* One quiet row of data under the name, not a stacked list: three specs in a
+   column 374px wide left a dead gap in the middle of the card. */
 .ak-model-card__specs {
-  margin: 0;
-  display: grid;
-  gap: 0.25rem 0.875rem;
+  margin: 1rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.5rem;
   font-size: 0.8125rem;
-  max-width: 60%;
+  max-width: 55%;
 }
 
 .ak-model-card__specs > div {
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0.875rem;
+  gap: 0;
 }
 
 .ak-model-card__specs dt {
   font-family: var(--bp-font-family-mono, ui-monospace, monospace);
-  font-size: 0.625rem;
+  font-size: 0.5625rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--_models-muted);
-  align-self: center;
 }
 
 .ak-model-card__specs dd {
   margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
   color: var(--_models-heading);
   font-variant-numeric: tabular-nums;
 }
 
 .ak-model-card__go {
-  margin-top: auto;
+  margin-top: 1.5rem;
   font-size: 0.8125rem;
   font-weight: 600;
   color: var(--_models-accent);
