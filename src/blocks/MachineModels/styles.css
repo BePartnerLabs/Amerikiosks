@@ -55,9 +55,12 @@
   grid-auto-flow: column;
   /* The old grid was `repeat(auto-fit, minmax(13rem, 1fr))`, so cards stretched
      to fill the row. In a carousel the track scrolls instead of wrapping, so
-     the width has to be stated: clamp keeps roughly four cards on a wide screen
-     and one and a bit on a phone, without ever shrinking below readable. */
-  grid-auto-columns: clamp(16rem, 22vw, 21rem);
+     the width has to be stated.
+
+     Sized for the machine, not for the text: the render leans out over the top
+     edge of the card, and that overhang only reads when the card is wide enough
+     to give it room. Roughly three cards on a wide screen. */
+  grid-auto-columns: clamp(19rem, 28vw, 27rem);
   gap: 0.875rem;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
@@ -106,7 +109,7 @@
   background: var(--_models-surface);
   box-shadow: var(--_models-shadow);
   padding: 1.5rem;
-  min-height: 20rem;
+  min-height: 22rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -130,8 +133,8 @@
   position: absolute;
   right: 0.625rem;
   bottom: 0;
-  width: 42%;
-  height: 132%;
+  width: 46%;
+  height: 138%;
   object-fit: contain;
   object-position: bottom right;
   pointer-events: none;
