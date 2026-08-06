@@ -13,6 +13,13 @@ const HEADER_OFFSET_PX = 62
  * section under `prefers-reduced-motion`.
  */
 export const MachinesScene: React.FC = () => {
+  // Compiled by the React Compiler (annotation mode, see next.config.ts). The
+  // scroll handler sets state on every animation frame, so this component
+  // re-renders continuously while the section is on screen and rebuilds its
+  // `steps` array each time. Auto-memoisation is worth more here than anywhere
+  // else in the project.
+  'use memo'
+
   const { active } = useActiveFamily()
   const sectionRef = useRef<HTMLDivElement>(null)
   const pinRef = useRef<HTMLDivElement>(null)

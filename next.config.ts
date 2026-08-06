@@ -16,6 +16,15 @@ const NEXT_PUBLIC_SERVER_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
   : process.env.__NEXT_PRIVATE_ORIGIN || 'http://localhost:3000'
 
 const nextConfig: NextConfig = {
+  // Opt-in, not project-wide. The compiler memoises components automatically,
+  // but it runs through Babel and Next's own docs admit builds get slightly
+  // slower. In annotation mode nothing is compiled unless a component asks for
+  // it with `"use memo"`, so the cost is paid only where it buys something —
+  // starting with the scroll-driven lineup scene, which re-renders on every
+  // animation frame.
+  reactCompiler: {
+    compilationMode: 'annotation',
+  },
   images: {
     localPatterns: [
       // Still needed: without S3 credentials Payload falls back to the
