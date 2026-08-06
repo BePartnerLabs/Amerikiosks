@@ -43,7 +43,9 @@
     "noModels": "Los modelos de esta línea están en camino. Escribinos y te mostramos la configuración.",
     "mainHighlight": "Característica principal",
     "feature": "Característica",
-    "modelsInLine": "Modelos en la línea"
+    "modelsInLine": "Modelos en la línea",
+    "carouselPrevious": "Anterior",
+    "carouselNext": "Siguiente"
   },
   "pagination": {
     "previous": "Anterior",

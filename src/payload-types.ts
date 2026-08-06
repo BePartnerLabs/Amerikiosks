@@ -283,6 +283,7 @@ export interface Page {
         | ModelLinesBlock
         | MachineLineupBlock
         | MachineFamilyBlock
+        | MachineModelsBlock
         | ProcessStepsBlock
         | StatementBlock
         | FAQWithFormBlock
@@ -1817,6 +1818,25 @@ export interface MachineFamilyBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MachineModelsBlock".
+ */
+export interface MachineModelsBlock {
+  eyebrow?: string | null;
+  heading: string;
+  /**
+   * Link text on each card.
+   */
+  ctaLabel?: string | null;
+  /**
+   * Optional. Leave empty to show every model across all families — the usual case. Set one to narrow this block to a single line.
+   */
+  family?: (number | null) | MachineFamily;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'machineModels';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "ProcessStepsBlock".
  */
 export interface ProcessStepsBlock {
@@ -2669,6 +2689,7 @@ export interface PagesSelect<T extends boolean = true> {
         modelLines?: T | ModelLinesBlockSelect<T>;
         machineLineup?: T | MachineLineupBlockSelect<T>;
         machineFamily?: T | MachineFamilyBlockSelect<T>;
+        machineModels?: T | MachineModelsBlockSelect<T>;
         processSteps?: T | ProcessStepsBlockSelect<T>;
         statement?: T | StatementBlockSelect<T>;
         faqWithForm?: T | FAQWithFormBlockSelect<T>;
@@ -2972,6 +2993,18 @@ export interface MachineFamilyBlockSelect<T extends boolean = true> {
   leadEyebrow?: T;
   showModelCount?: T;
   countEyebrow?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MachineModelsBlock_select".
+ */
+export interface MachineModelsBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  ctaLabel?: T;
+  family?: T;
   id?: T;
   blockName?: T;
 }

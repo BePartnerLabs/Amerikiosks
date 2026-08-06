@@ -22,6 +22,7 @@ import { FormatsGrid } from '../../blocks/FormatsGrid/config'
 import { InsightsShowcase } from '../../blocks/InsightsShowcase/config'
 import { MachineFamily } from '../../blocks/MachineFamily/config'
 import { MachineLineup } from '../../blocks/MachineLineup/config'
+import { MachineModels } from '../../blocks/MachineModels/config'
 import { MachinesListing } from '../../blocks/MachinesListing/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { Metrics } from '../../blocks/Metrics/config'
@@ -105,6 +106,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 ModelLines,
                 MachineLineup,
                 MachineFamily,
+                MachineModels,
                 ProcessSteps,
                 Statement,
                 FAQWithForm,

@@ -77,6 +77,7 @@ import * as migration_20260730_220000_drop_orphaned_autosave_columns from './202
 import * as migration_20260730_224141_footer_contact_heading from './20260730_224141_footer_contact_heading';
 import * as migration_20260806_011354_machine_family_highlight_featured from './20260806_011354_machine_family_highlight_featured';
 import * as migration_20260806_012848_machine_family_block from './20260806_012848_machine_family_block';
+import * as migration_20260806_014441_machine_models_block from './20260806_014441_machine_models_block';
 
 export const migrations = [
   {
@@ -472,6 +473,11 @@ export const migrations = [
   {
     up: migration_20260806_012848_machine_family_block.up,
     down: migration_20260806_012848_machine_family_block.down,
-    name: '20260806_012848_machine_family_block'
+    name: '20260806_012848_machine_family_block',
+  },
+  {
+    up: migration_20260806_014441_machine_models_block.up,
+    down: migration_20260806_014441_machine_models_block.down,
+    name: '20260806_014441_machine_models_block'
   },
 ];

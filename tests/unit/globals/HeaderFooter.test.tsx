@@ -48,7 +48,10 @@ describe('Header', () => {
     const ui = await Header()
     render(ui)
 
-    expect(getCachedGlobal).toHaveBeenCalledWith('header', 1, 'en')
+    // Depth 2, not 1: a nav item can open a form whose richText links to another
+    // page, and at depth 1 that nested link stays a bare id — which throws in
+    // RichText and takes down every page, since the header is in the root layout.
+    expect(getCachedGlobal).toHaveBeenCalledWith('header', 2, 'en')
     expect(screen.getByTestId('header-client')).toHaveTextContent('"1"')
   })
 

@@ -1,0 +1,216 @@
+/*
+ * Machine Models — every model in one horizontal carousel.
+ *
+ * Ported from the landing's `ak-models`, with its own namespace so the old
+ * route keeps working until it is deleted. The card effect the client asked to
+ * keep is `.ak-model-card__shot`: the machine leans out over the top edge of
+ * its card instead of sitting inside it.
+ */
+
+.ak-model-cards {
+  /* Level 2 → private slots. Every colour below channels a brand token: the DS
+     validator forbids literals and raw --ak-* in surface properties. */
+  --_models-accent: var(--ak-accent);
+  --_models-heading: var(--ak-color-heading);
+  --_models-muted: var(--ak-color-muted);
+  --_models-surface: var(--ak-color-surface);
+  --_models-border: var(--ak-surface-border);
+  --_models-border-hover: var(--ak-surface-border-hover);
+  --_models-shadow: var(--ak-surface-shadow-md);
+  --_models-shadow-hover: var(--ak-surface-shadow-md-hover);
+  --_models-background: var(--ak-section-bg-gradient-down);
+  --_models-drop-light: color-mix(in srgb, var(--brand-color-palette-navy-900) 22%, transparent);
+
+  padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(3.25rem, 8vw, 6rem);
+  background: var(--_models-background);
+}
+
+.ak-model-cards__eyebrow {
+  font-family: var(--bp-font-family-mono, ui-monospace, monospace);
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--_models-accent);
+  margin: 0 0 0.5rem;
+}
+
+.ak-model-cards__heading {
+  font-size: clamp(1.375rem, 2.8vw, 1.875rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--_models-heading);
+  margin: 0;
+}
+
+.ak-model-cards__carousel {
+  position: relative;
+  margin-top: 1.5rem;
+}
+
+.ak-model-cards__track {
+  list-style: none;
+  margin: 0;
+  padding: 2.875rem 0 0.75rem;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(13rem, 15rem);
+  gap: 0.875rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  overscroll-behavior-x: contain;
+}
+
+.ak-model-cards__item {
+  scroll-snap-align: start;
+  display: flex;
+}
+
+.ak-model-cards__carousel-nav {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.ak-model-cards__carousel-btn {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: 1px solid var(--_models-border);
+  background: var(--_models-surface);
+  color: var(--_models-heading);
+  cursor: pointer;
+  transition:
+    border-color 250ms ease,
+    box-shadow 250ms ease;
+}
+
+.ak-model-cards__carousel-btn:hover,
+.ak-model-cards__carousel-btn:focus-visible {
+  border-color: var(--_models-border-hover);
+  box-shadow: var(--_models-shadow);
+}
+
+.ak-model-card {
+  position: relative;
+  flex: 1;
+  border: 1px solid var(--_models-border);
+  border-radius: var(--bp-radius-lg, 0.75rem);
+  background: var(--_models-surface);
+  box-shadow: var(--_models-shadow);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color 300ms ease,
+    transform 350ms ease,
+    box-shadow 300ms ease;
+}
+
+.ak-model-card:hover,
+.ak-model-card:focus-visible {
+  border-color: var(--_models-border-hover);
+  transform: translateY(-3px);
+  box-shadow: var(--_models-shadow-hover);
+}
+
+/* The machine leans out over the top edge of its card. */
+.ak-model-card__shot {
+  position: absolute;
+  right: 0.625rem;
+  bottom: 0;
+  width: 42%;
+  height: 132%;
+  object-fit: contain;
+  object-position: bottom right;
+  pointer-events: none;
+  z-index: 0;
+  filter: drop-shadow(0 18px 26px var(--_models-drop-light));
+  transition: transform 550ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.ak-model-card:hover .ak-model-card__shot {
+  transform: translateY(-10px) scale(1.03);
+}
+
+.ak-model-card__family,
+.ak-model-card__name,
+.ak-model-card__specs,
+.ak-model-card__go {
+  position: relative;
+  z-index: 1;
+}
+
+/* Which line this model belongs to. The block is flat, so without this a
+   visitor sees ten similar machines with no idea which is which. */
+.ak-model-card__family {
+  font-family: var(--bp-font-family-mono, ui-monospace, monospace);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--_models-muted);
+  margin: 0;
+  max-width: 60%;
+}
+
+.ak-model-card__name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--_models-heading);
+  margin: 0;
+  max-width: 60%;
+}
+
+.ak-model-card__specs {
+  margin: 0;
+  display: grid;
+  gap: 0.25rem 0.875rem;
+  font-size: 0.8125rem;
+  max-width: 60%;
+}
+
+.ak-model-card__specs > div {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.875rem;
+}
+
+.ak-model-card__specs dt {
+  font-family: var(--bp-font-family-mono, ui-monospace, monospace);
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--_models-muted);
+  align-self: center;
+}
+
+.ak-model-card__specs dd {
+  margin: 0;
+  color: var(--_models-heading);
+  font-variant-numeric: tabular-nums;
+}
+
+.ak-model-card__go {
+  margin-top: auto;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--_models-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ak-model-cards__track {
+    scroll-behavior: auto;
+  }
+
+  .ak-model-card,
+  .ak-model-card__shot {
+    transition: none;
+  }
+}

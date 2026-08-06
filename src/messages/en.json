@@ -43,7 +43,9 @@
     "noModels": "Models for this line are on the way. Talk to us and we'll walk you through the configuration.",
     "mainHighlight": "Main highlight",
     "feature": "Feature",
-    "modelsInLine": "Models in the line"
+    "modelsInLine": "Models in the line",
+    "carouselPrevious": "Previous",
+    "carouselNext": "Next"
   },
   "pagination": {
     "previous": "Previous",
