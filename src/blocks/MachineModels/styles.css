@@ -65,9 +65,11 @@
      the width has to be stated.
 
      Sized for the machine, not for the text: the render leans out over the top
-     edge of the card, and that overhang only reads when the card is wide enough
-     to give it room. Roughly three cards on a wide screen. */
-  grid-auto-columns: clamp(19rem, 28vw, 27rem);
+     edge of the card, and the whole machine only reads at around 680px. Below
+     that the card crops it and the effect is lost, so the width is stated
+     rather than derived from how many cards would fit. `min(100%, …)` keeps a
+     phone showing one full-width card instead of overflowing the viewport. */
+  grid-auto-columns: min(100%, 42.5rem);
   gap: 0.875rem;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
