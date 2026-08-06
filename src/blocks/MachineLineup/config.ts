@@ -3,6 +3,7 @@ import type { Block } from 'payload'
 export const MachineLineup: Block = {
   slug: 'machineLineup',
   interfaceName: 'MachineLineupBlock',
+  imageURL: '/block-previews/machine-lineup.png',
   imageAltText: 'Machine Lineup block — pinned dark scene walking every family',
   labels: {
     singular: { en: 'Machine Lineup', es: 'Recorrido de Máquinas' },
