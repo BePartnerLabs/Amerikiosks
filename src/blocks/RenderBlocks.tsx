@@ -10,6 +10,7 @@ import { FAQWithFormServer } from '@/blocks/FAQWithForm/Server'
 import { FormBlock } from '@/blocks/Form/Component'
 import { FormatsGridServer } from '@/blocks/FormatsGrid/Server'
 import { InsightsShowcaseBlock } from '@/blocks/InsightsShowcase/Component'
+import { MachineLineupServer } from '@/blocks/MachineLineup/Server'
 import { MachinesListingServer } from '@/blocks/MachinesListing/Server'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { MetricsBlock } from '@/blocks/Metrics/Component'
@@ -39,6 +40,7 @@ const blockComponents = {
   faqWithForm: FAQWithFormServer,
   machinesListing: MachinesListingServer,
   modelLines: ModelLinesServer,
+  machineLineup: MachineLineupServer,
   statement: StatementBlock,
   supportHub: SupportHubBlock,
 }

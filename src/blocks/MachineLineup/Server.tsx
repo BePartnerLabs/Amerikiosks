@@ -1,0 +1,76 @@
+import config from '@payload-config'
+import { getLocale } from 'next-intl/server'
+import { getPayload } from 'payload'
+import type React from 'react'
+import type {
+  MachineFamily,
+  MachineLineupBlock as MachineLineupBlockProps,
+  Media,
+} from '@/payload-types'
+import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
+import { MachineLineupBlock } from './Component'
+import type { LineupFamily } from './types'
+
+const mediaUrl = (value: unknown, width: number): string | null => {
+  if (!value || typeof value !== 'object') return null
+  const media = value as Media
+  if (!media.url) return null
+  return getBestMediaUrl(media, width) ?? media.url
+}
+
+/**
+ * The characteristic each family leads with.
+ *
+ * `featured` is the editor's explicit pick. Falling back to the first item
+ * matters: without it, a family nobody remembered to flag would drop out of the
+ * scroll sequence entirely rather than merely show a less apt line.
+ */
+const featuredHighlight = (family: MachineFamily): LineupFamily['featured'] => {
+  const items = (family.highlights?.items ?? []).filter((item) => item.title)
+  if (!items.length) return null
+
+  const picked = items.find((item) => 'featured' in item && item.featured) ?? items[0]
+
+  return {
+    title: picked.title as string,
+    description: picked.description ?? null,
+  }
+}
+
+export const MachineLineupServer: React.FC<MachineLineupBlockProps> = async (props) => {
+  const payload = await getPayload({ config })
+  const locale = await getLocale()
+
+  const result = await payload.find({
+    collection: 'machine-families',
+    sort: 'name',
+    depth: 1,
+    limit: 0,
+    overrideAccess: false,
+    locale: locale as 'en' | 'es',
+  })
+
+  const families: LineupFamily[] = (result.docs as MachineFamily[])
+    .map((family) => ({
+      id: String(family.id),
+      name: family.name,
+      slug: family.slug ?? '',
+      // One machine, not the composed line — `heroLineupImage` is every model at
+      // once and belongs to the family hero. `hoverThumbnail` is the
+      // three-quarter view the scroll crossfades into; the name predates the
+      // scene and no longer refers to a mouse hover.
+      frontUrl: mediaUrl(family.thumbnail, 720),
+      turnUrl: mediaUrl(family.hoverThumbnail, 720),
+      featured: featuredHighlight(family),
+    }))
+    .filter((family) => family.slug && family.frontUrl)
+
+  if (!families.length) return null
+
+  return (
+    <MachineLineupBlock
+      intro={props.intro ?? null}
+      families={families}
+    />
+  )
+}

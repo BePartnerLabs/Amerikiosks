@@ -281,6 +281,7 @@ export interface Page {
         | FormatsGridBlock
         | MachinesListingBlock
         | ModelLinesBlock
+        | MachineLineupBlock
         | ProcessStepsBlock
         | StatementBlock
         | FAQWithFormBlock
@@ -1722,6 +1723,10 @@ export interface MachineFamily {
           image?: (number | null) | Media;
           title: string;
           description?: string | null;
+          /**
+           * The characteristic this family leads with on /machines. Mark one. If none is marked the first item is used, so a family is never left out of the lineup.
+           */
+          featured?: boolean | null;
           id?: string | null;
         }[]
       | null;
@@ -1769,6 +1774,19 @@ export interface ModelLinesBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'modelLines';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MachineLineupBlock".
+ */
+export interface MachineLineupBlock {
+  /**
+   * Optional line shown before the first family, while the scene enters. Leave empty to start straight on the first family.
+   */
+  intro?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'machineLineup';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2622,6 +2640,7 @@ export interface PagesSelect<T extends boolean = true> {
         formatsGrid?: T | FormatsGridBlockSelect<T>;
         machinesListing?: T | MachinesListingBlockSelect<T>;
         modelLines?: T | ModelLinesBlockSelect<T>;
+        machineLineup?: T | MachineLineupBlockSelect<T>;
         processSteps?: T | ProcessStepsBlockSelect<T>;
         statement?: T | StatementBlockSelect<T>;
         faqWithForm?: T | FAQWithFormBlockSelect<T>;
@@ -2903,6 +2922,15 @@ export interface ModelLinesBlockSelect<T extends boolean = true> {
   heading?: T;
   subheading?: T;
   form?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MachineLineupBlock_select".
+ */
+export interface MachineLineupBlockSelect<T extends boolean = true> {
+  intro?: T;
   id?: T;
   blockName?: T;
 }
@@ -3309,6 +3337,7 @@ export interface MachineFamiliesSelect<T extends boolean = true> {
               image?: T;
               title?: T;
               description?: T;
+              featured?: T;
               id?: T;
             };
       };

@@ -153,6 +153,18 @@ export const MachineFamilies: CollectionConfig = {
             },
             { name: 'title', type: 'text', required: true, localized: true },
             { name: 'description', type: 'text', localized: true },
+            {
+              name: 'featured',
+              type: 'checkbox',
+              // Deliberately not localized: flagging one characteristic in
+              // English and a different one in Spanish is not a use case, and
+              // this array already carries the localized-subfield hazard where a
+              // locale-scoped write without item ids wipes the sibling locale.
+              admin: {
+                description:
+                  'The characteristic this family leads with on /machines. Mark one. If none is marked the first item is used, so a family is never left out of the lineup.',
+              },
+            },
           ],
         },
       ],

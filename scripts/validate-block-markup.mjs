@@ -38,6 +38,9 @@ const EXEMPT = {
   SupportHub: {
     grid: 'Own ak-support-hub__inner container, same reason as TrustStrip.',
   },
+  MachineLineup: {
+    grid: 'Full-bleed pinned scene: the machine is centred in the viewport and the copy is positioned against the pin, not the page gutter. A content grid would inset the render and break the sticky geometry.',
+  },
 }
 
 const registered = (() => {
