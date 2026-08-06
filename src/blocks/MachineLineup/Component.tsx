@@ -27,6 +27,12 @@ type Props = {
  * Falls back to a plain stacked list under `prefers-reduced-motion`.
  */
 export const MachineLineupBlock: React.FC<Props> = ({ intro, families, jsonLd }) => {
+  // Compiled by the React Compiler (annotation mode, see next.config.ts). Same
+  // reason as the scene this replaces: the scroll handler sets state on every
+  // animation frame, so this re-renders continuously while on screen and
+  // recomputes its per-family derived values each time.
+  'use memo'
+
   const sectionRef = useRef<HTMLDivElement>(null)
   const pinRef = useRef<HTMLDivElement>(null)
   const [progress, setProgress] = useState(0)
