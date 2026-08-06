@@ -8,6 +8,8 @@ import type {
   Media,
 } from '@/payload-types'
 import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
+import { getServerSideURL } from '@/utilities/getURL'
+import { machinesPath } from '@/utilities/localeUrl'
 import { MachineLineupBlock } from './Component'
 import type { LineupFamily } from './types'
 
@@ -67,10 +69,30 @@ export const MachineLineupServer: React.FC<MachineLineupBlockProps> = async (pro
 
   if (!families.length) return null
 
+  // The route this page replaces emitted a CollectionPage listing every family
+  // (`machines/page.tsx`). As a pages document nothing would emit it, and today
+  // that `hasPart` is the most complete machine-readable source of family URLs
+  // on the site — the HTML only ever linked the selected one. This block knows
+  // all five, so it carries the graph.
+  const siteUrl = getServerSideURL()
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Model Lines',
+    url: `${siteUrl}${machinesPath(locale as 'en' | 'es')}`,
+    hasPart: families.map((family) => ({
+      '@type': 'Thing',
+      name: family.name,
+      description: family.featured?.title ?? undefined,
+      url: `${siteUrl}${machinesPath(locale as 'en' | 'es', family.slug)}`,
+    })),
+  }
+
   return (
     <MachineLineupBlock
       intro={props.intro ?? null}
       families={families}
+      jsonLd={jsonLd}
     />
   )
 }

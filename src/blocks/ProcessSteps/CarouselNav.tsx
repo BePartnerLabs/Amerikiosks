@@ -3,8 +3,12 @@
 import type { ReactNode } from 'react'
 import { Carousel } from '@/components/Carousel'
 
-export const ProcessStepsCarousel: React.FC<{ children: ReactNode }> = ({ children }) => (
+export const ProcessStepsCarousel: React.FC<{ children: ReactNode; label?: string }> = ({
+  children,
+  label,
+}) => (
   <Carousel
+    trackLabel={label}
     panelSelector=".ak-process-steps__item"
     className="ak-process-steps__carousel"
     trackClassName="ak-process-steps__list"

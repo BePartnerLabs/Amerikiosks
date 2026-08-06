@@ -11,6 +11,7 @@ const HEADER_OFFSET_PX = 62
 type Props = {
   intro: string | null
   families: LineupFamily[]
+  jsonLd?: Record<string, unknown>
 }
 
 /**
@@ -25,7 +26,7 @@ type Props = {
  *
  * Falls back to a plain stacked list under `prefers-reduced-motion`.
  */
-export const MachineLineupBlock: React.FC<Props> = ({ intro, families }) => {
+export const MachineLineupBlock: React.FC<Props> = ({ intro, families, jsonLd }) => {
   const sectionRef = useRef<HTMLDivElement>(null)
   const pinRef = useRef<HTMLDivElement>(null)
   const [progress, setProgress] = useState(0)
@@ -115,6 +116,13 @@ export const MachineLineupBlock: React.FC<Props> = ({ intro, families }) => {
       ref={sectionRef}
       style={{ '--ak-lineup-count': families.length } as React.CSSProperties}
     >
+      {jsonLd && (
+        <script
+          type="application/ld+json"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: json-ld built from Payload data, not user input
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
       <div
         className="ak-lineup__pin"
         ref={pinRef}

@@ -116,3 +116,26 @@ describe('MachineModelsServer', () => {
     expect(await render_()).toBeNull()
   })
 })
+
+describe('MachineModels structured data', () => {
+  afterEach(() => {
+    cleanup()
+    find.mockReset()
+  })
+
+  it('emits an ItemList of Products so generative engines can cite the catalogue', async () => {
+    find.mockResolvedValue({ docs: [machine('a-10', 'alpha', 'Alpha Series')] })
+
+    const { container } = render((await render_()) as React.ReactElement)
+    const script = container.querySelector('script[type="application/ld+json"]')
+    const data = JSON.parse(script?.textContent ?? '{}')
+
+    expect(data['@type']).toBe('ItemList')
+    expect(data.itemListElement).toHaveLength(1)
+    const product = data.itemListElement[0].item
+    expect(product['@type']).toBe('Product')
+    expect(product.name).toBe('A-10')
+    expect(product.url).toContain('/machines/alpha/a-10')
+    expect(product.additionalProperty).toHaveLength(3)
+  })
+})

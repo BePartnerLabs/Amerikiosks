@@ -44,7 +44,7 @@ export const ProcessStepsBlock: React.FC<ProcessStepsBlockType> = ({
           />
 
           {steps && steps.length > 0 && (
-            <ProcessStepsCarousel>
+            <ProcessStepsCarousel label={heading}>
               {steps.map((step, index) => (
                 <li
                   key={step.id ?? index}

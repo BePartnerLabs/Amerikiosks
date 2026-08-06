@@ -9,6 +9,8 @@ import type {
   Media,
 } from '@/payload-types'
 import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
+import { getServerSideURL } from '@/utilities/getURL'
+import { machinesPath } from '@/utilities/localeUrl'
 import { MachineModelsBlock } from './Component'
 import type { ModelCard } from './types'
 
@@ -70,8 +72,39 @@ export const MachineModelsServer: React.FC<MachineModelsBlockProps> = async (pro
 
   if (!models.length) return null
 
+  // Machine-readable catalogue. Search and generative engines answering
+  // "what hot-food kiosks exist" cite an ItemList of Products far more readily
+  // than they infer one from card markup — and this block is the only place on
+  // the site where every model appears together.
+  const siteUrl = getServerSideURL()
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListElement: models.map((model, position) => ({
+      '@type': 'ListItem',
+      position: position + 1,
+      item: {
+        '@type': 'Product',
+        name: model.name,
+        url: `${siteUrl}${machinesPath(locale as 'en' | 'es', model.familySlug as string, model.slug)}`,
+        ...(model.imageUrl ? { image: `${siteUrl}${model.imageUrl}` } : {}),
+        ...(model.familyName ? { model: model.familyName } : {}),
+        ...(model.specs.length
+          ? {
+              additionalProperty: model.specs.map((spec) => ({
+                '@type': 'PropertyValue',
+                name: spec.label,
+                value: spec.value,
+              })),
+            }
+          : {}),
+      },
+    })),
+  }
+
   return (
     <MachineModelsBlock
+      jsonLd={jsonLd}
       {...rest}
       models={models}
       labels={{

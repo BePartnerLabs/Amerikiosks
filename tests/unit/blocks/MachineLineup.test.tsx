@@ -150,3 +150,30 @@ describe('MachineLineupBlock', () => {
     expect(screen.getByRole('link')).toHaveAttribute('href', '/machines/alpha')
   })
 })
+
+describe('MachineLineup structured data', () => {
+  afterEach(() => {
+    cleanup()
+    find.mockReset()
+  })
+
+  it('carries the CollectionPage graph the deleted route used to emit', async () => {
+    find.mockResolvedValue({
+      docs: [
+        makeFamily('alpha', [{ title: 'Hot food fast', featured: true }]),
+        makeFamily('zeta', [{ title: 'Cold drinks' }]),
+      ],
+    })
+
+    const ui = await MachineLineupServer({ blockType: 'machineLineup' } as never)
+    const { container } = render(ui as React.ReactElement)
+    const script = container.querySelector('script[type="application/ld+json"]')
+    const data = JSON.parse(script?.textContent ?? '{}')
+
+    expect(data['@type']).toBe('CollectionPage')
+    expect(data.hasPart).toHaveLength(2)
+    expect(data.hasPart.map((part: { url: string }) => part.url).join(' ')).toContain(
+      '/machines/alpha',
+    )
+  })
+})

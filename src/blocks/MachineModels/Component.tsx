@@ -14,6 +14,7 @@ type Props = {
   id?: string | null
   /** Resolved on the server so this stays a plain, synchronous component. */
   labels: { previous: string; next: string; go: string }
+  jsonLd?: Record<string, unknown>
 }
 
 /**
@@ -32,6 +33,7 @@ export const MachineModelsBlock: React.FC<Props> = ({
   models,
   labels,
   id,
+  jsonLd,
 }) => {
   const headingId = `ak-model-cards-heading${id ? `-${id}` : ''}`
 
@@ -41,6 +43,13 @@ export const MachineModelsBlock: React.FC<Props> = ({
       data-ga-block="machineModels"
       aria-labelledby={headingId}
     >
+      {jsonLd && (
+        <script
+          type="application/ld+json"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: json-ld built from Payload data, not user input
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
       <div className="bp-content-grid">
         <div className="content">
           {eyebrow && <p className="ak-model-cards__eyebrow">{eyebrow}</p>}
@@ -59,6 +68,7 @@ export const MachineModelsBlock: React.FC<Props> = ({
             buttonClassName="ak-model-cards__carousel-btn"
             trackAs="ul"
             labels={{ previous: labels.previous, next: labels.next }}
+            trackLabel={heading}
           >
             {models.map((model) => (
               <li

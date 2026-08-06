@@ -19,6 +19,11 @@ type Props = {
   /** The track element. `ol` when the panels are `li`, so the list stays valid. */
   trackAs?: ElementType
   labels?: { previous: string; next: string }
+  /**
+   * Accessible name for the scrollable track. Given one, the track becomes a
+   * labelled group; without it, it is still focusable but unnamed.
+   */
+  trackLabel?: string
 }
 
 /**
@@ -38,6 +43,7 @@ export const Carousel: React.FC<Props> = ({
   buttonClassName,
   trackAs: Track = 'div',
   labels = { previous: 'Previous', next: 'Next' },
+  trackLabel,
 }) => {
   const trackRef = useRef<HTMLElement>(null)
 
@@ -57,9 +63,22 @@ export const Carousel: React.FC<Props> = ({
 
   return (
     <div className={className}>
+      {/*
+        A scrollable region has to be reachable by keyboard (WCAG 2.1.1):
+        without tabindex nobody navigating by keyboard can pan the track — they
+        can only tab through whatever links the panels happen to contain, which
+        drags the scroll as a side effect and skips panels that hold none.
+      */}
       <Track
         ref={trackRef}
         className={trackClassName}
+        tabIndex={0}
+        // Only a plain div needs an explicit role. On an `ol`/`ul` the implicit
+        // `list` role is the useful one, and overriding it with `group` would
+        // stop screen readers announcing the list and its item count — the
+        // ProcessSteps test caught exactly that.
+        role={trackLabel && Track === 'div' ? 'group' : undefined}
+        aria-label={trackLabel}
       >
         {children}
       </Track>
