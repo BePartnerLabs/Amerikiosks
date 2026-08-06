@@ -63,14 +63,16 @@ export const MachineModelsBlock: React.FC<Props> = ({
       </div>
 
       {/*
-        The rail runs edge to edge while the heading stays on the content grid:
-        a carousel that stops at the content margin reads as a finished row, and
-        the point here is that there is more to the right. The left inset is half
-        a card, so the first machine sits off the text column and the cards that
-        run off the right edge are obviously continuable.
+        The heading keeps the normal content margins; the rail starts flush with
+        it and runs off the right edge. `content-start / full-width-end` gets
+        that from the grid itself rather than from a hand-tuned padding, so the
+        first card lines up with the heading at every breakpoint.
+
+        A carousel that stopped at the content margin on both sides would read
+        as a finished row — the overflow on the right is what says there is more.
       */}
       <div className="bp-content-grid">
-        <div className="full-width">
+        <div className="ak-model-cards__bleed">
           <Carousel
             panelSelector=".ak-model-card"
             className="ak-model-cards__carousel"

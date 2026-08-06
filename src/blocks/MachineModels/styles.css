@@ -63,15 +63,18 @@
   margin-top: 1.5rem;
 }
 
+/* Starts where the heading starts, ends past the viewport edge.
+   Selector includes the parent on purpose: `.bp-content-grid > *` in globals.css
+   sets `grid-column: content` at the same specificity, and globals loads later,
+   so a bare class loses the tie and the rail snaps back to the content column. */
+.bp-content-grid > .ak-model-cards__bleed {
+  grid-column: content-start / full-width-end;
+}
+
 .ak-model-cards__track {
   list-style: none;
   margin: 0;
-  /* Half a card of runway on the left, and the same on the right so the last
-     card can still snap flush instead of jamming against the viewport edge.
-     `min()` keeps the inset from eating the whole screen on a phone. */
-  padding: calc(var(--_models-overhang) + 0.75rem) min(8vw, 2rem) 0.75rem
-    min(50vw, calc(var(--_models-card-width) / 2));
-  scroll-padding-left: min(50vw, calc(var(--_models-card-width) / 2));
+  padding: calc(var(--_models-overhang) + 0.75rem) min(8vw, 2rem) 0.75rem 0;
   display: grid;
   grid-auto-flow: column;
   /* The old grid was `repeat(auto-fit, minmax(13rem, 1fr))`, so cards stretched
@@ -105,8 +108,8 @@
 
 .ak-model-cards__carousel-nav {
   display: flex;
-  justify-content: flex-end;
-  padding-inline: min(8vw, 2rem);
+  justify-content: flex-start;
+  padding-inline: 0;
   gap: 0.5rem;
   margin-top: 0.75rem;
 }
