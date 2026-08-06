@@ -282,6 +282,7 @@ export interface Page {
         | MachinesListingBlock
         | ModelLinesBlock
         | MachineLineupBlock
+        | MachineFamilyBlock
         | ProcessStepsBlock
         | StatementBlock
         | FAQWithFormBlock
@@ -1790,6 +1791,32 @@ export interface MachineLineupBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MachineFamilyBlock".
+ */
+export interface MachineFamilyBlock {
+  /**
+   * Which family this section shows. Name, description, characteristics and the link all come from that document — add one block per family.
+   */
+  family: number | MachineFamily;
+  /**
+   * Small label above each characteristic tile.
+   */
+  tileEyebrow?: string | null;
+  /**
+   * Label for the large first tile.
+   */
+  leadEyebrow?: string | null;
+  /**
+   * Shows how many models the line has. The number is counted from the machines collection, never typed, so it cannot fall out of sync.
+   */
+  showModelCount?: boolean | null;
+  countEyebrow?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'machineFamily';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "ProcessStepsBlock".
  */
 export interface ProcessStepsBlock {
@@ -2641,6 +2668,7 @@ export interface PagesSelect<T extends boolean = true> {
         machinesListing?: T | MachinesListingBlockSelect<T>;
         modelLines?: T | ModelLinesBlockSelect<T>;
         machineLineup?: T | MachineLineupBlockSelect<T>;
+        machineFamily?: T | MachineFamilyBlockSelect<T>;
         processSteps?: T | ProcessStepsBlockSelect<T>;
         statement?: T | StatementBlockSelect<T>;
         faqWithForm?: T | FAQWithFormBlockSelect<T>;
@@ -2931,6 +2959,19 @@ export interface ModelLinesBlockSelect<T extends boolean = true> {
  */
 export interface MachineLineupBlockSelect<T extends boolean = true> {
   intro?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MachineFamilyBlock_select".
+ */
+export interface MachineFamilyBlockSelect<T extends boolean = true> {
+  family?: T;
+  tileEyebrow?: T;
+  leadEyebrow?: T;
+  showModelCount?: T;
+  countEyebrow?: T;
   id?: T;
   blockName?: T;
 }

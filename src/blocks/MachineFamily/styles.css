@@ -1,0 +1,231 @@
+/*
+ * Machine Family — one family section: heading, link to its page, and a grid of
+ * characteristic tiles.
+ *
+ * Ported from the landing's `ak-features`, with the selector dependency removed
+ * and its own class namespace, so the old route can keep working until it is
+ * deleted. The one behavioural change is the grid: see below.
+ */
+
+.ak-family-section {
+  /* Level 2 → private slots. Every colour below channels a brand token: the DS
+     validator forbids literals and raw --ak-* in surface properties. */
+  --_fam-accent: var(--ak-accent);
+  --_fam-heading: var(--ak-color-heading);
+  --_fam-muted: var(--ak-color-muted);
+  --_fam-surface: var(--ak-color-surface);
+  --_fam-border: var(--ak-surface-border);
+  --_fam-border-hover: var(--ak-surface-border-hover);
+  --_fam-shadow: var(--ak-surface-shadow-md);
+  --_fam-shadow-hover: var(--ak-surface-shadow-md-hover);
+  --_fam-glow-soft: color-mix(in srgb, var(--ak-accent) 10%, transparent);
+  --_fam-drop-light: color-mix(in srgb, var(--brand-color-palette-navy-900) 22%, transparent);
+
+  padding-block: clamp(3.25rem, 8vw, 6rem);
+  background: var(--_fam-surface);
+}
+
+.ak-family-section__head {
+  display: grid;
+  gap: 1.125rem;
+  margin-bottom: 1.875rem;
+}
+
+@media (min-width: 860px) {
+  .ak-family-section__head {
+    grid-template-columns: 1fr auto;
+    align-items: end;
+  }
+}
+
+.ak-family-section__eyebrow {
+  font-family: var(--bp-font-family-mono, ui-monospace, monospace);
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--_fam-accent);
+  margin: 0 0 0.5rem;
+}
+
+.ak-family-section__heading {
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.06;
+  text-wrap: balance;
+  color: var(--_fam-heading);
+  margin: 0;
+}
+
+.ak-family-section__text {
+  color: var(--_fam-muted);
+  max-width: 58ch;
+  margin: 0.75rem 0 0;
+}
+
+/*
+ * The old rule was `repeat(2, 1fr)` below 900px, which on a 375px phone left
+ * each tile about 160px wide — a title and three lines of text in a column
+ * narrower than a business card. auto-fit lets the row collapse to one tile
+ * when two would not fit, and `min(100%, 240px)` keeps the track from
+ * overflowing a container narrower than the minimum.
+ */
+.ak-family-section__grid {
+  display: grid;
+  gap: 0.875rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+}
+
+@media (min-width: 900px) {
+  .ak-family-section__grid {
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 158px;
+  }
+
+  .ak-famtile--lead {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+
+  .ak-famtile--wide {
+    grid-column: span 2;
+  }
+
+  /* Closes the row: without it the last feature leaves two empty cells. */
+  .ak-famtile--full {
+    grid-column: span 4;
+  }
+}
+
+.ak-famtile {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--_fam-border);
+  border-radius: var(--bp-radius-lg, 0.75rem);
+  background: var(--_fam-surface);
+  box-shadow: var(--_fam-shadow);
+  padding: 1.25rem;
+  min-height: 158px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 550ms ease,
+    transform 550ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 350ms ease,
+    box-shadow 350ms ease;
+}
+
+.ak-famtile--in {
+  opacity: 1;
+  transform: none;
+}
+
+.ak-famtile:hover {
+  border-color: var(--_fam-border-hover);
+  box-shadow: var(--_fam-shadow-hover);
+}
+
+.ak-famtile__glow {
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(closest-side, var(--_fam-glow-soft), transparent);
+  left: var(--ak-famtile-x, 50%);
+  top: var(--ak-famtile-y, 50%);
+  translate: -50% -50%;
+  opacity: 0;
+  transition: opacity 350ms ease;
+}
+
+.ak-famtile:hover .ak-famtile__glow {
+  opacity: 1;
+}
+
+.ak-famtile__img {
+  object-fit: contain;
+  object-position: bottom right;
+  pointer-events: none;
+  filter: drop-shadow(0 14px 22px var(--_fam-drop-light));
+  transition:
+    transform 600ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 500ms ease;
+}
+
+.ak-famtile__img--lead {
+  inset: auto 1% -3% auto;
+  width: 44%;
+  height: 78%;
+}
+
+.ak-famtile__img--side {
+  inset: auto -3% -6% auto;
+  width: 36%;
+  height: 82%;
+  opacity: 0.8;
+}
+
+.ak-famtile__img--tall {
+  inset: auto 4% -12% auto;
+  width: 14%;
+  height: 136%;
+  opacity: 0.8;
+}
+
+.ak-famtile:hover .ak-famtile__img {
+  transform: translateY(-6px) scale(1.04);
+  opacity: 1;
+}
+
+.ak-famtile__eyebrow {
+  position: relative;
+  z-index: 2;
+  font-family: var(--bp-font-family-mono, ui-monospace, monospace);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--_fam-muted);
+  margin: 0;
+}
+
+.ak-famtile__title {
+  position: relative;
+  z-index: 2;
+  font-size: 1.1875rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  color: var(--_fam-heading);
+  margin: 0;
+  max-width: 62%;
+}
+
+.ak-famtile__text {
+  position: relative;
+  z-index: 2;
+  color: var(--_fam-muted);
+  font-size: 0.875rem;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 62%;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ak-famtile__stat {
+  position: relative;
+  z-index: 2;
+  font-size: clamp(2.25rem, 6vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--_fam-heading);
+  font-variant-numeric: tabular-nums;
+}
