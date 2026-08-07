@@ -41,13 +41,17 @@ Mismo patrón que `Pages`. Los campos **no cambian de nombre ni de sitio en la b
 | **Content** | El `layout` nuevo, ordenable. |
 | **SEO** | El `meta` que ya existe. |
 
-## El respaldo, que es la parte que evita el desastre
+## El respaldo, y por qué sigue valiendo la pena aunque las páginas estén ocultas
 
-Las diez máquinas existentes tendrán el `layout` **vacío** el día del despliegue. Si la página se renderizara solo desde el `layout`, esas diez páginas quedarían **en blanco en producción** hasta que alguien las compusiera a mano.
+Las diez máquinas existentes tendrán el `layout` **vacío** el día del despliegue. Si la página se renderizara solo desde el `layout`, quedarían en blanco hasta que alguien las compusiera a mano.
 
-**Si `layout` está vacío, la página renderiza el orden fijo de hoy.** Sin migración, reversible, y cada máquina se convierte cuando alguien la toca. El precio es que los dos caminos conviven un tiempo, y hay que aceptarlo explícitamente: el código de la ruta actual no se borra en este cambio.
+**Hoy `/machines` está detrás de `GATED_PATHS`**, así que un visitante sin sesión de Payload es redirigido a la raíz: en blanco o no, el público no las ve. Eso rebaja el riesgo de "diez páginas rotas en producción" a "diez páginas rotas para el cliente y para nosotros". Menos grave, pero es exactamente el momento en que el cliente entra a revisar contenido y se encuentra la página vacía sin saber por qué.
 
-La migración que rellene los diez `layout` con el orden actual se puede hacer después, cuando el sistema esté probado en producción — y para entonces será opcional. Hacerla ahora significaría migrar contenido de producción antes de haber visto el sistema funcionar, y el `CLAUDE.md` exige ensayo en `preview/**` para eso.
+Y el gate es temporal por definición — `gatedPaths.ts` dice que oculta "copy que el cliente todavía no ha aprobado". El día que se levante, el respaldo tiene que estar puesto o esas páginas salen vacías al público. Ponerlo ahora cuesta poco; recordarlo el día del lanzamiento es apostar.
+
+**Si `layout` está vacío, la página renderiza el orden fijo de hoy.** Sin migración, reversible, y cada máquina se convierte cuando alguien la toca. El precio es que los dos caminos conviven un tiempo, y hay que aceptarlo: el código de la ruta actual no se borra en este cambio.
+
+**Lo que el gate sí cambia es el orden de trabajo.** Con las páginas ocultas se puede desplegar el sistema de bloques y componer las diez máquinas con calma, comprobando cada una, antes de que nadie de fuera las vea. Eso hace la migración de los diez `layout` menos urgente todavía — y la convierte en algo que se hace **antes** de levantar el gate, no después.
 
 ## El juego de bloques
 
@@ -83,6 +87,7 @@ Queda **abierto y a decidir antes de implementar la rotación**. No bloquea el r
 - **`SpecsCompare` y el JSON-LD de `Product`** siguen leyendo campos. Es la razón de todo el diseño.
 - **`/machines/[family]/[slug]` sigue siendo ruta de código**, no un documento de `Pages`. Esto no reabre esa discusión.
 - **Sin `generateStaticParams`** — es lo que tumbó `/machines/[family]` en producción una vez.
+- **`GATED_PATHS=/machines` sigue ocultando la sección.** La comprobación es por prefijo de path, así que es indiferente a cómo se componga la página — pero conviene afirmarlo con un test en vez de suponerlo.
 - **Los datos no se tocan.** Ninguna migración de contenido en este cambio; la única migración es la del campo `layout` nuevo.
 
 ## No elegido
@@ -96,4 +101,4 @@ Queda **abierto y a decidir antes de implementar la rotación**. No bloquea el r
 - **Presupuesto de peso por fotograma.** Bloquea la rotación, no el resto.
 - **Colección propia para secuencias** frente a carpetas en `Media`.
 - **Quién renombra los archivos**: Blender escribe `10001.png`, la convención quiere `frame-001.png`.
-- **Cuándo se retira el respaldo** y se migran los diez `layout`.
+- **Cuándo se retira el respaldo** y se migran los diez `layout`. La respuesta por defecto es "antes de levantar `GATED_PATHS`", no después.
