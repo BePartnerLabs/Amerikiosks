@@ -19,6 +19,11 @@
  *   node scripts/generate-context-index.mjs           # rewrite the indexes
  *   node scripts/generate-context-index.mjs --check   # fail if out of date (CI)
  *
+ * Two places call it, and the pair is deliberate. `lint-staged` regenerates and
+ * re-stages on commit, so the index is never stale by accident; CI runs
+ * `--check`, which catches the commit that used `--no-verify`. Auto-fix where
+ * the mistake happens, verify where it cannot be skipped.
+ *
  * Unlike the validate-*.mjs scripts this one takes no file arguments: it always
  * scans the whole folder, because an index is only correct as a whole.
  */

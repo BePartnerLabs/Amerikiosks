@@ -108,7 +108,8 @@
       "node scripts/validate-no-raw-icon-image.mjs",
       "node scripts/validate-react-compiler.mjs"
     ],
-    "src/blocks/*/{Component,Server}.tsx": "node scripts/validate-block-markup.mjs"
+    "src/blocks/*/{Component,Server}.tsx": "node scripts/validate-block-markup.mjs",
+    "docs/{patterns,business,payload}/*.md": "sh -c 'node scripts/generate-context-index.mjs && git add docs/patterns/README.md docs/business/README.md docs/payload/README.md'"
   },
   "engines": {
     "node": ">=24.15.0",
