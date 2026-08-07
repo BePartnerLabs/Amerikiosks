@@ -89,6 +89,20 @@ El diseño de secuencias la descartó: `Media` es la única colección con `fold
 
 Queda **abierto y a decidir antes de implementar la rotación**. No bloquea el resto del cambio.
 
+## Borradores y vista previa: ya están, y eso simplifica el cambio
+
+`Machines` ya tiene `versions: { drafts: true, maxPerDoc: 50 }` sin autosave —el guardado es explícito, "Save draft"— más `livePreview` y `preview`, ambos resolviendo por `generateMachinePreviewPath`. O sea, el flujo de borrador, vista previa y publicación **existe y no hay que construirlo**.
+
+Lo que hereda el `layout` por ser un campo más del documento:
+
+- **Componer bloques es un borrador** hasta que alguien publique. Es exactamente lo que hace falta para la fase de contenido: las diez máquinas se pueden armar y revisar sin que la versión publicada cambie.
+- **La vista previa ya apunta a la ruta correcta**, así que enseña la página compuesta desde el `layout` en cuanto el renderer lo lea.
+- **Hay historial**: 50 versiones por documento, así que un layout que se estropeó se revierte sin tocar la base.
+
+**Comprobado, y esto importa:** las diez máquinas tienen su fila en `_machines_v` con `latest = true`. El aviso de `src/collections/CLAUDE.md` —activar `drafts` sobre una colección con documentos existentes sin rellenar las versiones hace que **desaparezcan de `/admin`**, como pasó con las 20 brands— **no aplica aquí**, porque los drafts ya estaban activos cuando se creó el contenido. Añadir un campo no reabre ese riesgo.
+
+Un detalle a vigilar en la fase de contenido: con `drafts: true`, el frontend consulta con `draft: false` y lee la tabla principal. Una máquina compuesta pero **sin publicar** seguirá renderizando su versión publicada — es decir, el respaldo al orden fijo. Correcto, pero es lo que hará pensar "compuse el layout y no se ve".
+
 ## Qué no se rompe
 
 - **`SpecsCompare` y el JSON-LD de `Product`** siguen leyendo campos. Es la razón de todo el diseño.
