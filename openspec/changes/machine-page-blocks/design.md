@@ -103,6 +103,20 @@ Lo que hereda el `layout` por ser un campo más del documento:
 
 Un detalle a vigilar en la fase de contenido: con `drafts: true`, el frontend consulta con `draft: false` y lee la tabla principal. Una máquina compuesta pero **sin publicar** seguirá renderizando su versión publicada — es decir, el respaldo al orden fijo. Correcto, pero es lo que hará pensar "compuse el layout y no se ve".
 
+### El gate y los borradores se solapan, pero no son lo mismo
+
+Tentador concluir que con borradores sobra `GATED_PATHS=/machines`. No del todo, y la diferencia importa.
+
+`gatedPaths.ts` dice que oculta "copy que el cliente todavía no ha aprobado". Eso **es** lo que hace el estado de borrador, con mejor granularidad: por documento en vez de por prefijo de path, y sin necesitar un redespliegue para cambiarlo — el gate es una variable de entorno porque corre en middleware y leer un global costaría una consulta por request.
+
+Pero hoy el contenido está **publicado**: nueve de las diez máquinas y las cinco familias. O sea, el gate no está tapando borradores; está tapando contenido publicado que todavía no se quiere enseñar. Su trabajo real no es aprobación de contenido, es **un interruptor de lanzamiento** para una sección entera.
+
+Dicho de otro modo: los borradores responden "¿está aprobado este documento?", el gate responde "¿lanzamos ya esta sección?". Se parecen mientras la respuesta a las dos sea no.
+
+**Consecuencia práctica para este cambio:** despublicar las nueve máquinas para componer sus layouts sería usar la herramienta equivocada — dejaría la sección rota para cualquiera con sesión y no aportaría nada que el gate no dé ya. Se componen los layouts en borrador **sobre documentos publicados**, se revisan con la vista previa, y se publican cuando estén. El gate se levanta al final, una vez.
+
+Retirar el gate es una decisión de lanzamiento, no técnica, y no forma parte de este cambio.
+
 ## Qué no se rompe
 
 - **`SpecsCompare` y el JSON-LD de `Product`** siguen leyendo campos. Es la razón de todo el diseño.
