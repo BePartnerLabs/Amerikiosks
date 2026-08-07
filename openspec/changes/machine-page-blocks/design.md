@@ -1,0 +1,99 @@
+# La página de máquina como bloques — diseño
+
+> El cliente ordena las secciones de cada modelo sin que ningún dato se mueva:
+> los bloques leen los campos del propio documento en vez de contenerlos.
+
+## Contexto
+
+`src/app/(frontend)/[locale]/machines/[family]/[slug]/page.tsx` tiene el orden clavado en código: `MachineHero` → `Highlights` → `Capabilities` → `DimensionDiagrams` → galería → relacionadas. Cada sección lee un campo de nivel superior de `machines`.
+
+La colección tiene **diecisiete campos planos y ninguna pestaña**, frente a `Pages`, que separa Hero, Content y SEO. Y lleva un `useRotationHero: checkbox` que elige entre dos variantes de hero — un booleano que no escala: la tercera variante pide un tercer booleano y una condición que las excluya entre sí.
+
+El spike `spike/rotation-frames-70` (commit local `958d000`) dejó funcionando el hero de scroll-scrub por fotogramas y su diseño de secuencias en `openspec/changes/machine-frame-sequences/design.md`. Ese hero es el detonante de este cambio: es la variante que convierte el booleano en un problema.
+
+## La decisión de fondo
+
+**Los bloques son selectores de presentación, no contenedores de contenido.**
+
+Un bloque como `machineCapabilities` no tiene campos de datos. Recibe la máquina desde el renderer y lee `machine.capabilities`. Como mucho lleva campos de *presentación* — un override de eyebrow, una variante — y si el campo está vacío, no renderiza nada.
+
+Es el mismo patrón que `machineFamily`, que lee el documento de familia por relación en vez de re-teclear su contenido. Aquí es más directo todavía: el bloque lee **su propio documento padre**, así que no hace falta ni el campo de relación.
+
+### Por qué los datos no se mudan al layout
+
+No es prudencia, es que **otras páginas los leen**:
+
+- `SpecsCompare`, en la página de familia, cruza los `specs` de todos los modelos de la línea para construir la tabla comparativa.
+- `machineModels` los emite como `PropertyValue` dentro del JSON-LD de `Product`.
+
+Un dato dentro de un array de bloques deja de ser consultable. La tabla comparativa se moriría, y el JSON-LD que acabamos de añadir se quedaría sin specs.
+
+La línea es esa: **lo estructurado se queda como campo, lo narrativo se vuelve bloque.**
+
+## Pestañas
+
+Mismo patrón que `Pages`. Los campos **no cambian de nombre ni de sitio en la base de datos** — solo se agrupan visualmente.
+
+| Pestaña | Contenido |
+|---|---|
+| **Hero** | El hero y su rotación. Aquí muere `useRotationHero`. |
+| **Machine details** | `specs`, `dimensions`, `capabilities`, `dimensionDiagrams`, `gallery`, `highlights`, `tags`, `brochure`. |
+| **Content** | El `layout` nuevo, ordenable. |
+| **SEO** | El `meta` que ya existe. |
+
+## El respaldo, que es la parte que evita el desastre
+
+Las diez máquinas existentes tendrán el `layout` **vacío** el día del despliegue. Si la página se renderizara solo desde el `layout`, esas diez páginas quedarían **en blanco en producción** hasta que alguien las compusiera a mano.
+
+**Si `layout` está vacío, la página renderiza el orden fijo de hoy.** Sin migración, reversible, y cada máquina se convierte cuando alguien la toca. El precio es que los dos caminos conviven un tiempo, y hay que aceptarlo explícitamente: el código de la ruta actual no se borra en este cambio.
+
+La migración que rellene los diez `layout` con el orden actual se puede hacer después, cuando el sistema esté probado en producción — y para entonces será opcional. Hacerla ahora significaría migrar contenido de producción antes de haber visto el sistema funcionar, y el `CLAUDE.md` exige ensayo en `preview/**` para eso.
+
+## El juego de bloques
+
+Propios de `machines`, **no los de `Pages`**. Un `cardGrid` o un `formBlock` en la página de un modelo no tiene sentido, y ofrecerlos es invitar a componer páginas que luego nadie mantiene.
+
+- `machineHero` — el hero. Variante zoom+fade o rotación por fotogramas. Sustituye a `useRotationHero`.
+- `machineHighlights`, `machineCapabilities`, `machineGallery`, `machineDimensions` — leen su campo homónimo.
+- `machineSpecs` — la ficha técnica.
+- `relatedMachines` — el bloque que ya existe al final de la página.
+- `cta` — reutilizado de `Pages`, porque una llamada a la acción sí es contenido libre.
+
+## Las secuencias de fotogramas
+
+El diseño está escrito en `openspec/changes/machine-frame-sequences/design.md` y **no se re-decide aquí**. Lo que este cambio hereda:
+
+- Una secuencia es una **carpeta de Media** referenciada por un puntero, no un array de 70 filas que un editor ordena a mano.
+- Carpetas **inmutables versionadas** (`alpha-10-spin-v1`, `-v2`): Payload renombra al colisionar, las URLs por convención no llevan el cache tag `?v=`, y sobrescribir mata el rollback.
+- El escenario va sobre **navy** — las máquinas son recortes blancos sobre transparencia y desaparecen sobre claro. Mismo hallazgo que registró `MachinesLanding/styles.css` y que volvió a aparecer anoche con las tarjetas de modelo.
+- El canvas dibuja `contain`, no `cover`.
+
+**Y hereda su bloqueo sin resolver:** 70 fotogramas pesaron **81 MB, ~1,3 MB cada uno a 1600px**. Ese presupuesto de formato y tamaño hay que cerrarlo antes de que el campo exista, no después. Mientras no esté cerrado, el bloque de hero se construye con la variante actual y la rotación queda detrás.
+
+### Una colección aparte para los fotogramas
+
+El diseño de secuencias la descartó: `Media` es la única colección con `folders: true`, y `buildPublicFileURL(filename, prefix)` ya compone la URL desde el prefijo. Una colección nueva reimplementaría subida, carpetas y URLs sin ganar nada.
+
+**Hay un argumento a favor que aquel diseño no consideró:** 70 imágenes por máquina inundan el explorador de Media del cliente. Con varias máquinas son cientos de archivos que el editor ve cada vez que busca una foto de instalación. Eso es usabilidad de quien administra el sitio, no arquitectura, y no estaba en la balanza.
+
+Queda **abierto y a decidir antes de implementar la rotación**. No bloquea el resto del cambio.
+
+## Qué no se rompe
+
+- **`SpecsCompare` y el JSON-LD de `Product`** siguen leyendo campos. Es la razón de todo el diseño.
+- **`/machines/[family]/[slug]` sigue siendo ruta de código**, no un documento de `Pages`. Esto no reabre esa discusión.
+- **Sin `generateStaticParams`** — es lo que tumbó `/machines/[family]` en producción una vez.
+- **Los datos no se tocan.** Ninguna migración de contenido en este cambio; la única migración es la del campo `layout` nuevo.
+
+## No elegido
+
+- **Conversión completa con migración de datos.** Mueve `specs` fuera de donde otras páginas lo leen.
+- **Aditivo, con el `layout` solo al final.** No resuelve el problema del hero, que es el que originó todo.
+- **Reusar el juego de bloques de `Pages`.** Ofrece formularios y grillas de tarjetas en la página de un producto.
+
+## Abierto
+
+- **Presupuesto de peso por fotograma.** Bloquea la rotación, no el resto.
+- **Colección propia para secuencias** frente a carpetas en `Media`.
+- **Quién renombra los archivos**: Blender escribe `10001.png`, la convención quiere `frame-001.png`.
+- **Cuándo se retira el respaldo** y se migran los diez `layout`.
