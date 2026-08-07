@@ -31,9 +31,18 @@ Most PRs answer "no" here. That is the expected answer.
 ### If this adds or changes a block
 
 - [ ] `README.md` from `src/blocks/_template.md`, including the four business
-      questions in [`docs/business/definition-of-done.md`](../docs/business/definition-of-done.md)
+      questions in [`docs/business/definition-of-done.md`](../docs/business/definition-of-done.md).
+      "Cannot determine — no audience brief exists" is a valid answer; a guess is not.
+- [ ] **Production setup** section filled — what someone has to create in
+      `/admin` for this to appear. Merged code is not a shipped feature.
 - [ ] Renders correctly with **no data** and with **too much data**
 - [ ] Both locales checked
+
+### If this needs anything done in `/admin` after deploy
+
+Say it here too, not only in the block README — this is the list someone works
+through on release day. Content to create, in which locales, in what order,
+and anything that is not automatic.
 
 ### If this adds a migration
 
