@@ -72,7 +72,14 @@ El diseño está escrito en `openspec/changes/machine-frame-sequences/design.md`
 - El escenario va sobre **navy** — las máquinas son recortes blancos sobre transparencia y desaparecen sobre claro. Mismo hallazgo que registró `MachinesLanding/styles.css` y que volvió a aparecer anoche con las tarjetas de modelo.
 - El canvas dibuja `contain`, no `cover`.
 
-**Y hereda su bloqueo sin resolver:** 70 fotogramas pesaron **81 MB, ~1,3 MB cada uno a 1600px**. Ese presupuesto de formato y tamaño hay que cerrarlo antes de que el campo exista, no después. Mientras no esté cerrado, el bloque de hero se construye con la variante actual y la rotación queda detrás.
+**El bloqueo de peso, ahora con número.** El spike midió **81 MB, ~1,3 MB por fotograma a 1600px**. El presupuesto queda fijado en **menos de 500 KB por fotograma** — un factor de ~2,6×, alcanzable con WebP o AVIF a ~1200px.
+
+Dos cosas que ese número no resuelve por sí solo, y que van juntas con él:
+
+- **70 × 500 KB siguen siendo 35 MB** en una página. El presupuesto por imagen no basta si la secuencia es larga, y **reducir el número de fotogramas es la palanca más barata de todas**: 36 pasos son 10° cada uno, y a velocidad de scroll la diferencia con 70 es difícil de ver. El spike usó 70 porque es lo que exportó Blender, no porque se necesiten. Medir 36 antes de asumir 70.
+- **Un presupuesto que no se comprueba es una intención.** El hook de validación tiene que rechazar el fotograma que se pase, en el guardado — no descubrirlo alguien mirando la pestaña de red.
+
+Mientras esto no esté cerrado, el bloque de hero se construye con la variante actual y la rotación queda detrás.
 
 ### Una colección aparte para los fotogramas
 
