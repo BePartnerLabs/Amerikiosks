@@ -32,6 +32,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const FOLDERS = [
   { dir: 'docs/patterns', heading: 'Topic' },
   { dir: 'docs/business', heading: 'Document' },
+  { dir: 'docs/payload', heading: 'Topic' },
 ]
 
 const START = '<!-- index:start -->'
@@ -81,7 +82,9 @@ for (const { dir, heading } of FOLDERS) {
     }
     // `read_when` is the useful column: a title tells you what a document is,
     // but only this tells you whether to open it now.
-    rows.push(`| [${meta.title}](./${name}) | ${meta.read_when ?? '—'} |`)
+    // Vendored files carry `description` instead of `read_when`; both answer
+    // "should I open this?", which is the only column worth having.
+    rows.push(`| [${meta.title}](./${name}) | ${meta.read_when ?? meta.description ?? '—'} |`)
   }
 
   const table = [`| ${heading} | Read it when |`, '|---|---|', ...rows].join('\n')

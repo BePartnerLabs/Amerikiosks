@@ -77,43 +77,30 @@ pass, and the directive alone does not guarantee inclusion.
 A directive that applies sometimes is worse than none, so the config is now
 plain `reactCompiler: true` and the compiler decides.
 
-## Known bails that are not our fault
+## Known bails
 
-Nine files bail for compiler limitations rather than bad code. They live in
-`EXPECTED` in the validator, each with its reason, so a *new* bail stands out
-instead of drowning in known noise:
+Nine files bail for compiler limitations rather than bad code, plus one that is
+ours. The list with each reason lives in `EXPECTED` in
+`scripts/validate-react-compiler.mjs` — **read it there, not here.** A copy in
+this file would be wrong the first time someone edits the array.
 
-- **Value blocks inside `try/catch`** (7 files) — the admin's resync and
-  attachment buttons. The compiler cannot yet lower conditional or optional
-  expressions inside a `try` block.
-- **`Use of incompatible library`** (`src/blocks/ClaimForm/Component.tsx`) — a
-  third-party hook the compiler cannot analyse.
-- **`??=`** (`src/blocks/TrustStrip/Tracker.tsx`) — operator not yet handled.
-
-When a compiler upgrade fixes one of these, delete its entry.
-
-## One open item that *is* ours
-
-`src/blocks/Form/Component.tsx` reports two `Cannot access refs during render`
-bails **with no location attached**. Three hypotheses were tested and none
-reduced the count: removing the refs handed to `useFormSubmission`, the
-`lastDataRef.current` read in the retry callback, and the `Date.now()` ref
-initialiser. Isolating it means bisecting a 400-line component that owns the
-client's lead capture, so it is deferred rather than guessed at.
-
-It sits in `EXPECTED` marked as the one entry that is our code. Do not remove
-that marker without a fix that keeps the form's tests green.
+The one worth knowing about: `src/blocks/Form/Component.tsx` reports two
+`Cannot access refs during render` bails with no location attached. Three
+hypotheses were tested and none reduced the count, and isolating it means
+bisecting a 400-line component that owns the client's lead capture — so it is
+deferred rather than guessed at, and marked in `EXPECTED` as the one entry that
+is our code rather than a compiler limitation.
 
 ## Measuring the cost
 
-Build time in annotation mode was indistinguishable from no compiler at all
-(12.5s / 15.2s / 12.5s without, 13.6s / 12.2s / 13.4s with, warm cache).
+Enabling the compiler cost nothing measurable: warm builds landed inside the
+noise of builds without it.
 
 **Measure warm builds only.** Any change to `next.config.ts` invalidates
-Turbopack's persistent cache, so the first build after touching the config
-reports 40–80s and inverts the conclusion. Two cold runs nearly got the compiler
-rejected on false evidence.
+Turbopack's persistent cache, so the first build after touching the config runs
+three to five times slower and inverts the conclusion. Two cold runs nearly got
+the compiler rejected on false evidence.
 
-What has *not* been measured is the actual reduction in re-renders. That needs
-the React DevTools Profiler with a scroll running. The cost side is proven; the
-benefit is reasoned from the code.
+The re-render reduction has never been measured — that needs the React DevTools
+Profiler with a scroll running. The cost side is proven; the benefit is reasoned
+from the code.
