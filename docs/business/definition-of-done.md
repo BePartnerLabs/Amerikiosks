@@ -45,8 +45,9 @@ deliverable, not an afterthought.
 
 ## Part 2 — Technical
 
-The 21-item checklist lives in `src/blocks/_template.md`. Grouped by what
-actually enforces it:
+The checklist lives in `src/blocks/_template.md`. Grouped by what actually
+enforces it — the point of this table is that **only about six of the thirty are
+machine-checked**; the rest depend on someone looking.
 
 | Group | Items | Enforced |
 |---|---|---|
@@ -55,26 +56,47 @@ actually enforces it:
 | Performance | 3 | Raw `<img>` blocked by `validate-no-raw-icon-image.mjs` and a GritQL plugin |
 | SEO / AIO / GEO | 3 | Review |
 | Analytics GA4 | 1 | `data-ga-block` by `validate-block-markup.mjs` |
+
 | Design System CSS | 11 | 4 of the rules by `validate-ds-tokens.mjs`; `bp-content-grid` by `validate-block-markup.mjs` |
 | Delivery | 4 | Unit tests by CI; the rest by review |
 
-Two notes on the score. **The denominator is 21** — files in the repo currently
-show 19, 21 and 22, which makes the percentages incomparable; use 21 and fix the
-outliers when you touch them. And **a percentage is not a gate**: 100% means
-ready for client delivery, under 80% means not shippable, but a block at 90% with
-an unanswered business question is less finished than one at 80% with all four
-answered.
+`GAListener.tsx:27-28` reads **both** GA attributes, into different params:
+`data-ga-block` becomes `block`, `data-ga-section` becomes `section`. They are
+dimensions, not alternatives — `data-ga-block` is the required one, and the
+template's events table was asking for the wrong one until 2026-08-06.
+
+**The denominator is 30.** Count the boxes in `_template.md` and you get
+5 + 3 + 3 + 3 + 1 + 11 + 4 = 30. An earlier version of this document asserted 21,
+copied from the template's own header, which was also wrong — so a block with
+nine unticked boxes scored 100%, and the READMEs closest to correct (22) were
+the ones it told you to "fix". Existing READMEs written against 19 or 21 are
+under-counted; recompute when you touch them.
+
+**100% is not reachable honestly, and that is fine.** Several items cannot be
+evaluated without rendering the block — 7:1 contrast, cumulative layout shift,
+"markup copied verbatim from the DS site". `src/blocks/CLAUDE.md` says to leave
+manual items unticked, which structurally caps an honest README below 100%.
+Treat the number as a map of what is unverified, not a grade. **A block at 60%
+with four business answers and honest gaps is more finished than one at 100%
+where somebody ticked contrast by eye.**
 
 ## Part 3 — Before merging
 
 - `pnpm vitest run tests/unit` green, including tests for this block.
 - `pnpm exec tsc --noEmit` clean.
-- The block renders correctly with **no data** and with **too much data**.
+- The block renders correctly with **no data** and with **too much data**. This
+  has no checklist box on purpose — it is a thing you do, not a thing you tick —
+  but it is where CMS-driven blocks actually break. `MachineFamily` silently caps
+  at five highlights; the sixth vanishes with no warning to the editor. Say what
+  the cap is in the README, or remove it.
 - Both locales checked. If the block touches an array with localized subfields,
   read [`docs/patterns/payload-localized-arrays.md`](../patterns/payload-localized-arrays.md) first.
 - If it is a client component, `node scripts/validate-react-compiler.mjs <file>`
   passes — see [`docs/patterns/react-compiler.md`](../patterns/react-compiler.md).
-- `README.md` written from `_template.md`, with the four business answers.
+- `README.md` written from `_template.md`, with the four business answers **and
+  the Production setup section**. Merged code is not a shipped feature: a block
+  nobody adds to a page in `/admin` renders nowhere, and that step is the one
+  that goes missing between merge and "why isn't it live?".
 - `docs/blocks/README.md` regenerated so the index does not drift.
 
 ## What this deliberately does not require
@@ -84,6 +106,12 @@ captures, and they go stale faster than anything else in the document. Take them
 when the block is marked finished for client delivery, not while it is still
 moving.
 
-**100% before merging.** A block can ship at 80% with the gaps named in its
-README. What is not acceptable is an unticked box nobody noticed, which is the
-difference between a known gap and a surprise.
+**100% before merging.** A block can ship with gaps named in its README. What is
+not acceptable is an unticked box nobody noticed — the difference between a known
+gap and a surprise.
+
+**A business answer invented to fill the box.** Three of the four questions have
+no source in this repo yet: [`audiences.md`](./audiences.md) and
+[`voice-and-tone.md`](./voice-and-tone.md) are skeletons awaiting the client.
+Writing "cannot determine — no audience brief exists" is the correct answer and
+it is more useful than a guess, because it counts the gap.
