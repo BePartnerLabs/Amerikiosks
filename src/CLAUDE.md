@@ -1,5 +1,12 @@
 # src/ — Context Overview
 
+## Context you may need
+
+| Read | When |
+|------|------|
+| [`docs/patterns/`](../docs/patterns/README.md) | Patterns and antipatterns this project learned the hard way. One file per topic — open the index and read only the one that applies. |
+| [`docs/business/`](../docs/business/README.md) | Definition of Done, and who the product is talking to. |
+
 ## Block Documentation
 
 Process guide: [`src/blocks/CLAUDE.md`](./blocks/CLAUDE.md)  

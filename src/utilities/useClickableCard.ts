@@ -4,13 +4,15 @@ import { useRouter } from 'next/navigation'
 import type { RefObject } from 'react'
 import { useCallback, useEffect, useRef } from 'react'
 
+/**
+ * Refs are returned directly rather than wrapped in `{ card: { ref } }`.
+ * The nested shape made the React Compiler treat `card.ref` in JSX as a ref
+ * read during render and skip the whole consuming component — see
+ * docs/patterns/react-compiler.md.
+ */
 type UseClickableCardType<T extends HTMLElement> = {
-  card: {
-    ref: RefObject<T | null>
-  }
-  link: {
-    ref: RefObject<HTMLAnchorElement | null>
-  }
+  cardRef: RefObject<T | null>
+  linkRef: RefObject<HTMLAnchorElement | null>
 }
 
 interface Props {
@@ -89,14 +91,7 @@ function useClickableCard<T extends HTMLElement>({
     }
   }, [handleMouseDown, handleMouseUp])
 
-  return {
-    card: {
-      ref: card,
-    },
-    link: {
-      ref: link,
-    },
-  }
+  return { cardRef: card, linkRef: link }
 }
 
 export default useClickableCard

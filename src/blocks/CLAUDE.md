@@ -2,6 +2,16 @@
 
 This guide applies to all **Layout Blocks** in `src/blocks/` and **Globals** in `src/Header/` and `src/Footer/`.
 
+**Before writing a client component here**, check
+[`docs/patterns/react-compiler.md`](../../docs/patterns/react-compiler.md) — the
+React Compiler skips files silently, and hooks that return refs nested in objects
+are the usual cause.
+
+**What "done" means** is in
+[`docs/business/definition-of-done.md`](../../docs/business/definition-of-done.md),
+which covers the business side (who the block talks to, what it does with no
+data) as well as the technical checklist below.
+
 ## When to Document
 
 - **New block created** → generate `README.md` immediately from `_template.md`

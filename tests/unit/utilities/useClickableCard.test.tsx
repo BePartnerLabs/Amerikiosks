@@ -9,14 +9,14 @@ vi.mock('next/navigation', () => ({
 import useClickableCard from '@/utilities/useClickableCard'
 
 function TestCard({ external, newTab }: { external?: boolean; newTab?: boolean }) {
-  const { card, link } = useClickableCard<HTMLDivElement>({ external, newTab })
+  const { cardRef, linkRef } = useClickableCard<HTMLDivElement>({ external, newTab })
   return (
     <div
-      ref={card.ref}
+      ref={cardRef}
       data-testid="card"
     >
       <a
-        ref={link.ref}
+        ref={linkRef}
         href="/target"
       >
         View target details
