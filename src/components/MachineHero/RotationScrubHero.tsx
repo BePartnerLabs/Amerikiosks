@@ -156,7 +156,10 @@ export const RotationScrubHero: React.FC<Props> = ({
         className="ak-machine-hero__image-pin-wrapper"
         style={vtName('machine-image', slug)}
       >
-        <div className="ak-machine-hero__sticky">
+        <div
+          className="ak-machine-hero__sticky"
+          style={{ '--ak-hero-progress': progress.toFixed(3) } as React.CSSProperties}
+        >
           {!firstFrameReady && (
             <div
               className="ak-machine-hero__skeleton"
@@ -169,6 +172,15 @@ export const RotationScrubHero: React.FC<Props> = ({
             role="img"
             aria-label={alt}
           />
+          {/* Contact shadow. A sibling of the canvas, not a pseudo-element on it,
+              because the canvas scales with the scroll and the shadow must not:
+              a static shadow reads as the machine resting on a floor, one that
+              moves with the model reads as a bug. */}
+          <span
+            className="ak-machine-hero__shadow"
+            aria-hidden
+          />
+
           {/* Same bottom fade the family hero uses (ComposedHero__scrim), so the
               render sits on the page instead of ending on a hard edge. */}
           <div

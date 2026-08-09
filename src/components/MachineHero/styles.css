@@ -13,6 +13,21 @@
     var(--brand-color-palette-navy-950)
   );
   --_hero-glow: color-mix(in srgb, var(--ak-accent) 30%, transparent);
+
+  /* Zoom through the turntable. Past ~0.18 the render crops against the
+     viewport on short screens. */
+  --_hero-zoom: 0.14;
+
+  /* Contact shadow, tuned for navy rather than white. On a light background
+     0.25–0.30 is right; on this stage that reads as a smudge, so the core is
+     stronger and the spread tighter — the ellipse has to darken a surface that
+     is already dark. Four numbers to tune by eye: where it sits, how wide, how
+     opaque, how blurred (the blur is on the element).
+     The shadow must stay narrower than the machine — never wider. */
+  --_hero-shadow-bottom: 8%;
+  --_hero-shadow-width: 46%;
+  --_hero-shadow-core: color-mix(in srgb, var(--brand-color-palette-navy-950) 62%, transparent);
+  --_hero-shadow-mid: color-mix(in srgb, var(--brand-color-palette-navy-950) 26%, transparent);
 }
 
 .ak-machine-hero__text {
@@ -101,6 +116,46 @@
   inset: 0;
   width: 100%;
   height: 100%;
+  /* The machine grows as you scroll through the turntable. Same lever the
+     /machines scene uses (--ak-scene-progress), kept subtle: past ~1.15 the
+     render starts to crop against the viewport. */
+  transform: scale(calc(1 + var(--ak-hero-progress, 0) * var(--_hero-zoom)));
+  transform-origin: 50% 58%;
+  will-change: transform;
+}
+
+/*
+ * Contact shadow.
+ *
+ * A sibling of the canvas, never a pseudo-element on it: the canvas scales with
+ * the scroll, and a shadow that scales with the model reads as a bug. A static
+ * one reads as the machine resting on a floor.
+ *
+ * The gradient has three stops on purpose. With only a colour and `transparent`
+ * the edge renders as a visible ring; the middle stop at 45% is what makes it
+ * read as a shadow.
+ */
+.ak-machine-hero__shadow {
+  position: absolute;
+  bottom: var(--_hero-shadow-bottom);
+  left: 50%;
+  translate: -50% 0;
+  width: var(--_hero-shadow-width);
+  height: 26px;
+  background: radial-gradient(
+    ellipse at center,
+    var(--_hero-shadow-core) 0%,
+    var(--_hero-shadow-mid) 45%,
+    transparent 72%
+  );
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ak-machine-hero__canvas {
+    transform: none;
+  }
 }
 
 /* Accent glow over the navy, same as .ak-scene__glow on /machines. */
