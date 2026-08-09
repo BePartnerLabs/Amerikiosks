@@ -281,6 +281,9 @@ export interface Page {
         | FormatsGridBlock
         | MachinesListingBlock
         | ModelLinesBlock
+        | MachineLineupBlock
+        | MachineFamilyBlock
+        | MachineModelsBlock
         | ProcessStepsBlock
         | StatementBlock
         | FAQWithFormBlock
@@ -1722,6 +1725,10 @@ export interface MachineFamily {
           image?: (number | null) | Media;
           title: string;
           description?: string | null;
+          /**
+           * The characteristic this family leads with on /machines. Mark one. If none is marked the first item is used, so a family is never left out of the lineup.
+           */
+          featured?: boolean | null;
           id?: string | null;
         }[]
       | null;
@@ -1769,6 +1776,64 @@ export interface ModelLinesBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'modelLines';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MachineLineupBlock".
+ */
+export interface MachineLineupBlock {
+  /**
+   * Optional line shown before the first family, while the scene enters. Leave empty to start straight on the first family.
+   */
+  intro?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'machineLineup';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MachineFamilyBlock".
+ */
+export interface MachineFamilyBlock {
+  /**
+   * Which family this section shows. Name, description, characteristics and the link all come from that document — add one block per family.
+   */
+  family: number | MachineFamily;
+  /**
+   * Small label above each characteristic tile.
+   */
+  tileEyebrow?: string | null;
+  /**
+   * Label for the large first tile.
+   */
+  leadEyebrow?: string | null;
+  /**
+   * Shows how many models the line has. The number is counted from the machines collection, never typed, so it cannot fall out of sync.
+   */
+  showModelCount?: boolean | null;
+  countEyebrow?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'machineFamily';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MachineModelsBlock".
+ */
+export interface MachineModelsBlock {
+  eyebrow?: string | null;
+  heading: string;
+  /**
+   * Link text on each card.
+   */
+  ctaLabel?: string | null;
+  /**
+   * Optional. Leave empty to show every model across all families — the usual case. Set one to narrow this block to a single line.
+   */
+  family?: (number | null) | MachineFamily;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'machineModels';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2622,6 +2687,9 @@ export interface PagesSelect<T extends boolean = true> {
         formatsGrid?: T | FormatsGridBlockSelect<T>;
         machinesListing?: T | MachinesListingBlockSelect<T>;
         modelLines?: T | ModelLinesBlockSelect<T>;
+        machineLineup?: T | MachineLineupBlockSelect<T>;
+        machineFamily?: T | MachineFamilyBlockSelect<T>;
+        machineModels?: T | MachineModelsBlockSelect<T>;
         processSteps?: T | ProcessStepsBlockSelect<T>;
         statement?: T | StatementBlockSelect<T>;
         faqWithForm?: T | FAQWithFormBlockSelect<T>;
@@ -2903,6 +2971,40 @@ export interface ModelLinesBlockSelect<T extends boolean = true> {
   heading?: T;
   subheading?: T;
   form?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MachineLineupBlock_select".
+ */
+export interface MachineLineupBlockSelect<T extends boolean = true> {
+  intro?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MachineFamilyBlock_select".
+ */
+export interface MachineFamilyBlockSelect<T extends boolean = true> {
+  family?: T;
+  tileEyebrow?: T;
+  leadEyebrow?: T;
+  showModelCount?: T;
+  countEyebrow?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MachineModelsBlock_select".
+ */
+export interface MachineModelsBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  ctaLabel?: T;
+  family?: T;
   id?: T;
   blockName?: T;
 }
@@ -3309,6 +3411,7 @@ export interface MachineFamiliesSelect<T extends boolean = true> {
               image?: T;
               title?: T;
               description?: T;
+              featured?: T;
               id?: T;
             };
       };

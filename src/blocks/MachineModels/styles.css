@@ -1,0 +1,273 @@
+/*
+ * Machine Models — every model in one horizontal carousel.
+ *
+ * Ported from the landing's `ak-models`, with its own namespace so the old
+ * route keeps working until it is deleted. The card effect the client asked to
+ * keep is `.ak-model-card__shot`: the machine leans out over the top edge of
+ * its card instead of sitting inside it.
+ */
+
+.ak-model-cards {
+  /* Level 2 → private slots. Every colour below channels a brand token: the DS
+     validator forbids literals and raw --ak-* in surface properties. */
+  --_models-accent: var(--ak-accent);
+  --_models-heading: var(--ak-color-heading);
+  --_models-muted: var(--ak-color-muted);
+  --_models-surface: var(--ak-color-surface);
+  --_models-border: var(--ak-surface-border);
+  --_models-border-hover: var(--ak-surface-border-hover);
+  --_models-shadow: var(--ak-surface-shadow-md);
+  --_models-shadow-hover: var(--ak-surface-shadow-md-hover);
+  --_models-background: var(--ak-section-bg-gradient-down);
+  --_models-drop-light: color-mix(in srgb, var(--brand-color-palette-navy-900) 22%, transparent);
+
+  /* How far the machine leans out above its card. Declared once because two
+     rules depend on it: the render's height and the track's top padding. A
+     scroll container clips what overflows it — `overflow-x: auto` makes the
+     block axis a scrollport too — so if the padding is smaller than the
+     overhang, the effect gets sliced off instead of hanging over. */
+  --_models-overhang: 4rem;
+  --_models-card-height: 18rem;
+
+  /* The renders are 2640×3300 — a 0.8 aspect. With `object-fit: contain` the
+     image is height-limited only while the box is at least `0.8 × its height`
+     wide; any narrower and the width becomes the limit, the render scales down
+     to fit, and it lands entirely inside the card with no overhang at all.
+     That is what kept defeating us. 0.85 keeps a margin over the real ratio. */
+  --_models-shot-width: calc(0.85 * (var(--_models-card-height) + var(--_models-overhang)));
+  --_models-card-width: 42.5rem;
+
+  padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(3.25rem, 8vw, 6rem);
+  background: var(--_models-background);
+}
+
+.ak-model-cards__eyebrow {
+  font-family: var(--bp-font-family-mono, ui-monospace, monospace);
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--_models-accent);
+  margin: 0 0 0.5rem;
+}
+
+.ak-model-cards__heading {
+  font-size: clamp(1.375rem, 2.8vw, 1.875rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--_models-heading);
+  margin: 0;
+}
+
+.ak-model-cards__carousel {
+  position: relative;
+  margin-top: 1.5rem;
+}
+
+/* Starts where the heading starts, ends past the viewport edge.
+   Selector includes the parent on purpose: `.bp-content-grid > *` in globals.css
+   sets `grid-column: content` at the same specificity, and globals loads later,
+   so a bare class loses the tie and the rail snaps back to the content column. */
+.bp-content-grid > .ak-model-cards__bleed {
+  grid-column: content-start / full-width-end;
+}
+
+.ak-model-cards__track {
+  list-style: none;
+  margin: 0;
+  padding: calc(var(--_models-overhang) + 0.75rem) min(8vw, 2rem) 0.75rem 0;
+  display: grid;
+  grid-auto-flow: column;
+  /* The old grid was `repeat(auto-fit, minmax(13rem, 1fr))`, so cards stretched
+     to fill the row. In a carousel the track scrolls instead of wrapping, so
+     the width has to be stated.
+
+     Sized for the machine, not for the text: the render leans out over the top
+     edge of the card, and the whole machine only reads at around 680px. Below
+     that the card crops it and the effect is lost, so the width is stated
+     rather than derived from how many cards would fit. `min(100%, …)` keeps a
+     phone showing one full-width card instead of overflowing the viewport. */
+  grid-auto-columns: min(100%, var(--_models-card-width));
+  gap: 0.875rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  /* The bar is redundant once the arrows are there, and it draws a line right
+     under the cards that reads as part of the design. Hide the bar, keep the
+     scrolling — the track is still focusable and still pans with the keyboard. */
+  scrollbar-width: none;
+}
+
+.ak-model-cards__track::-webkit-scrollbar {
+  display: none;
+}
+
+.ak-model-cards__item {
+  scroll-snap-align: start;
+  display: flex;
+}
+
+.ak-model-cards__carousel-nav {
+  display: flex;
+  justify-content: flex-start;
+  padding-inline: 0;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.ak-model-cards__carousel-btn {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: 1px solid var(--_models-border);
+  background: var(--_models-surface);
+  color: var(--_models-heading);
+  cursor: pointer;
+  transition:
+    border-color 250ms ease,
+    box-shadow 250ms ease;
+}
+
+.ak-model-cards__carousel-btn:hover,
+.ak-model-cards__carousel-btn:focus-visible {
+  border-color: var(--_models-border-hover);
+  box-shadow: var(--_models-shadow);
+}
+
+.ak-model-card {
+  position: relative;
+  flex: 1;
+  border: 1px solid var(--_models-border);
+  border-radius: var(--bp-radius-lg, 0.75rem);
+  background: var(--_models-surface);
+  box-shadow: var(--_models-shadow);
+  padding: 1.75rem;
+  /* Shorter than the first pass: at 22rem the three specs floated in the middle
+     of a tall card. */
+  min-height: var(--_models-card-height);
+  display: flex;
+  flex-direction: column;
+  /* The name leads and the data sits under it, both centred against the
+     machine rather than pushed to the top and bottom edges. */
+  justify-content: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color 300ms ease,
+    transform 350ms ease,
+    box-shadow 300ms ease;
+}
+
+.ak-model-card:hover,
+.ak-model-card:focus-visible {
+  border-color: var(--_models-border-hover);
+  transform: translateY(-3px);
+  box-shadow: var(--_models-shadow-hover);
+}
+
+/* The machine leans out over the top edge of its card.
+   The width is fixed rather than a percentage, and that is the whole trick:
+   with `object-fit: contain` a wide box makes the render width-constrained, so
+   it scales down and sits entirely inside the card — the wider the card, the
+   less overhang. A narrow, tall box makes the height the limit, so the machine
+   fills it and the overhang is real. */
+.ak-model-card__shot {
+  position: absolute;
+  right: 1.5rem;
+  bottom: 0;
+  width: var(--_models-shot-width);
+  height: calc(100% + var(--_models-overhang));
+  object-fit: contain;
+  object-position: bottom right;
+  pointer-events: none;
+  z-index: 0;
+  filter: drop-shadow(0 18px 26px var(--_models-drop-light));
+  transition: transform 550ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.ak-model-card:hover .ak-model-card__shot {
+  transform: translateY(-10px) scale(1.03);
+}
+
+.ak-model-card__family,
+.ak-model-card__name,
+.ak-model-card__specs,
+.ak-model-card__go {
+  position: relative;
+  z-index: 1;
+}
+
+/* Which line this model belongs to. The block is flat, so without this a
+   visitor sees ten similar machines with no idea which is which. */
+.ak-model-card__family {
+  font-family: var(--bp-font-family-mono, ui-monospace, monospace);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--_models-muted);
+  margin: 0;
+  max-width: 55%;
+}
+
+.ak-model-card__name {
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: var(--_models-heading);
+  margin: 0 0 0.25rem;
+  max-width: 55%;
+  text-wrap: balance;
+}
+
+/* One quiet row of data under the name, not a stacked list: three specs in a
+   column 374px wide left a dead gap in the middle of the card. */
+.ak-model-card__specs {
+  margin: 1rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.5rem;
+  font-size: 0.8125rem;
+  max-width: 55%;
+}
+
+.ak-model-card__specs > div {
+  display: grid;
+  gap: 0;
+}
+
+.ak-model-card__specs dt {
+  font-family: var(--bp-font-family-mono, ui-monospace, monospace);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--_models-muted);
+}
+
+.ak-model-card__specs dd {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--_models-heading);
+  font-variant-numeric: tabular-nums;
+}
+
+.ak-model-card__go {
+  margin-top: 1.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--_models-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ak-model-cards__track {
+    scroll-behavior: auto;
+  }
+
+  .ak-model-card,
+  .ak-model-card__shot {
+    transition: none;
+  }
+}

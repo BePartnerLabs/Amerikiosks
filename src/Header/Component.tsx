@@ -7,7 +7,12 @@ import { HeaderClient } from './Component.client'
 export async function Header() {
   const locale = await getLocale()
   const [headerData, settings] = await Promise.all([
-    getCachedGlobal('header', 1, locale)(),
+    // Depth 2, not 1: a nav item can open a form in a drawer, and that form's
+    // richText can carry an internal link (the consent copy links to the privacy
+    // policy). Depth 1 populates the form but leaves that nested link's `doc` as
+    // a bare id, which `makeInternalDocToHref` refuses to render — taking down
+    // every page on the site, since the header is in the root layout.
+    getCachedGlobal('header', 2, locale)(),
     getCachedGlobal('settings', 0, locale)(),
   ])
 

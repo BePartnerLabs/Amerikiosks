@@ -95,7 +95,7 @@ export const CardGridBlock: React.FC<CardGridBlockProps> = ({
             </div>
           )}
 
-          {cards && <CardGridCarousel>{cards}</CardGridCarousel>}
+          {cards && <CardGridCarousel label={heading}>{cards}</CardGridCarousel>}
 
           {ctaUrl && link?.label && variant === 'pillar' && (
             <div className="ak-card-grid__cta">

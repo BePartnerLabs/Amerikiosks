@@ -75,6 +75,9 @@ import * as migration_20260730_012000_backfill_text_field_value_type from './202
 import * as migration_20260730_214026_form_display_title from './20260730_214026_form_display_title';
 import * as migration_20260730_220000_drop_orphaned_autosave_columns from './20260730_220000_drop_orphaned_autosave_columns';
 import * as migration_20260730_224141_footer_contact_heading from './20260730_224141_footer_contact_heading';
+import * as migration_20260806_011354_machine_family_highlight_featured from './20260806_011354_machine_family_highlight_featured';
+import * as migration_20260806_012848_machine_family_block from './20260806_012848_machine_family_block';
+import * as migration_20260806_014441_machine_models_block from './20260806_014441_machine_models_block';
 
 export const migrations = [
   {
@@ -460,6 +463,21 @@ export const migrations = [
   {
     up: migration_20260730_224141_footer_contact_heading.up,
     down: migration_20260730_224141_footer_contact_heading.down,
-    name: '20260730_224141_footer_contact_heading'
+    name: '20260730_224141_footer_contact_heading',
+  },
+  {
+    up: migration_20260806_011354_machine_family_highlight_featured.up,
+    down: migration_20260806_011354_machine_family_highlight_featured.down,
+    name: '20260806_011354_machine_family_highlight_featured',
+  },
+  {
+    up: migration_20260806_012848_machine_family_block.up,
+    down: migration_20260806_012848_machine_family_block.down,
+    name: '20260806_012848_machine_family_block',
+  },
+  {
+    up: migration_20260806_014441_machine_models_block.up,
+    down: migration_20260806_014441_machine_models_block.down,
+    name: '20260806_014441_machine_models_block'
   },
 ];

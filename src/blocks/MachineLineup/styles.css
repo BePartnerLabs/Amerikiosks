@@ -1,0 +1,228 @@
+/*
+ * Machine Lineup — the pinned dark scene that walks every family.
+ *
+ * The navy is not decoration. The family renders are white machines on
+ * transparency: on a light background they disappear, and on navy they cut out
+ * cleanly. The block therefore carries its own dark surface instead of
+ * inheriting the page's, so it survives being reordered onto a light section.
+ */
+
+.ak-lineup {
+  /* Level 2 → private slots. Every colour below channels a brand token: the DS
+     validator forbids literals and raw --ak-* in surface properties. */
+  --_lineup-dark: var(--brand-color-palette-navy-950);
+  --_lineup-on-dark-strong: var(--brand-color-palette-white);
+  --_lineup-on-dark-muted: var(--brand-color-palette-steel-100);
+  --_lineup-accent: var(--ak-accent);
+
+  --_lineup-mid: color-mix(
+    in srgb,
+    var(--brand-color-palette-navy-900) 70%,
+    var(--brand-color-palette-navy-950)
+  );
+  --_lineup-glow: color-mix(in srgb, var(--ak-accent) 30%, transparent);
+  --_lineup-tick: color-mix(in srgb, var(--brand-color-palette-steel-100) 22%, transparent);
+  --_lineup-drop: color-mix(in srgb, var(--brand-color-palette-navy-950) 65%, transparent);
+
+  --_lineup-header-offset: 62px;
+
+  position: relative;
+  /* One viewport of scroll per family, plus one to enter and leave. */
+  height: calc((var(--ak-lineup-count, 5) + 1) * 100svh);
+  background: var(--_lineup-dark);
+}
+
+.ak-lineup__pin {
+  position: sticky;
+  top: var(--_lineup-header-offset);
+  height: calc(100svh - var(--_lineup-header-offset));
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  align-items: center;
+  background: linear-gradient(
+    180deg,
+    var(--_lineup-dark) 0%,
+    var(--_lineup-mid) 52%,
+    var(--_lineup-dark) 100%
+  );
+}
+
+.ak-lineup__glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(46% 44% at 50% 46%, var(--_lineup-glow), transparent 70%);
+  opacity: calc(0.1 + var(--ak-lineup-progress, 0) * 0.9);
+}
+
+.ak-lineup__stage {
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.ak-lineup__unit {
+  grid-area: 1 / 1;
+  position: relative;
+  width: min(52vw, 340px);
+  height: min(46svh, 400px);
+  opacity: 0;
+  transition: opacity 450ms ease;
+  filter: drop-shadow(0 40px 60px var(--_lineup-drop));
+  will-change: transform, opacity;
+}
+
+.ak-lineup__unit--on {
+  opacity: 1;
+  transform: translateY(calc(var(--ak-lineup-progress, 0) * -14px))
+    scale(calc(1 + var(--ak-lineup-progress, 0) * 0.14));
+}
+
+.ak-lineup__img {
+  object-fit: contain;
+  object-position: bottom;
+  transition: opacity 550ms ease;
+}
+
+.ak-lineup__img--front {
+  opacity: calc(1 - var(--ak-lineup-turn, 0));
+}
+
+.ak-lineup__img--side {
+  opacity: var(--ak-lineup-turn, 0);
+}
+
+.ak-lineup__copy {
+  position: relative;
+  min-height: clamp(150px, 22svh, 210px);
+  padding: 0 var(--bp-space-6, 1.5rem) clamp(1.75rem, 6svh, 3.75rem);
+  text-align: center;
+}
+
+.ak-lineup__intro {
+  color: var(--_lineup-on-dark-muted);
+  margin: 0 auto;
+  max-width: 46ch;
+}
+
+.ak-lineup__step {
+  position: absolute;
+  inset-inline: var(--bp-space-6, 1.5rem);
+  bottom: clamp(1.75rem, 6svh, 3.75rem);
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 450ms ease,
+    transform 450ms ease;
+}
+
+.ak-lineup__step--on {
+  opacity: 1;
+  transform: none;
+}
+
+.ak-lineup__eyebrow {
+  font-family: var(--bp-font-family-mono, ui-monospace, monospace);
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--_lineup-accent);
+  margin: 0;
+}
+
+.ak-lineup__title {
+  font-size: clamp(1.625rem, 4.6vw, 3.125rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.04;
+  text-wrap: balance;
+  color: var(--_lineup-on-dark-strong);
+  margin: 0.625rem 0 0;
+}
+
+.ak-lineup__text {
+  color: var(--_lineup-on-dark-muted);
+  margin: 0.75rem auto 0;
+  font-size: 0.96875rem;
+  max-width: 56ch;
+}
+
+/*
+ * The scroll is the primary way through the sequence, but it must not be the
+ * only way to reach a family: this link always points at whichever family is on
+ * screen, so keyboard and screen-reader users get there without scrubbing.
+ */
+.ak-lineup__link {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(0.75rem, 2svh, 1.25rem);
+  translate: -50% 0;
+  color: var(--_lineup-on-dark-muted);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+}
+
+.ak-lineup__link:hover,
+.ak-lineup__link:focus-visible {
+  color: var(--_lineup-on-dark-strong);
+}
+
+.ak-lineup__progress {
+  position: absolute;
+  right: clamp(1rem, 3vw, 2.5rem);
+  top: 50%;
+  translate: 0 -50%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ak-lineup__tick {
+  width: 2px;
+  height: 24px;
+  border-radius: 2px;
+  background: var(--_lineup-tick);
+  transition: background 300ms ease;
+}
+
+.ak-lineup__tick--on {
+  background: var(--_lineup-accent);
+}
+
+/* ---------------- reduced motion ---------------- */
+
+.ak-lineup--static {
+  height: auto;
+  padding-block: clamp(3rem, 8vw, 5rem);
+}
+
+.ak-lineup__list {
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--bp-space-6, 1.5rem);
+  display: grid;
+  gap: clamp(2rem, 5vw, 3.5rem);
+}
+
+.ak-lineup__item {
+  display: grid;
+  gap: var(--bp-space-6, 1.5rem);
+  align-items: center;
+  justify-items: center;
+  text-align: center;
+}
+
+.ak-lineup__static-img {
+  height: auto;
+  max-width: 220px;
+}
+
+@media (min-width: 720px) {
+  .ak-lineup__item {
+    grid-template-columns: auto 1fr;
+    text-align: start;
+    justify-items: start;
+  }
+}

@@ -2,7 +2,8 @@
 
 > Turns the hard-coded machines landing into a `pages` document composed of
 > blocks, so the client owns its copy, its SEO and its section order. The
-> interactive lineup stays one block, not three.
+> visitor-facing line selector goes away: every family is shown, stacked, each
+> linking to its own page.
 
 ## Context
 
@@ -24,39 +25,203 @@ What the route holds that a page does not:
   line. None of that is authorable — an editor cannot keep it in sync with the
   machines collection, and should not have to.
 - **Shared interactive state.** `MachinesStage`, `MachinesFeatures` and
-  `MachinesModels` all sit inside `MachinesLandingProvider` and react to the
-  *selected line*. They are one interactive unit that happens to render as
-  three bands, not three independent sections.
+  `MachinesModels` sit inside `MachinesLandingProvider` and react to the
+  *selected line*. **This change deletes that state** — see "The selector is
+  the bug" below.
 - **`CollectionPage` JSON-LD**, built from the families.
 
 ## Why bother
 
-**The reason is SEO ownership, not layout flexibility.** Today the page's
-`title` and `description` come from `getTranslations('machines')` — they live
-in message files, in the repo. The client cannot edit the meta description of
-one of the most important pages on the site without a developer and a deploy.
-As a `pages` document it inherits the `plugin-seo` fields like every other
-page. That is also the pending work item about documents with no `meta.title`:
-this page cannot be fixed there while it is a route.
+Two reasons, and the second one arrived later than the first.
 
-Secondary, and real but smaller: the client can put a CTA, an FAQ or a trust
-strip around the lineup, and reorder them, without a release.
+**SEO ownership.** Today the page's `title` and `description` come from
+`getTranslations('machines')` — they live in message files, in the repo. The
+client cannot edit the meta description of one of the most important pages on
+the site without a developer and a deploy. As a `pages` document it inherits
+the `plugin-seo` fields like every other page. That is also the pending work
+item about documents with no `meta.title`: this page cannot be fixed there
+while it is a route.
+
+**Everything should be editable.** The client likes the design and cannot tell
+which parts he is allowed to touch. Most of the page already reads from
+`machine-families`; the gaps are the section labels, the CTA and the page
+meta — all hard-coded. Closing those gaps is most of the perceived problem.
+
+## The selector is the bug
+
+Clicking a family in `MachinesLanding/Lineup.tsx:64` calls
+`select(family.slug)` — React state in `Provider.tsx`, same URL, no history
+entry. It *feels* like navigation and is not, so the back button does nothing
+and the family cannot be linked or shared.
+
+It also hides five families out of six, and it duplicates
+`/machines/[family]`: the landing shows name, tagline, description, up to four
+highlights and a model grid; the family page shows all of that plus
+`SpecsCompare` and `InstallationsGallery`. Two URLs, overlapping content, and
+the richer one is nearly unreachable — the landing emits a link to the
+*active* family only (`Features.tsx:114`), so five of the six family URLs never
+appear in the HTML at all.
+
+**The fix is to stop hiding.** Every family gets a stacked section on the
+landing showing its general characteristics and a link to its page. The
+landing becomes an index; the family page keeps the depth. The six URLs become
+real `<a>` links, which is what the orphan-page problem actually needed.
 
 ## The change
 
-**One block, not three.** Add a `machinesLanding` block that owns
-`MachinesLandingProvider` and the three sections inside it. Its `Server.tsx`
-does the queries and the derived-data computation the route does today, and
-emits the JSON-LD. The editor gets the block's own fields (eyebrow, heading,
-trust strip copy) and nothing that has to stay computed.
+**Orderable blocks, not one monolith.** An earlier draft of this design argued
+for a single `machinesLanding` block on the grounds that splitting it would
+break the shared selected-line state. That argument dies with the selector: once
+nothing is shared, the sections are genuinely independent and can be separate,
+reorderable blocks — which is the editability the client asked for.
 
-Splitting the provider across three separately-orderable blocks is the obvious
-alternative and it does not work: the sections would stop sharing the selected
-line, which is the whole interaction.
+The layout becomes:
 
-`/machines` then becomes a `pages` document whose layout is
-`[machinesLanding, …whatever the client adds]`, and
-`[locale]/machines/page.tsx` is deleted.
+```
+Hero  →  machineLineup  →  TrustStrip  →  5 × machineFamily  →  CallToAction
+```
+
+Five families exist today: `alpha`, `delta`, `gamma`, `kappa`, `zeta`.
+
+- **Hero** — the `eyebrow` and `<h1>` currently welded into `Stage.tsx:20-21`
+  move out to a standard hero. This is where the copy stops living in message
+  files.
+- **`machineLineup`** — the scroll-pinned dark scene (`Scene.tsx`), which is
+  the part the client singled out as liking. Everything above it goes: the
+  `ak-machines-landing__intro` wrapper with its eyebrow and `<h1>`
+  (`Stage.tsx:17-24`), and `ak-lineup`, the family selector, which is what made
+  the navigation feel wrong.
+
+  What changes inside it is the axis. Today the scroll steps through *one*
+  family's highlights, chosen by the selector (`Scene.tsx:21-27`, driven by
+  `useActiveFamily()`). It now steps through the **families**: one machine per
+  family, its featured characteristic beside it, five steps. The pinning,
+  progress and tick mechanics are untouched — only the array that feeds them.
+
+  **Image source changes from the composed render to a single machine.**
+  `page.tsx:128` currently resolves `heroUrl` from `heroLineupImage`, which the
+  collection defines as a render of *every* model in the line. The block reads
+  `thumbnail` (front view of one machine) and `hoverThumbnail` (its
+  three-quarter view) instead — `hoverThumbnail` is what the scroll crossfades
+  via `--ak-scene-turn`, so it stays load-bearing even though the mouse-hover
+  swap it was named for disappears with `ak-lineup`.
+
+  This also removes the repetition: the landing shows one representative
+  machine, `/machines/[family]` opens with the whole line. Progression instead
+  of the same image twice.
+
+  Verified in the local restore: all five families have `thumbnail`,
+  `hoverThumbnail`, `heroLineupImage` and exactly 4 highlights, so nothing
+  renders degraded on day one.
+- **`TrustStrip`** — already a registered block; it stops being rendered
+  straight from the route and becomes a movable block like any other.
+- **`machineFamily`** — new block with a relationship field to
+  `machine-families`. The editor adds one per family and picks which family it
+  loads; the block reads name, tagline, description and `highlights` from the
+  collection, and links to `/machines/[family]`. Content is not retyped, so it
+  cannot drift from the collection.
+- **`CallToAction`** — existing block.
+
+**The editor picks the family, not the visitor.** A block with visitor-facing
+tabs would be the deleted `Provider` in new packaging: still hiding five of six,
+still not changing the URL, still feeling like navigation that isn't.
+
+**Consequence to accept: new families are not automatic.** Today the landing
+lists whatever is in the collection. With one block per family, adding a family
+in `/admin` means also adding its block to the page. That is the price of
+ordering and interleaving, and with six slow-moving families it is the right
+trade — but it must be in the client manual, or a family will be added and
+silently not appear.
+
+## What lives in the block, what lives in the family
+
+`machine-families` is shared: the family page reads the same document the
+landing block does. So the dividing line is **not** "content vs layout" — it is
+**"must these two surfaces agree?"**
+
+**Content stays in the collection.** `name`, `tagline`, `description`,
+`thumbnail`, `hoverThumbnail`, `ctaLabel` and `highlights` are facts about the
+family. Duplicating any of them into block fields means the landing and the
+family page can disagree, and they will — that is exactly the drift the derived
+numbers rule guards against elsewhere in this document. `ctaLabel` is already
+per-family and already ignored by the family page; wiring it up serves both.
+
+**Presentation goes in the block.** How many highlights to show, whether to
+show the image variant, which side the render sits on, the section's own
+eyebrow/heading override. These are page-level decisions, and the same family
+legitimately looks different on a landing than on its own page.
+
+**The one real conflict is `highlights`.** The field was designed for the
+family page's full-width block: an item with an `image` renders as a large
+featured card. The landing wants one short characteristic per family. If the
+block simply renders `highlights`, then editing them for one surface silently
+changes the other.
+
+**Add a `featured` checkbox to `highlights.items`.** Which characteristic leads
+is a fact about the family, not a page-level decision — marked once, it serves
+the lineup scene, the family section and anything added later. The block reads
+the featured item; it never carries its own copy.
+
+Two rules this needs, or it fails silently:
+
+- **Fallback.** Use the first item flagged `featured`; if none is flagged, the
+  first item in the array. Without this, an unflagged family drops out of the
+  scroll sequence entirely.
+- **`featured` is not localized.** Flagging one characteristic in English and a
+  different one in Spanish is not a use case, and `highlights.items` already
+  carries the localized-array hazard from `CLAUDE.md`: any locale-scoped write
+  must send each existing item's `id` back or it wipes the sibling locale.
+
+If the client later needs genuinely different copy per surface, the answer is a
+`landingSummary` field on the family — not block-level text.
+
+**What the block owns outright:** the link target (always
+`/machines/[family]`, derived from the relationship, not typed), and nothing
+else textual.
+
+**The CTA is not part of the family block.** The closing call to action is the
+existing `CallToAction` block at page level, added once at the bottom — not
+repeated five times. The per-family `ctaLabel` is a different thing: the "know
+more" link inside each family section.
+
+## Also in scope
+
+- **Machines enter the sitemap.** `(sitemaps)/` generates only
+  `pages-sitemap.xml` and `insights-sitemap.xml`, and `next-sitemap.config.cjs`
+  excludes `/*`. Neither `/machines`, nor `/machines/[family]`, nor the model
+  pages are in any sitemap today. Restructuring the links without fixing this
+  leaves the SEO half-done.
+- **The family page's hard-coded copy becomes editable.** `"Models"` and
+  `"Explore the ${family.name} line."` are English string literals in
+  `[family]/page.tsx` despite the locale param, and the closing CTA is inline
+  Lexical JSON (~50 lines). The family fields `ctaLabel` and
+  `highlights.items[].icon` already exist and are ignored — wire them up.
+
+## What must not regress
+
+- **The dark scene survives intact.** This is the one part the client named as
+  liking — the navy background with the machine and its characteristic. It is
+  also not merely a preference: `Stage.tsx:12-13` records that the cut-out
+  renders are white machines that disappear on a light background, the same
+  finding the rotation-frames spike hit independently. So the `machineLineup`
+  block must carry its own dark surface rather than inherit the page's, or
+  reordering it onto a light section breaks it. Strip the header off it, not
+  the scene.
+- **`/maquinas` keeps working.** Existing links, and anything the client has
+  shared, point at it. The slug must be `maquinas` in ES from day one; a
+  redirect row is the fallback, not the plan.
+- **The route stays server-rendered.** `pages` routes are already `ƒ`. Do not
+  reach for `generateStaticParams` here — it is what took `/machines/[family]`
+  down in production once.
+- **`GATED_PATHS=/machines` keeps gating it.** The check is path-based
+  (`utilities/gatedPaths.ts`), so it is indifferent to how the path resolves —
+  worth asserting in a test rather than assuming.
+- **The derived numbers stay derived.** If the lineup scale or the model count
+  becomes an authorable field during this refactor, the change has failed: it
+  will silently disagree with the machines collection within a month. They stay
+  computed in the block's `Server.tsx`.
+- **`modelLines` keeps working on the detail page**, where `RelatedMachines`
+  renders it directly.
 
 ## The cost, and it is the part to decide
 
@@ -93,37 +258,22 @@ Three ways to live with that, in order of preference:
 3. **Move the children into pages too.** Consistent, and much larger — the
    detail pages carry real query logic and their own JSON-LD. Not this change.
 
-## What must not regress
-
-- **`/maquinas` keeps working.** Existing links, the sitemap and anything the
-  client has shared point at it. The slug must be `maquinas` in ES from day
-  one; a redirect row is the fallback, not the plan.
-- **The route stays server-rendered.** `pages` routes are already `ƒ`. Do not
-  reach for `generateStaticParams` here — it is what took
-  `/machines/[family]` down in production once.
-- **`GATED_PATHS=/machines` keeps gating it.** The check is path-based
-  (`utilities/gatedPaths.ts`), so it is indifferent to how the path resolves —
-  worth asserting in a test rather than assuming.
-- **The derived numbers stay derived.** If the lineup scale or the model count
-  becomes an authorable field during this refactor, the change has failed: it
-  will silently disagree with the machines collection within a month.
-- **`modelLines` keeps working on the detail page**, where `RelatedMachines`
-  renders it directly.
-
 ## Migration
 
 The page has to exist before the route is deleted, and it carries content, so
 this is content plus code:
 
-1. Ship the `machinesLanding` block, registered in `Pages`, with the route
-   still in place. Nothing changes for visitors.
-2. Create the `pages` document (slug `machines` / `maquinas`) with the block,
-   in both locales, and fill the SEO fields. Verify it at a preview URL —
-   the route still wins for `/machines` at this point.
-3. Delete `[locale]/machines/page.tsx` and the `'/machines'` entry from
-   `pathnames`. Now the page serves the URL.
-4. Verify `/machines`, `/es/maquinas`, `/maquinas` → redirect, and that the
-   two child routes still resolve.
+1. Ship the `machineLineup` and `machineFamily` blocks, registered in `Pages`,
+   with the route still in place. Nothing changes for visitors.
+2. Create the `pages` document (slug `machines` / `maquinas`) with the block
+   layout, in both locales, and fill the SEO fields. Verify it at a preview URL
+   — the route still wins for `/machines` at this point.
+3. Delete `[locale]/machines/page.tsx`, the `MachinesLandingProvider` and the
+   `'/machines'` entry from `pathnames`. Now the page serves the URL.
+4. Add the machines sitemap and wire the family page's hard-coded copy to
+   fields.
+5. Verify `/machines`, `/es/maquinas`, `/maquinas` → redirect, and that the two
+   child routes still resolve.
 
 Step 2 is the client's content, not a migration — the document is created in
 `/admin` like any other page. That also means it must be created in **both
@@ -132,7 +282,15 @@ locales in the same session**, per the array-field locale gotcha in
 
 ## Not chosen
 
-- **Three orderable blocks.** Breaks the shared selected-line state.
+- **One monolithic `machinesLanding` block.** Its only justification was the
+  shared selected-line state, which this change deletes.
+- **A family block with visitor-facing tabs.** The selector again, in a block.
+- **Deleting `/machines/[family]` and selecting the family on `/machines`.**
+  Considered, since the family pages are near-orphans today. Rejected: the
+  family page is a superset, not a duplicate — `SpecsCompare` and
+  `InstallationsGallery` have nowhere else to live, and a product catalogue
+  needs a shareable URL per line. The orphan problem is a linking bug, fixed
+  above.
 - **Keeping the route and adding a `layout` field to it.** Gets the ordering
   without the SEO fields, which are the actual reason to do this.
 - **Moving the detail routes too.** Larger, and no forcing reason yet.

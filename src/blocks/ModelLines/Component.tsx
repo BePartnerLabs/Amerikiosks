@@ -57,7 +57,7 @@ export const ModelLinesBlock: React.FC<Props> = ({
             align="left"
           />
 
-          <ModelLinesCarousel>
+          <ModelLinesCarousel label={heading}>
             {families.map((family, i) => {
               const thumbnail =
                 typeof family.thumbnail === 'object' ? (family.thumbnail as Media) : null
