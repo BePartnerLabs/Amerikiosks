@@ -1,24 +1,22 @@
 # src/ — Context Overview
 
+## Context you may need
+
+| Read | When |
+|------|------|
+| [`docs/patterns/`](../docs/patterns/README.md) | Patterns and antipatterns this project learned the hard way. One file per topic — open the index and read only the one that applies. |
+| [`docs/business/`](../docs/business/README.md) | Definition of Done, and who the product is talking to. |
+
 ## Block Documentation
 
 Process guide: [`src/blocks/CLAUDE.md`](./blocks/CLAUDE.md)  
 Template: [`src/blocks/_template.md`](./blocks/_template.md)  
-Full index: [`docs/blocks/README.md`](../docs/blocks/README.md)
+Full index: [`docs/blocks/README.md`](../docs/blocks/README.md) — the only place
+completeness is tracked. A second table here was maintained by hand, contradicted
+that index on every row, and missed three blocks; it was deleted rather than
+re-synced.
 
 To document a block: `/document-block <path>` (e.g. `/document-block src/blocks/Banner`)
-
-### Status
-
-| Component | Type | Completeness | README |
-|-----------|------|-------------|--------|
-| Header | Global | 100% | [→](./Header/README.md) |
-| Footer | Global | 100% | [→](./Footer/README.md) |
-| Hero — HighImpact | Hero Variant | 95% | [→](./heros/HighImpact/README.md) |
-| Hero — MediumImpact | Hero Variant | 89% | [→](./heros/MediumImpact/README.md) |
-| Hero — LowImpact | Hero Variant | 73% | [→](./heros/LowImpact/README.md) |
-
-> Update this table when a block README is created or its completeness score changes.
 
 ## Key Directories
 

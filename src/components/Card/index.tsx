@@ -36,7 +36,7 @@ export type CardProps = {
 }
 
 const PostCard: React.FC<CardProps> = (props) => {
-  const { card, link: linkRef } = useClickableCard({})
+  const { cardRef, linkRef } = useClickableCard({})
   const { className = '', doc, relationTo, featured = false, title: titleProp } = props
   const locale = useLocale() as AppLocale
 
@@ -51,7 +51,7 @@ const PostCard: React.FC<CardProps> = (props) => {
   return (
     <article
       className={`ak-post-card${featured ? ' ak-post-card--featured' : ''}${className ? ` ${className}` : ''}`}
-      ref={card.ref}
+      ref={cardRef}
     >
       <div className="ak-post-card__media">
         {metaImage && typeof metaImage !== 'string' ? (
@@ -73,7 +73,7 @@ const PostCard: React.FC<CardProps> = (props) => {
           <h3 className="ak-post-card__title">
             <Link
               href={href}
-              ref={linkRef.ref}
+              ref={linkRef}
               className="ak-post-card__title-link"
               data-ga-event="insight_card_click"
               data-ga-label={titleToUse}

@@ -26,7 +26,7 @@
 
 ## Quality Checklist
 
-**Completeness: 0/21 (0%)**
+**Completeness: 0/30 (0%)**
 
 ### Accessibility AAA
 - [ ] Contrast ratio minimum 7:1
@@ -54,22 +54,22 @@
 - [ ] GA4 events implemented (see section below)
 
 ### Design System (BPL DS) CSS
-- [ ] No `--_*` private DS variables used or overridden
+- [ ] The DS's own `--_*` privates are not read or overridden. (Your block's own `--_name-*` slots are the *approved* channel — `validate-ds-tokens.mjs` requires them.)
 - [ ] `--bp-*` base tokens not redeclared inside components
 - [ ] DS component markup copied verbatim from `ds.bepartnerlabs.com/components/<name>/` (if using a DS component)
 - [ ] All DS component customisation via `--<component>-*` class variables only — no source CSS modifications
 - [ ] `--ak-*` brand tokens not used directly in DS component CSS properties (use `--<component>-*` Level 2 overrides instead)
 - [ ] Custom project components (non-DS markup) may use `--ak-*` and `--bp-*` tokens directly
-- [ ] No inline `style=""` attributes
+- [ ] No inline `style=""` carrying CSS declarations. (Setting a **custom property** inline — `style={{ '--x': progress }}` — is allowed and often the only way to get runtime values into CSS.)
 - [ ] State expressed via ARIA attributes / native pseudo-classes — not `.is-active`, `.active`, `.hidden` style classes
-- [ ] Component breakpoints use `@container`; full-viewport layouts (hero, header, footer) use `@media`
+- [ ] Component breakpoints use `@container`; full-viewport layouts (hero, header, footer) use `@media`. Tick it if the block needs no breakpoints at all — sizing with `clamp()`/`min()` is better than either.
 - [ ] Animations respect `prefers-reduced-motion`
 - [ ] DS grid used correctly: content in `bp-content-grid` direct children with zone class (`breakout`, `popout`, `full-width`); no custom `max-width` containers duplicating grid behaviour — the presence of `bp-content-grid`, like `<section>` and `data-ga-block`, is enforced by `scripts/validate-block-markup.mjs` (pre-commit)
 
 ### Delivery
 - [ ] Unit tests added
 - [ ] All fields documented in table above
-- [ ] Screenshots up to date
+- [ ] Screenshots up to date — **only when the block is marked finished for client delivery.** Leave unticked while it is still moving; see `docs/business/definition-of-done.md`.
 - [ ] Delivery notes written in non-technical language
 
 ## GA4 Analytics
@@ -79,14 +79,15 @@ Events are fired automatically by the global `GAListener` when it detects a clic
 ```html
 <element
   data-ga-event="[event_name]"
-  data-ga-section="[block_name]"
+  data-ga-block="[blockType]"     // → the `block` param
+  data-ga-section="[blockName]"    // → the `section` param, optional
   data-ga-label="[optional — innerText used as fallback]"
 >
 ```
 
 **Events:**
 
-| Event name | Trigger | `data-ga-section` | Required | Implemented |
+| Event name | Trigger | `data-ga-block` | Required | Implemented |
 |------------|---------|-------------------|----------|-------------|
 | `[event_name]` | [when it fires] | `[block_name]` | ✓ | ✗ |
 | `[event_name_2]` | [optional extended tracking] | `[block_name]` | ✗ | ✗ |
@@ -101,6 +102,33 @@ Events are fired automatically by the global `GAListener` when it detects a clic
 {}
 ```
 
+## Production setup
+
+> What someone has to **do in `/admin` on production** for this block to appear.
+> Shipping the code is not shipping the feature: a block nobody adds to a page
+> renders nowhere, and this is the step that gets forgotten between merge and
+> "why isn't it live?".
+>
+> Delete this section only if the block genuinely needs nothing — and say so.
+
+- [ ] **Content to create.** e.g. "a `pages` document with slug `machines` /
+      `maquinas`, in **both locales in the same session**" (see the localized-array
+      gotcha in `docs/patterns/`), or "one `machine-families` document per line".
+- [ ] **Where to add the block**, in order, and next to what.
+- [ ] **Fields that must be filled** for it to render at all, versus the ones
+      that are optional. State what happens if a required one is empty.
+- [ ] **Media needed**, with dimensions and background — e.g. "cut-out PNG on
+      transparency, portrait ~4:5; it renders on navy and a white machine on a
+      light background disappears."
+- [ ] **Anything that is NOT automatic.** If adding a new family means also
+      adding its block by hand, say it here — that is exactly the kind of thing
+      that silently does not happen.
+- [ ] **Order of operations**, if it matters. Migration before content, or
+      content before the route is switched over.
+
 ## Delivery Notes
 
-> [Non-technical instructions for the client: how to edit this block, what each field does in plain language, any important content guidelines.]
+> [Non-technical instructions for the client: how to edit this block, what each
+> field does in plain language, any important content guidelines. This is the
+> raw material for `docs/CLIENT-MANUAL.md` — write it as if the reader has never
+> seen the repo.]

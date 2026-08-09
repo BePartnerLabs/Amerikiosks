@@ -19,13 +19,22 @@ pnpm payload migrate:create # Create a new DB migration
 pnpm payload migrate        # Run pending DB migrations — MUST run before pnpm start in prod
 ```
 
+## Context map
+
+| Where | What is in it |
+|---|---|
+| [`docs/patterns/`](docs/patterns/README.md) | What this project learned the hard way, one file per topic, each with the incident that motivated it. |
+| [`docs/business/`](docs/business/README.md) | Definition of Done, audiences, voice. What "finished" means beyond the code. |
+| [`docs/payload/`](docs/payload/README.md) | Vendored Payload reference — how the framework works. Depth on demand, not rules. |
+| `src/*/CLAUDE.md` | Directory-local notes. These load automatically when you touch that folder, so they stay short by design. |
+
 ## Architecture
 
 Payload and Next.js run in the same process. The frontend (`(frontend)` route group) fetches data directly via the Payload Local API — no HTTP roundtrip. The admin panel lives at `/admin` via the `(payload)` route group.
 
 **Local API vs Repository pattern:** Server Components use `getPayload()` + Local API directly — this is correct and intentional (no HTTP cost). The repository pattern applies only to external HTTP calls (`/next/*` routes, third-party APIs). Do not wrap Local API calls in repositories.
 
-**Key patterns from AGENTS.md (enforced):**
+**Payload patterns this project enforces** (deep reference in [`docs/payload/`](docs/payload/README.md)):
 
 - After any schema change run `generate:types` then `generate:importmap`.
 - Always pass `req` to nested Payload operations inside hooks (transaction safety).
@@ -39,30 +48,13 @@ Note: `insights` was formerly `posts` — old references to a `posts` collection
 
 `podman-compose up -d` (o `docker-compose up -d`) levanta Postgres + MinIO usando el `.env` file. En desarrollo normal solo se necesita la DB y MinIO — el app corre con `pnpm dev`.
 
-### Monday.com en local: sandbox propio, con el mock como red de seguridad
+### Monday.com en local
 
-**Si tocas Monday o los formularios, pruébalo contra el sandbox.** Existe una cuenta de sandbox propia (Bepartnerlabs) con boards `[LAB] …` que replican los de producción. Su token va en `MONDAY_API_TOKEN` de `.env.local`, y `resolveMondayToken` le da prioridad fuera de producción — importante, porque una base local restaurada de producción trae el token **del cliente** en Settings.
-
-Flujo completo, tres scripts independientes:
-
-```bash
-./scripts/dump-prod.sh                        # trae el dump al pod
-./scripts/restore-prod-dump.sh                # lo restaura en la base local
-node scripts/move-monday-to-sandbox.mjs       # muestra el plan
-node scripts/move-monday-to-sandbox.mjs --apply
-MONDAY_LIVE=true                              # en .env.local, para enviar de verdad
-```
-
-El tercero es obligatorio después de cada restore: el dump trae los board ids, group ids y el mapeo de columnas **del cliente**, así que un envío local con el mock apagado crearía un item real en un board que el equipo comercial lee. El script los reescribe a los `[LAB]`, resolviendo boards y columnas por *nombre* (no por id, para que sobrevivan a que se recreen), y se niega a correr si el token puede ver un board de producción. Es idempotente.
-
-**El mock sigue siendo el valor por defecto.** Sin `MONDAY_LIVE=true`, con `NODE_ENV=development` ninguna llamada sale de la máquina: `src/repositories/mondayMock.ts` intercepta y escribe el payload en consola con el prefijo `[monday:mock]`, devolviendo un id falso. Cubre los dos caminos, que comparten API y token:
-
-- `GenericMondayRepository` — el sync de formularios (`create_item`, `add_file_to_column`).
-- `MondayRepository` — los claims de reembolso del `ClaimForm`.
-
-Sirve para ver el cuerpo exacto que se enviaría sin depender de la red. Lo que no comprueba es que Monday lo **acepte** — tipos de columna, adjuntos, autenticación —; para eso está el sandbox. En producción nada de esto aplica: el guard exige `NODE_ENV === 'development'`.
-
-Los items que crees en el sandbox son reales dentro de esa cuenta: bórralos al terminar (`mutation { delete_item(item_id: N) { id } }`).
+El sandbox propio y el mock que lo respalda están en
+[`docs/patterns/monday-local.md`](docs/patterns/monday-local.md). Léelo **antes de
+tocar Monday o los formularios**: una base local restaurada de producción trae el
+token del cliente, y un envío con el mock apagado crea un item real en un board
+que el equipo comercial lee.
 
 ## Design System (BPL DS)
 
@@ -106,7 +98,7 @@ Releases are published by hand from GitHub, so a deploy in flight can still be s
 
 **Don't use `generateStaticParams` on frontend content routes.** It was tried on `/machines/[family]` and `/machines/[family]/[slug]` and caused a production 500 (`DYNAMIC_SERVER_USAGE`) the first time those pages needed to regenerate after a content edit — SSG (`generateStaticParams`) combined with this app's next-intl plugin setup throws on regeneration, even though the initial build succeeds. Reproduced locally via `next build && next start` (not `next dev` — dev mode doesn't hit this). Every other content-driven route (`insights/[slug]`, `projects/[slug]`, `pages/[slug]`) is server-rendered on demand (`ƒ`, no `generateStaticParams`) and works fine — match that pattern instead of trying to statically generate a machines-style route again.
 
-**Writing a `specs: [...]` — including an array field with `localized: true` subfields (e.g. `machines.specs`, `highlights.items`, `capabilities.items`) via a REST `PATCH ...?locale=es` request that doesn't include each existing item's `id` silently wipes that same field's content in every OTHER locale.** The array rows get recreated instead of updated in place, orphaning the sibling locale's data — the request itself returns 200 OK, so nothing looks wrong until you check the other locale. Always fetch the current doc first, and pass the existing `id` back for every array item you're touching, in every locale-scoped write. This bit an entire batch of machines during the `feat/machine-pages-v2` rollout (see `docs/machines-data-population.md`).
+**Array fields with localized subfields wipe the sibling locale** if you write to them without sending each item's `id`. Read [`docs/patterns/payload-localized-arrays.md`](docs/patterns/payload-localized-arrays.md) before any locale-scoped write.
 
 ## Spec Workflow
 
@@ -119,3 +111,13 @@ Living specs live in `openspec/specs/[feature]/spec.md`. Read the relevant spec 
 **Change to existing feature** → read `openspec/specs/[feature]/spec.md` → `/openspec:proposal [description]` → review → implement
 
 **Simple task** → read spec if it exists → code directly
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

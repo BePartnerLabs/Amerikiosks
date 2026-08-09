@@ -31,45 +31,97 @@ export const RotationScrubHero: React.FC<Props> = ({
   const wrapperRef = useRef<HTMLDivElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const framesRef = useRef<HTMLImageElement[]>([])
-  const [framesReady, setFramesReady] = useState(false)
+  const wantedIndexRef = useRef(0)
+  const [firstFrameReady, setFirstFrameReady] = useState(false)
   const progress = useScrollProgress(wrapperRef)
   const reducedMotion = usePrefersReducedMotion()
 
+  const drawRef = useRef<(index: number) => void>(() => {})
+
   useEffect(() => {
-    let loaded = 0
-    const images = frameUrls.map((url) => {
+    // Draw as soon as the *first* frame lands rather than waiting for the whole
+    // sequence. A 70-frame set is tens of megabytes; blocking on all of it left
+    // the skeleton covering the hero for the entire download, which reads as a
+    // blank panel where the render should be.
+    const images = frameUrls.map((url, index) => {
       const img = new Image()
       img.src = url
-      img.onload = () => {
-        loaded += 1
-        if (loaded === frameUrls.length) setFramesReady(true)
+      const settle = () => {
+        if (index === 0) setFirstFrameReady(true)
+        // Redraw if this is the frame the scroll position currently wants, or
+        // if it is a better match than whatever is on screen.
+        if (index === wantedIndexRef.current) drawRef.current(index)
       }
+      img.onload = settle
+      // onerror settles too, so one 404 cannot strand the sequence.
+      img.onerror = settle
       return img
     })
     framesRef.current = images
   }, [frameUrls])
 
-  const drawFrame = useCallback((index: number) => {
-    const canvas = canvasRef.current
-    const frame = framesRef.current[index]
-    if (!canvas || !frame) return
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-    canvas.width = canvas.clientWidth
-    canvas.height = canvas.clientHeight
-    const scale = Math.max(canvas.width / frame.width, canvas.height / frame.height)
-    const w = frame.width * scale
-    const h = frame.height * scale
-    ctx.drawImage(frame, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h)
+  // Nearest already-decoded frame, searching outwards. While the sequence is
+  // still downloading this keeps a real image on screen instead of a gap.
+  const resolveFrame = useCallback((index: number): HTMLImageElement | null => {
+    const frames = framesRef.current
+    for (let offset = 0; offset < frames.length; offset++) {
+      const before = frames[index - offset]
+      if (before?.naturalWidth) return before
+      const after = frames[index + offset]
+      if (after?.naturalWidth) return after
+    }
+    return null
   }, [])
 
+  const drawFrame = useCallback(
+    (index: number) => {
+      const canvas = canvasRef.current
+      const frame = resolveFrame(index)
+      if (!canvas || !frame) return
+      const ctx = canvas.getContext('2d')
+      if (!ctx) return
+
+      // Back the canvas at device resolution, then scale the drawing context back
+      // to CSS pixels. Without this a retina screen renders the frames at half
+      // resolution, which is exactly where a product render gets judged.
+      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      const cssWidth = canvas.clientWidth
+      const cssHeight = canvas.clientHeight
+      if (canvas.width !== cssWidth * dpr || canvas.height !== cssHeight * dpr) {
+        canvas.width = cssWidth * dpr
+        canvas.height = cssHeight * dpr
+      }
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      ctx.clearRect(0, 0, cssWidth, cssHeight)
+
+      // `contain`, not `cover`: the render is a product shot on a transparent
+      // background, so cropping it to fill would cut the machine off.
+      const scale = Math.min(cssWidth / frame.naturalWidth, cssHeight / frame.naturalHeight)
+      const w = frame.naturalWidth * scale
+      const h = frame.naturalHeight * scale
+      ctx.drawImage(frame, (cssWidth - w) / 2, (cssHeight - h) / 2, w, h)
+    },
+    [resolveFrame],
+  )
+
+  // Keep the ref pointing at the current closure so an image's onload can
+  // redraw without re-subscribing every frame.
+  //
+  // In an effect, not in the render body: writing a ref during render makes the
+  // React Compiler skip this whole file, so nothing here gets memoised — and a
+  // component that redraws a canvas on every scroll frame is the last one you
+  // want un-memoised. See docs/patterns/react-compiler.md.
   useEffect(() => {
-    if (!framesReady) return
+    drawRef.current = drawFrame
+  }, [drawFrame])
+
+  useEffect(() => {
     const frameIndex = reducedMotion
       ? 0
       : Math.min(frameUrls.length - 1, Math.floor(progress * (frameUrls.length - 1)))
+    wantedIndexRef.current = frameIndex
     drawFrame(frameIndex)
-  }, [progress, framesReady, reducedMotion, frameUrls.length, drawFrame])
+  }, [progress, reducedMotion, frameUrls.length, drawFrame])
 
   return (
     <div className="ak-machine-hero">
@@ -104,8 +156,11 @@ export const RotationScrubHero: React.FC<Props> = ({
         className="ak-machine-hero__image-pin-wrapper"
         style={vtName('machine-image', slug)}
       >
-        <div className="ak-machine-hero__sticky">
-          {!framesReady && (
+        <div
+          className="ak-machine-hero__sticky"
+          style={{ '--ak-hero-progress': progress.toFixed(3) } as React.CSSProperties}
+        >
+          {!firstFrameReady && (
             <div
               className="ak-machine-hero__skeleton"
               aria-hidden
@@ -116,6 +171,21 @@ export const RotationScrubHero: React.FC<Props> = ({
             className="ak-machine-hero__canvas"
             role="img"
             aria-label={alt}
+          />
+          {/* Contact shadow. A sibling of the canvas, not a pseudo-element on it,
+              because the canvas scales with the scroll and the shadow must not:
+              a static shadow reads as the machine resting on a floor, one that
+              moves with the model reads as a bug. */}
+          <span
+            className="ak-machine-hero__shadow"
+            aria-hidden
+          />
+
+          {/* Same bottom fade the family hero uses (ComposedHero__scrim), so the
+              render sits on the page instead of ending on a hard edge. */}
+          <div
+            className="ak-machine-hero__scrim"
+            aria-hidden
           />
         </div>
       </div>

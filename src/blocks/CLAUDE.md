@@ -2,6 +2,16 @@
 
 This guide applies to all **Layout Blocks** in `src/blocks/` and **Globals** in `src/Header/` and `src/Footer/`.
 
+**Before writing a client component here**, check
+[`docs/patterns/react-compiler.md`](../../docs/patterns/react-compiler.md) — the
+React Compiler skips files silently, and hooks that return refs nested in objects
+are the usual cause.
+
+**What "done" means** is in
+[`docs/business/definition-of-done.md`](../../docs/business/definition-of-done.md),
+which covers the business side (who the block talks to, what it does with no
+data) as well as the technical checklist below.
+
 ## When to Document
 
 - **New block created** → generate `README.md` immediately from `_template.md`
@@ -41,10 +51,7 @@ This guide applies to all **Layout Blocks** in `src/blocks/` and **Globals** in 
      - `data-ga-event` attribute present → GA4 Analytics item ✓
    - Leave manual items unchecked (`[ ]`) for developer review
 
-5. **Calculate completeness score**
-   - Count `[x]` items in the checklist
-   - Update: `**Completeness: X/21 (X%)**`
-   - 100% = ready for client delivery; <80% = not shippable
+5. **Calculate completeness score** — the rule (denominator, what the percentages mean) lives in [`docs/business/definition-of-done.md`](../../docs/business/definition-of-done.md), which is the single source. Do not restate it here.
 
 6. **Update consolidated index**
    - Add or update a row in `docs/blocks/README.md`
@@ -91,13 +98,7 @@ When writing block CSS, follow the BPL DS variable contract. The validator (`scr
 }
 ```
 
-**Rules enforced:**
-| Rule | What it catches |
-|---|---|
-| 1 | `background-color`/`color` with `--ak-*` directly (not via `--_*`) |
-| 2 | Hardcoded color literals (`#hex`, `rgb()`, `hsl()`) |
-| 3 | Public slot shorthand names (`-bg`, `-fg` instead of `-background`, `-color`) |
-| 4 | Any CSS property with `var(--ak-*)` inside a `.bp-*` selector |
+**The four rules are enforced by `scripts/validate-ds-tokens.mjs`.** Read them there — a copy here would drift from the code that applies them.
 
 ## Screenshot Tips
 

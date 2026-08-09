@@ -39,6 +39,62 @@ jobs:
       test-command: pnpm test:coverage
       coverage: true
 
+  # The scripts/validate-*.mjs guards only ran in the pre-commit hook, which
+  # `--no-verify` skips and which never runs on a PR at all. They encode real
+  # incidents (the DS token rules, the missing <section> landmark, the React
+  # Compiler silently skipping a component), so they belong on the server side
+  # of the fence too.
+  #
+  # They take file paths and no-op with no arguments, so the diff is what feeds
+  # them. `origin/${{ github.base_ref }}` for a PR, the previous commit for a
+  # push — a full-repo run would fail on files nobody touched.
+  validators:
+    needs: setup
+    name: Validators
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+      - uses: actions/cache@v6
+        with:
+          path: ${{ needs.setup.outputs.store-path }}
+          key: ${{ needs.setup.outputs.cache-key }}
+      - run: pnpm install --frozen-lockfile
+
+      - name: Collect changed files
+        id: diff
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            base="origin/${{ github.base_ref }}"
+          else
+            base="${{ github.event.before }}"
+          fi
+          git diff --name-only --diff-filter=d "$base" HEAD > changed.txt
+          echo "count=$(wc -l < changed.txt)" >> "$GITHUB_OUTPUT"
+          cat changed.txt
+
+      - name: Run validators over the diff
+        if: steps.diff.outputs.count != '0'
+        run: |
+          css=$(grep -E '\.css$' changed.txt || true)
+          ts=$(grep -E '\.(ts|tsx|jsx)$' changed.txt || true)
+          blocks=$(grep -E '^src/blocks/[^/]+/(Component|Server)\.tsx$' changed.txt || true)
+          [ -n "$css" ] && node scripts/validate-ds-tokens.mjs $css
+          [ -n "$ts" ] && node scripts/validate-no-raw-icon-image.mjs $ts
+          [ -n "$ts" ] && node scripts/validate-react-compiler.mjs $ts
+          [ -n "$blocks" ] && node scripts/validate-block-markup.mjs $blocks
+          exit 0
+
+      # Cheap, and it is the whole point of generating the index: a stale one
+      # is read as authoritative and quietly lies.
+      - name: Context indexes are up to date
+        run: pnpm docs:index:check
+
   # Deploys only fire on `preview/**` and on published releases, so without
   # this nothing proves main still compiles until a release is being cut.
   #
