@@ -1,5 +1,5 @@
 import type { Machine, Media } from '@/payload-types'
-import { buildPublicFileURL } from '@/utilities/buildPublicFileURL'
+import { buildFrameSequenceURL } from '@/utilities/buildFrameSequenceURL'
 import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 import { getMediaUrl } from '@/utilities/getMediaUrl'
 import { RotationScrubHero } from './RotationScrubHero'
@@ -30,10 +30,7 @@ export const MachineHero: React.FC<Props> = ({ machine }) => {
   const sequenceUrls =
     machine.useRotationHero && machine.sequencePath && machine.frameCount
       ? Array.from({ length: machine.frameCount }, (_, i) =>
-          buildPublicFileURL(
-            `frame-${String(i + 1).padStart(3, '0')}.webp`,
-            machine.sequencePath as string,
-          ),
+          buildFrameSequenceURL(machine.sequencePath as string, i + 1),
         )
       : null
 

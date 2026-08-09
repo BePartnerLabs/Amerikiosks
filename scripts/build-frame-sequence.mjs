@@ -53,11 +53,19 @@ const flag = (name, fallback) => {
 const width = flag('width', 1600)
 const quality = flag('quality', 90)
 
-// Numeric filenames only, sorted as numbers — `10.png` must not land between
-// `1.png` and `2.png`, which is what a plain string sort would do.
+// Blender names the output after the render path, so a folder called `v0.01`
+// produces `v0.010001.png` — a prefix glued to the frame number. Take the
+// trailing digits and ignore whatever comes before, then sort numerically:
+// `10.png` must not land between `1.png` and `2.png`, which is what a plain
+// string sort would do.
+const numberOf = (name) => {
+  const match = name.match(/(\d+)\.png$/i)
+  return match ? Number.parseInt(match[1], 10) : null
+}
+
 const frames = readdirSync(srcDir)
-  .filter((name) => /^\d+\.png$/i.test(name))
-  .sort((a, b) => Number.parseInt(a, 10) - Number.parseInt(b, 10))
+  .filter((name) => numberOf(name) !== null)
+  .sort((a, b) => numberOf(a) - numberOf(b))
 
 if (!frames.length) {
   console.error(`No numeric .png frames found in ${srcDir}.`)
