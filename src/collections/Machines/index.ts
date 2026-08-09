@@ -11,6 +11,7 @@ import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { link } from '../../fields/link'
 import { generateMachinePreviewPath } from '../../utilities/generateMachinePreviewPath'
+import { validateFrameSequence } from './hooks/validateFrameSequence'
 
 export const Machines: CollectionConfig = {
   slug: 'machines',
@@ -33,6 +34,9 @@ export const Machines: CollectionConfig = {
     delete: authenticated,
     read: authenticatedOrPublished,
     update: authenticated,
+  },
+  hooks: {
+    beforeValidate: [validateFrameSequence],
   },
   versions: {
     // No autosave — see the note in Insights. Saving is explicit ("Save draft").
