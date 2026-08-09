@@ -1,4 +1,5 @@
 import type { Machine, Media } from '@/payload-types'
+import { buildPublicFileURL } from '@/utilities/buildPublicFileURL'
 import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 import { getMediaUrl } from '@/utilities/getMediaUrl'
 import { RotationScrubHero } from './RotationScrubHero'
@@ -14,7 +15,31 @@ export const MachineHero: React.FC<Props> = ({ machine }) => {
   const imageUrl = getMediaUrl(getBestMediaUrl(image, 1800) ?? image?.url)
   const brochure = typeof machine.brochure === 'object' ? (machine.brochure as Media) : null
 
-  const frameUrls =
+  // A frame sequence is a versioned folder in R2 — `gamma-12/v0.1` — holding
+  // frame-001.webp … frame-NNN.webp, built by scripts/build-frame-sequence.mjs.
+  //
+  // The version lives in the path, not in a `?v=` query. These URLs are composed
+  // by convention and never pass through `getMediaUrl`, so they carry no cache
+  // tag; overwriting a folder would leave the CDN serving half the old animation
+  // and half the new one, per region, unreproducible locally. A new folder is a
+  // new URL the edge has never seen.
+  //
+  // `frameCount` is declared rather than discovered: listing the bucket per
+  // render is not free, and a declared count turns a missing frame into a
+  // visible gap instead of an animation that quietly ends early.
+  const sequenceUrls =
+    machine.useRotationHero && machine.sequencePath && machine.frameCount
+      ? Array.from({ length: machine.frameCount }, (_, i) =>
+          buildPublicFileURL(
+            `frame-${String(i + 1).padStart(3, '0')}.webp`,
+            machine.sequencePath as string,
+          ),
+        )
+      : null
+
+  // Legacy path: frames uploaded one per Media document. Kept until the
+  // existing machines move to a sequence folder.
+  const legacyUrls =
     machine.useRotationHero && machine.rotationFrames && machine.rotationFrames.length > 0
       ? (machine.rotationFrames
           .map((f) => {
@@ -23,6 +48,8 @@ export const MachineHero: React.FC<Props> = ({ machine }) => {
           })
           .filter(Boolean) as string[])
       : []
+
+  const frameUrls = sequenceUrls ?? legacyUrls
 
   const heroText = {
     eyebrow: machine.heroEyebrow,

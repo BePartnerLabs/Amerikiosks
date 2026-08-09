@@ -1,6 +1,18 @@
 .ak-machine-hero {
   display: flex;
   flex-direction: column;
+
+  /* Level 2 → private slots channeling brand tokens; the DS validator forbids
+     literals and raw --ak-* in surface properties. Same navy as the /machines
+     scene: the renders are white machines on transparency, so they vanish on a
+     white background and cut out cleanly on navy. */
+  --_hero-dark: var(--brand-color-palette-navy-950);
+  --_hero-mid: color-mix(
+    in srgb,
+    var(--brand-color-palette-navy-900) 70%,
+    var(--brand-color-palette-navy-950)
+  );
+  --_hero-glow: color-mix(in srgb, var(--ak-accent) 30%, transparent);
 }
 
 .ak-machine-hero__text {
@@ -67,7 +79,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--ak-color-surface);
+  background: linear-gradient(
+    180deg,
+    var(--_hero-dark) 0%,
+    var(--_hero-mid) 52%,
+    var(--_hero-dark) 100%
+  );
 }
 
 .ak-machine-hero__image-wrap {
@@ -86,10 +103,20 @@
   height: 100%;
 }
 
+/* Accent glow over the navy, same as .ak-scene__glow on /machines. */
+.ak-machine-hero__scrim {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(46% 44% at 50% 46%, var(--_hero-glow), transparent 70%);
+  pointer-events: none;
+}
+
 .ak-machine-hero__skeleton {
   position: absolute;
   inset: 0;
-  background: var(--bp-color-border);
+  /* Navy, not the light border token: on the dark scrub stage a pale skeleton
+     flashes as a white panel exactly where the render belongs. */
+  background: var(--_hero-mid);
   animation: ak-machine-hero-pulse 1.4s ease-in-out infinite;
 }
 

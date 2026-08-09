@@ -13,7 +13,7 @@ export function useScrollProgress(wrapperRef: RefObject<HTMLElement | null>): nu
     const el = wrapperRef.current
     if (!el) return
 
-    const handle = () => {
+    const measure = () => {
       const rect = el.getBoundingClientRect()
       const scrollable = rect.height - window.innerHeight
       if (scrollable <= 0) {
@@ -24,10 +24,23 @@ export function useScrollProgress(wrapperRef: RefObject<HTMLElement | null>): nu
       setProgress(Math.min(1, Math.max(0, raw)))
     }
 
-    handle()
+    // Coalesce to one measurement per animation frame. Scroll fires far more
+    // often than the screen repaints, and each update here redraws a canvas
+    // frame — same pattern as MachinesLanding/Scene.tsx.
+    let frame = 0
+    const handle = () => {
+      if (frame) return
+      frame = requestAnimationFrame(() => {
+        frame = 0
+        measure()
+      })
+    }
+
+    measure()
     window.addEventListener('scroll', handle, { passive: true })
     window.addEventListener('resize', handle)
     return () => {
+      if (frame) cancelAnimationFrame(frame)
       window.removeEventListener('scroll', handle)
       window.removeEventListener('resize', handle)
     }

@@ -241,11 +241,30 @@ export const Machines: CollectionConfig = {
       },
     },
     {
+      name: 'sequencePath',
+      type: 'text',
+      admin: {
+        description:
+          'Carpeta de la secuencia en R2, con su versión: "gamma-12/v0.1". Sube una carpeta NUEVA para cada versión — sobrescribir deja al CDN sirviendo media animación vieja y media nueva. Los fotogramas se llaman frame-001.webp… y se generan con scripts/build-frame-sequence.mjs.',
+        condition: (_, siblingData) => Boolean(siblingData?.useRotationHero),
+      },
+    },
+    {
+      name: 'frameCount',
+      type: 'number',
+      min: 2,
+      admin: {
+        description:
+          'Cuántos fotogramas tiene la carpeta. Declararlo evita listar el bucket en cada render, y hace que un fotograma que falte se vea como un hueco en el giro en vez de terminar la animación antes de tiempo.',
+        condition: (_, siblingData) => Boolean(siblingData?.useRotationHero),
+      },
+    },
+    {
       name: 'rotationFrames',
       type: 'array',
       admin: {
         description:
-          'Ordered turntable frames (e.g. 60-120 images, 0-360°). Required when "useRotationHero" is checked.',
+          'Legacy: fotogramas subidos uno a uno. Para secuencias nuevas usa "sequencePath" — 60 filas ordenadas a mano es donde un fotograma acaba en el sitio equivocado sin que nada avise.',
         condition: (_, siblingData) => Boolean(siblingData?.useRotationHero),
       },
       fields: [{ name: 'image', type: 'upload', relationTo: 'media', required: true }],
