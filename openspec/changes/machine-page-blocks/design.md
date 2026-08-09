@@ -72,22 +72,47 @@ El diseño está escrito en `openspec/changes/machine-frame-sequences/design.md`
 - El escenario va sobre **navy** — las máquinas son recortes blancos sobre transparencia y desaparecen sobre claro. Mismo hallazgo que registró `MachinesLanding/styles.css` y que volvió a aparecer anoche con las tarjetas de modelo.
 - El canvas dibuja `contain`, no `cover`.
 
-**El bloqueo de peso, ahora con número.** El spike midió **81 MB, ~1,3 MB por fotograma a 1600px**. El presupuesto queda fijado en **menos de 500 KB por fotograma** — un factor de ~2,6×, alcanzable con WebP o AVIF a ~1200px.
+**El bloqueo de peso está resuelto** — ver la medición más abajo. La rotación deja de ir detrás de la variante actual.
 
-Dos cosas que ese número no resuelve por sí solo, y que van juntas con él:
+### Dónde viven los fotogramas — decidido
 
-- **70 × 500 KB siguen siendo 35 MB** en una página. El presupuesto por imagen no basta si la secuencia es larga, y **reducir el número de fotogramas es la palanca más barata de todas**: 36 pasos son 10° cada uno, y a velocidad de scroll la diferencia con 70 es difícil de ver. El spike usó 70 porque es lo que exportó Blender, no porque se necesiten. Medir 36 antes de asumir 70.
-- **Un presupuesto que no se comprueba es una intención.** El hook de validación tiene que rechazar el fotograma que se pase, en el guardado — no descubrirlo alguien mirando la pestaña de red.
+**Una carpeta por máquina en R2, con la versión en la ruta:** `gamma-12/v0.1/frame-001.webp`.
 
-Mientras esto no esté cerrado, el bloque de hero se construye con la variante actual y la rotación queda detrás.
+**La versión en la ruta sustituye al cache tag.** Las URLs por convención no pasan por `getMediaUrl` y no llevan `?v=`, así que sobrescribir dejaría al edge sirviendo una animación con la mitad de los fotogramas viejos y la mitad nuevos — un fallo intermitente, dependiente de región, imposible de reproducir en local. Con la versión en la ruta, los fotogramas nuevos viven en URLs que el CDN nunca ha visto. La inmutabilidad la da la ruta, no un parámetro.
 
-### Una colección aparte para los fotogramas
+**Numeración `v0.1` hasta que haya una secuencia estable, y `v1` a partir de ahí.** Refleja lo que son los primeros renders —iteraciones sobre encuadre y velocidad de giro, no versiones de producción— y permite probar varias antes de salir a producción sin quemar `v1` en el primer intento.
 
-El diseño de secuencias la descartó: `Media` es la única colección con `folders: true`, y `buildPublicFileURL(filename, prefix)` ya compone la URL desde el prefijo. Una colección nueva reimplementaría subida, carpetas y URLs sin ganar nada.
+**`v1`, no un hash.** El hash da direccionamiento por contenido y deduplicación, y aquí no hay nada que deduplicar: una persona sube una secuencia. A cambio se pierde lo único que importa al abrir el bucket a las once de la noche, que es saber cuál es la última.
 
-**Hay un argumento a favor que aquel diseño no consideró:** 70 imágenes por máquina inundan el explorador de Media del cliente. Con varias máquinas son cientos de archivos que el editor ve cada vez que busca una foto de instalación. Eso es usabilidad de quien administra el sitio, no arquitectura, y no estaba en la balanza.
+**Ni colección propia ni interfaz de subida.** `scripts/build-frame-sequence.mjs` convierte y renombra, alguien sube la carpeta a R2, y en `/admin` solo se apunta. Quien exporta desde Blender es un diseñador en su equipo, no un editor en `/admin`.
 
-Queda **abierto y a decidir antes de implementar la rotación**. No bloquea el resto del cambio.
+#### Los campos del bloque
+
+Dos, y el segundo es el que evita el fallo silencioso:
+
+- **`sequencePath`** (texto) — el prefijo completo, `gamma-12/v0.1`. **No se deriva del `slug`**: el slug es editable, así que renombrar una máquina rompería la referencia sin aviso y dejaría la página publicada sin fotogramas. Y una máquina puede tener más de una secuencia (un giro y una apertura de puerta).
+- **`frameCount`** (número) — cuántos fotogramas hay.
+
+El conteo es un campo y no algo que el componente descubra, por dos razones. **No hay forma barata de listar una carpeta de R2 desde el cliente** — habría que consultar la API de S3 en cada render, o mantener un índice. Y un conteo declarado convierte un fotograma que falta en **un hueco visible en la animación**, no en un final prematuro que nadie nota.
+
+La alternativa —un `sequence.json` dentro de la carpeta, que el script ya escribe— evitaría teclear el número, a cambio de una petición extra antes de poder dibujar nada. Queda anotada por si el conteo a mano resulta molesto en la práctica.
+
+**El hook de validación** compara ambos: si `frameCount` cambia pero `sequencePath` no, alguien sobrescribió una versión en vez de crear la siguiente, y ahí es donde vuelve el problema del CDN. Es el descuido más probable y el único que produce un fallo que no se ve en local.
+
+### El peso ya no es un bloqueo — medido 2026-08-09
+
+Con 60 fotogramas reales de un Gamma:
+
+| | por fotograma | secuencia |
+|---|---|---|
+| PNG 1600px (lo que exporta Blender) | ~1.050 KB | 60 MB |
+| WebP 1600px q90, alfa intacto | **24 KB de media, 39 KB el peor** | **1,4 MB** |
+
+Entre 40× y 90× más pequeño. El presupuesto de 500 KB por fotograma que este documento fijaba queda superado por un factor de doce, y **deja de condicionar el número de fotogramas**: 60 pasos caben de sobra y recortar a 36 ya no compra nada.
+
+La razón es que los renders son recortes sobre transparencia — fondo vacío, una máquina, color plano. PNG guarda eso pésimo y WebP lo aplasta.
+
+**Consecuencia para la validación:** el hook útil no vigila un límite que nadie va a rozar. Tiene que **rechazar PNG y exigir WebP**, porque el fallo real será que alguien suba la carpeta sin convertir. El script ya aborta si el render no trae alfa.
 
 ## Borradores y vista previa: ya están, y eso simplifica el cambio
 
