@@ -134,12 +134,17 @@ export default async function MachineDetailPage({ params }: Props) {
         />
       )}
 
-      {machine.dimensionDiagrams && machine.dimensionDiagrams.length > 0 && (
-        <Dimensions
-          diagrams={machine.dimensionDiagrams}
-          dimensions={machine.dimensions}
-        />
-      )}
+      {/* Sin condicion aqui a proposito: `Dimensions` decide si tiene algo que
+          mostrar —diagramas, numeros, o ambos— y devuelve null si no. Este
+          guard existia y filtraba por diagramas, que es la mitad que nadie
+          subio: aunque el componente ya sabia mostrar los numeros solos, la
+          seccion no llegaba nunca a renderizarse. Duplicar la condicion en el
+          sitio de llamada es lo que hizo que arreglar el componente no
+          arreglara la pagina. */}
+      <Dimensions
+        diagrams={machine.dimensionDiagrams ?? []}
+        dimensions={machine.dimensions}
+      />
 
       {machine.gallery && machine.gallery.length > 0 && (
         <section className="ak-machine-detail__gallery">
