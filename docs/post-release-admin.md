@@ -2,9 +2,24 @@
 title: Qué hacer en /admin después del release
 read_when: Acabas de publicar un release, o retomas el trabajo de máquinas en otra sesión.
 enforced_by: nada — son pasos manuales, por eso están escritos
+lifespan: temporal — borrar este archivo cuando todo esté hecho
 ---
 
 # Qué hacer en `/admin` después del release
+
+> **Este documento es una lista de tareas, no documentación. Bórralo cuando esté
+> todo hecho.**
+>
+> Es una foto de un momento — qué quedó a medias el 2026-08-09 y qué hay que
+> tocar a mano para terminarlo. En cuanto los bloques estén colocados y los
+> textos corregidos, deja de ser cierto, y un documento que describe un estado
+> que ya no existe es peor que ninguno: se lee como instrucciones vigentes.
+>
+> Lo que sí es permanente vive en otro sitio y **no** debe migrarse aquí: el
+> flujo de secuencias está en `openspec/changes/machine-page-blocks/design.md`,
+> los patrones en `docs/patterns/`, y lo que el cliente necesita saber va a
+> `docs/CLIENT-MANUAL.md`. Antes de borrar, comprueba que nada de lo de abajo
+> era permanente y se quedó solo aquí.
 
 Escrito el 2026-08-09 al cerrar la sesión de los PR #238 y #239. **Nada de lo de abajo pasa solo.** El código está en `main`, pero un bloque que nadie añade a una página no se renderiza en ninguna parte, y esa es la brecha entre "mergeado" y "por qué no se ve".
 
