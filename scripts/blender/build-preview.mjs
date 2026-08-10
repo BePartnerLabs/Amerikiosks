@@ -38,12 +38,31 @@ const html = `<title>Gamma 13 — preview de movimiento y cotas</title>
   .stage { position: relative; width: min(80vmin, 660px); aspect-ratio: 1; }
   canvas, svg.cotas { position: absolute; inset: 0; width: 100%; height: 100%; }
   svg.cotas { pointer-events: none; overflow: visible; }
-  svg.cotas line, svg.cotas path { stroke: var(--line); stroke-width: 2.5; fill: none; vector-effect: non-scaling-stroke; }
-  svg.cotas text { fill: var(--ink); font: 700 26px system-ui, sans-serif; paint-order: stroke;
-                   stroke: var(--bg); stroke-width: 7px; text-anchor: middle; }
-  svg.cotas .cota { transition: opacity .28s ease; }
-  svg.cotas .cota text { transition: font-size .28s ease; }
-  @media (prefers-reduced-motion: reduce) { svg.cotas .cota, svg.cotas .cota text { transition: none; } }
+  /* Slots privados canalizando los tokens de marca, como el resto de los
+     componentes del proyecto. Al portar esto al sitio, --line pasa a ser
+     var(--ak-accent) y --bg el navy del escenario. */
+  svg.cotas {
+    --_cota-line: var(--line);
+    --_cota-ext: color-mix(in srgb, var(--line) 55%, transparent);
+    --_cota-halo: color-mix(in srgb, var(--line) 45%, transparent);
+  }
+  /* Las referencias son finas y tenues: acompañan, no compiten con la cota. */
+  svg.cotas line { stroke: var(--_cota-ext); stroke-width: 1.5; fill: none;
+                   vector-effect: non-scaling-stroke; }
+  /* La línea de cota y las puntas mandan. */
+  svg.cotas .cota-main, svg.cotas path { stroke: var(--_cota-line); stroke-width: 2.5;
+                   stroke-linecap: round; fill: none; vector-effect: non-scaling-stroke; }
+  /* El halo despega la línea del render sin necesidad de una caja opaca detrás. */
+  svg.cotas .cota { filter: drop-shadow(0 0 6px var(--_cota-halo)); }
+  svg.cotas text {
+    fill: var(--ink); font: 700 26px ui-monospace, "SF Mono", Menlo, monospace;
+    letter-spacing: -0.01em; text-anchor: middle;
+    /* paint-order pone el contorno DEBAJO del relleno: sin esto el trazo se
+       come el interior de la tipografía y el número engorda. */
+    paint-order: stroke; stroke: var(--bg); stroke-width: 7px;
+  }
+  /* Sin transiciones a propósito: el efecto lo gobierna el scroll, no el reloj.
+     Ver el comentario en drawCotas(). */
   .panel { position: fixed; left: 1rem; bottom: 1rem; display: flex; gap: .75rem; align-items: center;
            font: 12px ui-monospace, monospace; background: color-mix(in srgb, currentColor 12%, transparent);
            padding: .5rem .7rem; border-radius: .5rem; }
@@ -103,7 +122,7 @@ for (const key of Object.keys(ANCH.edges)) {
   const g = el('g', { class: 'cota' });
   const ext1 = el('line', { 'stroke-opacity': .4 });
   const ext2 = el('line', { 'stroke-opacity': .4 });
-  const main = el('line', {});
+  const main = el('line', { class: 'cota-main' });
   const heads = el('path', {});
   const text = el('text', {});
   g.append(ext1, ext2, main, heads, text);
@@ -144,26 +163,50 @@ function drawCotas(frame, progress) {
     const nx = (-dy / len) * off, ny = (dx / len) * off;
     const ax = x1 + nx, ay = y1 + ny, bx = x2 + nx, by = y2 + ny;
 
+    // --- El trazo se dibuja solo, gobernado por el scroll ---
+    //
+    // Nada de esto es una animacion CSS con duracion. Con scroll-scrub el
+    // usuario es el reloj: una animacion por tiempo sigue corriendo hacia
+    // adelante cuando el dedo va hacia atras, y se despega de la imagen. Todo
+    // cuelga del mismo "visible" que ya calculamos, asi que scrollear al reves
+    // *des*dibuja la cota. Es la unica forma de que el efecto y el fotograma
+    // no se contradigan.
+    //
+    // El orden importa: primero brotan las lineas de referencia desde las
+    // esquinas de la maquina, despues se traza la linea de cota entre ellas, y
+    // al final aparecen las puntas y el numero. Se lee como un instrumento
+    // midiendo, no como un cartel que se enciende.
+    const stage = (from, to) => Math.min(Math.max((visible - from) / (to - from), 0), 1);
+    const grow = stage(0, 0.45);      // referencias
+    const trace = stage(0.3, 0.85);   // linea de cota
+    const settle = stage(0.7, 1);     // puntas y numero
+
+    const lerp = (p, q, t) => p + (q - p) * t;
     n.ext1.setAttribute('x1', x1); n.ext1.setAttribute('y1', y1);
-    n.ext1.setAttribute('x2', ax); n.ext1.setAttribute('y2', ay);
+    n.ext1.setAttribute('x2', lerp(x1, ax, grow)); n.ext1.setAttribute('y2', lerp(y1, ay, grow));
     n.ext2.setAttribute('x1', x2); n.ext2.setAttribute('y1', y2);
-    n.ext2.setAttribute('x2', bx); n.ext2.setAttribute('y2', by);
-    n.main.setAttribute('x1', ax); n.main.setAttribute('y1', ay);
-    n.main.setAttribute('x2', bx); n.main.setAttribute('y2', by);
+    n.ext2.setAttribute('x2', lerp(x2, bx, grow)); n.ext2.setAttribute('y2', lerp(y2, by, grow));
+
+    // La linea de cota se traza desde el centro hacia las dos puntas a la vez.
+    const mx = (ax + bx) / 2, my = (ay + by) / 2;
+    n.main.setAttribute('x1', lerp(mx, ax, trace)); n.main.setAttribute('y1', lerp(my, ay, trace));
+    n.main.setAttribute('x2', lerp(mx, bx, trace)); n.main.setAttribute('y2', lerp(my, by, trace));
 
     let d = '';
     for (const [px, py, sx, sy] of [[ax, ay, dx, dy], [bx, by, -dx, -dy]]) {
-      const ux = (sx / len) * 26, uy = (sy / len) * 26;
+      const ux = (sx / len) * 26 * settle, uy = (sy / len) * 26 * settle;
       d += 'M' + px + ',' + py + ' L' + (px + ux - uy * .34) + ',' + (py + uy + ux * .34) +
            ' M' + px + ',' + py + ' L' + (px + ux + uy * .34) + ',' + (py + uy - ux * .34) + ' ';
     }
     n.heads.setAttribute('d', d);
+    n.heads.setAttribute('opacity', settle);
 
-    // La etiqueta entra desde la linea de cota hacia afuera: mientras la cota
-    // esta apareciendo se acerca a su lugar, en vez de materializarse ahi.
-    const drift = (1 - visible) * 18;
-    n.text.setAttribute('x', (ax + bx) / 2 + (nx / off) * drift);
-    n.text.setAttribute('y', (ay + by) / 2 - 14 + (ny / off) * drift);
+    // La etiqueta llega desde la linea de cota hacia afuera, en vez de
+    // materializarse en su sitio.
+    const drift = (1 - settle) * 20;
+    n.text.setAttribute('x', mx + (nx / off) * drift);
+    n.text.setAttribute('y', my - 14 + (ny / off) * drift);
+    n.text.setAttribute('opacity', settle);
     n.text.textContent = label(key);
   }
 }
