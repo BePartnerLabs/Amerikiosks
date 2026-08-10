@@ -17,12 +17,17 @@ export const LanguageSwitcher: React.FC = () => {
   const router = useRouter()
   const [active, setActive] = useState<Locale>(locale)
 
-  // /machines, /machines/[family] and /machines/[family]/[slug] have their own
-  // pathnames mapping (-> /maquinas/...) and aren't CMS Pages, so they're
-  // handled separately from the generic translate-slug flow used by `/[slug]` pages.
+  // /machines/[family] and /machines/[family]/[slug] have their own pathnames
+  // mapping (-> /maquinas/...) and aren't CMS Pages, so they're handled
+  // separately from the generic translate-slug flow used by `/[slug]` pages.
+  //
+  // The listing itself used to be here too. It is a CMS Page now — slug
+  // `machines` in EN, `maquinas` in ES — so it goes through the generic flow
+  // like any other page: `params.slug` is already `machines`, and
+  // `translateSlug` resolves the sibling locale. Keeping a special case would
+  // hardcode a slug the editor is free to rename in /admin.
   const unprefixedPath =
     typeof window !== 'undefined' ? window.location.pathname.replace(/^\/(en|es)/, '') || '/' : ''
-  const isMachinesListing = /^\/(machines|maquinas)\/?$/.test(unprefixedPath)
   const isFamilyDetail = /^\/(machines|maquinas)\/[^/]+\/?$/.test(unprefixedPath)
   const isMachineDetail = /^\/(machines|maquinas)\/[^/]+\/[^/]+\/?$/.test(unprefixedPath)
   const familySlug = isFamilyDetail || isMachineDetail ? (params?.family as string) : undefined
@@ -30,7 +35,7 @@ export const LanguageSwitcher: React.FC = () => {
 
   const currentSlug = (params?.slug as string) ?? 'home'
   const targetLocale: Locale = active === 'en' ? 'es' : 'en'
-  const isMachinesRoute = isMachinesListing || isFamilyDetail || isMachineDetail
+  const isMachinesRoute = isFamilyDetail || isMachineDetail
 
   // Prefetch the translated slug for the opposite locale so the first toggle is instant
   const { data: translatedSlug } = useQuery({
@@ -58,12 +63,21 @@ export const LanguageSwitcher: React.FC = () => {
           { pathname: '/machines/[family]', params: { family: familySlug } },
           { locale: target },
         )
-      } else if (isMachinesListing) {
-        router.replace({ pathname: '/machines' }, { locale: target })
       } else {
         const targetSlug = target === targetLocale ? (translatedSlug ?? currentSlug) : currentSlug
         const pathname = targetSlug === 'home' ? '/' : `/${targetSlug}`
-        router.replace(pathname as Parameters<typeof router.replace>[0], { locale: target })
+        // El slug de una página de CMS no puede estar en `pathnames` — se
+        // inventa en /admin, no en el código — así que el router tipado no lo
+        // conoce. next-intl deja pasar tal cual cualquier ruta no declarada, que
+        // es exactamente lo que hace falta aquí.
+        //
+        // El doble cast es necesario desde que `/machines` salió de `pathnames`:
+        // mientras estaba, la unión incluía un literal string y `as` bastaba.
+        // Ahora solo quedan las dos rutas dinámicas de objeto y no hay
+        // solapamiento con string.
+        router.replace(pathname as unknown as Parameters<typeof router.replace>[0], {
+          locale: target,
+        })
       }
     }
 

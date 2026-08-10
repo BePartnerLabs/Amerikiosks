@@ -99,6 +99,18 @@ export const MachineLineupBlock: React.FC<Props> = ({ intro, families, jsonLd })
                     )}
                   </>
                 )}
+                {/* La versión con scroll enlaza solo la familia activa, porque el
+                    scroll es lo que va cambiando cuál es. Aquí están las cinco a la
+                    vez, así que cada una lleva el suyo: sin esto, quien navega con
+                    movimiento reducido ve las familias pero no puede entrar a
+                    ninguna, y el bloque deja de ser navegación para ser decorado. */}
+                <Link
+                  className="ak-lineup__link"
+                  href={{ pathname: '/machines/[family]', params: { family: family.slug } }}
+                  data-ga-event="machine_family_click"
+                >
+                  {family.name}
+                </Link>
               </div>
             </li>
           ))}
