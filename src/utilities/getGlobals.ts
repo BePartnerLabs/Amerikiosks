@@ -21,9 +21,12 @@ async function getGlobal<T extends Global>(
     // with a visitor's permissions — the Local API defaults to `true`, which
     // skips field-level access entirely.
     //
-    // It matters because of depth: Header and Footer are read at depth 1, and a
-    // link field with `type: 'modal'` relates to `forms`, so depth 1 populates
-    // the whole form document. That object is then handed to FormDrawerTrigger,
+    // It matters because of depth: Header and Footer se leen a depth 2 —hace
+    // falta un nivel mas para poblar el enlace interno que vive dentro del
+    // richText de un formulario, ver el comentario en cada Component.tsx— y un
+    // link field con `type: 'modal'` relaciona con `forms`, asi que ya desde
+    // depth 1 se puebla el documento entero del formulario. Ese objeto se le
+    // pasa a FormDrawerTrigger,
     // a client component, which serializes it into the RSC payload of every
     // page — publishing each form's Monday board id, group id and per-field
     // column mapping to every visitor, on every page, and caching it in the
