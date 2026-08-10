@@ -101,6 +101,21 @@ Dos cosas al respecto:
 - **Levantarlo es una decisión de lanzamiento**, y necesita redespliegue: es una variable de entorno porque corre en middleware, donde leer un global costaría una consulta por request.
 - **Oculta, no protege.** Comprueba que exista la cookie `payload-token`, y una cookie se fabrica a mano. Está bien para contenido no aprobado; no lo está para nada confidencial.
 
+## Una alternativa a hacerlo a mano
+
+Todo lo de arriba puede hacerlo Claude en una sola pasada, y en dev o en producción indistintamente. El flujo, para no reinventarlo la próxima vez:
+
+1. **Tú te logueas** en `/admin` desde Chrome. Ese paso es tuyo: Claude no introduce credenciales.
+2. **Los assets suben con Chrome**, conduciendo la interfaz de subida — es lo que no se puede hacer con una petición suelta.
+3. **El resto va por `fetch` desde esa misma pestaña**, aprovechando la cookie `payload-token` que dejó tu login. La API REST de Payload acepta esa sesión, así que crear la página, colocar los bloques, marcar los `featured` y corregir los textos son unos cuantos `PATCH`.
+
+Es bastante más rápido y menos propenso a error que teclear cinco veces lo mismo. **Con dos condiciones que no son opcionales:**
+
+- **Cada escritura por locale devuelve el `id` de cada item del array.** Es el gotcha de `docs/patterns/payload-localized-arrays.md`: un `PATCH ...?locale=es` sin los `id` borra el contenido del otro idioma y responde `200 OK`. En producción eso es pérdida de datos silenciosa.
+- **En producción, primero lee y enseña lo que va a cambiar.** El paso de aplicar se aprueba antes, no después.
+
+Con el gate todavía puesto y los borradores activos en `machines`, hay margen para hacerlo sobre documentos publicados sin que nadie de fuera lo vea.
+
 ## Lo que sigue en código, no en `/admin`
 
 Anotado para que no se pierda entre sesiones:
