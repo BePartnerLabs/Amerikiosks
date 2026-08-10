@@ -1,4 +1,5 @@
 import type { Machine, Media } from '@/payload-types'
+import { buildAnchorsURL } from '@/utilities/buildAnchorsURL'
 import { buildFrameSequenceURL } from '@/utilities/buildFrameSequenceURL'
 import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 import { getMediaUrl } from '@/utilities/getMediaUrl'
@@ -62,6 +63,22 @@ export const MachineHero: React.FC<Props> = ({ machine }) => {
         frameUrls={frameUrls}
         alt={machine.name}
         slug={machine.slug}
+        // Las cotas se ubican con los anclajes que Blender exporto junto a los
+        // fotogramas, pero rotulan con el dato publicado, no con lo medido en la
+        // malla. Son dos fuentes distintas a proposito: el modelo trae
+        // tolerancias de CAD y la ficha es lo que el operador va a medir contra
+        // su puerta. Mostrar lo medido contradiria la tabla de specs de mas
+        // abajo, que sale de este mismo campo.
+        anchorsUrl={
+          machine.useRotationHero && machine.sequencePath
+            ? buildAnchorsURL(machine.sequencePath)
+            : null
+        }
+        dimensionLabels={{
+          height: machine.dimensions?.height ?? undefined,
+          width: machine.dimensions?.width ?? undefined,
+          depth: machine.dimensions?.depth ?? undefined,
+        }}
         {...heroText}
       />
     )
