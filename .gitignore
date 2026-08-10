@@ -32,3 +32,6 @@ coverage/
 
 # Local doctor/backup artifacts — never part of a PR
 .claude/settings.local.json.doctor-backup
+
+# Salida del MCP de generacion de imagenes: artefactos locales, no fuente.
+generated_imgs/
