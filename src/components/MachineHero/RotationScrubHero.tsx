@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { CMSLink } from '@/components/Link'
 import type { Machine } from '@/payload-types'
 import { vtName } from '@/utilities/viewTransitionName'
+import { DimensionOverlay } from './DimensionOverlay'
 import { usePrefersReducedMotion } from './usePrefersReducedMotion'
 import { useScrollProgress } from './useScrollProgress'
 
@@ -16,6 +17,10 @@ type Props = {
   brochureUrl?: string | null
   cta: Machine['cta']
   slug?: string | null
+  /** URL del anchors.json, resuelta en el servidor. Sin ella no hay cotas. */
+  anchorsUrl?: string | null
+  /** Los textos publicados, tal cual los guarda /admin: `77"`, `72"`, `39"`. */
+  dimensionLabels?: Partial<Record<'height' | 'width' | 'depth', string>> | null
 }
 
 export const RotationScrubHero: React.FC<Props> = ({
@@ -27,6 +32,8 @@ export const RotationScrubHero: React.FC<Props> = ({
   brochureUrl,
   cta,
   slug,
+  anchorsUrl,
+  dimensionLabels,
 }) => {
   const wrapperRef = useRef<HTMLDivElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -115,13 +122,18 @@ export const RotationScrubHero: React.FC<Props> = ({
     drawRef.current = drawFrame
   }, [drawFrame])
 
+  // El mismo indice lo necesitan el canvas y las cotas, asi que se calcula una
+  // vez aqui en vez de dos veces con dos redondeos que podrian discrepar: una
+  // cota dibujada para el fotograma vecino se despega de la maquina justo en el
+  // pico del zoom, que es donde mas se mira.
+  const frameIndex = reducedMotion
+    ? 0
+    : Math.min(frameUrls.length - 1, Math.floor(progress * (frameUrls.length - 1)))
+
   useEffect(() => {
-    const frameIndex = reducedMotion
-      ? 0
-      : Math.min(frameUrls.length - 1, Math.floor(progress * (frameUrls.length - 1)))
     wantedIndexRef.current = frameIndex
     drawFrame(frameIndex)
-  }, [progress, reducedMotion, frameUrls.length, drawFrame])
+  }, [frameIndex, drawFrame])
 
   return (
     <div className="ak-machine-hero">
@@ -172,6 +184,19 @@ export const RotationScrubHero: React.FC<Props> = ({
             role="img"
             aria-label={alt}
           />
+
+          {/* Las cotas van encima del canvas, no dentro: el canvas se redibuja
+              entero en cada fotograma y dibujarlas ahi las convertiria en
+              pixeles. En SVG el numero sigue siendo texto. */}
+          {anchorsUrl && (
+            <DimensionOverlay
+              anchorsUrl={anchorsUrl}
+              frameIndex={frameIndex}
+              progress={progress}
+              labels={dimensionLabels ?? {}}
+              reducedMotion={reducedMotion}
+            />
+          )}
           {/* Contact shadow. A sibling of the canvas, not a pseudo-element on it,
               because the canvas scales with the scroll and the shadow must not:
               a static shadow reads as the machine resting on a floor, one that
