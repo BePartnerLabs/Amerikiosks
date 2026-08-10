@@ -73,9 +73,12 @@ Y en `/admin`, sobre la máquina:
 
 ```
 useRotationHero  ✓
-sequencePath     gamma-12/v0.01
-frameCount       60
+sequencePath     gamma-12/v0.02
+frameCount       90
 ```
+
+Los dos campos **en la misma edición**: el hook bloquea cambiar el conteo dejando
+la misma carpeta, así que guardarlos por separado falla.
 
 **La regla que no se puede romper: carpeta nueva para cada versión.** Nunca sobrescribir. Estas URLs no llevan cache tag, así que reemplazar los archivos deja al CDN sirviendo media animación vieja y media nueva, distinto según la región, imposible de reproducir en local. Por eso la versión va en la ruta. El hook lo bloquea si cambias el conteo dejando la misma carpeta.
 
@@ -83,7 +86,59 @@ Numeración: `v0.01`, `v0.02`… mientras se prueba; `v1` cuando una sea la buen
 
 **Medido:** 60 fotogramas PNG son 60 MB; los mismos en WebP con alfa, 1,4 MB (24 KB de media). El peso dejó de ser una restricción.
 
-Hoy hay **una secuencia subida**: `gamma-12/v0.01`, 60 fotogramas. Ojo, `gamma-12` no existe como máquina — los slugs son `gamma-10`, `gamma-13`, `gamma-13-double`. La carpeta y el slug no tienen por qué coincidir.
+Ojo, `gamma-12` no existe como máquina — los slugs son `gamma-10`, `gamma-13`, `gamma-13-double`. La carpeta y el slug no tienen por qué coincidir. Y lo que hay renderizado ahí **es la Gamma 13**: el FBX del fabricante es `Gamma13 blank.fbx` y la ficha es la de la Gamma 13. El nombre de carpeta se mantiene por ahora a propósito; renombrarlo es una decisión pendiente, no un olvido.
+
+**Lo que hay para subir hoy** es `gamma-12/v0.02`: **90 fotogramas** con el recorrido nuevo — barrido de 140° centrado en el frente y zoom de 85 a 130 mm con meseta sobre producto y pantalla. Reemplaza a `v0.01`, que además se renderizó con la luz KEY excluida del render sin que nadie se diera cuenta. Carpeta local: `~/Documents/gamma12-v002-upload-1200/`.
+
+Se genera con `scripts/blender/machine-sequence.py`, que corre headless sobre `~/template-turntable.blend` y **no guarda el `.blend`**:
+
+```bash
+/Applications/Blender.app/Contents/MacOS/Blender -b ~/template-turntable.blend \
+  --python scripts/blender/machine-sequence.py -- \
+  --frames 90 --sweep-deg 140 --center-deg 47.5 --zoom 85:130 --hold 0.45 \
+  --out ~/Documents/gamma12-v002/v0.02 --anchors ~/Documents/gamma12-v002-anchors.json
+```
+
+**Peso:** a 1600 px la secuencia da 4,8 MB, más del doble del objetivo de 2 MB. A 1200 px con calidad 80 da **2,3 MB** y a tamaño de pantalla no se distingue — el canvas del hero mide ~700 px. Por eso se sube la variante de 1200. Pesa más que la v0.01 por dos motivos reales: el zoom llena mucho más cuadro, y ahora se ve el producto a través del vidrio, que es detalle de alta frecuencia donde antes había vidrio plano.
+
+### `anchors.json` — las cotas todavía no existen en el sitio
+
+Junto a los fotogramas va un `anchors.json` (27 KB) que dice, fotograma por fotograma, dónde cae cada esquina del gabinete dentro de la imagen, en coordenadas 0..1 con origen arriba a la izquierda — o sea, listas para `left: x*100%`. Lo escribe el mismo script con `--anchors`, midiendo la malla, no los números de la ficha: el modelo **no está centrado en X** y una caja ideal deja las cotas corridas 17 cm.
+
+Vive en R2 junto a los fotogramas a propósito: nace del mismo render y se invalida con la misma versión de carpeta.
+
+**Nada en el sitio lo lee todavía.** Al subir la v0.02 vas a ver el hero girando con el zoom y **sin cotas** — eso es lo esperado, no un fallo. Falta la capa SVG sobre `RotationScrubHero` y el conmutador pulgadas/mm compartido con la tabla de specs. El prototipo funcionando está en `~/Documents/gamma13-preview.html`, generado con el armador de `scripts/blender/`.
+
+## 3.b Cargar la ficha de la Gamma 13
+
+Las cotas no tienen qué mostrar hasta que estos números estén en `/admin`, y son
+independientes del código: se pueden cargar hoy.
+
+Salen de `GAMMA 13 FT.pdf` (ficha del fabricante) y están **validados contra el
+modelo 3D**: medido da 1995 × 1820 × 1012 mm contra 1956 × 1829 × 991 de la
+ficha, menos del 2% en cada eje. Toda la diferencia restante era el topper, que
+suma 431 mm de alto y vuela ~50 mm por lado.
+
+| Campo | Valor |
+|---|---|
+| Dimensiones | 77" × 72" × 39" (1.956 × 1.829 × 991 mm) |
+| Peso | 1.100 lbs / 499 kg |
+| Estantes | 6, ampliables a 8 |
+| Facings únicos | 120 |
+| Capacidad | 800–1.800 según el producto |
+| Pantalla | 21,5" táctil |
+| Corriente | Toma dedicada 110V / 15 A |
+| Merchant device | Nayax (no incluido) |
+| Add-ons | Refrigeración, ADA, estante extra, módulo de efectivo, topper |
+
+**El alto que le importa al operador es el total con topper: 2.337 mm (92").** Es
+el número que decide si pasa por la puerta, y casi ningún competidor lo publica.
+La ficha da el topper recomendado aparte (15" × 72" × 39").
+
+**Publicar siempre los números de la ficha, nunca los medidos del modelo.** El
+modelo trae tolerancias de CAD; la ficha es lo que el cliente publica y lo que el
+operador va a medir contra su puerta. Las cotas se *ubican* con la geometría
+medida y *muestran* el número de la ficha — son dos fuentes distintas a propósito.
 
 ## 4. Contenido que sigue en inglés en la página en español
 
