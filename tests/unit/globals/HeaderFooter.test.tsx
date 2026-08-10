@@ -83,7 +83,12 @@ describe('Footer', () => {
     const ui = await Footer()
     render(ui)
 
-    expect(getCachedGlobal).toHaveBeenCalledWith('footer', 1, 'en')
+    // Depth 2 por lo mismo que el header, y este test afirmaba el fallo: el CTA
+    // de contacto abre un formulario cuyo richText de consentimiento enlaza la
+    // política de privacidad, y a depth 1 ese enlace queda como un id pelado que
+    // hace throw en RichText — llevándose por delante todas las páginas, porque
+    // el footer vive en el layout raíz.
+    expect(getCachedGlobal).toHaveBeenCalledWith('footer', 2, 'en')
     expect(screen.getByTestId('footer-content')).toBeInTheDocument()
   })
 
