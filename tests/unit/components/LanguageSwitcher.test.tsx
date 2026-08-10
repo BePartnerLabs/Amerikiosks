@@ -52,11 +52,19 @@ describe('LanguageSwitcher', () => {
     expect(replace).not.toHaveBeenCalled()
   })
 
-  it('navigates to the machines listing pathname when on /machines', () => {
+  // El listado dejó de ser ruta de código: ahora es un documento de `pages`, así
+  // que sale por el flujo genérico de translate-slug como cualquier otra página.
+  // Un caso especial aquí volvería a clavar un slug que el editor puede renombrar
+  // desde /admin.
+  it('translates the machines listing like any other page', () => {
     window.history.replaceState({}, '', '/machines')
+    paramsValue = { slug: 'machines' }
     render(<LanguageSwitcher />)
     screen.getByRole('button', { name: 'ES' }).click()
-    expect(replace).toHaveBeenCalledWith({ pathname: '/machines' }, { locale: 'es' })
+    // Consulta el slug hermano en vez de asumirlo, que es lo que lo distingue
+    // del caso especial que había antes. El valor sale del mock de useQuery.
+    expect(translateSlug).toHaveBeenCalledWith('machines', 'en', 'es')
+    expect(replace).toHaveBeenCalledWith('/para-marcas', { locale: 'es' })
   })
 
   it('navigates to the family pathname when on /machines/[family]', () => {
