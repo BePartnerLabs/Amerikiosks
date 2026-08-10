@@ -116,6 +116,25 @@ Es bastante más rápido y menos propenso a error que teclear cinco veces lo mis
 
 Con el gate todavía puesto y los borradores activos en `machines`, hay margen para hacerlo sobre documentos publicados sin que nadie de fuera lo vea.
 
+## Una alternativa a hacerlo a mano, y en qué orden
+
+Todo lo de arriba puede hacerlo Claude, pero **el orden importa: los archivos van en producción, el resto en local.** La razón es que en dev la subida no funciona —los medios viven en R2 y el entorno local no escribe ahí— mientras que las peticiones sí funcionan igual en los dos sitios.
+
+Así que la secuencia es:
+
+**1. Lo que necesita subir un archivo, en producción.** Tú te logueas en `/admin` desde Chrome —ese paso es tuyo, Claude no introduce credenciales— y Claude conduce la interfaz de subida. Es lo único que no se puede resolver con una petición.
+
+**2. Dump de producción y restore local.** `./scripts/dump-prod.sh` y `./scripts/restore-prod-dump.sh`, para bajar el estado con los assets ya referenciados. Y después, siempre, `node scripts/move-monday-to-sandbox.mjs --apply`: el dump trae los board ids del cliente.
+
+**3. Todo lo demás, en local.** Crear la página, colocar los bloques, marcar los `featured`, corregir los textos en español. Eso va por `fetch` contra el `/admin` local aprovechando la cookie `payload-token` del login — la API REST de Payload acepta esa sesión.
+
+Trabajar en local para esta parte tiene dos ventajas sobre hacerlo en producción: **se puede equivocar sin consecuencias**, y deja los scripts probados. Una vez funcionan contra la base local, aplicarlos en producción es repetir algo que ya salió bien en vez de improvisar sobre datos reales.
+
+**Dos condiciones que no son opcionales:**
+
+- **Cada escritura por locale devuelve el `id` de cada item del array.** Es el gotcha de [`docs/patterns/payload-localized-arrays.md`](./patterns/payload-localized-arrays.md): un `PATCH ...?locale=es` sin los `id` borra el contenido del otro idioma y responde `200 OK`. Silencioso, y en producción es pérdida de datos.
+- **En producción, leer y enseñar antes de escribir.** El paso de aplicar se aprueba antes, no después.
+
 ## Lo que sigue en código, no en `/admin`
 
 Anotado para que no se pierda entre sesiones:
