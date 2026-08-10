@@ -13,7 +13,7 @@ is whatever the `pages` collection holds.
 |---|---|---|---|
 | `/` | `[locale]/page.tsx` | re-exports `[slug]/page.tsx` | The home page is a `pages` document, not its own template |
 | `/[slug]` | `[locale]/[slug]/page.tsx` | `pages` | Every CMS page, incl. the legal ones. Slugs are localized |
-| `/machines` | `[locale]/machines/page.tsx` | `machine-families`, `machines`, `partners` | Localized path: `/maquinas` in ES (`i18n/routing.ts` `pathnames`). Reads every machine to size the lineup to scale and list the models of the selected line; `partners` comes in through the `TrustStrip` block |
+| `/machines` | — | — | **Ya no es una ruta.** Es un documento de `pages` con slug `machines` en EN y `maquinas` en ES, compuesto con los bloques `machineLineup`, `machineFamily` y `machineModels`. Por eso **no** está en el mapa `pathnames`: si estuviera, next-intl reescribiría `/maquinas` → `/machines` antes de que el catch-all `/[slug]` lo viera y el documento en español no resolvería nunca |
 | `/machines/[family]` | `[locale]/machines/[family]/page.tsx` | `machine-families`, `machines`, `machine-installations` | Localized path |
 | `/machines/[family]/[slug]` | `[locale]/machines/[family]/[slug]/page.tsx` | `machines` | Localized path |
 | `/insights` | `[locale]/insights/page.tsx` | `insights` | Listing, page 1 |
@@ -40,9 +40,16 @@ un-prefixed path resolves to EN, and slugs are translated, so a link built by
 hand 404s in ES. Build hrefs with `localizeHref` (`utilities/localeUrl.ts`) —
 `CMSLink`, `Card`, `Pagination` and `RichText` already do.
 
-**Only `/machines*` has a localized path segment** (`/maquinas`). Everything
+**Only `/machines/*` has a localized path segment** (`/maquinas/...`). Everything
 else keeps its English segment in both locales and differs only by the `/es`
 prefix and the slug.
+
+Ojo con la consecuencia de que el padre sea una Page y los hijos rutas de
+código: **la jerarquía está gobernada por dos mecanismos**. El segmento español
+del padre sale del slug del documento, en `/admin`; el de los hijos, de
+`pathnames` en `i18n/routing.ts` más `machinesSegment` en
+`utilities/localeUrl.ts`. Cambiar uno sin el otro deja el padre en `/maquinas` y
+los hijos colgando de otro segmento, sin que nada avise en tiempo de build.
 
 **Documents are read with `overrideAccess: false`** (or `draft` where preview
 applies), so unpublished content is invisible to anonymous visitors — that is
