@@ -8,7 +8,17 @@ type Props = {
 }
 
 export const Dimensions: React.FC<Props> = ({ diagrams, dimensions }) => {
-  if (diagrams.length === 0) return null
+  const hasValues = Boolean(dimensions?.height || dimensions?.width || dimensions?.depth)
+
+  // El guard preguntaba por los diagramas y se llevaba por delante los numeros.
+  // Ninguna de las diez maquinas tiene un diagrama subido y ocho si tienen alto,
+  // ancho y fondo cargados, asi que la seccion desaparecia del sitio entero: la
+  // pregunta que trae al operador —si le entra por la puerta— no tenia respuesta
+  // en ninguna ficha, con el dato escrito en la base.
+  //
+  // Cada mitad se muestra por su cuenta. Un diagrama sin numeros sigue
+  // informando, y unos numeros sin diagrama son justo lo que hay hoy.
+  if (diagrams.length === 0 && !hasValues) return null
 
   return (
     <section className="ak-machine-detail__dimensions">
@@ -16,35 +26,37 @@ export const Dimensions: React.FC<Props> = ({ diagrams, dimensions }) => {
         <div className="content ak-machine-detail__dimensions-inner">
           <p className="ak-machine-detail__dimensions-label">DIMENSIONS</p>
 
-          <div className="ak-machine-detail__dimensions-diagrams">
-            {diagrams.map((diagram, i) => {
-              const image = typeof diagram.image === 'object' ? (diagram.image as Media) : null
-              if (!image?.url) return null
-              return (
-                <figure
-                  key={diagram.id ?? i}
-                  className="ak-machine-detail__dimensions-diagram"
-                >
-                  <div className="ak-machine-detail__dimensions-diagram-image">
-                    <Image
-                      src={getBestMediaUrl(image, 900) ?? image.url}
-                      alt={diagram.label ?? ''}
-                      fill
-                      className="ak-machine-detail__dimensions-diagram-img"
-                      sizes="(max-width: 640px) 90vw, 33vw"
-                    />
-                  </div>
-                  {diagram.label && (
-                    <figcaption className="ak-machine-detail__dimensions-diagram-label">
-                      {diagram.label}
-                    </figcaption>
-                  )}
-                </figure>
-              )
-            })}
-          </div>
+          {diagrams.length > 0 && (
+            <div className="ak-machine-detail__dimensions-diagrams">
+              {diagrams.map((diagram, i) => {
+                const image = typeof diagram.image === 'object' ? (diagram.image as Media) : null
+                if (!image?.url) return null
+                return (
+                  <figure
+                    key={diagram.id ?? i}
+                    className="ak-machine-detail__dimensions-diagram"
+                  >
+                    <div className="ak-machine-detail__dimensions-diagram-image">
+                      <Image
+                        src={getBestMediaUrl(image, 900) ?? image.url}
+                        alt={diagram.label ?? ''}
+                        fill
+                        className="ak-machine-detail__dimensions-diagram-img"
+                        sizes="(max-width: 640px) 90vw, 33vw"
+                      />
+                    </div>
+                    {diagram.label && (
+                      <figcaption className="ak-machine-detail__dimensions-diagram-label">
+                        {diagram.label}
+                      </figcaption>
+                    )}
+                  </figure>
+                )
+              })}
+            </div>
+          )}
 
-          {dimensions && (dimensions.height || dimensions.width || dimensions.depth) && (
+          {hasValues && dimensions && (
             <dl className="ak-machine-detail__dimensions-values">
               {dimensions.height && (
                 <div>
