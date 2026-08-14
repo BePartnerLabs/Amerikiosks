@@ -2,8 +2,9 @@
  * URL de los anclajes de cota de una secuencia.
  *
  * Vive junto a los fotogramas, en la misma carpeta versionada, porque nace del
- * mismo render: `scripts/blender/machine-sequence.py --anchors` lo escribe en la
- * misma pasada que produce los PNG. Ponerlo en otro sitio —un campo de Payload,
+ * mismo render: `machine-sequence.py --anchors`, en el repo
+ * `BePartnerLabs/amerikiosks-blender`, lo escribe en la misma pasada que produce
+ * los PNG. Ponerlo en otro sitio —un campo de Payload,
  * otro bucket— abriría la puerta a que las cotas de una versión se dibujen sobre
  * los fotogramas de otra, y el síntoma sería una flecha apuntando al aire al
  * lado de la máquina, sin nada que lo delate.
