@@ -1,0 +1,41 @@
+{
+  "_comment": [
+    "La receta de render de cada maquina. Es lo unico de todo el pipeline de",
+    "Blender que no se puede volver a deducir: `centerDeg` sale de mirar un",
+    "contact sheet a ojo y decidir cual es el frente, y `shiftPeak` de barrer",
+    "valores hasta que el zoom deja de cortar por arriba. Perder esto obliga a",
+    "repetir ese trabajo por modelo.",
+    "",
+    "Lo que NO va aqui: que version esta publicada. Eso vive en el campo",
+    "`sequencePath` de la coleccion `machines` en Payload, que es la fuente de",
+    "verdad de lo que sirve el sitio. Copiarlo aqui garantiza que un dia digan",
+    "cosas distintas.",
+    "",
+    "Los binarios tampoco: el .blend y los FBX del fabricante pesan cientos de",
+    "MB, no se diffean y no entran en git. Viven en el Shared Folder del",
+    "cliente. Ver la skill `machine-hero-sequence`.",
+    "",
+    "Uso: --machine gamma-13 carga estos valores; cualquier flag que pases",
+    "ademas los pisa, asi que probar una variante no obliga a editar el archivo."
+  ],
+
+  "machines": {
+    "gamma-13": {
+      "source": "Gamma13 blank.fbx",
+      "frames": 90,
+      "sweepDeg": 140,
+      "centerDeg": 47.5,
+      "zoom": "85:130",
+      "hold": 0.45,
+      "shiftPeak": 0.16,
+      "bodyTop": 1.956,
+      "notes": [
+        "El frente cayo a 47.5 grados. El barrido es de 140 y no de 360 porque",
+        "la parte de atras es una caja lisa: una vuelta entera dejaba los dos",
+        "extremos del scroll en el perfil estrecho.",
+        "bodyTop 1.956 es donde acaba el gabinete; lo que sube por encima es el",
+        "topper, que suma 431 mm y no cuenta para la cota de alto publicada."
+      ]
+    }
+  }
+}

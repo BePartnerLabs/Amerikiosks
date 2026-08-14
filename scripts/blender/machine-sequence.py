@@ -61,12 +61,67 @@ from mathutils import Vector
 PIVOT = "Empty"
 KEY_LIGHT = "KEY"
 
+# La receta por modelo. Vive al lado de este archivo y no dentro de el porque es
+# dato, no codigo: agregar una maquina no deberia tocar el script.
+MANIFEST = os.path.join(os.path.dirname(os.path.abspath(__file__)), "machines.json")
+
+# Clave del manifiesto -> destino de argparse. Solo los parametros de recorrido:
+# `--out` y `--anchors` son de cada corrida, no del modelo.
+MANIFEST_KEYS = {
+    "frames": "frames",
+    "sweepDeg": "sweep_deg",
+    "centerDeg": "center_deg",
+    "zoom": "zoom",
+    "hold": "hold",
+    "shiftPeak": "shift_peak",
+    "bodyTop": "body_top",
+    "keyLight": "key_light",
+    "width": "width",
+    "peakFrame": "peak_frame",
+}
+
+
+def manifest_defaults(slug: str) -> dict:
+    """Los valores de un modelo, listos para `set_defaults`.
+
+    Se aplican como *defaults*, no como valores: un flag explicito en la linea
+    de comandos los pisa. Asi probar una variante no obliga a editar el JSON ni
+    a recordar que el archivo existe.
+    """
+    try:
+        with open(MANIFEST, encoding="utf-8") as handle:
+            data = json.load(handle)
+    except FileNotFoundError:
+        raise SystemExit(f"no existe el manifiesto {MANIFEST}")
+    except json.JSONDecodeError as err:
+        raise SystemExit(f"{MANIFEST} no es JSON valido: {err}")
+
+    machines = data.get("machines", {})
+    if slug not in machines:
+        conocidas = ", ".join(sorted(machines)) or "(ninguna)"
+        raise SystemExit(f"--machine {slug} no esta en {MANIFEST}. Hay: {conocidas}")
+
+    recipe = machines[slug]
+    desconocidas = set(recipe) - set(MANIFEST_KEYS) - {"source", "notes"}
+    if desconocidas:
+        # Un typo en una clave se traduciria en un render con el default
+        # equivocado y sin ninguna señal, que es justo el fallo que este
+        # archivo existe para evitar.
+        raise SystemExit(f"claves sin uso en la receta de {slug}: {', '.join(sorted(desconocidas))}")
+
+    return {dest: recipe[key] for key, dest in MANIFEST_KEYS.items() if key in recipe}
+
 
 def parse_args() -> argparse.Namespace:
     # Blender se come todo lo que va antes de `--`.
     argv = sys.argv[sys.argv.index("--") + 1 :] if "--" in sys.argv else []
 
     parser = argparse.ArgumentParser(prog="machine-sequence.py")
+    parser.add_argument(
+        "--machine",
+        default=None,
+        help="slug en machines.json; carga su receta, y cualquier otro flag la pisa",
+    )
     parser.add_argument("--out", required=True, help="prefijo de salida, ej. ~/Documents/gamma13-hero/v0.01")
     parser.add_argument("--frames", type=int, default=60, help="cantidad de frames a renderizar")
     parser.add_argument("--zoom", default=None, metavar="A:B", help="focal inicial:pico, ej. 85:130")
@@ -102,6 +157,19 @@ def parse_args() -> argparse.Namespace:
         help="altura en metros donde termina el gabinete; lo que arranca por encima es topper",
     )
     parser.add_argument("--dry-run", action="store_true", help="no renderiza; util para exportar solo los anclajes")
+
+    # Dos pasadas: la primera solo para saber si hay `--machine`, porque su
+    # receta tiene que quedar como default *antes* de parsear de verdad. Al reves
+    # no funciona: argparse no distingue un valor que pusiste tu de uno que vino
+    # del default, asi que no habria forma de saber cual pisa a cual.
+    #
+    # Con un parser aparte y no con `parse_known_args` sobre este, que exigiria
+    # `--out` en una pasada donde todavia no interesa.
+    sniff = argparse.ArgumentParser(add_help=False)
+    sniff.add_argument("--machine", default=None)
+    preview, _ = sniff.parse_known_args(argv)
+    if preview.machine:
+        parser.set_defaults(**manifest_defaults(preview.machine))
 
     args = parser.parse_args(argv)
 

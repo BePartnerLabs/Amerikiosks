@@ -29,21 +29,52 @@ tocarlo:
   Es el marcador del fabricante y no debe salir en el sitio. Nada lo reemplaza:
   el topper va liso, sin panel emisivo ni ningún objeto delante.
 
+## Qué vive dónde
+
+El reparto no es arbitrario: **en git va lo que se diffea, fuera lo que pesa.**
+
+| Qué | Dónde | Por qué |
+|---|---|---|
+| El script y este documento | El repo | Texto. Se revisa en un PR. |
+| La receta de cada modelo | `scripts/blender/machines.json` | Texto, y es lo único que no se puede volver a deducir: `centerDeg` sale de mirar un contact sheet a ojo. |
+| El `.blend` y los FBX | Shared Folder del cliente | Cientos de MB de binario opaco. Quince modelos son ~1 GB, no se diffean, y reventarían la cuota de LFS en el primer clon. |
+| Los fotogramas | R2, carpeta por versión | Es el artefacto, y ya está versionado por ruta. |
+| Qué versión está publicada | El campo `sequencePath` en Payload | Fuente de verdad única. Copiarla al JSON garantiza que un día digan cosas distintas. |
+
 ## El comando
 
 ```bash
 /Applications/Blender.app/Contents/MacOS/Blender -b ~/template-turntable.blend \
   --python scripts/blender/machine-sequence.py -- \
-  --frames 90 --sweep-deg 140 --center-deg 47.5 --zoom 85:130 --hold 0.45 \
-  --shift-peak 0.16 \
+  --machine gamma-13 \
   --out ~/Documents/<modelo>/v0.02 \
   --anchors ~/Documents/<modelo>-anchors.json
+```
+
+`--machine` carga la receta del modelo desde `machines.json`. **Cualquier flag
+que pases además la pisa**, así que probar una variante no obliga a editar el
+archivo ni a acordarse de deshacerlo después. Un slug que no existe falla
+listando los que sí, y una clave que no se usa también falla — un typo silencioso
+ahí sería un render con el default equivocado y sin ninguna señal.
+
+En largo, para un modelo que todavía no está en el manifiesto:
+
+```bash
+  --frames 90 --sweep-deg 140 --center-deg 47.5 --zoom 85:130 --hold 0.45 \
+  --shift-peak 0.16
 ```
 
 **`--shift-peak` no es opcional aunque lo parezca.** Sin él el zoom corta la
 máquina por arriba —se mete debajo del header— y deja un hueco abajo. 0,16 es el
 valor barrido y elegido para la Gamma 13; se mueve con la misma curva que la
 focal, así que encuadre y zoom llegan juntos al pico.
+
+**Cuando llegue la máquina número dos**, la decisión que hay que tomar es si se
+copia el `.blend` o se importa el FBX sobre un único rig. El script ya es
+agnóstico del modelo —solo exige que existan `Empty`, `KEY` y la cámara, y mide
+el gabinete iterando las mallas—, así que un rig único es viable y evita quince
+archivos de 66 MB casi idénticos. Lo que hay que resolver es posición y escala de
+cada FBX respecto al pivote, porque no vienen normalizados.
 
 Corre headless y **no guarda el `.blend`**: dos corridas con parámetros distintos
 no se pisan y nadie hereda el rango de fotogramas de la anterior.
@@ -60,6 +91,7 @@ no se pisan y nadie hereda el rango de fotogramas de la anterior.
 | `--peek 1,20,45` | Renderiza solo esos fotogramas, a una carpeta hermana |
 | `--width` | Resolución cuadrada; para pruebas, 360 o 500 |
 | `--shift-peak` | `shift_y` de cámara en el pico; sube el encuadre para que el zoom no corte por arriba |
+| `--machine` | Slug en `machines.json`; carga su receta y cualquier otro flag la pisa |
 | `--anchors FILE` | Exporta los anclajes de cota proyectados |
 | `--body-top` | Altura en metros donde acaba el gabinete; lo de arriba es topper |
 | `--key-light` | `on` por defecto |
