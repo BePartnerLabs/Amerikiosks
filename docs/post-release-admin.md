@@ -90,16 +90,11 @@ Numeración: `v0.01`, `v0.02`… mientras se prueba; `v1` cuando una sea la buen
 
 Ojo, `gamma-12` no existe como máquina — los slugs son `gamma-10`, `gamma-13`, `gamma-13-double`. La carpeta y el slug no tienen por qué coincidir. Y lo que hay renderizado ahí **es la Gamma 13**: el FBX del fabricante es `Gamma13 blank.fbx` y la ficha es la de la Gamma 13. El nombre de carpeta se mantiene por ahora a propósito; renombrarlo es una decisión pendiente, no un olvido.
 
-**Lo que hay para subir hoy** es `gamma-12/v0.02`: **90 fotogramas** con el recorrido nuevo — barrido de 140° centrado en el frente y zoom de 85 a 130 mm con meseta sobre producto y pantalla. Reemplaza a `v0.01`, que además se renderizó con la luz KEY excluida del render sin que nadie se diera cuenta. Carpeta local: `~/Documents/gamma12-v002-upload-1200/`.
+**Lo que hay para subir hoy** es **`gamma-13/v0.04`**: los mismos 90 fotogramas del recorrido actual pero **sin el «LOGO HERE»** del fabricante, que salía en el topper en todo el barrido. Carpeta local lista: `~/Documents/gamma13-v004-upload/` — 2,6 MB, con su `anchors.json` dentro. Lo vivo hoy es `gamma-13/v0.03`.
 
-Se genera con `scripts/blender/machine-sequence.py`, que corre headless sobre `~/template-turntable.blend` y **no guarda el `.blend`**:
+El render ya no se hace desde este repo: el script, la plantilla y la receta de cada modelo viven en [`BePartnerLabs/amerikiosks-blender`](https://github.com/BePartnerLabs/amerikiosks-blender), porque la plantilla pesa 66 MB y no la necesita nadie del frontend. Ahí está el comando y las trampas de Blender.
 
-```bash
-/Applications/Blender.app/Contents/MacOS/Blender -b ~/template-turntable.blend \
-  --python scripts/blender/machine-sequence.py -- \
-  --frames 90 --sweep-deg 140 --center-deg 47.5 --zoom 85:130 --hold 0.45 \
-  --out ~/Documents/gamma12-v002/v0.02 --anchors ~/Documents/gamma12-v002-anchors.json
-```
+Al subir la v0.04 hay que cambiar **solo `sequencePath`**: el conteo sigue en 90, así que el hook no se queja.
 
 **Peso:** a 1600 px la secuencia da 4,8 MB, más del doble del objetivo de 2 MB. A 1200 px con calidad 80 da **2,3 MB** y a tamaño de pantalla no se distingue — el canvas del hero mide ~700 px. Por eso se sube la variante de 1200. Pesa más que la v0.01 por dos motivos reales: el zoom llena mucho más cuadro, y ahora se ve el producto a través del vidrio, que es detalle de alta frecuencia donde antes había vidrio plano.
 

@@ -197,21 +197,6 @@ export const RotationScrubHero: React.FC<Props> = ({
               reducedMotion={reducedMotion}
             />
           )}
-          {/* Contact shadow. A sibling of the canvas, not a pseudo-element on it,
-              because the canvas scales with the scroll and the shadow must not:
-              a static shadow reads as the machine resting on a floor, one that
-              moves with the model reads as a bug. */}
-          <span
-            className="ak-machine-hero__shadow"
-            aria-hidden
-          />
-
-          {/* Same bottom fade the family hero uses (ComposedHero__scrim), so the
-              render sits on the page instead of ending on a hard edge. */}
-          <div
-            className="ak-machine-hero__scrim"
-            aria-hidden
-          />
         </div>
       </div>
     </div>

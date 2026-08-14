@@ -12,23 +12,29 @@
     var(--brand-color-palette-navy-900) 70%,
     var(--brand-color-palette-navy-950)
   );
-  --_hero-glow: color-mix(in srgb, var(--ak-accent) 30%, transparent);
-
   /* Zoom through the turntable. Past ~0.18 the render crops against the
      viewport on short screens. */
   --_hero-zoom: 0.14;
-
-  /* Contact shadow, tuned for navy rather than white. On a light background
-     0.25–0.30 is right; on this stage that reads as a smudge, so the core is
-     stronger and the spread tighter — the ellipse has to darken a surface that
-     is already dark. Four numbers to tune by eye: where it sits, how wide, how
-     opaque, how blurred (the blur is on the element).
-     The shadow must stay narrower than the machine — never wider. */
-  --_hero-shadow-bottom: 8%;
-  --_hero-shadow-width: 46%;
-  --_hero-shadow-core: color-mix(in srgb, var(--brand-color-palette-navy-950) 62%, transparent);
-  --_hero-shadow-mid: color-mix(in srgb, var(--brand-color-palette-navy-950) 26%, transparent);
 }
+
+/*
+ * Ni halo de acento ni sombra de contacto — quitados a proposito, 2026-08-14.
+ *
+ * El halo (`__scrim`) era un radial de acento al 30% que, por orden en el DOM,
+ * caia ENCIMA del canvas: no iluminaba el escenario, teñia la maquina. Se habia
+ * copiado de `.ak-scene__glow` de la escena de /machines, que dejo de existir al
+ * borrar `MachinesLanding/` en el #245, asi que el efecto quedo huerfano de la
+ * composicion donde tenia sentido.
+ *
+ * La sombra (`__shadow`) era una elipse de gradiente bajo la maquina, hermana
+ * del canvas para no escalar con el zoom. Sobre el navy no se leia como apoyo
+ * sino como mancha.
+ *
+ * Si alguna vez se reponen: el render sale con alfa y sin suelo —el `Plane` de
+ * la escena de Blender esta en `hide_render` y `film_transparent` esta activo—,
+ * asi que ambos son decision de CSS y no obligan a re-renderizar fotogramas.
+ * Pero el halo va DETRAS del canvas, no delante.
+ */
 
 .ak-machine-hero__text {
   padding-block: var(--bp-space-16, 4rem) var(--bp-space-10, 2.5rem);
@@ -124,46 +130,10 @@
   will-change: transform;
 }
 
-/*
- * Contact shadow.
- *
- * A sibling of the canvas, never a pseudo-element on it: the canvas scales with
- * the scroll, and a shadow that scales with the model reads as a bug. A static
- * one reads as the machine resting on a floor.
- *
- * The gradient has three stops on purpose. With only a colour and `transparent`
- * the edge renders as a visible ring; the middle stop at 45% is what makes it
- * read as a shadow.
- */
-.ak-machine-hero__shadow {
-  position: absolute;
-  bottom: var(--_hero-shadow-bottom);
-  left: 50%;
-  translate: -50% 0;
-  width: var(--_hero-shadow-width);
-  height: 26px;
-  background: radial-gradient(
-    ellipse at center,
-    var(--_hero-shadow-core) 0%,
-    var(--_hero-shadow-mid) 45%,
-    transparent 72%
-  );
-  filter: blur(10px);
-  pointer-events: none;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .ak-machine-hero__canvas {
     transform: none;
   }
-}
-
-/* Accent glow over the navy, same as .ak-scene__glow on /machines. */
-.ak-machine-hero__scrim {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(46% 44% at 50% 46%, var(--_hero-glow), transparent 70%);
-  pointer-events: none;
 }
 
 .ak-machine-hero__skeleton {
