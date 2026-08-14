@@ -9,9 +9,25 @@ Cómo pasar de un FBX del fabricante a un hero que gira con el scroll. El circui
 está cerrado de punta a punta y verificado contra el bucket real; lo de abajo es
 el camino que ya funcionó, no una propuesta.
 
-**Fuente de la escena:** `~/template-turntable.blend`. **No** uses
-`~/Gamma 13.blend` — es la versión vieja (focal 50, sin shift, y el `Empty` con
-keyframes de Location, que es justo el fallo que descentra el giro).
+**Fuente de la escena:** `~/template-turntable.blend`, y es el **único** archivo
+de plantilla que debe existir. **No** uses `~/Gamma 13.blend` — es la versión
+vieja (focal 50, sin shift, y el `Empty` con keyframes de Location, que es justo
+el fallo que descentra el giro). Si aparece un `template-turntable-<algo>.blend`,
+es basura de una prueba: consolídalo y bórralo, porque dos plantillas que se
+parecen acaban rindiendo secuencias con iluminación distinta.
+
+Dos cosas viven guardadas dentro de ese archivo y conviene saberlo antes de
+tocarlo:
+
+- **El HDRI está empaquetado** (`file.pack_all()`), no enlazado. Antes colgaba de
+  `//Downloads/brown_photostudio_02_4k.exr` y **desapareció al vaciarse la
+  carpeta de descargas**. El síntoma no dice nada: Blender pinta el mundo de
+  magenta, y como el mundo es la luz, sale la máquina entera rosa. Si algún día
+  vuelve a pasar, el archivo es de Poly Haven (CC0) y hay que volver a
+  empaquetarlo, no solo reponerlo.
+- **`TextPlus001` —la capa del «LOGO HERE»— está apagada** en render y viewport.
+  Es el marcador del fabricante y no debe salir en el sitio. Nada lo reemplaza:
+  el topper va liso, sin panel emisivo ni ningún objeto delante.
 
 ## El comando
 
@@ -19,9 +35,15 @@ keyframes de Location, que es justo el fallo que descentra el giro).
 /Applications/Blender.app/Contents/MacOS/Blender -b ~/template-turntable.blend \
   --python scripts/blender/machine-sequence.py -- \
   --frames 90 --sweep-deg 140 --center-deg 47.5 --zoom 85:130 --hold 0.45 \
+  --shift-peak 0.16 \
   --out ~/Documents/<modelo>/v0.02 \
   --anchors ~/Documents/<modelo>-anchors.json
 ```
+
+**`--shift-peak` no es opcional aunque lo parezca.** Sin él el zoom corta la
+máquina por arriba —se mete debajo del header— y deja un hueco abajo. 0,16 es el
+valor barrido y elegido para la Gamma 13; se mueve con la misma curva que la
+focal, así que encuadre y zoom llegan juntos al pico.
 
 Corre headless y **no guarda el `.blend`**: dos corridas con parámetros distintos
 no se pisan y nadie hereda el rango de fotogramas de la anterior.
@@ -37,6 +59,7 @@ no se pisan y nadie hereda el rango de fotogramas de la anterior.
 | `--peak-frame` | Fotograma del pico; por defecto el del medio |
 | `--peek 1,20,45` | Renderiza solo esos fotogramas, a una carpeta hermana |
 | `--width` | Resolución cuadrada; para pruebas, 360 o 500 |
+| `--shift-peak` | `shift_y` de cámara en el pico; sube el encuadre para que el zoom no corte por arriba |
 | `--anchors FILE` | Exporta los anclajes de cota proyectados |
 | `--body-top` | Altura en metros donde acaba el gabinete; lo de arriba es topper |
 | `--key-light` | `on` por defecto |
