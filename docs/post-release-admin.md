@@ -21,13 +21,13 @@ lifespan: temporal — borrar este archivo cuando todo esté hecho
 > `docs/CLIENT-MANUAL.md`. Antes de borrar, comprueba que nada de lo de abajo
 > era permanente y se quedó solo aquí.
 
-Escrito el 2026-08-09 al cerrar la sesión de los PR #238 y #239. **Nada de lo de abajo pasa solo.** El código está en `main`, pero un bloque que nadie añade a una página no se renderiza en ninguna parte, y esa es la brecha entre "mergeado" y "por qué no se ve".
+Escrito el 2026-08-09 al cerrar la sesión de los PR #238 y #239, **actualizado el 2026-08-13** al cerrar la del #241 al #252. **Nada de lo de abajo pasa solo.** El código está en `main`, pero un bloque que nadie añade a una página no se renderiza en ninguna parte, y esa es la brecha entre "mergeado" y "por qué no se ve".
 
 ## Estado al cerrar la sesión
 
-- `main` está en `3255be9`, con los PR **#238** (bloques del landing de máquinas) y **#239** (contexto agéntico, validadores, secuencias de fotogramas) dentro.
-- **Cuatro migraciones nuevas**, todas aditivas y **ya ensayadas** contra un restore real de producción: `migrate` → `migrate:down` → `migrate`, sin pérdida de datos (10 máquinas antes y después). El requisito de ensayo del `CLAUDE.md` está cubierto; **no hace falta pasar por `preview/**`** por este motivo.
-- El sitio de producción **no ha cambiado todavía**: nada se despliega hasta publicar un release, y ningún bloque nuevo está colocado en ninguna página.
+- `main` está en `af71049`, con los PR **#241** al **#252** dentro. Lo relevante para `/admin`: `/machines` dejó de ser ruta de código (#245), las cotas del hero ya se dibujan en el sitio (#251), y el footer ya no tumba las páginas cuyo formulario enlaza la política de privacidad (#252).
+- **Sin migraciones nuevas** desde el release `v1.44.0`. Todo lo de esta tanda es frontend, hooks y datos que ya existían en el esquema.
+- **#252 está en `main` sin liberar.** Arregla una excepción que sale en todas las páginas del sitio, así que conviene que entre en el próximo release. Hay un borrador `v1.44.1` esperando.
 
 ## 1. Bloques nuevos disponibles, ninguno colocado
 
@@ -39,7 +39,9 @@ Tres bloques entraron en el selector de `Pages` y están sin usar:
 | **Machine Family** | Una familia completa | `family` (relación), rótulos, `showModelCount` |
 | **Machine Models** | Todos los modelos en un carrusel plano | `eyebrow`, `heading`, `ctaLabel`, `family` (opcional) |
 
-**No reemplazan a `/machines`**, que sigue siendo una ruta de código con su orden fijo. Para estrenarlos hay que crear una página y componerla. El diseño de esa conversión está en `openspec/changes/machines-landing-as-page/design.md`, con una decisión abierta: cómo se localiza el slug (`machines`/`maquinas`) mientras sus hijos siguen resolviéndose por `pathnames` de next-intl.
+**Ya reemplazaron a `/machines`**: el #245 borró la ruta de código y el listado es hoy un documento de `pages`. La decisión que quedaba abierta —cómo se localiza el slug mientras los hijos siguen resolviéndose por `pathnames` de next-intl— se cerró sacando `/machines` del mapa de `pathnames` y dejando solo los hijos; el listado sale por el catch-all `/[slug]` como cualquier otra página, y el conmutador de idioma le pregunta el slug hermano a `PagesRepository.translateSlug()` en vez de asumirlo.
+
+**Y por eso queda una tarea a mano**: la página está creada con slug `machines2`, que fue el provisional mientras `machines` seguía reservado. Ahora que la reserva se levantó hay que **renombrarla a `machines` / `maquinas`, los dos locales en la misma sesión**, y decidir qué pasa con `machines2`: despublicarla o dejar un redirect. Mientras tanto la URL buena no responde.
 
 **Al crear la página**: los dos locales **en la misma sesión**. Es el gotcha de arrays localizados de `docs/patterns/payload-localized-arrays.md` — escribir en un locale sin devolver los `id` borra el contenido del otro.
 
@@ -101,13 +103,18 @@ Se genera con `scripts/blender/machine-sequence.py`, que corre headless sobre `~
 
 **Peso:** a 1600 px la secuencia da 4,8 MB, más del doble del objetivo de 2 MB. A 1200 px con calidad 80 da **2,3 MB** y a tamaño de pantalla no se distingue — el canvas del hero mide ~700 px. Por eso se sube la variante de 1200. Pesa más que la v0.01 por dos motivos reales: el zoom llena mucho más cuadro, y ahora se ve el producto a través del vidrio, que es detalle de alta frecuencia donde antes había vidrio plano.
 
-### `anchors.json` — las cotas todavía no existen en el sitio
+### `anchors.json` — de dónde salen las cotas
 
 Junto a los fotogramas va un `anchors.json` (27 KB) que dice, fotograma por fotograma, dónde cae cada esquina del gabinete dentro de la imagen, en coordenadas 0..1 con origen arriba a la izquierda — o sea, listas para `left: x*100%`. Lo escribe el mismo script con `--anchors`, midiendo la malla, no los números de la ficha: el modelo **no está centrado en X** y una caja ideal deja las cotas corridas 17 cm.
 
 Vive en R2 junto a los fotogramas a propósito: nace del mismo render y se invalida con la misma versión de carpeta.
 
-**Nada en el sitio lo lee todavía.** Al subir la v0.02 vas a ver el hero girando con el zoom y **sin cotas** — eso es lo esperado, no un fallo. Falta la capa SVG sobre `RotationScrubHero` y el conmutador pulgadas/mm compartido con la tabla de specs. El prototipo funcionando está en `~/Documents/gamma13-preview.html`, generado con el armador de `scripts/blender/`.
+**Desde el #251 el sitio sí lo lee**: `DimensionOverlay` dibuja las cotas en SVG encima del canvas del hero. Dos cosas que hay que saber al subir una secuencia nueva:
+
+- **La URL del `anchors.json` se resuelve en el servidor**, en `src/components/MachineHero/index.tsx`, porque `buildAnchorsURL()` necesita `S3_PUBLIC_URL` y esa variable no existe en el cliente. Si algún día las cotas desaparecen sin error visible, ese es el primer sitio donde mirar: el `fetch` falla con 404 y el `catch` se lo traga.
+- **Los rótulos salen del campo `dimensions` de la máquina, no del `anchors.json`.** Sin ficha cargada en `/admin` hay flechas sin número. Los anclajes ubican; el CMS dice qué se lee.
+
+Sigue pendiente el conmutador pulgadas/mm compartido con la tabla de specs: hoy se publica la cadena tal cual la escribió el editor, así que para convertir haría falta un campo numérico en mm y su migración.
 
 ## 3.b Cargar la ficha de la Gamma 13
 
@@ -195,8 +202,9 @@ Trabajar en local para esta parte tiene dos ventajas sobre hacerlo en producció
 Anotado para que no se pierda entre sesiones:
 
 - **Pestañas en `Machines`** — hoy son diecinueve campos planos en una sola columna, sin las pestañas que sí tiene `Pages`. Diseñado en `openspec/changes/machine-page-blocks/design.md`, fase 1, sin empezar. Los campos no cambiarían de nombre ni de sitio en la base.
-- **`fix/restore-script-connection-guard`** — rama local sin PR. Hace que `restore-prod-dump.sh` avise de conexiones abiertas en vez de morir después del backup dejando la base intacta.
-- **`spike/rotation-frames-70`** — rama local sin pushear, ya superada por lo que entró en #239.
+- **Rediseño de la ficha de máquina** — acordado como plantilla, no como página suelta: la animación arriba, un hueco de protagonista que degrada a foto en los modelos sin render, y la tabla de dimensiones para las once. Sin estructura propuesta todavía.
+- **`MachineFamily`: la imagen se come el texto en los tiles laterales** — reproducido y medido, con las dos salidas posibles anotadas en [`docs/ROADMAP.md`](./ROADMAP.md). Sin decidir.
+- **`spike/rotation-frames-70`** — rama local sin pushear, ya superada por lo que entró en #239. Se puede borrar.
 - **Los dos bails de `Form/Component.tsx`** siguen en `EXPECTED` de `scripts/validate-react-compiler.mjs`, marcados como deuda nuestra y no como limitación del compilador.
 - **`docs/blocks/README.md`** se sigue escribiendo a mano y está desactualizado; debería derivarse del `Completeness:` de cada README, como ya hace `scripts/generate-context-index.mjs` con los índices de contexto.
 - **Voz de marca y audiencias** son esqueletos con preguntas en `docs/business/`, pendientes de cerrar con el cliente.
