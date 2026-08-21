@@ -47,7 +47,7 @@ Note: `insights` was formerly `posts` — old references to a `posts` collection
 
 ## Local infrastructure
 
-`podman-compose up -d` (o `docker-compose up -d`) levanta Postgres + MinIO usando el `.env` file. En desarrollo normal solo se necesita la DB y MinIO — el app corre con `pnpm dev`.
+`podman-compose up -d` (o `docker-compose up -d`) levanta Postgres usando el `.env` file. Es el único servicio local: el storage apunta a R2 en todos los entornos, así que no hay object store local que levantar. El app corre con `pnpm dev`.
 
 ### Monday.com en local
 

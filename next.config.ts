@@ -38,10 +38,10 @@ const nextConfig: NextConfig = {
       },
     ],
     qualities: [100],
-    // Media now resolves to S3_PUBLIC_URL, which locally is MinIO on
-    // http://localhost:9000. Next 16 refuses to optimize images from a local IP
-    // unless this is set, so without it every image 500s in dev. Development
-    // only — in production S3_PUBLIC_URL is the R2 custom domain.
+    // Next 16 refuses to optimize images served from a local address unless
+    // this is set. S3_PUBLIC_URL is the R2 custom domain now, so it no longer
+    // covers media — but it still covers the no-credentials fallback, where
+    // Payload serves from /api/media/file/... on localhost. Development only.
     dangerouslyAllowLocalIP: process.env.NODE_ENV === 'development',
     remotePatterns: [
       ...[NEXT_PUBLIC_SERVER_URL /* 'https://example.com' */].map((item) => {
@@ -52,7 +52,7 @@ const nextConfig: NextConfig = {
           protocol: url.protocol.replace(':', '') as 'http' | 'https',
         }
       }),
-      // S3-compatible storage CDN (Cloudflare R2 in prod, MinIO locally)
+      // S3-compatible storage CDN (Cloudflare R2)
       ...(process.env.S3_PUBLIC_URL
         ? (() => {
             const s3Url = process.env.S3_PUBLIC_URL as string

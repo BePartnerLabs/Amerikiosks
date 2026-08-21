@@ -3,9 +3,9 @@ import { posix } from 'node:path'
 /**
  * Public URL for a stored media file, on the bucket's own host.
  *
- * Both hosts in play are path-style — the R2 custom domain
- * (`https://cdn.amerikiosks.com/<bucket>/<key>`) and MinIO locally — so the
- * bucket is always part of the path. Only the last path segment is encoded,
+ * The R2 custom domain is path-style (`https://cdn.amerikiosks.com/<bucket>/
+ * <key>`), so the bucket is always part of the path. Only the last segment is
+ * encoded,
  * matching what @payloadcms/storage-s3 does internally; several files in the
  * bucket have spaces and non-ASCII whitespace in their names.
  *
