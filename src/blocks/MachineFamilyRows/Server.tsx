@@ -8,6 +8,7 @@ import type {
   MachineFamilyRowsBlock as MachineFamilyRowsBlockProps,
   Media,
 } from '@/payload-types'
+import { featuredHighlight } from '@/utilities/featuredHighlight'
 import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 import { MachineFamilyRowsBlock } from './Component'
 import type { FamilyRow } from './types'
@@ -60,10 +61,11 @@ export const MachineFamilyRowsServer: React.FC<MachineFamilyRowsBlockProps> = as
       select: {
         name: true,
         slug: true,
-        tagline: true,
-        description: true,
         ctaLabel: true,
         thumbnail: true,
+        // Text only. `highlights: true` would pull each item's image as well —
+        // media documents this row never renders.
+        highlights: { items: { title: true, description: true, featured: true } },
       },
     }),
     // Only the count matters, so no machine is hydrated: depth 0 leaves the
@@ -89,7 +91,7 @@ export const MachineFamilyRowsServer: React.FC<MachineFamilyRowsBlockProps> = as
       id: String(family.id),
       name: family.name,
       slug: family.slug ?? '',
-      tagline: family.tagline ?? family.description ?? null,
+      featured: featuredHighlight(family),
       imageUrl: mediaUrl(family.thumbnail, ROW_IMAGE_WIDTH),
       ctaLabel: family.ctaLabel ?? null,
       modelCount: countById.get(String(family.id)) ?? 0,

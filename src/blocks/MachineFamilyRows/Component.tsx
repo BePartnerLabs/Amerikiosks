@@ -83,7 +83,16 @@ export const MachineFamilyRowsBlock: React.FC<Props> = ({
                         : [family.modelCount, countEyebrow].filter(Boolean).join(' ')}
                     </p>
                     <p className="ak-family-rows__name">{family.name}</p>
-                    {family.tagline && <p className="ak-family-rows__tagline">{family.tagline}</p>}
+                    {family.featured && (
+                      <>
+                        <p className="ak-family-rows__featured">{family.featured.title}</p>
+                        {family.featured.description && (
+                          <p className="ak-family-rows__featured-text">
+                            {family.featured.description}
+                          </p>
+                        )}
+                      </>
+                    )}
                   </div>
 
                   <span

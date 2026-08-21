@@ -131,7 +131,16 @@
   margin: 0 0 0.5rem;
 }
 
-.ak-family-rows__tagline {
+.ak-family-rows__featured {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--_rows-heading);
+  max-width: 52ch;
+  margin: 0 0 0.25rem;
+}
+
+.ak-family-rows__featured-text {
   font-size: 0.9375rem;
   line-height: 1.5;
   color: var(--_rows-text-muted);

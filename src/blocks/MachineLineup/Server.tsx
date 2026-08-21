@@ -7,6 +7,7 @@ import type {
   MachineLineupBlock as MachineLineupBlockProps,
   Media,
 } from '@/payload-types'
+import { featuredHighlight } from '@/utilities/featuredHighlight'
 import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 import { getServerSideURL } from '@/utilities/getURL'
 import { machinesPath } from '@/utilities/localeUrl'
@@ -18,25 +19,6 @@ const mediaUrl = (value: unknown, width: number): string | null => {
   const media = value as Media
   if (!media.url) return null
   return getBestMediaUrl(media, width) ?? media.url
-}
-
-/**
- * The characteristic each family leads with.
- *
- * `featured` is the editor's explicit pick. Falling back to the first item
- * matters: without it, a family nobody remembered to flag would drop out of the
- * scroll sequence entirely rather than merely show a less apt line.
- */
-const featuredHighlight = (family: MachineFamily): LineupFamily['featured'] => {
-  const items = (family.highlights?.items ?? []).filter((item) => item.title)
-  if (!items.length) return null
-
-  const picked = items.find((item) => 'featured' in item && item.featured) ?? items[0]
-
-  return {
-    title: picked.title as string,
-    description: picked.description ?? null,
-  }
 }
 
 export const MachineLineupServer: React.FC<MachineLineupBlockProps> = async (props) => {
