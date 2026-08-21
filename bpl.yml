@@ -1,8 +1,8 @@
-# bpl.yml — binds this repository to its BPL Context Manager project.
+# Links this repository to a BPL project. Written by init_project.
 #
-# An identifier, not a credential: reading it grants nothing. Every call that
-# acts in the `project` layer still carries the caller's token, and the server
-# checks this id against the team that token names.
+# The id is an identifier, not a credential: reading it grants nothing. Every
+# call naming it is still checked against the team your token names — a project
+# belonging to another team is refused.
 #
-# Shown on the dashboard's Projects page (/dashboard/org/projects).
-project: 7f0788b8-f21c-49d1-bd37-31ec5202ab93
+# Project: Website
+project: 8d0e7813-3477-4933-aa10-03dddeec8d09
