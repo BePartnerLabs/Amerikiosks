@@ -31,10 +31,15 @@ const mediaUrl = (value: unknown, width: number): string | null => {
   return getBestMediaUrl(media, width) ?? media.url
 }
 
-const familySlugOf = (machine: Machine): string | null => {
+/**
+ * With `depth: 0` the relationship comes back as the raw id, which is all the
+ * count needs — so the id is what we group by, and no machine document is ever
+ * hydrated.
+ */
+const familyIdOf = (machine: Pick<Machine, 'family'>): string | null => {
   const family = machine.family
-  if (!family || typeof family !== 'object') return null
-  return (family as MachineFamily).slug ?? null
+  if (family === null || family === undefined) return null
+  return String(typeof family === 'object' ? (family as MachineFamily).id : family)
 }
 
 export const MachineFamilyRowsServer: React.FC<MachineFamilyRowsBlockProps> = async (props) => {
@@ -49,22 +54,34 @@ export const MachineFamilyRowsServer: React.FC<MachineFamilyRowsBlockProps> = as
       limit: 0,
       overrideAccess: false,
       locale: locale as 'en' | 'es',
+      // A row shows one image, and it is the family's own thumbnail. Without
+      // this, depth 1 also hydrates hoverThumbnail, heroLineupImage and an
+      // image per highlight — media documents nothing here reads.
+      select: {
+        name: true,
+        slug: true,
+        tagline: true,
+        description: true,
+        ctaLabel: true,
+        thumbnail: true,
+      },
     }),
-    // Every machine once, then grouped — rather than one count query per
-    // family. Five round trips to answer "how many" is five too many.
+    // Only the count matters, so no machine is hydrated: depth 0 leaves the
+    // relationship as an id and `select` drops every other field. One grouped
+    // pass rather than a count query per family.
     payload.find({
       collection: 'machines',
-      depth: 1,
+      depth: 0,
       limit: 0,
       overrideAccess: false,
-      locale: locale as 'en' | 'es',
+      select: { family: true },
     }),
   ])
 
-  const countBySlug = new Map<string, number>()
-  for (const machine of machineResult.docs as Machine[]) {
-    const slug = familySlugOf(machine)
-    if (slug) countBySlug.set(slug, (countBySlug.get(slug) ?? 0) + 1)
+  const countById = new Map<string, number>()
+  for (const machine of machineResult.docs as Pick<Machine, 'family'>[]) {
+    const id = familyIdOf(machine)
+    if (id) countById.set(id, (countById.get(id) ?? 0) + 1)
   }
 
   const families: FamilyRow[] = (familyResult.docs as MachineFamily[])
@@ -75,7 +92,7 @@ export const MachineFamilyRowsServer: React.FC<MachineFamilyRowsBlockProps> = as
       tagline: family.tagline ?? family.description ?? null,
       imageUrl: mediaUrl(family.thumbnail, ROW_IMAGE_WIDTH),
       ctaLabel: family.ctaLabel ?? null,
-      modelCount: countBySlug.get(family.slug ?? '') ?? 0,
+      modelCount: countById.get(String(family.id)) ?? 0,
     }))
     // A family with no slug has nowhere to link; one with no thumbnail would
     // render an empty image well next to its text. Neither is worth showing.
