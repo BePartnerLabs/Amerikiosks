@@ -32,6 +32,11 @@ Working outline for the final content-editor usage manual. Each bullet is a topi
   - **Model Lines:** leave "Form to open" empty for the normal behaviour (panel → machine family page); set a form and every panel opens that form in the modal drawer instead
 - FAQ + Form, Claim Form, Support Hub, Machines Listing — specialized blocks
 - **Support Hub → Claim Form: the `machine_id` link** — the kiosk's printed QR code encodes `machine_id` on the Support Hub page's own URL; Support Hub automatically carries it over onto the "Request a refund" button so the claim ends up tagged with the originating kiosk (visible in `/admin` and forwarded to Monday.com's "Kiosk ID" column, if that integration is enabled — see Settings below). Nothing to configure — this is automatic as long as the QR code itself still points at the Support Hub page with `?machine_id=...`.
+- **Familias en Filas (Machine Family Rows)** — muestra **todas** las familias de máquinas, una fila cada una. No se elige cuáles: el bloque las trae solas, ordenadas por nombre, así que una familia nueva aparece sin tocar la página.
+  - **La cantidad de modelos se cuenta sola** desde la colección de máquinas. No hay número que escribir ni que corregir.
+  - **Una familia sin modelos publicados** muestra "Próximamente" en vez del conteo, y su botón cambia. Se apaga solo el día que se publica el primer modelo de esa familia.
+  - Lo que se escribe en el bloque son solo las etiquetas (título, y los textos de "modelos", "Próximamente" y los botones). El nombre, la imagen y la característica de cada familia salen de la familia misma.
+  - **La característica que se muestra** es la que esté marcada como destacada dentro de la familia; si no hay ninguna marcada, usa la primera de la lista.
 - Projects Showcase, Insights Showcase — pull from other collections, not manually authored
 
 ## 4. The Link field — three ways a button/link can behave

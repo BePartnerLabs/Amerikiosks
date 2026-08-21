@@ -10,3 +10,4 @@ Consolidated index of all documented blocks and globals.
 | [Hero — HighImpact](../../src/heros/HighImpact/README.md) | Hero Variant | 38% | |
 | [Trust Strip](../../src/blocks/TrustStrip/README.md) | Layout Block | 76% | |
 | [Metrics](../../src/blocks/Metrics/README.md) | Layout Block | 76% | Heading + animated stats + optional CTA |
+| [Machine Family Rows](../../src/blocks/MachineFamilyRows/README.md) | Layout Block | 0% | Todas las familias en fila; conteo y estado «próximamente» derivados. Faltan capturas |
