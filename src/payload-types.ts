@@ -283,6 +283,7 @@ export interface Page {
         | ModelLinesBlock
         | MachineLineupBlock
         | MachineFamilyBlock
+        | MachineFamilyRowsBlock
         | MachineModelsBlock
         | ProcessStepsBlock
         | StatementBlock
@@ -1826,6 +1827,40 @@ export interface MachineFamilyBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MachineFamilyRowsBlock".
+ */
+export interface MachineFamilyRowsBlock {
+  /**
+   * Small label above the heading.
+   */
+  eyebrow?: string | null;
+  heading: string;
+  /**
+   * One or two lines under the heading. Optional.
+   */
+  intro?: string | null;
+  /**
+   * Follows the model count on each row. The number itself is counted from the machines collection, never typed, so it cannot fall out of sync.
+   */
+  countEyebrow?: string | null;
+  /**
+   * Used when the family has no label of its own. A family's own CTA label wins.
+   */
+  ctaLabel?: string | null;
+  /**
+   * Shown instead of the model count when a family has no published models yet. It goes away on its own the day the first one is published.
+   */
+  soonLabel?: string | null;
+  /**
+   * The link for a family with no published models. Its page still has a hero and its characteristics, so it stays a link — it just cannot promise models.
+   */
+  soonCtaLabel?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'machineFamilyRows';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "MachineModelsBlock".
  */
 export interface MachineModelsBlock {
@@ -2697,6 +2732,7 @@ export interface PagesSelect<T extends boolean = true> {
         modelLines?: T | ModelLinesBlockSelect<T>;
         machineLineup?: T | MachineLineupBlockSelect<T>;
         machineFamily?: T | MachineFamilyBlockSelect<T>;
+        machineFamilyRows?: T | MachineFamilyRowsBlockSelect<T>;
         machineModels?: T | MachineModelsBlockSelect<T>;
         processSteps?: T | ProcessStepsBlockSelect<T>;
         statement?: T | StatementBlockSelect<T>;
@@ -3001,6 +3037,21 @@ export interface MachineFamilyBlockSelect<T extends boolean = true> {
   leadEyebrow?: T;
   showModelCount?: T;
   countEyebrow?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MachineFamilyRowsBlock_select".
+ */
+export interface MachineFamilyRowsBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  intro?: T;
+  countEyebrow?: T;
+  ctaLabel?: T;
+  soonLabel?: T;
+  soonCtaLabel?: T;
   id?: T;
   blockName?: T;
 }

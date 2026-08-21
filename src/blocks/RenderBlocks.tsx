@@ -23,6 +23,7 @@ import { StatementBlock } from '@/blocks/Statement/Component'
 import { SupportHubBlock } from '@/blocks/SupportHub/Component'
 import { TrustStripServer } from '@/blocks/TrustStrip/Server'
 import type { Page } from '@/payload-types'
+import { MachineFamilyRowsServer } from './MachineFamilyRows/Server'
 
 const blockComponents = {
   archive: ArchiveBlock,
@@ -44,6 +45,7 @@ const blockComponents = {
   modelLines: ModelLinesServer,
   machineLineup: MachineLineupServer,
   machineFamily: MachineFamilyServer,
+  machineFamilyRows: MachineFamilyRowsServer,
   machineModels: MachineModelsServer,
   statement: StatementBlock,
   supportHub: SupportHubBlock,

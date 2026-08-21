@@ -79,6 +79,7 @@ import * as migration_20260806_011354_machine_family_highlight_featured from './
 import * as migration_20260806_012848_machine_family_block from './20260806_012848_machine_family_block';
 import * as migration_20260806_014441_machine_models_block from './20260806_014441_machine_models_block';
 import * as migration_20260809_192951_machine_frame_sequence from './20260809_192951_machine_frame_sequence';
+import * as migration_20260821_025700_machine_family_rows_block from './20260821_025700_machine_family_rows_block';
 
 export const migrations = [
   {
@@ -484,6 +485,11 @@ export const migrations = [
   {
     up: migration_20260809_192951_machine_frame_sequence.up,
     down: migration_20260809_192951_machine_frame_sequence.down,
-    name: '20260809_192951_machine_frame_sequence'
+    name: '20260809_192951_machine_frame_sequence',
+  },
+  {
+    up: migration_20260821_025700_machine_family_rows_block.up,
+    down: migration_20260821_025700_machine_family_rows_block.down,
+    name: '20260821_025700_machine_family_rows_block'
   },
 ];
