@@ -20,25 +20,6 @@ const mediaUrl = (value: unknown, width: number): string | null => {
   return getBestMediaUrl(media, width) ?? media.url
 }
 
-/**
- * The characteristic each family leads with.
- *
- * `featured` is the editor's explicit pick. Falling back to the first item
- * matters: without it, a family nobody remembered to flag would drop out of the
- * scroll sequence entirely rather than merely show a less apt line.
- */
-const featuredHighlight = (family: MachineFamily): LineupFamily['featured'] => {
-  const items = (family.highlights?.items ?? []).filter((item) => item.title)
-  if (!items.length) return null
-
-  const picked = items.find((item) => 'featured' in item && item.featured) ?? items[0]
-
-  return {
-    title: picked.title as string,
-    description: picked.description ?? null,
-  }
-}
-
 export const MachineLineupServer: React.FC<MachineLineupBlockProps> = async (props) => {
   const payload = await getPayload({ config })
   const locale = await getLocale()
@@ -63,7 +44,7 @@ export const MachineLineupServer: React.FC<MachineLineupBlockProps> = async (pro
       // scene and no longer refers to a mouse hover.
       frontUrl: mediaUrl(family.thumbnail, 720),
       turnUrl: mediaUrl(family.hoverThumbnail, 720),
-      featured: featuredHighlight(family),
+      tagline: family.tagline ?? null,
     }))
     .filter((family) => family.slug && family.frontUrl)
 
@@ -83,7 +64,7 @@ export const MachineLineupServer: React.FC<MachineLineupBlockProps> = async (pro
     hasPart: families.map((family) => ({
       '@type': 'Thing',
       name: family.name,
-      description: family.featured?.title ?? undefined,
+      description: family.tagline ?? undefined,
       url: `${siteUrl}${machinesPath(locale as 'en' | 'es', family.slug)}`,
     })),
   }

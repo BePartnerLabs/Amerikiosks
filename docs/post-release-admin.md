@@ -192,6 +192,87 @@ Trabajar en local para esta parte tiene dos ventajas sobre hacerlo en producció
 - **Cada escritura por locale devuelve el `id` de cada item del array.** Es el gotcha de [`docs/patterns/payload-localized-arrays.md`](./patterns/payload-localized-arrays.md): un `PATCH ...?locale=es` sin los `id` borra el contenido del otro idioma y responde `200 OK`. Silencioso, y en producción es pérdida de datos.
 - **En producción, leer y enseñar antes de escribir.** El paso de aplicar se aprueba antes, no después.
 
+## 6. Las familias en filas (`machineFamilyRows`) — rama `feat/machines-family-rows`
+
+Este bloque reemplaza las cinco secciones `machineFamily` de `/machines`. **Nada
+de esto pasa solo**: el release crea las tablas y las columnas, pero la página
+sigue mostrando lo de antes hasta que se haga lo de acá.
+
+El orden importa. Los pasos 6.1 a 6.3 van juntos en una sola pasada, porque entre
+sacar los bloques viejos y terminar de cargar el nuevo la página queda a medias.
+
+### 6.1 Colocar el bloque y sacar los cinco viejos
+
+En `Pages → machines → Layout`:
+
+1. Agregar **Familias en Filas** donde hoy empiezan las secciones de familia
+   (entre la escena pinneada y el carousel de modelos).
+2. Borrar las **cinco** instancias de *Machine Family*.
+
+No se pierde contenido: esos cinco bloques solo guardaban la referencia a la
+familia y cuatro etiquetas. Nombre, tagline, características e imágenes viven en
+la colección `machine-families` y no se tocan.
+
+### 6.2 Cargar los siete textos, en los dos idiomas
+
+**Los `defaultValue` no van a aparecer.** Un default se aplica al crear el
+bloque; el que acabás de colocar ya existe, así que los campos van vacíos hasta
+que se tipeen. Si no se cargan, las filas salen sin encabezado y sin etiquetas.
+
+Los campos son `eyebrow`, `heading` (obligatorio), `intro`, `countEyebrow`,
+`countEyebrowOne`, `ctaLabel`, `soonLabel` y `soonCtaLabel`.
+
+**`countEyebrowOne` existe por una razón concreta**: es la etiqueta cuando la
+familia tiene exactamente un modelo. Zeta tiene uno hoy. Sin ese campo la fila
+dice «1 modelos en línea».
+
+### 6.3 Verificar la escena pinneada
+
+La escena de arriba cambió en el mismo release: ahora encabeza con el **nombre de
+la familia** y usa el **tagline** como cuerpo, en vez de la característica
+destacada. Los diez taglines (cinco familias × dos idiomas) están cargados, así
+que no debería quedar nada en blanco — pero es lo primero que hay que mirar
+después de desplegar, porque es el único bloque que ya estaba en producción y
+cambió.
+
+### 6.4 Los renders recortados (`rowImage`) — se puede hacer después
+
+Campo nuevo en cada familia. Es lo que hace que la máquina se salga por arriba de
+su tarjeta.
+
+**No bloquea el release.** El respaldo es por familia: una línea sin `rowImage`
+usa su `thumbnail` y se dibuja plana adentro de la tarjeta. Se pueden ir cargando
+de a una.
+
+Lo que tiene que cumplir el archivo, para pedírselo al cliente:
+
+- Recortado **a ras en los cuatro lados**, sin margen transparente.
+- **Aspecto natural de cada familia**, sin lienzo común — las máquinas tienen
+  huellas distintas y eso está bien.
+- Lado largo **≥1600px**.
+- Misma cámara que los renders actuales.
+- **Sin sombra de piso quemada en el PNG**: el CSS pone la suya, una incluida se
+  duplica y además rompe el recorte a ras.
+
+**No se recorta el `thumbnail` que ya existe.** Ese archivo lo comparten otros
+cuatro consumidores —entre ellos la escena pinneada de esta misma página y el
+carousel del home—, el recorte de Payload es destructivo y no lo deshace ningún
+rollback de código. Por eso el campo es aparte.
+
+### 6.5 Marcar la característica destacada de Kappa
+
+Es la única de las cinco sin ninguna marcada, así que cae al respaldo y muestra
+la primera de su lista. Con el cambio de la escena, esa característica ahora solo
+se ve en la fila — que es justamente donde tiene que decir en qué se distingue
+esa línea. Diez segundos, ver la sección 2 de este documento.
+
+### Lo que no hay que hacer
+
+**No vaciar los `ctaLabel` de las familias.** Las cinco tienen etiquetas propias
+y buenas («Explore our Alpha Models»), y sirven al carousel del home y a las
+secciones de familia. El `ctaLabel` del bloque es el respaldo para una familia
+futura, no el que manda.
+
 ## Lo que sigue en código, no en `/admin`
 
 Anotado para que no se pierda entre sesiones:

@@ -12,6 +12,15 @@ export type LineupFamily = {
   frontUrl: string | null
   /** `hoverThumbnail` — three-quarter view; the scroll crossfades into it. */
   turnUrl: string | null
-  /** The `featured` highlight, or the first one when none is flagged. */
-  featured: { title: string; description: string | null } | null
+  /**
+   * The family's positioning line. The scene leads with the family itself now —
+   * name as the heading, tagline as the body — because the rows below it lead
+   * with the featured characteristic, and both blocks showing the same two
+   * strings one under the other said the same thing twice.
+   *
+   * The two registers are not interchangeable: a tagline is a ~20-word
+   * positioning paragraph, a characteristic is a hard fact with a number in it.
+   * A full-bleed scene wants the first; a compact row wants the second.
+   */
+  tagline: string | null
 }

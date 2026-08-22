@@ -1,0 +1,214 @@
+/* ═══════════════════════════════════════════════════════════════
+   Machine Family Rows block — every family, one compact row each.
+   ═══════════════════════════════════════════════════════════════ */
+
+.ak-family-rows {
+  /* Level 2 → private slots. Every colour below channels a brand token: the DS
+     validator forbids literals and raw --ak-* in surface properties. */
+  --_rows-accent: var(--ak-accent);
+  --_rows-heading: var(--ak-color-heading);
+  --_rows-muted: var(--ak-color-muted);
+  --_rows-text-muted: var(--bp-color-text-muted);
+  --_rows-surface: var(--ak-color-surface);
+  --_rows-border: var(--ak-surface-border);
+  --_rows-border-hover: var(--ak-surface-border-hover);
+  --_rows-shadow: var(--ak-surface-shadow-sm);
+  --_rows-shadow-hover: var(--ak-surface-shadow-sm-hover);
+  --_rows-drop-light: color-mix(in srgb, var(--brand-color-palette-navy-900) 22%, transparent);
+
+  /* The image well. Fixed, and wider than the widest machine's own aspect
+     (0.66) — that is what keeps `object-fit: contain` limited by height rather
+     than by width. It is also the number ROW_IMAGE_WIDTH in Server.tsx is
+     chosen against; if this changes, that changes. */
+  --_rows-well: 11.5rem;
+
+  /* How far the machine leans out over the top of its card. Two rules depend on
+     it and they are coupled: the render's height, and the gap between rows. If
+     the gap were ever smaller than this, the machine would land on the card
+     above instead of in the space between them — so the gap is a hard floor,
+     not a taste setting. 2.5rem over an 11rem row is the same 22% proportion
+     `machineModels` uses with 4rem over 18rem. */
+  --_rows-overhang: 2.5rem;
+
+  /* What decides whether three columns still fit is the row's own width, not
+     the viewport's, so the breakpoint at the bottom of this file is a container
+     query. This block root is full-bleed, so its inline size tracks the
+     viewport and 46rem keeps the meaning it had as a media query. */
+  container-type: inline-size;
+  container-name: family-rows;
+
+  background: var(--_rows-surface);
+}
+
+.ak-family-rows__inner {
+  padding-block: clamp(3.25rem, 8vw, 6rem);
+}
+
+.ak-family-rows__head {
+  margin-bottom: var(--bp-space-8, 2rem);
+}
+
+.ak-family-rows__eyebrow {
+  font-family: var(--bp-font-family-mono, ui-monospace, monospace);
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--_rows-accent);
+  margin: 0 0 0.5rem;
+}
+
+.ak-family-rows__heading {
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.06;
+  text-wrap: balance;
+  color: var(--_rows-heading);
+  margin: 0;
+}
+
+.ak-family-rows__intro {
+  color: var(--_rows-muted);
+  max-width: 58ch;
+  margin: 0.75rem 0 0;
+}
+
+.ak-family-rows__list {
+  display: flex;
+  flex-direction: column;
+  /* Floor, not preference: see --_rows-overhang. */
+  gap: var(--bp-space-12, 3rem);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ak-family-rows__row {
+  display: grid;
+  grid-template-columns: var(--_rows-well) 1fr auto;
+  align-items: center;
+  gap: var(--bp-space-8, 2rem);
+  padding: var(--bp-space-6, 1.5rem);
+  min-height: 11rem;
+  border: 1px solid var(--_rows-border);
+  border-radius: var(--bp-radius-lg, 0.75rem);
+  background: var(--_rows-surface);
+  box-shadow: var(--_rows-shadow);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color var(--bp-duration-normal, 220ms) var(--bp-ease, ease),
+    box-shadow var(--bp-duration-normal, 220ms) var(--bp-ease, ease),
+    transform 350ms var(--bp-ease, ease);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ak-family-rows__row:hover,
+  .ak-family-rows__row:focus-visible {
+    transform: translateY(-3px);
+  }
+}
+
+.ak-family-rows__row:hover,
+.ak-family-rows__row:focus-visible {
+  border-color: var(--_rows-border-hover);
+  box-shadow: var(--_rows-shadow-hover);
+}
+
+.ak-family-rows__well {
+  position: relative;
+  align-self: stretch;
+}
+
+/* Only a family whose `rowImage` has arrived leans out. The `thumbnail`
+   fallback is a square canvas with the machine at 29-53% of its width, so it
+   never reaches the edge and there would be nothing to lean. The negative
+   margins pull the well past the row's padding box: up by the overhang, down to
+   the card's own bottom edge, so what sticks out does so only over the top. */
+.ak-family-rows__row--leans .ak-family-rows__well {
+  margin-block-start: calc(-1 * (var(--_rows-overhang) + var(--bp-space-6, 1.5rem)));
+  margin-block-end: calc(-1 * var(--bp-space-6, 1.5rem));
+}
+
+.ak-family-rows__shot {
+  object-fit: contain;
+  object-position: bottom center;
+}
+
+.ak-family-rows__row--leans .ak-family-rows__shot {
+  filter: drop-shadow(0 12px 18px var(--_rows-drop-light));
+}
+
+.ak-family-rows__badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--_rows-accent);
+  margin: 0 0 0.25rem;
+}
+
+/* A family with nothing published yet is not an alert — it reads as quiet
+   information, so it drops off the accent colour. */
+.ak-family-rows__badge--soon {
+  color: var(--_rows-muted);
+}
+
+.ak-family-rows__name {
+  font-size: var(--bp-text-xl, 1.375rem);
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--_rows-heading);
+  margin: 0 0 0.5rem;
+}
+
+.ak-family-rows__featured {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--_rows-heading);
+  max-width: 52ch;
+  margin: 0 0 0.25rem;
+}
+
+.ak-family-rows__featured-text {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--_rows-text-muted);
+  max-width: 62ch;
+  margin: 0;
+}
+
+.ak-family-rows__cta {
+  white-space: nowrap;
+}
+
+/* The three-column row cannot hold below ~46rem: the well plus a readable
+   measure plus a button does not fit. Image beside the text, CTA full width
+   under it — stacking the image on top would make each family nearly a full
+   screen, which is the scrolling this block exists to remove. */
+@container family-rows (max-width: 46rem) {
+  /* On the inner wrapper, not on .ak-family-rows: a container query only ever
+     matches descendants of its container, never the container element itself.
+     Everything below inherits the shrunken well from here. */
+  .ak-family-rows__inner {
+    --_rows-well: 6rem;
+  }
+
+  .ak-family-rows__row {
+    grid-template-columns: var(--_rows-well) 1fr;
+    gap: var(--bp-space-4, 1rem);
+    min-height: 0;
+    padding: var(--bp-space-4, 1rem);
+  }
+
+  .ak-family-rows__well {
+    min-height: 6rem;
+  }
+
+  .ak-family-rows__cta {
+    grid-column: 1 / -1;
+    width: 100%;
+    margin-top: var(--bp-space-3, 0.75rem);
+  }
+}

@@ -21,6 +21,7 @@ import { FormBlock } from '../../blocks/Form/config'
 import { FormatsGrid } from '../../blocks/FormatsGrid/config'
 import { InsightsShowcase } from '../../blocks/InsightsShowcase/config'
 import { MachineFamily } from '../../blocks/MachineFamily/config'
+import { MachineFamilyRows } from '../../blocks/MachineFamilyRows/config'
 import { MachineLineup } from '../../blocks/MachineLineup/config'
 import { MachineModels } from '../../blocks/MachineModels/config'
 import { MachinesListing } from '../../blocks/MachinesListing/config'
@@ -106,6 +107,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 ModelLines,
                 MachineLineup,
                 MachineFamily,
+                MachineFamilyRows,
                 MachineModels,
                 ProcessSteps,
                 Statement,

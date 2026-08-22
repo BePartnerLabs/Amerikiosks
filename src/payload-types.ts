@@ -283,6 +283,7 @@ export interface Page {
         | ModelLinesBlock
         | MachineLineupBlock
         | MachineFamilyBlock
+        | MachineFamilyRowsBlock
         | MachineModelsBlock
         | ProcessStepsBlock
         | StatementBlock
@@ -1714,6 +1715,10 @@ export interface MachineFamily {
    */
   thumbnail: number | Media;
   /**
+   * Front view cropped tight to the machine, for the rows on /machines where it leans out over the top of its card. A separate field on purpose: `thumbnail` is a square canvas with the machine at 29-53% of its width, and the lean-out needs the machine to reach the edge. Cropping `thumbnail` instead would also change the framing of the pinned scene on the same page and of the home carousel, which share that file. Leave it empty and the row falls back to `thumbnail`, flat inside its card.
+   */
+  rowImage?: (number | null) | Media;
+  /**
    * Optional side view — swaps in on hover/focus/active over the card. Leave empty to keep showing the front view only.
    */
   hoverThumbnail?: (number | null) | Media;
@@ -1823,6 +1828,44 @@ export interface MachineFamilyBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'machineFamily';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MachineFamilyRowsBlock".
+ */
+export interface MachineFamilyRowsBlock {
+  /**
+   * Small label above the heading.
+   */
+  eyebrow?: string | null;
+  heading: string;
+  /**
+   * One or two lines under the heading. Optional.
+   */
+  intro?: string | null;
+  /**
+   * Follows the model count on each row. The number itself is counted from the machines collection, never typed, so it cannot fall out of sync.
+   */
+  countEyebrow?: string | null;
+  /**
+   * The same label for a family with exactly one model. Without it the row reads "1 models in line" — and it is not hypothetical: one family has exactly one model today. Leave it empty to use the plural label for every count.
+   */
+  countEyebrowOne?: string | null;
+  /**
+   * Used when the family has no label of its own. A family's own CTA label wins.
+   */
+  ctaLabel?: string | null;
+  /**
+   * Shown instead of the model count when a family has no published models yet. It goes away on its own the day the first one is published.
+   */
+  soonLabel?: string | null;
+  /**
+   * The link for a family with no published models. Its page still has a hero and its characteristics, so it stays a link — it just cannot promise models.
+   */
+  soonCtaLabel?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'machineFamilyRows';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2697,6 +2740,7 @@ export interface PagesSelect<T extends boolean = true> {
         modelLines?: T | ModelLinesBlockSelect<T>;
         machineLineup?: T | MachineLineupBlockSelect<T>;
         machineFamily?: T | MachineFamilyBlockSelect<T>;
+        machineFamilyRows?: T | MachineFamilyRowsBlockSelect<T>;
         machineModels?: T | MachineModelsBlockSelect<T>;
         processSteps?: T | ProcessStepsBlockSelect<T>;
         statement?: T | StatementBlockSelect<T>;
@@ -3001,6 +3045,22 @@ export interface MachineFamilyBlockSelect<T extends boolean = true> {
   leadEyebrow?: T;
   showModelCount?: T;
   countEyebrow?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MachineFamilyRowsBlock_select".
+ */
+export interface MachineFamilyRowsBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  intro?: T;
+  countEyebrow?: T;
+  countEyebrowOne?: T;
+  ctaLabel?: T;
+  soonLabel?: T;
+  soonCtaLabel?: T;
   id?: T;
   blockName?: T;
 }
@@ -3407,6 +3467,7 @@ export interface MachineFamiliesSelect<T extends boolean = true> {
   heroLineupImage?: T;
   description?: T;
   thumbnail?: T;
+  rowImage?: T;
   hoverThumbnail?: T;
   ctaLabel?: T;
   highlights?:
