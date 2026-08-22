@@ -21,6 +21,13 @@
      chosen against; if this changes, that changes. */
   --_rows-well: 13rem;
 
+  /* What decides whether three columns still fit is the row's own width, not
+     the viewport's, so the breakpoint at the bottom of this file is a container
+     query. This block root is full-bleed, so its inline size tracks the
+     viewport and 46rem keeps the meaning it had as a media query. */
+  container-type: inline-size;
+  container-name: family-rows;
+
   background: var(--_rows-surface);
 }
 
@@ -156,8 +163,11 @@
    measure plus a button does not fit. Image beside the text, CTA full width
    under it — stacking the image on top would make each family nearly a full
    screen, which is the scrolling this block exists to remove. */
-@media (max-width: 46rem) {
-  .ak-family-rows {
+@container family-rows (max-width: 46rem) {
+  /* On the inner wrapper, not on .ak-family-rows: a container query only ever
+     matches descendants of its container, never the container element itself.
+     Everything below inherits the shrunken well from here. */
+  .ak-family-rows__inner {
     --_rows-well: 6rem;
   }
 

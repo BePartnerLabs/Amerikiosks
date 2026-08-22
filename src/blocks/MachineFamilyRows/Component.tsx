@@ -9,6 +9,7 @@ type Props = {
   heading: string
   intro: string | null
   countEyebrow: string | null
+  countEyebrowOne: string | null
   ctaLabel: string | null
   soonLabel: string | null
   soonCtaLabel: string | null
@@ -25,6 +26,7 @@ export const MachineFamilyRowsBlock: React.FC<Props> = ({
   heading,
   intro,
   countEyebrow,
+  countEyebrowOne,
   ctaLabel,
   soonLabel,
   soonCtaLabel,
@@ -48,6 +50,12 @@ export const MachineFamilyRowsBlock: React.FC<Props> = ({
             // The whole state hangs off this one derived boolean: an editor
             // cannot leave a "coming soon" label up after the first model ships.
             const soon = family.modelCount === 0
+            // Spanish and English both break at one, and one is not a corner
+            // case here — a family has exactly one model today. Falls back to
+            // the plural label so an empty field degrades to the old wording
+            // rather than to a bare number.
+            const countLabel =
+              family.modelCount === 1 ? (countEyebrowOne ?? countEyebrow) : countEyebrow
 
             return (
               <li
@@ -78,9 +86,13 @@ export const MachineFamilyRowsBlock: React.FC<Props> = ({
                     <p
                       className={`ak-family-rows__badge${soon ? ' ak-family-rows__badge--soon' : ''}`}
                     >
+                      {/* Not filter(Boolean): that drops a zero. It cannot reach
+                          here today because `soon` intercepts it, but the day the
+                          soon state keys off anything else the count would
+                          vanish and leave the label bare. */}
                       {soon
                         ? soonLabel
-                        : [family.modelCount, countEyebrow].filter(Boolean).join(' ')}
+                        : `${family.modelCount}${countLabel ? ` ${countLabel}` : ''}`}
                     </p>
                     <p className="ak-family-rows__name">{family.name}</p>
                     {family.featured && (

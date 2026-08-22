@@ -61,6 +61,7 @@ const blockProps = {
   heading: 'Our lines',
   intro: null,
   countEyebrow: 'models in line',
+  countEyebrowOne: 'model in line',
   ctaLabel: 'View the line',
   soonLabel: 'Coming soon',
   soonCtaLabel: 'Explore the line',
@@ -179,6 +180,30 @@ describe('MachineFamilyRowsBlock', () => {
     expect(screen.getByText('2 models in line')).toBeInTheDocument()
     expect(screen.getByText('View the line')).toBeInTheDocument()
     expect(screen.queryByText('Coming soon')).not.toBeInTheDocument()
+  })
+
+  it('uses the singular label at exactly one — the count that made this field exist', () => {
+    render(
+      <MachineFamilyRowsBlock
+        {...blockProps}
+        families={[row({ modelCount: 1 })]}
+      />,
+    )
+
+    expect(screen.getByText('1 model in line')).toBeInTheDocument()
+    expect(screen.queryByText('1 models in line')).not.toBeInTheDocument()
+  })
+
+  it('falls back to the plural label when no singular one is set, rather than to a bare number', () => {
+    render(
+      <MachineFamilyRowsBlock
+        {...blockProps}
+        countEyebrowOne={null}
+        families={[row({ modelCount: 1 })]}
+      />,
+    )
+
+    expect(screen.getByText('1 models in line')).toBeInTheDocument()
   })
 
   it('swaps to the soon label and a link that cannot promise models when the count is zero', () => {

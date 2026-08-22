@@ -1844,6 +1844,10 @@ export interface MachineFamilyRowsBlock {
    */
   countEyebrow?: string | null;
   /**
+   * The same label for a family with exactly one model. Without it the row reads "1 models in line" — and it is not hypothetical: one family has exactly one model today. Leave it empty to use the plural label for every count.
+   */
+  countEyebrowOne?: string | null;
+  /**
    * Used when the family has no label of its own. A family's own CTA label wins.
    */
   ctaLabel?: string | null;
@@ -3049,6 +3053,7 @@ export interface MachineFamilyRowsBlockSelect<T extends boolean = true> {
   heading?: T;
   intro?: T;
   countEyebrow?: T;
+  countEyebrowOne?: T;
   ctaLabel?: T;
   soonLabel?: T;
   soonCtaLabel?: T;

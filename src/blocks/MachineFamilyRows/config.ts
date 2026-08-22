@@ -50,6 +50,16 @@ export const MachineFamilyRows: Block = {
       },
     },
     {
+      name: 'countEyebrowOne',
+      type: 'text',
+      localized: true,
+      defaultValue: 'model in line',
+      admin: {
+        description:
+          'The same label for a family with exactly one model. Without it the row reads "1 models in line" — and it is not hypothetical: one family has exactly one model today. Leave it empty to use the plural label for every count.',
+      },
+    },
+    {
       name: 'ctaLabel',
       type: 'text',
       localized: true,

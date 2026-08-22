@@ -108,6 +108,7 @@ export const MachineFamilyRowsServer: React.FC<MachineFamilyRowsBlockProps> = as
       heading={props.heading}
       intro={props.intro ?? null}
       countEyebrow={props.countEyebrow ?? null}
+      countEyebrowOne={props.countEyebrowOne ?? null}
       ctaLabel={props.ctaLabel ?? null}
       soonLabel={props.soonLabel ?? null}
       soonCtaLabel={props.soonCtaLabel ?? null}

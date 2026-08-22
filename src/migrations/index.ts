@@ -80,6 +80,7 @@ import * as migration_20260806_012848_machine_family_block from './20260806_0128
 import * as migration_20260806_014441_machine_models_block from './20260806_014441_machine_models_block';
 import * as migration_20260809_192951_machine_frame_sequence from './20260809_192951_machine_frame_sequence';
 import * as migration_20260821_025700_machine_family_rows_block from './20260821_025700_machine_family_rows_block';
+import * as migration_20260822_010712_machine_family_rows_count_singular from './20260822_010712_machine_family_rows_count_singular';
 
 export const migrations = [
   {
@@ -490,6 +491,11 @@ export const migrations = [
   {
     up: migration_20260821_025700_machine_family_rows_block.up,
     down: migration_20260821_025700_machine_family_rows_block.down,
-    name: '20260821_025700_machine_family_rows_block'
+    name: '20260821_025700_machine_family_rows_block',
+  },
+  {
+    up: migration_20260822_010712_machine_family_rows_count_singular.up,
+    down: migration_20260822_010712_machine_family_rows_count_singular.down,
+    name: '20260822_010712_machine_family_rows_count_singular'
   },
 ];

@@ -84,17 +84,17 @@ CTA no puede hacer es prometer modelos.
 - [ ] GA4 events implemented (see section below)
 
 ### Design System (BPL DS) CSS
-- [ ] The DS's own `--_*` privates are not read or overridden. (Your block's own `--_name-*` slots are the *approved* channel — `validate-ds-tokens.mjs` requires them.)
-- [ ] `--bp-*` base tokens not redeclared inside components
-- [ ] DS component markup copied verbatim from `ds.bepartnerlabs.com/components/<name>/` (if using a DS component)
-- [ ] All DS component customisation via `--<component>-*` class variables only — no source CSS modifications
-- [ ] `--ak-*` brand tokens not used directly in DS component CSS properties (use `--<component>-*` Level 2 overrides instead)
-- [ ] Custom project components (non-DS markup) may use `--ak-*` and `--bp-*` tokens directly
-- [ ] No inline `style=""` carrying CSS declarations. (Setting a **custom property** inline — `style={{ '--x': progress }}` — is allowed and often the only way to get runtime values into CSS.)
-- [ ] State expressed via ARIA attributes / native pseudo-classes — not `.is-active`, `.active`, `.hidden` style classes
-- [ ] Component breakpoints use `@container`; full-viewport layouts (hero, header, footer) use `@media`. Tick it if the block needs no breakpoints at all — sizing with `clamp()`/`min()` is better than either.
-- [ ] Animations respect `prefers-reduced-motion`
-- [ ] DS grid used correctly: content in `bp-content-grid` direct children with zone class (`breakout`, `popout`, `full-width`); no custom `max-width` containers duplicating grid behaviour — the presence of `bp-content-grid`, like `<section>` and `data-ga-block`, is enforced by `scripts/validate-block-markup.mjs` (pre-commit)
+- [x] The DS's own `--_*` privates are not read or overridden. (Your block's own `--_name-*` slots are the *approved* channel — `validate-ds-tokens.mjs` requires them.)
+- [x] `--bp-*` base tokens not redeclared inside components
+- [ ] DS component markup copied verbatim from `ds.bepartnerlabs.com/components/<name>/` (if using a DS component) — **open:** the row CTA uses `bp-btn--secondary`, which the DS documents but this repo's vendored `frontend.css` does not define, so it currently renders as the base `.bp-btn`. Pick an existing modifier or port the variant; either is a visual decision.
+- [x] All DS component customisation via `--<component>-*` class variables only — no source CSS modifications
+- [x] `--ak-*` brand tokens not used directly in DS component CSS properties (use `--<component>-*` Level 2 overrides instead)
+- [x] Custom project components (non-DS markup) may use `--ak-*` and `--bp-*` tokens directly
+- [x] No inline `style=""` carrying CSS declarations. (Setting a **custom property** inline — `style={{ '--x': progress }}` — is allowed and often the only way to get runtime values into CSS.)
+- [x] State expressed via ARIA attributes / native pseudo-classes — not `.is-active`, `.active`, `.hidden` style classes
+- [x] Component breakpoints use `@container`; full-viewport layouts (hero, header, footer) use `@media`. Tick it if the block needs no breakpoints at all — sizing with `clamp()`/`min()` is better than either.
+- [x] Animations respect `prefers-reduced-motion`
+- [x] DS grid used correctly: content in `bp-content-grid` direct children with zone class (`breakout`, `popout`, `full-width`); no custom `max-width` containers duplicating grid behaviour — the presence of `bp-content-grid`, like `<section>` and `data-ga-block`, is enforced by `scripts/validate-block-markup.mjs` (pre-commit)
 
 ### Delivery
 - [ ] Unit tests added
