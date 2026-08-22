@@ -99,6 +99,15 @@ export const MachineFamilies: CollectionConfig = {
       admin: { description: 'Front view — shown in the model-lines carousel cards.' },
     },
     {
+      name: 'rowImage',
+      type: 'upload',
+      relationTo: 'media',
+      admin: {
+        description:
+          'Front view cropped tight to the machine, for the rows on /machines where it leans out over the top of its card. A separate field on purpose: `thumbnail` is a square canvas with the machine at 29-53% of its width, and the lean-out needs the machine to reach the edge. Cropping `thumbnail` instead would also change the framing of the pinned scene on the same page and of the home carousel, which share that file. Leave it empty and the row falls back to `thumbnail`, flat inside its card.',
+      },
+    },
+    {
       name: 'hoverThumbnail',
       type: 'upload',
       relationTo: 'media',

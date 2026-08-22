@@ -14,12 +14,21 @@
   --_rows-border-hover: var(--ak-surface-border-hover);
   --_rows-shadow: var(--ak-surface-shadow-sm);
   --_rows-shadow-hover: var(--ak-surface-shadow-sm-hover);
+  --_rows-drop-light: color-mix(in srgb, var(--brand-color-palette-navy-900) 22%, transparent);
 
   /* The image well. Fixed, and wider than the widest machine's own aspect
      (0.66) — that is what keeps `object-fit: contain` limited by height rather
      than by width. It is also the number ROW_IMAGE_WIDTH in Server.tsx is
      chosen against; if this changes, that changes. */
-  --_rows-well: 13rem;
+  --_rows-well: 11.5rem;
+
+  /* How far the machine leans out over the top of its card. Two rules depend on
+     it and they are coupled: the render's height, and the gap between rows. If
+     the gap were ever smaller than this, the machine would land on the card
+     above instead of in the space between them — so the gap is a hard floor,
+     not a taste setting. 2.5rem over an 11rem row is the same 22% proportion
+     `machineModels` uses with 4rem over 18rem. */
+  --_rows-overhang: 2.5rem;
 
   /* What decides whether three columns still fit is the row's own width, not
      the viewport's, so the breakpoint at the bottom of this file is a container
@@ -67,7 +76,8 @@
 .ak-family-rows__list {
   display: flex;
   flex-direction: column;
-  gap: var(--bp-space-4, 1rem);
+  /* Floor, not preference: see --_rows-overhang. */
+  gap: var(--bp-space-12, 3rem);
   list-style: none;
   margin: 0;
   padding: 0;
@@ -110,9 +120,23 @@
   align-self: stretch;
 }
 
+/* Only a family whose `rowImage` has arrived leans out. The `thumbnail`
+   fallback is a square canvas with the machine at 29-53% of its width, so it
+   never reaches the edge and there would be nothing to lean. The negative
+   margins pull the well past the row's padding box: up by the overhang, down to
+   the card's own bottom edge, so what sticks out does so only over the top. */
+.ak-family-rows__row--leans .ak-family-rows__well {
+  margin-block-start: calc(-1 * (var(--_rows-overhang) + var(--bp-space-6, 1.5rem)));
+  margin-block-end: calc(-1 * var(--bp-space-6, 1.5rem));
+}
+
 .ak-family-rows__shot {
   object-fit: contain;
   object-position: bottom center;
+}
+
+.ak-family-rows__row--leans .ak-family-rows__shot {
+  filter: drop-shadow(0 12px 18px var(--_rows-drop-light));
 }
 
 .ak-family-rows__badge {

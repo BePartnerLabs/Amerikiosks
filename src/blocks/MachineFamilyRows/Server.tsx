@@ -14,16 +14,23 @@ import { MachineFamilyRowsBlock } from './Component'
 import type { FamilyRow } from './types'
 
 /**
- * 250, deliberately.
+ * 550, and the number matters — read this before changing it.
  *
  * `getBestMediaUrl` returns the FIRST generated size whose width covers the
- * target, in the order thumbnail (300) → square (500×500) → small (600) → …
- * `square` is a forced square crop: ask for 350 instead of 250 and the machine
- * is boxed back into a square, undoing the tight crop the family thumbnails
- * carry. The row renders the image at 13rem, so 250 is both correct and the
- * only value that stays on `thumbnail`.
+ * target, over thumbnail (300) → square (500x500) → small (600) → medium (900).
+ * `square` is a forced square crop, so it undoes a tight crop.
+ *
+ * That makes 301-500 a PIT, not a ceiling: anything in that range lands on
+ * `square`. Below it (<=300) you get `thumbnail`, above it (>=501) you get
+ * `small`, and both preserve the aspect ratio. Ask for 550 and you clear the
+ * pit into `small`.
+ *
+ * Why not stay under 300: the row renders the image at 11.5rem (184px), so a
+ * 300px source upscales on a 2x display. What 550 costs is origin bandwidth and
+ * resize CPU, not bytes on the wire — next/image re-optimises from whatever it
+ * is given and the delivered weight is set by `sizes`, not by this.
  */
-const ROW_IMAGE_WIDTH = 250
+const ROW_IMAGE_WIDTH = 550
 
 const mediaUrl = (value: unknown, width: number): string | null => {
   if (!value || typeof value !== 'object') return null
@@ -63,6 +70,7 @@ export const MachineFamilyRowsServer: React.FC<MachineFamilyRowsBlockProps> = as
         slug: true,
         ctaLabel: true,
         thumbnail: true,
+        rowImage: true,
         // Text only. `highlights: true` would pull each item's image as well —
         // media documents this row never renders.
         highlights: { items: { title: true, description: true, featured: true } },
@@ -92,7 +100,12 @@ export const MachineFamilyRowsServer: React.FC<MachineFamilyRowsBlockProps> = as
       name: family.name,
       slug: family.slug ?? '',
       featured: featuredHighlight(family),
-      imageUrl: mediaUrl(family.thumbnail, ROW_IMAGE_WIDTH),
+      // `rowImage` is the tight crop the lean-out needs; `thumbnail` is the
+      // square canvas every other consumer already uses. Per family, so a line
+      // whose artwork has not arrived still renders — flat, inside its card.
+      imageUrl:
+        mediaUrl(family.rowImage, ROW_IMAGE_WIDTH) ?? mediaUrl(family.thumbnail, ROW_IMAGE_WIDTH),
+      leansOut: Boolean(mediaUrl(family.rowImage, ROW_IMAGE_WIDTH)),
       ctaLabel: family.ctaLabel ?? null,
       modelCount: countById.get(String(family.id)) ?? 0,
     }))

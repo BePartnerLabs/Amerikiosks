@@ -65,7 +65,7 @@ export const MachineFamilyRowsBlock: React.FC<Props> = ({
                 <Link
                   href={{ pathname: '/machines/[family]', params: { family: family.slug } }}
                   locale={locale}
-                  className="ak-family-rows__row"
+                  className={`ak-family-rows__row${family.leansOut ? ' ak-family-rows__row--leans' : ''}`}
                   data-ga-event="machine_family_click"
                   data-ga-label={family.name}
                 >
@@ -76,7 +76,7 @@ export const MachineFamilyRowsBlock: React.FC<Props> = ({
                         alt=""
                         aria-hidden="true"
                         fill
-                        sizes="13rem"
+                        sizes="(max-width: 46rem) 6rem, 11.5rem"
                         className="ak-family-rows__shot"
                       />
                     )}

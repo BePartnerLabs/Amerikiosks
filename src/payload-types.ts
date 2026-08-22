@@ -1715,6 +1715,10 @@ export interface MachineFamily {
    */
   thumbnail: number | Media;
   /**
+   * Front view cropped tight to the machine, for the rows on /machines where it leans out over the top of its card. A separate field on purpose: `thumbnail` is a square canvas with the machine at 29-53% of its width, and the lean-out needs the machine to reach the edge. Cropping `thumbnail` instead would also change the framing of the pinned scene on the same page and of the home carousel, which share that file. Leave it empty and the row falls back to `thumbnail`, flat inside its card.
+   */
+  rowImage?: (number | null) | Media;
+  /**
    * Optional side view — swaps in on hover/focus/active over the card. Leave empty to keep showing the front view only.
    */
   hoverThumbnail?: (number | null) | Media;
@@ -3463,6 +3467,7 @@ export interface MachineFamiliesSelect<T extends boolean = true> {
   heroLineupImage?: T;
   description?: T;
   thumbnail?: T;
+  rowImage?: T;
   hoverThumbnail?: T;
   ctaLabel?: T;
   highlights?:

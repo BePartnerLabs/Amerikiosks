@@ -76,6 +76,7 @@ const row = (over: Partial<FamilyRow> = {}): FamilyRow => ({
   imageUrl: '/alpha.png',
   ctaLabel: null,
   modelCount: 2,
+  leansOut: false,
   ...over,
 })
 
@@ -228,6 +229,24 @@ describe('MachineFamilyRowsBlock', () => {
     )
 
     expect(screen.getByRole('link')).toHaveAttribute('href', '/machines/alpha')
+  })
+
+  it('only leans the machine out when the tight crop has arrived', () => {
+    const { container, rerender } = render(
+      <MachineFamilyRowsBlock
+        {...blockProps}
+        families={[row({ leansOut: false })]}
+      />,
+    )
+    expect(container.querySelector('.ak-family-rows__row--leans')).toBeNull()
+
+    rerender(
+      <MachineFamilyRowsBlock
+        {...blockProps}
+        families={[row({ leansOut: true })]}
+      />,
+    )
+    expect(container.querySelector('.ak-family-rows__row--leans')).not.toBeNull()
   })
 
   it("prefers the family's own CTA label over the block default", () => {
