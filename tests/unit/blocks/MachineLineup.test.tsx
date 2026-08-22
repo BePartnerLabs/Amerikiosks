@@ -40,6 +40,7 @@ const makeFamily = (slug: string, items: HighlightItem[]): MachineFamily =>
     id: slug,
     slug,
     name: `${slug} Series`,
+    tagline: `${slug} tagline`,
     thumbnail: makeMedia(`/${slug}-front.png`),
     hoverThumbnail: makeMedia(`/${slug}-side.png`),
     heroLineupImage: makeMedia(`/${slug}-lineup.png`),
@@ -48,13 +49,13 @@ const makeFamily = (slug: string, items: HighlightItem[]): MachineFamily =>
     createdAt: '',
   }) as unknown as MachineFamily
 
-const makeSection = (slug: string, title: string): LineupFamily => ({
+const makeSection = (slug: string, tagline: string): LineupFamily => ({
   id: slug,
   name: `${slug} Series`,
   slug,
   frontUrl: `/${slug}-front.png`,
   turnUrl: `/${slug}-side.png`,
-  featured: { title, description: null },
+  tagline,
 })
 
 describe('MachineLineupServer', () => {
@@ -63,32 +64,27 @@ describe('MachineLineupServer', () => {
     find.mockReset()
   })
 
-  it('leads with the highlight the editor flagged as featured', async () => {
+  it('leads with the family, not with one of its characteristics', async () => {
     find.mockResolvedValue({
-      docs: [
-        makeFamily('alpha', [
-          { title: 'First in the array' },
-          { title: 'The flagged one', featured: true },
-        ]),
-      ],
+      docs: [makeFamily('alpha', [{ title: 'Hot food fast', featured: true }])],
     })
 
     const ui = await MachineLineupServer({ blockType: 'machineLineup' } as never)
     render(ui as React.ReactElement)
 
-    expect(screen.getByText('The flagged one')).toBeInTheDocument()
-    expect(screen.queryByText('First in the array')).not.toBeInTheDocument()
+    // The rows below this scene lead with the characteristic. If this block did
+    // too, the page said the same thing twice, one under the other.
+    expect(screen.getAllByText('alpha Series').length).toBeGreaterThan(0)
+    expect(screen.queryByText('Hot food fast')).not.toBeInTheDocument()
   })
 
-  it('falls back to the first highlight so an unflagged family is never dropped', async () => {
-    find.mockResolvedValue({
-      docs: [makeFamily('delta', [{ title: 'Nobody flagged me' }, { title: 'Second' }])],
-    })
+  it('carries the tagline as the scene body', async () => {
+    find.mockResolvedValue({ docs: [makeFamily('delta', [{ title: 'Ignored here' }])] })
 
     const ui = await MachineLineupServer({ blockType: 'machineLineup' } as never)
     render(ui as React.ReactElement)
 
-    expect(screen.getByText('Nobody flagged me')).toBeInTheDocument()
+    expect(screen.getAllByText('delta tagline').length).toBeGreaterThan(0)
   })
 
   it('shows one machine, not the composed line render', async () => {
@@ -129,11 +125,12 @@ describe('MachineLineupBlock', () => {
       />,
     )
 
-    // The active family also appears in the link, so scope to the step eyebrows.
-    const eyebrows = Array.from(document.querySelectorAll('.ak-lineup__eyebrow')).map(
+    // The family name is the heading now, not an eyebrow above one. The active
+    // family also appears in the link, so scope to the step titles.
+    const titles = Array.from(document.querySelectorAll('.ak-lineup__title')).map(
       (node) => node.textContent,
     )
-    expect(eyebrows).toEqual(['alpha Series', 'delta Series', 'zeta Series'])
+    expect(titles).toEqual(['alpha Series', 'delta Series', 'zeta Series'])
     expect(screen.getByText('Hot food fast')).toBeInTheDocument()
     expect(screen.getByText('Cold drinks')).toBeInTheDocument()
     expect(screen.getByText('Compact footprint')).toBeInTheDocument()

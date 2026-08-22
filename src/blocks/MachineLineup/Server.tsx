@@ -7,7 +7,6 @@ import type {
   MachineLineupBlock as MachineLineupBlockProps,
   Media,
 } from '@/payload-types'
-import { featuredHighlight } from '@/utilities/featuredHighlight'
 import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 import { getServerSideURL } from '@/utilities/getURL'
 import { machinesPath } from '@/utilities/localeUrl'
@@ -45,7 +44,7 @@ export const MachineLineupServer: React.FC<MachineLineupBlockProps> = async (pro
       // scene and no longer refers to a mouse hover.
       frontUrl: mediaUrl(family.thumbnail, 720),
       turnUrl: mediaUrl(family.hoverThumbnail, 720),
-      featured: featuredHighlight(family),
+      tagline: family.tagline ?? null,
     }))
     .filter((family) => family.slug && family.frontUrl)
 
@@ -65,7 +64,7 @@ export const MachineLineupServer: React.FC<MachineLineupBlockProps> = async (pro
     hasPart: families.map((family) => ({
       '@type': 'Thing',
       name: family.name,
-      description: family.featured?.title ?? undefined,
+      description: family.tagline ?? undefined,
       url: `${siteUrl}${machinesPath(locale as 'en' | 'es', family.slug)}`,
     })),
   }

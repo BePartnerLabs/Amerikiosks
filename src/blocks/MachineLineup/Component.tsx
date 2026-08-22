@@ -90,15 +90,8 @@ export const MachineLineupBlock: React.FC<Props> = ({ intro, families, jsonLd })
                 />
               )}
               <div>
-                <p className="ak-lineup__eyebrow">{family.name}</p>
-                {family.featured && (
-                  <>
-                    <h2 className="ak-lineup__title">{family.featured.title}</h2>
-                    {family.featured.description && (
-                      <p className="ak-lineup__text">{family.featured.description}</p>
-                    )}
-                  </>
-                )}
+                <h2 className="ak-lineup__title">{family.name}</h2>
+                {family.tagline && <p className="ak-lineup__text">{family.tagline}</p>}
                 {/* La versión con scroll enlaza solo la familia activa, porque el
                     scroll es lo que va cambiando cuál es. Aquí están las cinco a la
                     vez, así que cada una lleva el suyo: sin esto, quien navega con
@@ -193,15 +186,8 @@ export const MachineLineupBlock: React.FC<Props> = ({ intro, families, jsonLd })
               className={`ak-lineup__step${position === index ? ' ak-lineup__step--on' : ''}`}
               key={family.id}
             >
-              <p className="ak-lineup__eyebrow">{family.name}</p>
-              {family.featured && (
-                <>
-                  <h2 className="ak-lineup__title">{family.featured.title}</h2>
-                  {family.featured.description && (
-                    <p className="ak-lineup__text">{family.featured.description}</p>
-                  )}
-                </>
-              )}
+              <h2 className="ak-lineup__title">{family.name}</h2>
+              {family.tagline && <p className="ak-lineup__text">{family.tagline}</p>}
             </div>
           ))}
         </div>

@@ -10,8 +10,12 @@ export type FeaturedHighlight = { title: string; description: string | null }
  * whatever is showing one characteristic each rather than merely show a less
  * apt line.
  *
- * Shared because two blocks on `/machines` make the same choice and have to
- * make it identically — the pinned lineup and the family rows.
+ * One consumer today: the family rows. The pinned lineup used to make the same
+ * choice and now leads with the family's own tagline instead, so that the two
+ * blocks stacked on `/machines` stopped showing the same two strings. Kept as a
+ * utility rather than folded back inline because the fallback is the part worth
+ * naming: without it a family nobody flagged drops out of whatever is showing
+ * one characteristic each.
  */
 export const featuredHighlight = (family: MachineFamily): FeaturedHighlight | null => {
   const items = (family.highlights?.items ?? []).filter((item) => item.title)

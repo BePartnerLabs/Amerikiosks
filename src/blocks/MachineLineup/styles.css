@@ -121,15 +121,6 @@
   transform: none;
 }
 
-.ak-lineup__eyebrow {
-  font-family: var(--bp-font-family-mono, ui-monospace, monospace);
-  font-size: 0.6875rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--_lineup-accent);
-  margin: 0;
-}
-
 .ak-lineup__title {
   font-size: clamp(1.625rem, 4.6vw, 3.125rem);
   font-weight: 700;
