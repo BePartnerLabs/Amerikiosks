@@ -23,6 +23,7 @@ import { StatementBlock } from '@/blocks/Statement/Component'
 import { SupportHubBlock } from '@/blocks/SupportHub/Component'
 import { TrustStripServer } from '@/blocks/TrustStrip/Server'
 import type { Page } from '@/payload-types'
+import { MachineFamilyCarouselServer } from './MachineFamilyCarousel/Server'
 import { MachineFamilyRowsServer } from './MachineFamilyRows/Server'
 
 const blockComponents = {
@@ -46,6 +47,7 @@ const blockComponents = {
   machineLineup: MachineLineupServer,
   machineFamily: MachineFamilyServer,
   machineFamilyRows: MachineFamilyRowsServer,
+  machineFamilyCarousel: MachineFamilyCarouselServer,
   machineModels: MachineModelsServer,
   statement: StatementBlock,
   supportHub: SupportHubBlock,

@@ -284,6 +284,7 @@ export interface Page {
         | MachineLineupBlock
         | MachineFamilyBlock
         | MachineFamilyRowsBlock
+        | MachineFamilyCarouselBlock
         | MachineModelsBlock
         | ProcessStepsBlock
         | StatementBlock
@@ -1869,6 +1870,27 @@ export interface MachineFamilyRowsBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MachineFamilyCarouselBlock".
+ */
+export interface MachineFamilyCarouselBlock {
+  /**
+   * Small label above the heading. Optional.
+   */
+  eyebrow?: string | null;
+  /**
+   * The section title. It also names the track for screen readers, so it should read as what the track contains.
+   */
+  heading: string;
+  /**
+   * One or two lines under the heading. Optional.
+   */
+  intro?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'machineFamilyCarousel';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "MachineModelsBlock".
  */
 export interface MachineModelsBlock {
@@ -2741,6 +2763,7 @@ export interface PagesSelect<T extends boolean = true> {
         machineLineup?: T | MachineLineupBlockSelect<T>;
         machineFamily?: T | MachineFamilyBlockSelect<T>;
         machineFamilyRows?: T | MachineFamilyRowsBlockSelect<T>;
+        machineFamilyCarousel?: T | MachineFamilyCarouselBlockSelect<T>;
         machineModels?: T | MachineModelsBlockSelect<T>;
         processSteps?: T | ProcessStepsBlockSelect<T>;
         statement?: T | StatementBlockSelect<T>;
@@ -3061,6 +3084,17 @@ export interface MachineFamilyRowsBlockSelect<T extends boolean = true> {
   ctaLabel?: T;
   soonLabel?: T;
   soonCtaLabel?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MachineFamilyCarouselBlock_select".
+ */
+export interface MachineFamilyCarouselBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  intro?: T;
   id?: T;
   blockName?: T;
 }

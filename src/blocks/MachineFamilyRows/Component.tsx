@@ -38,19 +38,14 @@ export const MachineFamilyRowsBlock: React.FC<Props> = ({
     data-ga-block="machineFamilyRows"
   >
     <div className="bp-content-grid">
-      <div className="content ak-family-rows__head">
-        {eyebrow && <p className="ak-family-rows__eyebrow">{eyebrow}</p>}
-        <h2 className="ak-family-rows__heading">{heading}</h2>
-        {intro && <p className="ak-family-rows__intro">{intro}</p>}
-      </div>
-    </div>
+      <div className="content ak-family-rows__inner">
+        <header className="ak-family-rows__head">
+          {eyebrow && <p className="ak-family-rows__eyebrow">{eyebrow}</p>}
+          <h2 className="ak-family-rows__heading">{heading}</h2>
+          {intro && <p className="ak-family-rows__intro">{intro}</p>}
+        </header>
 
-    <div className="bp-content-grid">
-      {/* Breakout: the track runs edge to edge so the cards either side of the
-          centre one stay half-visible, which is what tells a visitor there is
-          more to the left and to the right without a control saying so. */}
-      <div className="breakout ak-family-rows__viewport">
-        <ul className="ak-family-rows__track">
+        <ul className="ak-family-rows__list">
           {families.map((family) => {
             // The whole state hangs off this one derived boolean: an editor
             // cannot leave a "coming soon" label up after the first model ships.
@@ -61,89 +56,63 @@ export const MachineFamilyRowsBlock: React.FC<Props> = ({
             // rather than to a bare number.
             const countLabel =
               family.modelCount === 1 ? (countEyebrowOne ?? countEyebrow) : countEyebrow
-            const cta = soon ? soonCtaLabel : (family.ctaLabel ?? ctaLabel)
 
             return (
               <li
                 key={family.id}
-                className={`ak-family-rows__card${family.leansOut ? ' ak-family-rows__card--leans' : ''}`}
+                className="ak-family-rows__item"
               >
-                <div className="ak-family-rows__well">
-                  {family.imageUrl && (
-                    <Image
-                      src={family.imageUrl}
-                      alt=""
-                      aria-hidden="true"
-                      fill
-                      sizes="(max-width: 46rem) 78vw, 22rem"
-                      className="ak-family-rows__shot"
-                    />
-                  )}
-                </div>
+                <Link
+                  href={{ pathname: '/machines/[family]', params: { family: family.slug } }}
+                  locale={locale}
+                  className={`ak-family-rows__row${family.leansOut ? ' ak-family-rows__row--leans' : ''}`}
+                  data-ga-event="machine_family_click"
+                  data-ga-label={family.name}
+                >
+                  <div className="ak-family-rows__well">
+                    {family.imageUrl && (
+                      <Image
+                        src={family.imageUrl}
+                        alt=""
+                        aria-hidden="true"
+                        fill
+                        sizes="(max-width: 46rem) 6rem, 11.5rem"
+                        className="ak-family-rows__shot"
+                      />
+                    )}
+                  </div>
 
-                <div className="ak-family-rows__body">
-                  <p
-                    className={`ak-family-rows__badge${soon ? ' ak-family-rows__badge--soon' : ''}`}
-                  >
-                    {/* Not filter(Boolean): that drops a zero. It cannot reach
-                        here today because `soon` intercepts it, but the day the
-                        soon state keys off anything else the count would
-                        vanish and leave the label bare. */}
-                    {soon ? soonLabel : `${family.modelCount}${countLabel ? ` ${countLabel}` : ''}`}
-                  </p>
-
-                  {/* The link wraps the name alone and stretches over the card
-                      with ::after. With the whole card as one <a> its accessible
-                      name was every string inside it concatenated — "2 models
-                      Alpha 360° rapid heating …" — five of those in a row. The
-                      sr-only suffix repeats the visible CTA verbatim so voice
-                      control still matches it (WCAG 2.5.3), and the CTA itself
-                      is aria-hidden because it is a decorative duplicate.
-                      Same pattern as CardGrid and ModelLines. */}
-                  <h3 className="ak-family-rows__name">
-                    <Link
-                      href={{ pathname: '/machines/[family]', params: { family: family.slug } }}
-                      locale={locale}
-                      className="ak-family-rows__link"
-                      data-ga-event="machine_family_click"
-                      data-ga-label={family.name}
+                  <div className="ak-family-rows__body">
+                    <p
+                      className={`ak-family-rows__badge${soon ? ' ak-family-rows__badge--soon' : ''}`}
                     >
-                      {family.name}
-                      {cta && <span className="ak-a11y-sr-only">: {cta}</span>}
-                    </Link>
-                  </h3>
-
-                  {family.featured && (
-                    <>
-                      <p className="ak-family-rows__featured">{family.featured.title}</p>
-                      {family.featured.description && (
-                        <p className="ak-family-rows__featured-text">
-                          {family.featured.description}
-                        </p>
-                      )}
-                    </>
-                  )}
+                      {/* Not filter(Boolean): that drops a zero. It cannot reach
+                          here today because `soon` intercepts it, but the day the
+                          soon state keys off anything else the count would
+                          vanish and leave the label bare. */}
+                      {soon
+                        ? soonLabel
+                        : `${family.modelCount}${countLabel ? ` ${countLabel}` : ''}`}
+                    </p>
+                    <p className="ak-family-rows__name">{family.name}</p>
+                    {family.featured && (
+                      <>
+                        <p className="ak-family-rows__featured">{family.featured.title}</p>
+                        {family.featured.description && (
+                          <p className="ak-family-rows__featured-text">
+                            {family.featured.description}
+                          </p>
+                        )}
+                      </>
+                    )}
+                  </div>
 
                   <span
-                    className={`ak-family-rows__cta${soon ? ' ak-family-rows__cta--soon' : ''}`}
-                    aria-hidden="true"
+                    className={`bp-btn ${soon ? 'bp-btn--ghost' : 'bp-btn--outline'} ak-family-rows__cta`}
                   >
-                    {cta}
-                    <svg
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M6 3l5 5-5 5"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                    {soon ? soonCtaLabel : (family.ctaLabel ?? ctaLabel)}
                   </span>
-                </div>
+                </Link>
               </li>
             )
           })}
