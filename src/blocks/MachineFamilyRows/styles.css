@@ -1,5 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════
-   Machine Family Rows block — every family, one compact row each.
+   Machine Family Rows block — every family, one card each, on a
+   horizontal track.
    ═══════════════════════════════════════════════════════════════ */
 
 .ak-family-rows {
@@ -12,40 +13,30 @@
   --_rows-surface: var(--ak-color-surface);
   --_rows-border: var(--ak-surface-border);
   --_rows-border-hover: var(--ak-surface-border-hover);
-  --_rows-shadow: var(--ak-surface-shadow-sm);
-  --_rows-shadow-hover: var(--ak-surface-shadow-sm-hover);
+  --_rows-shadow: var(--ak-surface-shadow-md);
+  --_rows-shadow-hover: var(--ak-surface-shadow-md-hover);
   --_rows-drop-light: color-mix(in srgb, var(--brand-color-palette-navy-900) 22%, transparent);
+  /* The wash behind the machine. One accent for the whole block, not one per
+     family: five accents down a list turn a comparison into a colour chart. */
+  --_rows-wash: color-mix(in srgb, var(--ak-accent) 12%, transparent);
 
-  /* The image well. Fixed, and wider than the widest machine's own aspect
-     (0.66) — that is what keeps `object-fit: contain` limited by height rather
-     than by width. It is also the number ROW_IMAGE_WIDTH in Server.tsx is
-     chosen against; if this changes, that changes. */
-  --_rows-well: 11.5rem;
+  --_rows-card: 22rem;
 
-  /* How far the machine leans out over the top of its card. Two rules depend on
-     it and they are coupled: the render's height, and the gap between rows. If
-     the gap were ever smaller than this, the machine would land on the card
-     above instead of in the space between them — so the gap is a hard floor,
-     not a taste setting. 2.5rem over an 11rem row is the same 22% proportion
-     `machineModels` uses with 4rem over 18rem. */
+  /* How far the machine leans out over the top of its card. Coupled to the
+     track's top padding: a scroll container clips what overflows it, and
+     `overflow-x: auto` makes the block axis a scrollport too, so if the padding
+     were smaller than the overhang the effect would be sliced off instead of
+     hanging over. */
   --_rows-overhang: 2.5rem;
 
-  /* What decides whether three columns still fit is the row's own width, not
-     the viewport's, so the breakpoint at the bottom of this file is a container
-     query. This block root is full-bleed, so its inline size tracks the
-     viewport and 46rem keeps the meaning it had as a media query. */
   container-type: inline-size;
   container-name: family-rows;
-
   background: var(--_rows-surface);
-}
-
-.ak-family-rows__inner {
   padding-block: clamp(3.25rem, 8vw, 6rem);
 }
 
 .ak-family-rows__head {
-  margin-bottom: var(--bp-space-8, 2rem);
+  margin-bottom: var(--bp-space-10, 2.5rem);
 }
 
 .ak-family-rows__eyebrow {
@@ -73,61 +64,73 @@
   margin: 0.75rem 0 0;
 }
 
-.ak-family-rows__list {
-  display: flex;
-  flex-direction: column;
-  /* Floor, not preference: see --_rows-overhang. */
-  gap: var(--bp-space-12, 3rem);
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.ak-family-rows__viewport {
+  min-width: 0;
 }
 
-.ak-family-rows__row {
+.ak-family-rows__track {
   display: grid;
-  grid-template-columns: var(--_rows-well) 1fr auto;
-  align-items: center;
-  gap: var(--bp-space-8, 2rem);
-  padding: var(--bp-space-6, 1.5rem);
-  min-height: 11rem;
+  grid-auto-flow: column;
+  grid-auto-columns: var(--_rows-card);
+  gap: var(--bp-space-6, 1.5rem);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--padding-inline, 1rem);
+  /* Top padding clears the overhang; the inline padding is what lets the first
+     and last card sit under the heading instead of against the viewport edge. */
+  padding: var(--_rows-overhang) var(--padding-inline, 1rem) var(--bp-space-6, 1.5rem);
+  margin: 0;
+  list-style: none;
+  scrollbar-width: none;
+}
+
+.ak-family-rows__track::-webkit-scrollbar {
+  display: none;
+}
+
+.ak-family-rows__card {
+  position: relative;
+  isolation: isolate;
+  scroll-snap-align: center;
+  display: grid;
+  grid-template-rows: 13rem auto;
   border: 1px solid var(--_rows-border);
-  border-radius: var(--bp-radius-lg, 0.75rem);
+  border-radius: var(--bp-radius-xl, 1rem);
   background: var(--_rows-surface);
   box-shadow: var(--_rows-shadow);
-  text-decoration: none;
-  color: inherit;
   transition:
     border-color var(--bp-duration-normal, 220ms) var(--bp-ease, ease),
-    box-shadow var(--bp-duration-normal, 220ms) var(--bp-ease, ease),
-    transform 350ms var(--bp-ease, ease);
+    box-shadow var(--bp-duration-normal, 220ms) var(--bp-ease, ease);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .ak-family-rows__row:hover,
-  .ak-family-rows__row:focus-visible {
-    transform: translateY(-3px);
-  }
+/* The wash sits behind everything and gives the card its depth without a
+   gradient background, which would band across five cards in a row. */
+.ak-family-rows__card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(120% 90% at 50% 0%, var(--_rows-wash), transparent 68%);
 }
 
-.ak-family-rows__row:hover,
-.ak-family-rows__row:focus-visible {
+.ak-family-rows__card:hover,
+.ak-family-rows__card:focus-within {
   border-color: var(--_rows-border-hover);
   box-shadow: var(--_rows-shadow-hover);
 }
 
 .ak-family-rows__well {
   position: relative;
-  align-self: stretch;
+  margin: var(--bp-space-6, 1.5rem) var(--bp-space-6, 1.5rem) 0;
 }
 
 /* Only a family whose `rowImage` has arrived leans out. The `thumbnail`
    fallback is a square canvas with the machine at 29-53% of its width, so it
-   never reaches the edge and there would be nothing to lean. The negative
-   margins pull the well past the row's padding box: up by the overhang, down to
-   the card's own bottom edge, so what sticks out does so only over the top. */
-.ak-family-rows__row--leans .ak-family-rows__well {
-  margin-block-start: calc(-1 * (var(--_rows-overhang) + var(--bp-space-6, 1.5rem)));
-  margin-block-end: calc(-1 * var(--bp-space-6, 1.5rem));
+   never reaches the edge and there would be nothing to lean. */
+.ak-family-rows__card--leans .ak-family-rows__well {
+  margin-block-start: calc(-1 * var(--_rows-overhang));
 }
 
 .ak-family-rows__shot {
@@ -135,8 +138,16 @@
   object-position: bottom center;
 }
 
-.ak-family-rows__row--leans .ak-family-rows__shot {
+.ak-family-rows__card--leans .ak-family-rows__shot {
   filter: drop-shadow(0 12px 18px var(--_rows-drop-light));
+}
+
+.ak-family-rows__body {
+  display: grid;
+  align-content: start;
+  gap: 0.35rem;
+  padding: var(--bp-space-6, 1.5rem);
+  padding-top: var(--bp-space-8, 2rem);
 }
 
 .ak-family-rows__badge {
@@ -145,7 +156,7 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--_rows-accent);
-  margin: 0 0 0.25rem;
+  margin: 0;
 }
 
 /* A family with nothing published yet is not an alert — it reads as quiet
@@ -159,7 +170,31 @@
   font-weight: 650;
   letter-spacing: -0.01em;
   color: var(--_rows-heading);
-  margin: 0 0 0.5rem;
+  margin: 0;
+}
+
+.ak-family-rows__link {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Stretches the link over the whole card without making the card the link —
+   which is what kept the accessible name down to "Alpha: See the models"
+   instead of every string inside it. */
+.ak-family-rows__link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.ak-family-rows__link:focus-visible {
+  outline: none;
+}
+
+.ak-family-rows__card:focus-within {
+  outline: var(--md-semantic-border-width-default, 1px) solid var(--_rows-accent);
+  outline-offset: 3px;
 }
 
 .ak-family-rows__featured {
@@ -167,48 +202,79 @@
   font-weight: 600;
   line-height: 1.35;
   color: var(--_rows-heading);
-  max-width: 52ch;
-  margin: 0 0 0.25rem;
+  margin: 0.4rem 0 0;
 }
 
 .ak-family-rows__featured-text {
   font-size: 0.9375rem;
   line-height: 1.5;
   color: var(--_rows-text-muted);
-  max-width: 62ch;
   margin: 0;
 }
 
 .ak-family-rows__cta {
-  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: var(--bp-text-sm, 0.875rem);
+  font-weight: 600;
+  color: var(--_rows-accent);
+  margin-top: 0.65rem;
 }
 
-/* The three-column row cannot hold below ~46rem: the well plus a readable
-   measure plus a button does not fit. Image beside the text, CTA full width
-   under it — stacking the image on top would make each family nearly a full
-   screen, which is the scrolling this block exists to remove. */
+.ak-family-rows__cta--soon {
+  color: var(--_rows-muted);
+}
+
+.ak-family-rows__cta svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  transition: transform 180ms var(--bp-ease, ease);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ak-family-rows__card:hover .ak-family-rows__cta svg,
+  .ak-family-rows__card:focus-within .ak-family-rows__cta svg {
+    transform: translateX(0.2rem);
+  }
+}
+
+/* Depth, driven by the scroll position rather than by script: a card that is
+   not at the centre of the track sits slightly back and dimmer. Progressive on
+   purpose — where `animation-timeline` is unsupported the carousel is simply
+   flat, which is a complete design and not a broken one. */
+@supports (animation-timeline: view(x)) {
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes ak-family-rows-depth {
+      0%,
+      100% {
+        transform: scale(0.9);
+        opacity: 0.55;
+      }
+      50% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .ak-family-rows__card {
+      animation: ak-family-rows-depth linear both;
+      animation-timeline: view(x);
+      animation-range: contain 0% contain 100%;
+    }
+  }
+}
+
 @container family-rows (max-width: 46rem) {
-  /* On the inner wrapper, not on .ak-family-rows: a container query only ever
-     matches descendants of its container, never the container element itself.
-     Everything below inherits the shrunken well from here. */
-  .ak-family-rows__inner {
-    --_rows-well: 6rem;
+  .ak-family-rows {
+    --_rows-card: 78cqw;
+    /* No lean-out on a phone: at this width the machine would run into the
+       badge line and eat the gap. Zeroing the variable is enough — every rule
+       that uses it collapses on its own, so none of them needs a condition. */
+    --_rows-overhang: 0rem;
   }
 
-  .ak-family-rows__row {
-    grid-template-columns: var(--_rows-well) 1fr;
-    gap: var(--bp-space-4, 1rem);
-    min-height: 0;
-    padding: var(--bp-space-4, 1rem);
-  }
-
-  .ak-family-rows__well {
-    min-height: 6rem;
-  }
-
-  .ak-family-rows__cta {
-    grid-column: 1 / -1;
-    width: 100%;
-    margin-top: var(--bp-space-3, 0.75rem);
+  .ak-family-rows__card {
+    grid-template-rows: 11rem auto;
   }
 }
