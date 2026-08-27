@@ -213,23 +213,60 @@ No se pierde contenido: esos cinco bloques solo guardaban la referencia a la
 familia y cuatro etiquetas. Nombre, tagline, características e imágenes viven en
 la colección `machine-families` y no se tocan.
 
-### 6.2 Cargar los siete textos, en los dos idiomas
+### 6.2 Cargar los textos — y la trampa está en el segundo idioma
 
-**Los `defaultValue` no van a aparecer.** Un default se aplica al crear el
-bloque; el que acabás de colocar ya existe, así que los campos van vacíos hasta
-que se tipeen. Si no se cargan, las filas salen sin encabezado y sin etiquetas.
+**Corrección a lo que decía antes este documento.** Se afirmaba que los
+`defaultValue` no iban a aparecer. **Sí aparecen**: al agregar el bloque, Payload
+carga los cinco defaults —`models in line`, `model in line`, `View the line`,
+`Coming soon`, `Explore the line`— y quedan guardados. Comprobado ensayando el
+procedimiento completo en local el 2026-08-27.
 
-Los campos son `eyebrow`, `heading` (obligatorio), `intro`, `countEyebrow`,
-`countEyebrowOne`, `ctaLabel`, `soonLabel` y `soonCtaLabel`.
+**La trampa real es otra, y es peor porque no se ve.** Los defaults se cargan una
+sola vez y **en el idioma en que se creó el bloque**. Al cambiar el selector a
+`es` los campos siguen mostrando el texto en inglés, que parece contenido válido
+y no un campo pendiente. Si nadie los pisa, `/es/maquinas` publica «3 models in
+line», «Coming soon» y «Explore the line» en la página en español.
+
+Pasó tal cual en el ensayo local: se cargaron el eyebrow y el heading en español,
+y los otros cinco se quedaron en inglés sin que nada lo advirtiera.
+
+**Entonces: entrar con el selector en `es` y pisar los siete, uno por uno.**
+
+Estos son los valores ensayados en local, con la página renderizada verificada en
+los dos idiomas:
+
+| Campo | EN | ES |
+|---|---|---|
+| `eyebrow` | `Our lines` | `Nuestras líneas` |
+| `heading` (obligatorio) | `Every line, and what each one does best.` | `Todas las líneas` |
+| `intro` | *(vacío)* | *(vacío)* |
+| `countEyebrow` | `models in line` | `modelos en la línea` |
+| `countEyebrowOne` | `model in line` | `modelo en la línea` |
+| `ctaLabel` | `View the line` | `Ver los modelos` |
+| `soonLabel` | `Coming soon` | `Próximamente` |
+| `soonCtaLabel` | `Explore the line` | `Ver la línea` |
+
+Son textos de trabajo, no definitivos: la sesión de contenido tiene que
+reescribirlos cuando el diseño se asiente.
 
 **`countEyebrowOne` existe por una razón concreta**: es la etiqueta cuando la
-familia tiene exactamente un modelo. Zeta tiene uno hoy. Sin ese campo la fila
-dice «1 modelos en línea».
+familia tiene exactamente un modelo. **Zeta tiene uno hoy.** Sin ese campo la
+fila dice «1 modelos en la línea». Después de cargar, la verificación es mirar
+esa fila: tiene que decir **«1 modelo en la línea»**, en singular.
 
-### 6.3 Verificar la escena pinneada
+**`ctaLabel` casi no se ve, y eso es correcto.** Las cinco familias tienen su
+propia etiqueta —«Explora nuestros modelos Alpha»— y la de la familia le gana a
+la del bloque. La única fila que muestra la del bloque es la que está en
+«Próximamente», que usa `soonCtaLabel`. Cargalo igual: es el respaldo para una
+familia futura que nazca sin etiqueta.
 
-La escena de arriba cambió en el mismo release: ahora encabeza con el **nombre de
-la familia** y usa el **tagline** como cuerpo, en vez de la característica
+### 6.3 La escena pinneada — solo si se queda
+
+Si el carrusel de 6.4.b entra, la escena **sale del layout** y esta verificación
+no aplica.
+
+Si se queda, cambió en el mismo release: ahora encabeza con el **nombre de la
+familia** y usa el **tagline** como cuerpo, en vez de la característica
 destacada. Los diez taglines (cinco familias × dos idiomas) están cargados, así
 que no debería quedar nada en blanco — pero es lo primero que hay que mirar
 después de desplegar, porque es el único bloque que ya estaba en producción y
@@ -258,6 +295,34 @@ Lo que tiene que cumplir el archivo, para pedírselo al cliente:
 cuatro consumidores —entre ellos la escena pinneada de esta misma página y el
 carousel del home—, el recorte de Payload es destructivo y no lo deshace ningún
 rollback de código. Por eso el campo es aparte.
+
+### 6.4.b El carrusel de familias, si entra
+
+Bloque aparte de las filas: `machineFamilyCarousel`, «Carrusel de Familias». Va
+**arriba de las filas** y reemplaza a `machineLineup`, la escena pinneada.
+
+Es el índice de la página —cada familia con su máquina y su nombre, nada más— y
+las filas de abajo son el detalle. Los dos sobre el mismo eje solo se sostienen
+mientras estén a profundidades distintas, así que si alguna vez hace falta un
+campo acá que describa a una familia en lugar de indexarla, ese campo va a las
+filas.
+
+Tres textos, en los dos idiomas:
+
+| Campo | EN | ES |
+|---|---|---|
+| `eyebrow` | `Our lines` | `Nuestras líneas` |
+| `heading` (obligatorio) | `Every line` | `Todas las líneas` |
+| `intro` | *(vacío)* | *(vacío)* |
+
+El `heading` **también nombra la pista para los lectores de pantalla**, así que
+tiene que leerse como lo que la pista contiene y no como una frase de campaña.
+
+Y si el carrusel entra, **el eyebrow de las filas se deja vacío**: dos eyebrows
+seguidos se leen como dos secciones inconexas en vez de índice y detalle.
+
+**Al cerrar esta sesión el carrusel no estaba colocado**: la página quedó con las
+filas y el carrusel de modelos. Sigue siendo una decisión abierta.
 
 ### 6.5 Marcar la característica destacada de Kappa
 
