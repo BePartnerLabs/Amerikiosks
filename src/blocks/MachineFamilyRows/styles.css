@@ -84,6 +84,7 @@
 }
 
 .ak-family-rows__row {
+  position: relative;
   display: grid;
   grid-template-columns: var(--_rows-well) 1fr auto;
   align-items: center;
@@ -94,8 +95,6 @@
   border-radius: var(--bp-radius-lg, 0.75rem);
   background: var(--_rows-surface);
   box-shadow: var(--_rows-shadow);
-  text-decoration: none;
-  color: inherit;
   transition:
     border-color var(--bp-duration-normal, 220ms) var(--bp-ease, ease),
     box-shadow var(--bp-duration-normal, 220ms) var(--bp-ease, ease),
@@ -104,13 +103,13 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .ak-family-rows__row:hover,
-  .ak-family-rows__row:focus-visible {
+  .ak-family-rows__row:focus-within {
     transform: translateY(-3px);
   }
 }
 
 .ak-family-rows__row:hover,
-.ak-family-rows__row:focus-visible {
+.ak-family-rows__row:focus-within {
   border-color: var(--_rows-border-hover);
   box-shadow: var(--_rows-shadow-hover);
 }
@@ -160,6 +159,32 @@
   letter-spacing: -0.01em;
   color: var(--_rows-heading);
   margin: 0 0 0.5rem;
+}
+
+.ak-family-rows__link {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Stretches the link over the whole row without making the row the link, which
+   is what keeps the accessible name down to "Alpha Series: Ver los modelos"
+   instead of every string inside it. */
+.ak-family-rows__link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.ak-family-rows__link:focus-visible {
+  outline: none;
+}
+
+/* The focus ring belongs to the row, because the row is what the stretched link
+   covers — a ring around the name alone would look like a mistake. */
+.ak-family-rows__row:focus-within {
+  outline: var(--md-semantic-border-width-default, 1px) solid var(--_rows-accent);
+  outline-offset: 3px;
 }
 
 .ak-family-rows__featured {

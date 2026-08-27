@@ -220,6 +220,41 @@ describe('MachineFamilyRowsBlock', () => {
     expect(screen.queryByText('View the line')).not.toBeInTheDocument()
   })
 
+  it('keeps the accessible name to the family and its call to action, not the whole row', () => {
+    render(
+      <MachineFamilyRowsBlock
+        {...blockProps}
+        families={[row()]}
+      />,
+    )
+
+    // With the whole row as one <a> this read "2 models in line Alpha Series
+    // 360° rapid heating … View the line", five of them in a row when tabbing.
+    expect(screen.getByRole('link', { name: 'Alpha Series: View the line' })).toBeInTheDocument()
+  })
+
+  it('names the family with a heading, so the five are navigable and in the outline', () => {
+    render(
+      <MachineFamilyRowsBlock
+        {...blockProps}
+        families={[row()]}
+      />,
+    )
+
+    expect(screen.getByRole('heading', { level: 3, name: /Alpha Series/ })).toBeInTheDocument()
+  })
+
+  it('hides the duplicated visible CTA from assistive tech', () => {
+    const { container } = render(
+      <MachineFamilyRowsBlock
+        {...blockProps}
+        families={[row()]}
+      />,
+    )
+
+    expect(container.querySelector('.ak-family-rows__cta')).toHaveAttribute('aria-hidden', 'true')
+  })
+
   it('still links into the family when it has no models — that page has a hero and its characteristics', () => {
     render(
       <MachineFamilyRowsBlock
@@ -228,7 +263,10 @@ describe('MachineFamilyRowsBlock', () => {
       />,
     )
 
-    expect(screen.getByRole('link')).toHaveAttribute('href', '/machines/alpha')
+    expect(screen.getByRole('link', { name: /Alpha Series/ })).toHaveAttribute(
+      'href',
+      '/machines/alpha',
+    )
   })
 
   it('only leans the machine out when the tight crop has arrived', () => {

@@ -56,18 +56,15 @@ export const MachineFamilyRowsBlock: React.FC<Props> = ({
             // rather than to a bare number.
             const countLabel =
               family.modelCount === 1 ? (countEyebrowOne ?? countEyebrow) : countEyebrow
+            const cta = soon ? soonCtaLabel : (family.ctaLabel ?? ctaLabel)
 
             return (
               <li
                 key={family.id}
                 className="ak-family-rows__item"
               >
-                <Link
-                  href={{ pathname: '/machines/[family]', params: { family: family.slug } }}
-                  locale={locale}
+                <div
                   className={`ak-family-rows__row${family.leansOut ? ' ak-family-rows__row--leans' : ''}`}
-                  data-ga-event="machine_family_click"
-                  data-ga-label={family.name}
                 >
                   <div className="ak-family-rows__well">
                     {family.imageUrl && (
@@ -94,7 +91,35 @@ export const MachineFamilyRowsBlock: React.FC<Props> = ({
                         ? soonLabel
                         : `${family.modelCount}${countLabel ? ` ${countLabel}` : ''}`}
                     </p>
-                    <p className="ak-family-rows__name">{family.name}</p>
+                    {/* A heading, not a paragraph: five families and none of
+                        them appeared in the page's heading outline, so a screen
+                        reader user could not navigate between them and a
+                        crawler saw five paragraphs instead of five named
+                        things. `h3` sits under this block's `h2` with no level
+                        skipped.
+
+                        The link wraps the name alone and stretches over the row
+                        with ::after. With the whole row as one <a> its
+                        accessible name was every string inside it concatenated
+                        — "2 models in line Alpha Series 360° rapid heating …" —
+                        five of those in a row when tabbing. The sr-only suffix
+                        repeats the visible CTA verbatim so voice control still
+                        matches it (WCAG 2.5.3), and the CTA itself is
+                        aria-hidden because it is a decorative duplicate. Same
+                        pattern as CardGrid, ModelLines and the family
+                        carousel. */}
+                    <h3 className="ak-family-rows__name">
+                      <Link
+                        href={{ pathname: '/machines/[family]', params: { family: family.slug } }}
+                        locale={locale}
+                        className="ak-family-rows__link"
+                        data-ga-event="machine_family_click"
+                        data-ga-label={family.name}
+                      >
+                        {family.name}
+                        {cta && <span className="ak-a11y-sr-only">: {cta}</span>}
+                      </Link>
+                    </h3>
                     {family.featured && (
                       <>
                         <p className="ak-family-rows__featured">{family.featured.title}</p>
@@ -109,10 +134,11 @@ export const MachineFamilyRowsBlock: React.FC<Props> = ({
 
                   <span
                     className={`bp-btn bp-btn--outline ak-family-rows__cta${soon ? ' ak-family-rows__cta--soon' : ''}`}
+                    aria-hidden="true"
                   >
-                    {soon ? soonCtaLabel : (family.ctaLabel ?? ctaLabel)}
+                    {cta}
                   </span>
-                </Link>
+                </div>
               </li>
             )
           })}
