@@ -249,6 +249,31 @@ describe('MachineFamilyRowsBlock', () => {
     expect(container.querySelector('.ak-family-rows__row--leans')).not.toBeNull()
   })
 
+  it('keeps the soon row on the same kind of control as the rest', () => {
+    const { container, rerender } = render(
+      <MachineFamilyRowsBlock
+        {...blockProps}
+        families={[row()]}
+      />,
+    )
+    const normal = container.querySelector('.ak-family-rows__cta')?.className
+
+    rerender(
+      <MachineFamilyRowsBlock
+        {...blockProps}
+        families={[row({ modelCount: 0 })]}
+      />,
+    )
+    const soon = container.querySelector('.ak-family-rows__cta')?.className
+
+    // Both outline. The soon state differs by a modifier of its own that only
+    // changes colour — swapping the DS variant changed the species of control.
+    expect(normal).toContain('bp-btn--outline')
+    expect(soon).toContain('bp-btn--outline')
+    expect(soon).toContain('ak-family-rows__cta--soon')
+    expect(soon).not.toContain('bp-btn--ghost')
+  })
+
   it("prefers the family's own CTA label over the block default", () => {
     render(
       <MachineFamilyRowsBlock
