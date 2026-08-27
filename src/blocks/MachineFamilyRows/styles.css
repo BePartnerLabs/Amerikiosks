@@ -183,6 +183,18 @@
   white-space: nowrap;
 }
 
+/* Same control, quieter — not a different one.
+ *
+ * A family with nothing published cannot ask for the click as hard as the rest,
+ * but the five rows are read in parallel and they are all the same kind of
+ * thing. Swapping this one to `--ghost` changed the species: no border, no
+ * inline padding and an arrow appended, which reads as a layout mistake rather
+ * than as a signal. The weight comes off the colour instead, through the DS's
+ * own Level 2 slot — the same move the badge already makes in this state. */
+.ak-family-rows__cta--soon {
+  --outline-color: var(--_rows-muted);
+}
+
 /* The three-column row cannot hold below ~46rem: the well plus a readable
    measure plus a button does not fit. Image beside the text, CTA full width
    under it — stacking the image on top would make each family nearly a full

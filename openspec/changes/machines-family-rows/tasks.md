@@ -97,10 +97,26 @@ aparece para elegir. La ventana es cuando el release termina y `/admin` reabre.
 - [ ] 6.3 **El nombre accesible de la fila.** Hoy toda la fila es un solo `<a>`,
       así que se anuncia como «Models 2 Alpha 360° rapid heating [descripción]
       Ver los modelos» — cinco de esos al tabular. El arreglo es el patrón de
-      link estirado que ya usan `CardGrid` y `ModelLines`. **Es el hallazgo con
-      más valor que sigue sin implementar.**
+      link estirado que ya usan `CardGrid` y `ModelLines`. **Sigue sin
+      implementar en las filas.** Ya está resuelto en el carrusel nuevo, así que
+      hay un ejemplo funcionando en el repo del que copiarlo.
 - [ ] 6.4 **Los siete textos definitivos** de `content-auditor`, y sus
       `admin.description`. Pendientes de decisión.
 - [ ] 6.5 **La precedencia del CTA**: que la fila use su propia etiqueta en vez
       de la de la familia, porque a 24 caracteres le come el ancho a la columna
       del texto. Pendiente de decisión.
+
+## 7. Ensayado en local el 2026-08-27
+
+Se corrió el procedimiento de `/admin` completo contra el restore de producción,
+y salieron dos cosas que el documento no decía:
+
+- [x] 7.1 **Los `defaultValue` sí aparecen** al agregar el bloque. La nota que
+      decía lo contrario en `post-release-admin.md` estaba mal y quedó corregida.
+- [x] 7.2 **Se cargan en un solo idioma.** Al pasar el selector a `es` los cinco
+      campos siguen mostrando el inglés, que parece contenido válido y no un
+      campo pendiente. Hay que pisar los siete, uno por uno.
+- [x] 7.3 Verificado renderizado en los dos idiomas: Zeta dice «1 modelo en la
+      línea» en singular y Delta muestra «Próximamente».
+- [ ] 7.4 **Sin decidir: si el carrusel de familias entra.** Al cerrar, la página
+      quedó con las filas y el carrusel de modelos.

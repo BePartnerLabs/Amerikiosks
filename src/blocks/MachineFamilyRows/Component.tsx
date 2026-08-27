@@ -108,7 +108,7 @@ export const MachineFamilyRowsBlock: React.FC<Props> = ({
                   </div>
 
                   <span
-                    className={`bp-btn ${soon ? 'bp-btn--ghost' : 'bp-btn--outline'} ak-family-rows__cta`}
+                    className={`bp-btn bp-btn--outline ak-family-rows__cta${soon ? ' ak-family-rows__cta--soon' : ''}`}
                   >
                     {soon ? soonCtaLabel : (family.ctaLabel ?? ctaLabel)}
                   </span>

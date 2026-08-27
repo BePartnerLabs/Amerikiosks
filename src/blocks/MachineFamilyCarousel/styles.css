@@ -1,0 +1,174 @@
+/* ═══════════════════════════════════════════════════════════════
+   Machine Family Carousel — the index of /machines: every family,
+   its machine and its name, on a track that wraps around.
+   ═══════════════════════════════════════════════════════════════ */
+
+.ak-family-carousel {
+  --_car-accent: var(--ak-accent);
+  --_car-heading: var(--ak-color-heading);
+  --_car-muted: var(--ak-color-muted);
+  --_car-surface: var(--ak-color-surface);
+  --_car-drop-light: color-mix(in srgb, var(--brand-color-palette-navy-900) 20%, transparent);
+  /* The wash the machines stand on. It belongs to the track, not to each card:
+     one continuous field is what keeps this from reading as a row of tiles. */
+  --_car-wash: color-mix(in srgb, var(--ak-accent) 7%, transparent);
+
+  --_car-card: 20rem;
+  --_car-shot: 17rem;
+
+  container-type: inline-size;
+  container-name: family-carousel;
+  background: var(--_car-surface);
+  padding-block: clamp(3.25rem, 8vw, 6rem) clamp(2rem, 5vw, 3.5rem);
+}
+
+.ak-family-carousel__head {
+  margin-bottom: var(--bp-space-10, 2.5rem);
+}
+
+.ak-family-carousel__eyebrow {
+  font-family: var(--bp-font-family-mono, ui-monospace, monospace);
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--_car-accent);
+  margin: 0 0 0.5rem;
+}
+
+.ak-family-carousel__heading {
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.06;
+  text-wrap: balance;
+  color: var(--_car-heading);
+  margin: 0;
+}
+
+.ak-family-carousel__intro {
+  color: var(--_car-muted);
+  max-width: 58ch;
+  margin: 0.75rem 0 0;
+}
+
+.ak-family-carousel__viewport {
+  position: relative;
+  min-width: 0;
+}
+
+/* The field the machines stand on, behind the whole track rather than behind
+   each one — no card, no border, no box. */
+.ak-family-carousel__viewport::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 62%;
+  background: radial-gradient(60% 100% at 50% 100%, var(--_car-wash), transparent 70%);
+  pointer-events: none;
+}
+
+.ak-family-carousel__track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: var(--_car-card);
+  gap: var(--bp-space-8, 2rem);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  padding-block: var(--bp-space-4, 1rem);
+  padding-inline: var(--padding-inline, 1rem);
+  margin: 0;
+  list-style: none;
+  scrollbar-width: none;
+}
+
+.ak-family-carousel__track::-webkit-scrollbar {
+  display: none;
+}
+
+/* Both `display: contents` so the duplicated cards become direct grid items of
+   the track instead of one column holding a nested list. */
+.ak-family-carousel__clones,
+.ak-family-carousel__clone-list {
+  display: contents;
+}
+
+.ak-family-carousel__item {
+  scroll-snap-align: center;
+}
+
+.ak-family-carousel__link {
+  display: grid;
+  gap: var(--bp-space-4, 1rem);
+  justify-items: center;
+  text-decoration: none;
+  color: inherit;
+  border-radius: var(--bp-radius-lg, 0.75rem);
+}
+
+.ak-family-carousel__well {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: var(--_car-shot);
+}
+
+.ak-family-carousel__shot {
+  object-fit: contain;
+  object-position: bottom center;
+  filter: drop-shadow(0 14px 20px var(--_car-drop-light));
+  transition: transform 420ms var(--bp-ease, ease);
+}
+
+.ak-family-carousel__name {
+  font-size: var(--bp-text-xl, 1.375rem);
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--_car-heading);
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ak-family-carousel__link:hover .ak-family-carousel__shot,
+  .ak-family-carousel__link:focus-visible .ak-family-carousel__shot {
+    transform: translateY(-6px) scale(1.02);
+  }
+}
+
+.ak-family-carousel__link:focus-visible {
+  outline: var(--md-semantic-border-width-default, 1px) solid var(--_car-accent);
+  outline-offset: 6px;
+}
+
+/* Depth from the scroll position rather than from script: a machine away from
+   the centre sits back and dimmer. Progressive on purpose — where
+   `animation-timeline` is unsupported the track is simply flat, which is a
+   complete design and not a broken one. */
+@supports (animation-timeline: view(x)) {
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes ak-family-carousel-depth {
+      0%,
+      100% {
+        transform: scale(0.82);
+        opacity: 0.5;
+      }
+      50% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .ak-family-carousel__item {
+      animation: ak-family-carousel-depth linear both;
+      animation-timeline: view(x);
+      animation-range: contain 0% contain 100%;
+    }
+  }
+}
+
+@container family-carousel (max-width: 46rem) {
+  .ak-family-carousel {
+    --_car-card: 62cqw;
+    --_car-shot: 12rem;
+  }
+}
