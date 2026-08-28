@@ -8,11 +8,15 @@ un error.
 Son **dos entregables independientes**. Se pueden pedir y entregar por separado, y
 hoy el primero es el urgente.
 
-> **Este documento es el «qué pedir», no el «cómo hacerlo».** La definición técnica
-> —cámara completa, curvas de giro, formato de salida— la está armando la sesión
-> que mantiene el pipeline de Blender, con un CSV por fotograma para que no haya
-> que interpretar los handles de Blender en otro programa. Cuando esté, se enlaza
-> desde acá y este documento no la duplica.
+> **Este documento es el «qué pedir», no el «cómo hacerlo».**
+>
+> La definición técnica —cámara completa, curvas, iluminación, formato de salida y
+> un CSV con giro, focal y desplazamiento fotograma por fotograma— está acá:
+> **https://claude.ai/code/artifact/1fc366db-aa99-4d68-bc51-5be9cf31bf6d**
+>
+> Ese es el documento que se le manda para que reproduzca la escena. Éste sirve
+> para saber **qué pedirle y en qué orden**, y a propósito no repite sus números:
+> dos documentos con los mismos valores terminan diciendo cosas distintas.
 
 ---
 
@@ -107,34 +111,51 @@ se distingue porque el área donde se ve mide unos 700 px.
 
 ---
 
-## 3. Las cotas — esto NO se lo pedimos a él
+## 3. Las cotas — no se las pedimos, pero necesitamos su cámara
 
 Sobre la máquina que gira se dibujan las flechas de medidas, que la siguen mientras
 rota. Salen de un archivo de anclajes que dice, fotograma por fotograma, dónde caen
-las **ocho esquinas de la caja** del gabinete, más qué par de esquinas une cada cota.
+las **ocho esquinas de la caja** del gabinete y qué par une cada cota.
 
 **Ese archivo lo generamos nosotros**, en la misma corrida que produce los
 fotogramas. No es un paso manual y no hay que pedírselo.
 
-**Pero si él renderiza en otro programa, de ahí no salen anclajes.** Los anclajes son
-geometría más cámara: no dependen del motor de render ni de los materiales. Así que
-el camino es que **entregue los fotogramas y nosotros derivemos las cotas acá**.
+### Puede cambiar el encuadre
 
-Para que coincidan, su render tiene que respetar **exactamente**:
+No está obligado a clavar nuestra cámara. **Los anclajes se recalculan contra
+cualquier cámara** — están comprobados contra una escena con otra posición, otro
+azimut, otra focal y otro barrido, y salieron correctos.
 
-- La misma cámara: posición, rotación, sensor de 36 mm y desplazamiento.
-- La misma curva de giro y la misma focal.
-- La misma colocación de la máquina: apoyada en z=0 y centrada sobre el pivote.
+Reproducir nuestra cámara sigue siendo **lo recomendable**, porque la Gamma 13 ya
+está publicada con ella y es lo que hace que las máquinas se vean de la misma
+familia. Pero es una recomendación estética, no una restricción técnica.
 
-Si algo de eso difiere, las flechas quedan corridas respecto de la imagen y **no hay
-forma de arreglarlo salvo volver a derivarlas**. Es la parte más frágil de todo el
-pedido, y es la razón por la que existe la definición técnica con el CSV por
-fotograma.
+### Si la cambia, necesitamos su cámara — no alcanza con los fotogramas
 
-**Los números los pone la ficha, no la geometría.** El archivo de anclajes trae la
-medida de la malla, pero sirve para *ubicar* la flecha. El número que se *muestra*
-sale de la ficha del fabricante cargada en el panel: el modelo trae tolerancias de
-CAD, y la ficha es lo que el operador va a medir contra su puerta.
+Sirve cualquiera de estas tres:
+
+- La **cámara exportada con su animación**, en FBX o Alembic.
+- El **archivo de escena**, si trabaja en Blender.
+- Los **números planos**: posición y rotación de cámara, sensor, y focal,
+  desplazamiento y giro fotograma por fotograma. Es el mismo formato del CSV que
+  se le pasa, pero al revés.
+
+**Lo único irrecuperable es no tener nada de eso.** De los PNG solos habría que
+resolver la cámara por match-move contra el modelo, que es frágil y aproximado — y
+no vale la pena cuando alcanza con que adjunte un archivo.
+
+### Dos condiciones que se mantienen pase lo que pase
+
+- La máquina **apoyada en z=0 y centrada sobre el eje de giro**.
+- **Cuadro cuadrado.** Si cambia la relación de aspecto cambia la proyección, y hay
+  que saberlo de antemano.
+
+### Los números los pone la ficha, no la geometría
+
+El archivo de anclajes trae la medida de la malla, y sirve para **ubicar** la
+flecha. El número que se **muestra** sale de la ficha del fabricante cargada en el
+panel: el modelo trae tolerancias de CAD, y la ficha es lo que el operador va a
+medir contra su puerta.
 
 ---
 
