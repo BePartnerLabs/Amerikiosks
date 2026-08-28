@@ -46,6 +46,7 @@ pnpm payload migrate        # Run pending DB migrations — MUST run before pnpm
 | [`docs/payload/`](docs/payload/README.md) | Vendored Payload reference — how the framework works. Depth on demand, not rules. |
 | `src/*/CLAUDE.md` | Directory-local notes. These load automatically when you touch that folder, so they stay short by design. |
 | [`docs/post-release-admin.md`](docs/post-release-admin.md) | What has to be done by hand in `/admin` for shipped code to actually appear. Read it when picking the machines work back up. |
+| [`docs/render-requirements.md`](docs/render-requirements.md) | What to ask the person who produces the machine renders. Written to be sent as-is to someone outside the team. |
 
 ## Architecture
 
