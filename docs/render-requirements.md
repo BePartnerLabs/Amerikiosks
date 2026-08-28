@@ -1,19 +1,25 @@
 # Qué pedirle a quien hace los renders
 
-Para pasarle a la persona que produce las máquinas en Blender. Está fuera del
-equipo y fuera de este repositorio, así que este documento está escrito para que
-se entienda **sin abrir el código**: sin rutas, sin nombres de componentes, y con
-el porqué solo donde evita un error.
+Para la persona que produce las máquinas en Blender. Está fuera del equipo y
+fuera de este repositorio, así que está escrito para entenderse **sin abrir el
+código**: sin rutas, sin nombres de componentes, y con el porqué solo donde evita
+un error.
 
 Son **dos entregables independientes**. Se pueden pedir y entregar por separado, y
-hoy el primero es el que hace falta.
+hoy el primero es el urgente.
+
+> **Este documento es el «qué pedir», no el «cómo hacerlo».** La definición técnica
+> —cámara completa, curvas de giro, formato de salida— la está armando la sesión
+> que mantiene el pipeline de Blender, con un CSV por fotograma para que no haya
+> que interpretar los handles de Blender en otro programa. Cuando esté, se enlaza
+> desde acá y este documento no la duplica.
 
 ---
 
 ## 1. Imágenes fijas — una por familia
 
 Se usan en el listado de máquinas, donde la máquina **se sale por arriba de su
-tarjeta**. Ese efecto es todo el motivo de este pedido.
+tarjeta**. Ese efecto es todo el motivo del pedido.
 
 | Requisito | Detalle |
 |---|---|
@@ -24,11 +30,10 @@ tarjeta**. Ese efecto es todo el motivo de este pedido.
 | Sombra | **Sin sombra de piso quemada** en el archivo |
 | Cámara | La misma para las cinco |
 
-**Por qué el recorte a ras es el punto crítico.** Los archivos que tenemos hoy son
-cuadrados de 1920×1920 donde la máquina ocupa entre el **29% y el 53%** del ancho;
-el resto es transparencia. Con ese aire alrededor la máquina nunca llega al borde
-de su caja, así que no hay nada que pueda asomar. Medido sobre los cinco archivos
-actuales:
+**Por qué el recorte a ras es el punto crítico.** Los archivos de hoy son cuadrados
+de 1920×1920 donde la máquina ocupa entre el **29% y el 53%** del ancho; el resto
+es transparencia. Con ese aire la máquina nunca llega al borde de su caja, así que
+no hay nada que pueda asomar. Medido sobre los cinco archivos actuales:
 
 | Familia | Contenido real | Ocupa |
 |---|---|---|
@@ -38,9 +43,9 @@ actuales:
 | **Zeta** | **555×1507** | **29%** |
 | Kappa | 1016×1533 | 53% |
 
-**Por qué sin sombra quemada.** La sombra la pone el sitio por CSS. Una incluida
-en el PNG se duplica, y además obliga a dejar margen debajo de la máquina, que es
-exactamente lo que el recorte a ras viene a eliminar.
+**Por qué sin sombra quemada.** La pone el sitio por CSS. Una incluida en el PNG se
+duplica, y además obliga a dejar margen debajo de la máquina — justo lo que el
+recorte a ras viene a eliminar.
 
 Son cinco: Alpha, Gamma, Delta, Zeta y Kappa.
 
@@ -49,75 +54,101 @@ Son cinco: Alpha, Gamma, Delta, Zeta y Kappa.
 ## 2. Animaciones de rotación — una por modelo
 
 La máquina gira **mientras el visitante baja por la página**. No es un video ni un
-bucle: es una secuencia de imágenes que avanza con el scroll y **se queda quieta
-en el último fotograma** cuando se termina de bajar.
+bucle: es una secuencia de imágenes que avanza con el scroll y **se queda quieta en
+el último fotograma** cuando se termina de bajar. No vuelve al primero.
 
-Eso tiene una consecuencia que conviene decirle: **el último fotograma es la pose
-final que queda en pantalla**, así que conviene que se sostenga sola. No vuelve al
-primero.
+### El recorrido no es una vuelta completa
+
+**Son 140°, centrados en el frente.** En la Gamma 13, de −22,5° a +117,5°.
+
+Y esto es lo que más importa que le quede claro, porque es lo que alguien
+"corrige" a 360° por sentido común: **con una vuelta completa las dos puntas del
+recorrido caen en el perfil angosto de la máquina.** Eso da un mal primer
+fotograma —que es el que se ve antes de empezar a bajar— y un mal fotograma de
+cierre, que es el que queda en pantalla al terminar. Con 140° centrados en el
+frente, arranca y termina en tres cuartos, con volumen.
+
+**El centro es por modelo, no se hereda.** La Gamma 13 va centrada en 47,5° y la
+Kappa 13 en 37,5°, porque el frente de cada máquina cae en un ángulo distinto.
+
+### La cantidad de fotogramas es una decisión, no un requisito
+
+90 es **lo que se usó**, no un número obligatorio: no hay ninguna justificación de
+90 escrita en el pipeline, y el default del script es 60.
+
+Lo que sí es criterio: **el conteo es la resolución del giro.** Con 140° en 90
+fotogramas el paso es de **1,57° por fotograma**; con 60 sería 2,33°. Y el peso
+escala lineal — 2,3 MB la secuencia terminada. Si propone otro número, esos son los
+dos ejes del canje, no hay un valor mágico.
+
+### Un requisito duro que depende del conteo
+
+En un arco parcial como éste, **la última clave de animación va en el fotograma N**,
+no en N+1. El N+1 solo corresponde en una vuelta completa de 360°, donde repetiría
+al primero. Si arma la animación con la última clave en N+1 sobre un arco parcial,
+**el recorrido queda corto y el cierre no llega al ángulo final.**
+
+### El resto
 
 | Requisito | Detalle |
 |---|---|
-| Cantidad | 90 fotogramas *(ver «Pendiente de confirmar»)* |
-| Recorrido | El mismo que la secuencia ya entregada de la Gamma 13 |
 | Formato | PNG con transparencia |
 | Nombres | Numerados correlativamente; **el prefijo no importa** |
 | Tamaño | Ancho mínimo **1600 px** |
 | Sombra | Sin sombra de piso quemada |
-| Cámara | La misma para todos los modelos |
 
-**Sobre los nombres:** nuestro script de conversión toma los dígitos del final del
-nombre e ignora lo que venga antes, así que sirve lo que escriba Blender —
-`0001.png`, `10001.png` o `v0.010001.png` funcionan igual. No hace falta que
-renombre nada.
+**Sobre los nombres:** nuestro conversor toma los dígitos del final e ignora lo que
+venga antes, así que sirve lo que escriba Blender — `0001.png`, `10001.png` o
+`v0.010001.png` funcionan igual. No hace falta renombrar nada.
 
 **Sobre el tamaño:** pedimos 1600 y publicamos a 1200. A 1600 con calidad 90 la
-secuencia pesa 4,8 MB; a 1200 con calidad 80 pesa 2,3 MB y a tamaño de pantalla no
-se distingue, porque el área donde se ve mide unos 700 px.
+secuencia pesa 4,8 MB; a 1200 con calidad 80 pesa 2,3 MB, y a tamaño de pantalla no
+se distingue porque el área donde se ve mide unos 700 px.
 
 ---
 
-## 3. El archivo de cotas (va con las animaciones)
+## 3. Las cotas — esto NO se lo pedimos a él
 
-Junto a los fotogramas necesitamos un `anchors.json` que diga, **para cada
-fotograma**, dónde caen las cuatro esquinas del gabinete dentro de la imagen.
+Sobre la máquina que gira se dibujan las flechas de medidas, que la siguen mientras
+rota. Salen de un archivo de anclajes que dice, fotograma por fotograma, dónde caen
+las **ocho esquinas de la caja** del gabinete, más qué par de esquinas une cada cota.
 
-- Coordenadas normalizadas de **0 a 1**.
-- Origen **arriba a la izquierda**.
+**Ese archivo lo generamos nosotros**, en la misma corrida que produce los
+fotogramas. No es un paso manual y no hay que pedírselo.
 
-Con eso el sitio dibuja las flechas de medidas encima de la máquina, siguiéndola
-mientras gira.
+**Pero si él renderiza en otro programa, de ahí no salen anclajes.** Los anclajes son
+geometría más cámara: no dependen del motor de render ni de los materiales. Así que
+el camino es que **entregue los fotogramas y nosotros derivemos las cotas acá**.
 
-**Los números los pone el sitio, no el JSON.** Salen de la ficha técnica cargada en
-el panel. El JSON solo dice *dónde* va cada flecha; la ficha dice *qué* se lee. Es
-deliberado: la geometría del modelo trae tolerancias de CAD, y la ficha es lo que
-el operador va a medir contra su puerta.
+Para que coincidan, su render tiene que respetar **exactamente**:
 
-Si esta parte complica, **se puede entregar después**: la animación funciona igual,
-solo que sin las cotas dibujadas.
+- La misma cámara: posición, rotación, sensor de 36 mm y desplazamiento.
+- La misma curva de giro y la misma focal.
+- La misma colocación de la máquina: apoyada en z=0 y centrada sobre el pivote.
+
+Si algo de eso difiere, las flechas quedan corridas respecto de la imagen y **no hay
+forma de arreglarlo salvo volver a derivarlas**. Es la parte más frágil de todo el
+pedido, y es la razón por la que existe la definición técnica con el CSV por
+fotograma.
+
+**Los números los pone la ficha, no la geometría.** El archivo de anclajes trae la
+medida de la malla, pero sirve para *ubicar* la flecha. El número que se *muestra*
+sale de la ficha del fabricante cargada en el panel: el modelo trae tolerancias de
+CAD, y la ficha es lo que el operador va a medir contra su puerta.
 
 ---
 
-## Pendiente de confirmar con él
+## Estado, para no pedir de más
 
-Tres cosas que este documento no puede afirmar porque el pipeline de Blender vive
-en su repositorio y no en el nuestro:
-
-- **Cuántos grados recorre la cámara.** La secuencia se consume como scrub, así que
-  una vuelta completa no es un requisito técnico — media vuelta funcionaría igual.
-  El dato correcto es el que él usó en la Gamma 13.
-- **Si 90 fotogramas es el estándar o fue circunstancial.** Hay registro de una
-  exportación anterior de 60. Si hay una razón para 90, va escrita; si no, se pide
-  «los mismos que la Gamma 13».
-- **Si el `anchors.json` lo produce su script solo** o es un paso aparte. Si es
-  automático, ni hace falta mencionárselo.
-
-Mientras no estén confirmadas, **la referencia es la Gamma 13**: ya está publicada
-y funcionando, así que «igual que esa» es una especificación válida y verificable.
+- **Gamma 13** — secuencia publicada y funcionando. Es la referencia: «igual que
+  esa» es una especificación válida y verificable.
+- **Kappa 13** — ya renderizada, 90 fotogramas a 1600 px. **No se puede publicar
+  todavía porque falta su ficha técnica**, sin la cual las cotas quedan sin número.
+- **Las cinco imágenes fijas** — ninguna entregada. Es lo que hay que pedir ahora.
 
 ---
 
 ## Lo que no va en el mensaje
 
 El versionado de carpetas, la conversión a WebP y la subida son nuestros. Él
-entrega los fotogramas y las imágenes; el resto lo hace el equipo.
+entrega fotogramas e imágenes; el resto lo hace el equipo.
