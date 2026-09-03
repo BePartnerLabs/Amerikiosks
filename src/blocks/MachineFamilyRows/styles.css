@@ -45,7 +45,7 @@
 }
 
 .ak-family-rows__head {
-  margin-bottom: var(--bp-space-8, 2rem);
+  margin-bottom: var(--bp-space-12, 3rem);
 }
 
 .ak-family-rows__eyebrow {
@@ -76,8 +76,12 @@
 .ak-family-rows__list {
   display: flex;
   flex-direction: column;
-  /* Floor, not preference: see --_rows-overhang. */
-  gap: var(--bp-space-12, 3rem);
+  /* The floor is real, not a comment: a machine that leans out reaches
+     `--_rows-overhang` above its own card, so a gap smaller than that lands it
+     on the card above instead of in the space between them. `max()` keeps the
+     chosen spacing while making the collision impossible — raise the overhang
+     and the gap follows on its own. */
+  gap: max(var(--bp-space-16, 4rem), calc(var(--_rows-overhang) + var(--bp-space-6, 1.5rem)));
   list-style: none;
   margin: 0;
   padding: 0;
