@@ -35,9 +35,25 @@
   background-color: var(--_background);
 }
 
+/* Vidrio esmerilado al bajar. La barra pasa a translúcida y desenfoca lo que
+   queda debajo, en vez de taparlo con un bloque opaco — que es lo que hacía que
+   la máquina del hero desapareciera de golpe al cruzarla.
+   El desenfoque solo entra con la clase de scroll: arriba de todo no hay nada
+   detrás que valga la pena mostrar, y un `backdrop-filter` permanente cuesta
+   composición en cada fotograma sin dar nada a cambio. */
 .bp-header.is-scrolled {
   box-shadow: var(--bp-shadow-md);
-  transition: box-shadow var(--bp-duration-fast) var(--bp-ease);
+  transition:
+    box-shadow var(--bp-duration-fast) var(--bp-ease),
+    background-color var(--bp-duration-fast) var(--bp-ease);
+}
+
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .bp-header.is-scrolled {
+    --_background: color-mix(in srgb, var(--header-bg, var(--ak-bg)) 72%, transparent);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    backdrop-filter: blur(14px) saturate(140%);
+  }
 }
 
 .bp-header__inner {
