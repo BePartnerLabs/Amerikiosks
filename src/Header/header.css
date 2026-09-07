@@ -26,8 +26,19 @@
 }
 
 /* ─── BPL DS Header (bp-header) ────────────────────────── */
+/* 1px de alto, no cero: un elemento sin altura no puede intersectar nada, y el
+   IntersectionObserver de Component.client.tsx se apoya en que sí pueda. Con
+   altura cero nunca intersectaba, así que `is-scrolled` entraba en el primer
+   disparo sin que nadie hubiera scrolleado. */
+#header-sentinel {
+  height: 1px;
+}
+
 .bp-header {
   --_background: var(--header-bg, var(--ak-bg));
+  transition:
+    box-shadow var(--bp-duration-normal) var(--bp-ease),
+    background-color var(--bp-duration-normal) var(--bp-ease);
   position: sticky;
   top: 0;
   z-index: var(--header-z, 100);
@@ -35,9 +46,44 @@
   background-color: var(--_background);
 }
 
+/* Vidrio esmerilado al bajar. La barra pasa a translúcida y desenfoca lo que
+   queda debajo, en vez de taparlo con un bloque opaco — que es lo que hacía que
+   la máquina del hero desapareciera de golpe al cruzarla.
+   El desenfoque solo entra con la clase de scroll: arriba de todo no hay nada
+   detrás que valga la pena mostrar, y un `backdrop-filter` permanente cuesta
+   composición en cada fotograma sin dar nada a cambio. */
 .bp-header.is-scrolled {
   box-shadow: var(--bp-shadow-md);
-  transition: box-shadow var(--bp-duration-fast) var(--bp-ease);
+}
+
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  /* El desenfoque se declara en los DOS estados para que pueda animarse: una
+     propiedad que aparece de la nada salta, no transiciona. Arriba de todo vale
+     `blur(0)`, que no desenfoca nada y deja la barra igual que sin esto. */
+  .bp-header {
+    -webkit-backdrop-filter: blur(0) saturate(100%);
+    backdrop-filter: blur(0) saturate(100%);
+    /* Repite box-shadow a propósito: esta declaración pisa la del bloque de
+       afuera, y sin ella la sombra saltaría mientras el desenfoque se funde. */
+    transition:
+      box-shadow var(--bp-duration-normal) var(--bp-ease),
+      background-color var(--bp-duration-normal) var(--bp-ease),
+      backdrop-filter var(--bp-duration-normal) var(--bp-ease),
+      -webkit-backdrop-filter var(--bp-duration-normal) var(--bp-ease);
+  }
+
+  .bp-header.is-scrolled {
+    --_background: color-mix(in srgb, var(--header-bg, var(--ak-bg)) 72%, transparent);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    backdrop-filter: blur(14px) saturate(140%);
+  }
+
+  /* Quien pidió menos movimiento recibe el cambio, no la animación. */
+  @media (prefers-reduced-motion: reduce) {
+    .bp-header {
+      transition: none;
+    }
+  }
 }
 
 .bp-header__inner {

@@ -64,6 +64,30 @@ const baseData: Header = {
 // ── Tests ─────────────────────────────────────────────────────────────────────
 
 describe('MobileMenu', () => {
+  it('mounts the sheet and the backdrop outside the header, not inside it', () => {
+    const { container } = render(
+      <header data-testid="header">
+        <MobileMenu data={baseData} />
+      </header>,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: /open navigation menu/i }))
+
+    const sheet = document.getElementById('ak-mobile-sheet')
+    const backdrop = document.querySelector('.ak-mobile-backdrop')
+    const header = container.querySelector('[data-testid="header"]')
+
+    // `backdrop-filter` on the header would make it the containing block for
+    // any `position: fixed` descendant, so a sheet nested inside it stops
+    // measuring against the viewport and lands against a 70px bar instead.
+    // jsdom cannot show that, but it can pin the structure that prevents it.
+    expect(sheet).not.toBeNull()
+    expect(backdrop).not.toBeNull()
+    expect(header?.contains(sheet as Node)).toBe(false)
+    expect(header?.contains(backdrop as Node)).toBe(false)
+    expect(document.body.contains(sheet as Node)).toBe(true)
+  })
+
   beforeEach(() => {
     document.body.style.overflow = ''
   })

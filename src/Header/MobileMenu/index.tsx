@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import React, { useCallback, useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Icon } from '@/components/Icon'
 import { CMSLink } from '@/components/Link'
 import { type SocialLink, SocialLinks } from '@/components/SocialLinks'
@@ -46,6 +47,11 @@ const resolveMegaItemHref = (item: MegaItem): string => {
 
 export const MobileMenu: React.FC<MobileMenuProps> = ({ data, socialLinks }) => {
   const [open, setOpen] = useState(false)
+  // El portal solo puede crearse en el cliente: `document` no existe en el
+  // render del servidor. Hasta que monte, el menú no se emite — no importa,
+  // porque cerrado es `inert` y no se ve.
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
   const [activePanel, setActivePanel] = useState<NavItem | null>(null)
   const navItems = (data?.navItems || []).filter((item) => !item.hidden)
 
@@ -106,166 +112,186 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ data, socialLinks }) => 
         />
       </button>
 
-      {/* Backdrop */}
-      {open && (
-        <div
-          className="ak-mobile-backdrop"
-          aria-hidden="true"
-          onClick={closeMenu}
-        />
-      )}
+      {/* Backdrop y hoja van al <body>, no dentro del <header>.
+          `backdrop-filter` —igual que `filter` y `transform`— convierte a su
+          elemento en bloque contenedor de los descendientes `position: fixed`.
+          Con el menú adentro del header, en cuanto el header lleva blur estos
+          dos dejan de medirse contra el viewport y pasan a medirse contra una
+          barra de 70px: el backdrop no tapa la pantalla y la hoja aparece
+          flotando. No es un bug del CSS, es la especificación.
+          Aparte de eso, una hoja modal a pantalla completa tampoco pertenece
+          al header, ni debería heredar su contexto de apilamiento. */}
+      {mounted &&
+        createPortal(
+          <>
+            {open && (
+              <div
+                className="ak-mobile-backdrop"
+                aria-hidden="true"
+                onClick={closeMenu}
+              />
+            )}
 
-      {/* Bottom sheet — inert removes focus from closed sheet (fixes aria-hidden-focus) */}
-      <div
-        id="ak-mobile-sheet"
-        className={`ak-mobile-sheet${open ? ' ak-mobile-sheet--open' : ''}`}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Navigation menu"
-        aria-hidden={!open}
-        inert={!open || undefined}
-      >
-        {/* Sheet handle */}
-        <div
-          className="ak-mobile-sheet__handle"
-          aria-hidden="true"
-        />
-
-        {/* Sheet header */}
-        <div className="ak-mobile-sheet__header">
-          {activePanel ? (
-            <button
-              type="button"
-              className="ak-mobile-sheet__back"
-              onClick={goBack}
-              aria-label="Back to main menu"
+            {/* Bottom sheet — inert removes focus from closed sheet (fixes aria-hidden-focus) */}
+            <div
+              id="ak-mobile-sheet"
+              className={`ak-mobile-sheet${open ? ' ak-mobile-sheet--open' : ''}`}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Navigation menu"
+              aria-hidden={!open}
+              inert={!open || undefined}
             >
-              ‹
-            </button>
-          ) : (
-            <div aria-hidden="true" />
-          )}
-          {activePanel?.megaMenu?.panelLabel && (
-            <span className="ak-mobile-sheet__panel-label">{activePanel.megaMenu.panelLabel}</span>
-          )}
-          <button
-            ref={closeButtonRef}
-            type="button"
-            className="ak-mobile-sheet__close"
-            onClick={closeMenu}
-            aria-label="Close navigation menu"
-          >
-            ✕
-          </button>
-        </div>
+              {/* Sheet handle */}
+              <div
+                className="ak-mobile-sheet__handle"
+                aria-hidden="true"
+              />
 
-        {/* Panels container — slides left when sub-panel active */}
-        <div
-          className={`ak-mobile-sheet__panels${activePanel ? ' ak-mobile-sheet__panels--sub' : ''}`}
-        >
-          {/* Main panel */}
-          <div
-            className="ak-mobile-sheet__panel ak-mobile-sheet__panel--main"
-            aria-hidden={!!activePanel}
-          >
-            <div className="ak-mobile-main-nav">
-              {navItems.map((item, i) => {
-                const hasMega = item.hasMegaMenu && item.megaMenu
-                return hasMega ? (
+              {/* Sheet header */}
+              <div className="ak-mobile-sheet__header">
+                {activePanel ? (
                   <button
-                    key={item.id ?? i}
                     type="button"
-                    className="ak-mobile-nav-card ak-mobile-nav-card--mega"
-                    onClick={() => setActivePanel(item)}
-                    aria-haspopup="dialog"
+                    className="ak-mobile-sheet__back"
+                    onClick={goBack}
+                    aria-label="Back to main menu"
                   >
-                    <span className="ak-mobile-nav-card__eyebrow">{item.megaMenu?.panelLabel}</span>
-                    <span className="ak-mobile-nav-card__label">
-                      {item.megaMenu?.panelHeadline ?? item.link.label}
-                    </span>
-                    <span
-                      className="ak-mobile-nav-card__arrow"
-                      aria-hidden="true"
-                    >
-                      ›
-                    </span>
+                    ‹
                   </button>
                 ) : (
-                  <Link
-                    key={item.id ?? i}
-                    href={resolveHref(item)}
-                    className="ak-mobile-nav-card"
-                    onClick={closeMenu}
-                  >
-                    <span className="ak-mobile-nav-card__label">{item.link.label}</span>
-                  </Link>
-                )
-              })}
-            </div>
-
-            {data.cta && (data.cta.type === 'modal' ? data.cta.modalForm : data.cta.url) && (
-              // biome-ignore lint/a11y/noStaticElementInteractions: delegation wrapper only — the actual interactive control is the inner CMSLink button/link, this onClick just also closes the mobile sheet on the same (bubbled) click
-              // biome-ignore lint/a11y/useKeyWithClickEvents: same reason — keyboard activation of the inner link/button already bubbles a click event to this wrapper
-              <span
-                data-ga-event="cta_click"
-                data-ga-section="header"
-                data-ga-label={data.cta.label ?? ''}
-                onClick={closeMenu}
-              >
-                <CMSLink
-                  type={data.cta.type ?? 'custom'}
-                  url={data.cta.url}
-                  modalForm={data.cta.modalForm}
-                  label={data.cta.label}
-                  appearance="default"
-                  className="ak-mobile-sheet__cta"
-                />
-              </span>
-            )}
-
-            <SocialLinks
-              links={socialLinks}
-              variant="mobile"
-            />
-          </div>
-
-          {/* Sub panel */}
-          <div
-            className="ak-mobile-sheet__panel ak-mobile-sheet__panel--sub"
-            aria-hidden={!activePanel}
-          >
-            {activePanel?.megaMenu && (
-              <>
-                {activePanel.megaMenu.panelDescription && (
-                  <p className="ak-mega__description">{activePanel.megaMenu.panelDescription}</p>
+                  <div aria-hidden="true" />
                 )}
-                <div className="ak-mega__items">
-                  {(activePanel.megaMenu.items ?? []).map((item, i) => (
-                    <Link
-                      key={item.id ?? i}
-                      href={resolveMegaItemHref(item)}
-                      className="ak-mega__item"
+                {activePanel?.megaMenu?.panelLabel && (
+                  <span className="ak-mobile-sheet__panel-label">
+                    {activePanel.megaMenu.panelLabel}
+                  </span>
+                )}
+                <button
+                  ref={closeButtonRef}
+                  type="button"
+                  className="ak-mobile-sheet__close"
+                  onClick={closeMenu}
+                  aria-label="Close navigation menu"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Panels container — slides left when sub-panel active */}
+              <div
+                className={`ak-mobile-sheet__panels${activePanel ? ' ak-mobile-sheet__panels--sub' : ''}`}
+              >
+                {/* Main panel */}
+                <div
+                  className="ak-mobile-sheet__panel ak-mobile-sheet__panel--main"
+                  aria-hidden={!!activePanel}
+                >
+                  <div className="ak-mobile-main-nav">
+                    {navItems.map((item, i) => {
+                      const hasMega = item.hasMegaMenu && item.megaMenu
+                      return hasMega ? (
+                        <button
+                          key={item.id ?? i}
+                          type="button"
+                          className="ak-mobile-nav-card ak-mobile-nav-card--mega"
+                          onClick={() => setActivePanel(item)}
+                          aria-haspopup="dialog"
+                        >
+                          <span className="ak-mobile-nav-card__eyebrow">
+                            {item.megaMenu?.panelLabel}
+                          </span>
+                          <span className="ak-mobile-nav-card__label">
+                            {item.megaMenu?.panelHeadline ?? item.link.label}
+                          </span>
+                          <span
+                            className="ak-mobile-nav-card__arrow"
+                            aria-hidden="true"
+                          >
+                            ›
+                          </span>
+                        </button>
+                      ) : (
+                        <Link
+                          key={item.id ?? i}
+                          href={resolveHref(item)}
+                          className="ak-mobile-nav-card"
+                          onClick={closeMenu}
+                        >
+                          <span className="ak-mobile-nav-card__label">{item.link.label}</span>
+                        </Link>
+                      )
+                    })}
+                  </div>
+
+                  {data.cta && (data.cta.type === 'modal' ? data.cta.modalForm : data.cta.url) && (
+                    // biome-ignore lint/a11y/noStaticElementInteractions: delegation wrapper only — the actual interactive control is the inner CMSLink button/link, this onClick just also closes the mobile sheet on the same (bubbled) click
+                    // biome-ignore lint/a11y/useKeyWithClickEvents: same reason — keyboard activation of the inner link/button already bubbles a click event to this wrapper
+                    <span
+                      data-ga-event="cta_click"
+                      data-ga-section="header"
+                      data-ga-label={data.cta.label ?? ''}
                       onClick={closeMenu}
                     >
-                      {item.icon && (
-                        <span className="ak-mega__item-icon">
-                          <Icon name={item.icon} />
-                        </span>
-                      )}
-                      <div className="ak-mega__item-body">
-                        <p className="ak-mega__item-title">{item.title}</p>
-                        {item.description && (
-                          <p className="ak-mega__item-desc">{item.description}</p>
-                        )}
-                      </div>
-                    </Link>
-                  ))}
+                      <CMSLink
+                        type={data.cta.type ?? 'custom'}
+                        url={data.cta.url}
+                        modalForm={data.cta.modalForm}
+                        label={data.cta.label}
+                        appearance="default"
+                        className="ak-mobile-sheet__cta"
+                      />
+                    </span>
+                  )}
+
+                  <SocialLinks
+                    links={socialLinks}
+                    variant="mobile"
+                  />
                 </div>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
+
+                {/* Sub panel */}
+                <div
+                  className="ak-mobile-sheet__panel ak-mobile-sheet__panel--sub"
+                  aria-hidden={!activePanel}
+                >
+                  {activePanel?.megaMenu && (
+                    <>
+                      {activePanel.megaMenu.panelDescription && (
+                        <p className="ak-mega__description">
+                          {activePanel.megaMenu.panelDescription}
+                        </p>
+                      )}
+                      <div className="ak-mega__items">
+                        {(activePanel.megaMenu.items ?? []).map((item, i) => (
+                          <Link
+                            key={item.id ?? i}
+                            href={resolveMegaItemHref(item)}
+                            className="ak-mega__item"
+                            onClick={closeMenu}
+                          >
+                            {item.icon && (
+                              <span className="ak-mega__item-icon">
+                                <Icon name={item.icon} />
+                              </span>
+                            )}
+                            <div className="ak-mega__item-body">
+                              <p className="ak-mega__item-title">{item.title}</p>
+                              {item.description && (
+                                <p className="ak-mega__item-desc">{item.description}</p>
+                              )}
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          </>,
+          document.body,
+        )}
     </>
   )
 }
