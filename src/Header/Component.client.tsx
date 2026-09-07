@@ -29,9 +29,14 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, socialLinks })
     const sentinel = document.getElementById('header-sentinel')
     const header = headerRef.current
     if (!sentinel || !header) return
-    const observer = new IntersectionObserver(
-      ([entry]) => header.classList.toggle('is-scrolled', !entry.isIntersecting),
-      { rootMargin: '-1px' },
+    // Sin rootMargin negativo: el centinela mide 1px y arranca visible, así que
+    // `isIntersecting` es true mientras la página está arriba de todo. El
+    // `-1px` de antes, sobre un centinela de altura cero, hacía que no
+    // intersectara nunca — la clase entraba en el primer disparo, sin scroll.
+    // No se notaba porque solo agregaba una sombra; con el desenfoque encima
+    // pasó a verse.
+    const observer = new IntersectionObserver(([entry]) =>
+      header.classList.toggle('is-scrolled', !entry.isIntersecting),
     )
     observer.observe(sentinel)
     return () => observer.disconnect()

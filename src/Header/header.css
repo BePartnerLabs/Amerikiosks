@@ -26,6 +26,14 @@
 }
 
 /* ─── BPL DS Header (bp-header) ────────────────────────── */
+/* 1px de alto, no cero: un elemento sin altura no puede intersectar nada, y el
+   IntersectionObserver de Component.client.tsx se apoya en que sí pueda. Con
+   altura cero nunca intersectaba, así que `is-scrolled` entraba en el primer
+   disparo sin que nadie hubiera scrolleado. */
+#header-sentinel {
+  height: 1px;
+}
+
 .bp-header {
   --_background: var(--header-bg, var(--ak-bg));
   transition:
