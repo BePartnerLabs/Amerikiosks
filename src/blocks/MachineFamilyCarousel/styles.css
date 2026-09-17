@@ -128,6 +128,12 @@
   text-align: center;
 }
 
+/* El nombre y su clase son una sola unidad: el gap del enlace separa la
+   máquina del texto, no el texto de su etiqueta. */
+.ak-family-carousel__link .ak-class-chip {
+  margin-top: calc(var(--bp-space-4, 1rem) * -0.55);
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .ak-family-carousel__link:hover .ak-family-carousel__shot,
   .ak-family-carousel__link:focus-visible .ak-family-carousel__shot {

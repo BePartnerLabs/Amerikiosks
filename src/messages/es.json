@@ -35,12 +35,20 @@
     "heading": "Descubre nuestras líneas de modelos",
     "knowMore": "Saber más",
     "eyebrow": "Líneas de modelo",
+    "downloadBrochure": "Descargar el folleto (en inglés)",
+    "salesClass": {
+      "frozen": "Congelado",
+      "hot-food": "Comida caliente",
+      "refrigerated": "Refrigerado",
+      "ambient-high-volume": "Ambiente · alto volumen",
+      "tight-space": "Espacio chico"
+    },
     "trustEyebrow": "Confían en nosotros",
     "trustHeading": "Las marcas que ya operan estas máquinas.",
     "theLine": "La línea",
     "modelsHeading": "Modelos {family}",
     "seeMachine": "Ver la máquina",
-    "noModels": "Los modelos de esta línea están en camino. Escribinos y te mostramos la configuración.",
+    "noModels": "Los modelos de esta línea están en camino. Escríbenos y te mostramos la configuración.",
     "mainHighlight": "Característica principal",
     "feature": "Característica",
     "modelsInLine": "Modelos en la línea",
@@ -60,7 +68,7 @@
   "error": {
     "code": "Ups",
     "heading": "Algo salió mal",
-    "message": "Tuvimos un problema al cargar esta página. Intentá de nuevo, o volvé al inicio.",
+    "message": "Tuvimos un problema al cargar esta página. Inténtalo de nuevo, o vuelve al inicio.",
     "retry": "Intentar de nuevo",
     "backHome": "Volver al inicio"
   },

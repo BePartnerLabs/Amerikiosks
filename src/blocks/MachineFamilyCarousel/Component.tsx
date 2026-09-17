@@ -1,5 +1,7 @@
 import Image from 'next/image'
 import type React from 'react'
+import { SalesClassChip } from '@/components/SalesClassChip'
+import type { SalesClassLabels } from '@/components/SalesClassChip/labels'
 import { Link } from '@/i18n/navigation'
 import { InfiniteTrack } from './InfiniteTrack'
 import type { CarouselFamily } from './types'
@@ -10,6 +12,7 @@ type Props = {
   heading: string
   intro: string | null
   families: CarouselFamily[]
+  salesClassLabels: SalesClassLabels
   // Passed down rather than read here, so this stays a plain synchronous
   // component and the server-rendered Link never falls back to next-intl's
   // getLocale() — that reads headers and breaks these routes.
@@ -21,6 +24,7 @@ export const MachineFamilyCarouselBlock: React.FC<Props> = ({
   heading,
   intro,
   families,
+  salesClassLabels,
   locale,
 }) => (
   <section
@@ -65,6 +69,11 @@ export const MachineFamilyCarouselBlock: React.FC<Props> = ({
                   </span>
                 )}
                 <span className="ak-family-carousel__name">{family.name}</span>
+                <SalesClassChip
+                  salesClass={family.salesClass}
+                  colorStep={family.colorStep}
+                  label={salesClassLabels[family.salesClass]}
+                />
               </Link>
             </li>
           ))}

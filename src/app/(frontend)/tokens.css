@@ -78,6 +78,25 @@
   --ak-white: var(--brand-color-palette-white);
   --ak-accent: var(--brand-color-palette-coral-600);
 
+  /* Sales-class accents — una semilla por fila de la hoja comparativa del
+     cliente (congelado, comida caliente, refrigerado, ambiente de alto volumen,
+     espacio chico). El color de una familia sale de su clase de venta, no de su
+     posición en una lista que el cliente puede reordenar sin aviso.
+
+     Estas cinco son SEMILLAS, no colores de texto: medidas sobre blanco dan
+     3.3–3.7 y no llegan al 4.5 de AA. El que se usa como texto es `ink`, que
+     cada componente deriva con `oklch(from …)` junto con `base` (fondos, halos)
+     y `glow` (sobre navy). La derivación vive en
+     components/FamilyAccent/accent.css; acá solo viven las semillas.
+
+     Argumento completo y contrastes medidos: docs/business/visado.md, "El color
+     de las familias dice qué vendés, no en qué orden están cargadas". */
+  --ak-family-frozen: #498bdc;
+  --ak-family-hot-food: #c86f25;
+  --ak-family-refrigerated: #1c9ba1;
+  --ak-family-ambient-high-volume: #2ba162;
+  --ak-family-tight-space: #a96dc3;
+
   /* Status colors (Figma: brand.color.status.<name>.main) — Banner, alerts, etc.
      "error" intentionally uses --ak-accent (brand coral), not a generic red. */
   --ak-color-status-info: #088196;

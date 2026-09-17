@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server'
 import { ComposedHero } from '@/components/ComposedHero'
 import { CMSLink } from '@/components/Link'
 import type { Machine } from '@/payload-types'
@@ -17,7 +18,7 @@ type Props = {
 // Same composition as the family hero (ComposedHero) — no scroll-driven
 // animation. Used for any model without a real 360° turntable asset set
 // (see RotationScrubHero for that case).
-export const ZoomFadeHero: React.FC<Props> = ({
+export const ZoomFadeHero: React.FC<Props> = async ({
   imageUrl,
   alt,
   eyebrow,
@@ -27,6 +28,8 @@ export const ZoomFadeHero: React.FC<Props> = ({
   cta,
   slug,
 }) => {
+  const t = await getTranslations('machines')
+
   return (
     <ComposedHero
       eyebrow={eyebrow}
@@ -44,7 +47,7 @@ export const ZoomFadeHero: React.FC<Props> = ({
               className="bp-btn bp-btn--dark"
               download
             >
-              Download brochure
+              {t('downloadBrochure')}
             </a>
           )}
           <CMSLink

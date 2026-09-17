@@ -2,6 +2,7 @@ import config from '@payload-config'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { getPayload } from 'payload'
 import type React from 'react'
+import { getSalesClassLabels } from '@/components/SalesClassChip/labels'
 import type {
   Machine,
   MachineFamily,
@@ -26,6 +27,7 @@ export const MachineModelsServer: React.FC<MachineModelsBlockProps> = async (pro
   const payload = await getPayload({ config })
   const locale = await getLocale()
   const t = await getTranslations('machines')
+  const salesClassLabels = await getSalesClassLabels()
 
   const result = await payload.find({
     collection: 'machines',
@@ -60,6 +62,8 @@ export const MachineModelsServer: React.FC<MachineModelsBlockProps> = async (pro
         slug: machine.slug ?? '',
         familyName: family?.name ?? null,
         familySlug: family?.slug ?? null,
+        salesClass: family?.salesClass ?? null,
+        colorStep: family?.colorStep ?? null,
         imageUrl: mediaUrl(machine.image, 520),
         specs: (machine.specs ?? [])
           .filter((spec) => spec.label && spec.value)
@@ -107,6 +111,7 @@ export const MachineModelsServer: React.FC<MachineModelsBlockProps> = async (pro
       jsonLd={jsonLd}
       {...rest}
       models={models}
+      salesClassLabels={salesClassLabels}
       labels={{
         previous: t('carouselPrevious'),
         next: t('carouselNext'),

@@ -1498,6 +1498,10 @@ export interface Machine {
   generateSlug?: boolean | null;
   slug: string;
   /**
+   * Product series this model belongs to (e.g. Alpha, Gamma)
+   */
+  family: number | MachineFamily;
+  /**
    * Short label shown on cards, e.g. "Full-size branded machine"
    */
   tagline?: string | null;
@@ -1513,20 +1517,6 @@ export interface Machine {
    * Optional side view — swaps in on hover/focus/active over the card. Leave empty to keep showing the front view only.
    */
   hoverImage?: (number | null) | Media;
-  /**
-   * e.g. full-size, compact, campaign, premium — used for block-level filtering
-   */
-  tags?: (number | MachineTag)[] | null;
-  /**
-   * Product series this model belongs to (e.g. Alpha, Gamma)
-   */
-  family: number | MachineFamily;
-  gallery?:
-    | {
-        image: number | Media;
-        id?: string | null;
-      }[]
-    | null;
   /**
    * Hero call-to-action. Supports linking to a page, a custom URL, or opening a form in a modal (e.g. "Contact Sales" opening a lead form instead of navigating away).
    */
@@ -1557,6 +1547,27 @@ export interface Machine {
    * Optional downloadable brochure (PDF). Hides the "Download brochure" hero button when empty.
    */
   brochure?: (number | null) | Media;
+  /**
+   * Show the full rotation-scrub hero instead of the default zoom+fade hero.
+   */
+  useRotationHero?: boolean | null;
+  /**
+   * Carpeta de la secuencia en R2, con su versión: "gamma-12/v0.1". Sube una carpeta NUEVA para cada versión — sobrescribir deja al CDN sirviendo media animación vieja y media nueva. Los fotogramas se llaman frame-001.webp… y se generan con scripts/build-frame-sequence.mjs.
+   */
+  sequencePath?: string | null;
+  /**
+   * Cuántos fotogramas tiene la carpeta. Declararlo evita listar el bucket en cada render, y hace que un fotograma que falte se vea como un hueco en el giro en vez de terminar la animación antes de tiempo.
+   */
+  frameCount?: number | null;
+  /**
+   * Legacy: fotogramas subidos uno a uno. Para secuencias nuevas usa "sequencePath" — 60 filas ordenadas a mano es donde un fotograma acaba en el sitio equivocado sin que nada avise.
+   */
+  rotationFrames?:
+    | {
+        image: number | Media;
+        id?: string | null;
+      }[]
+    | null;
   highlights?: {
     /**
      * e.g. "WHY GAMMA 13"
@@ -1601,20 +1612,6 @@ export interface Machine {
         }[]
       | null;
   };
-  dimensions?: {
-    /**
-     * e.g. 92"
-     */
-    height?: string | null;
-    /**
-     * e.g. 74"
-     */
-    width?: string | null;
-    /**
-     * e.g. 40"
-     */
-    depth?: string | null;
-  };
   /**
    * Structured spec rows (capacity, power, screen, refrigeration, etc.) sourced from the vendor spec sheet. Drives the family-page comparison table and the model-page spec list. Order here is the display order; use the same "label" text across models in a family so rows line up in the comparison table.
    */
@@ -1631,6 +1628,20 @@ export interface Machine {
         id?: string | null;
       }[]
     | null;
+  dimensions?: {
+    /**
+     * e.g. 92"
+     */
+    height?: string | null;
+    /**
+     * e.g. 74"
+     */
+    width?: string | null;
+    /**
+     * e.g. 40"
+     */
+    depth?: string | null;
+  };
   /**
    * Labeled technical line-drawings (e.g. front, side, isometric views)
    */
@@ -1641,27 +1652,16 @@ export interface Machine {
         id?: string | null;
       }[]
     | null;
-  /**
-   * Show the full rotation-scrub hero instead of the default zoom+fade hero.
-   */
-  useRotationHero?: boolean | null;
-  /**
-   * Carpeta de la secuencia en R2, con su versión: "gamma-12/v0.1". Sube una carpeta NUEVA para cada versión — sobrescribir deja al CDN sirviendo media animación vieja y media nueva. Los fotogramas se llaman frame-001.webp… y se generan con scripts/build-frame-sequence.mjs.
-   */
-  sequencePath?: string | null;
-  /**
-   * Cuántos fotogramas tiene la carpeta. Declararlo evita listar el bucket en cada render, y hace que un fotograma que falte se vea como un hueco en el giro en vez de terminar la animación antes de tiempo.
-   */
-  frameCount?: number | null;
-  /**
-   * Legacy: fotogramas subidos uno a uno. Para secuencias nuevas usa "sequencePath" — 60 filas ordenadas a mano es donde un fotograma acaba en el sitio equivocado sin que nada avise.
-   */
-  rotationFrames?:
+  gallery?:
     | {
         image: number | Media;
         id?: string | null;
       }[]
     | null;
+  /**
+   * e.g. full-size, compact, campaign, premium — used for block-level filtering
+   */
+  tags?: (number | MachineTag)[] | null;
   meta?: {
     title?: string | null;
     /**
@@ -1691,6 +1691,14 @@ export interface MachineFamily {
    */
   generateSlug?: boolean | null;
   slug: string;
+  /**
+   * La fila de la hoja comparativa del cliente a la que pertenece esta familia. De acá sale el color de acento de la familia en todo el sitio — no de su posición en la lista, que el cliente puede reordenar sin aviso.
+   */
+  salesClass: 'frozen' | 'hot-food' | 'refrigerated' | 'ambient-high-volume' | 'tight-space';
+  /**
+   * Solo si dos familias comparten clase. Un paso de rampa las separa dentro del mismo tono: 0 es el tono base y 1 el siguiente. Hoy la única que lo usa es Delta, para no ser idéntica a Zeta dentro de "espacio chico". Dejalo en 0 si esta familia es la única de su clase.
+   */
+  colorStep?: number | null;
   /**
    * e.g. "Explore our premium line" — used as the blurb on the home model-lines card
    */
@@ -3385,18 +3393,11 @@ export interface MachinesSelect<T extends boolean = true> {
   name?: T;
   generateSlug?: T;
   slug?: T;
+  family?: T;
   tagline?: T;
   heroEyebrow?: T;
   image?: T;
   hoverImage?: T;
-  tags?: T;
-  family?: T;
-  gallery?:
-    | T
-    | {
-        image?: T;
-        id?: T;
-      };
   cta?:
     | T
     | {
@@ -3409,6 +3410,15 @@ export interface MachinesSelect<T extends boolean = true> {
         appearance?: T;
       };
   brochure?: T;
+  useRotationHero?: T;
+  sequencePath?: T;
+  frameCount?: T;
+  rotationFrames?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
   highlights?:
     | T
     | {
@@ -3436,19 +3446,19 @@ export interface MachinesSelect<T extends boolean = true> {
               id?: T;
             };
       };
-  dimensions?:
-    | T
-    | {
-        height?: T;
-        width?: T;
-        depth?: T;
-      };
   specs?:
     | T
     | {
         label?: T;
         value?: T;
         id?: T;
+      };
+  dimensions?:
+    | T
+    | {
+        height?: T;
+        width?: T;
+        depth?: T;
       };
   dimensionDiagrams?:
     | T
@@ -3457,15 +3467,13 @@ export interface MachinesSelect<T extends boolean = true> {
         label?: T;
         id?: T;
       };
-  useRotationHero?: T;
-  sequencePath?: T;
-  frameCount?: T;
-  rotationFrames?:
+  gallery?:
     | T
     | {
         image?: T;
         id?: T;
       };
+  tags?: T;
   meta?:
     | T
     | {
@@ -3495,6 +3503,8 @@ export interface MachineFamiliesSelect<T extends boolean = true> {
   name?: T;
   generateSlug?: T;
   slug?: T;
+  salesClass?: T;
+  colorStep?: T;
   tagline?: T;
   heroEyebrow?: T;
   heroHeading?: T;

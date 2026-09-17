@@ -83,6 +83,8 @@ import * as migration_20260821_025700_machine_family_rows_block from './20260821
 import * as migration_20260822_010712_machine_family_rows_count_singular from './20260822_010712_machine_family_rows_count_singular';
 import * as migration_20260822_011427_machine_families_row_image from './20260822_011427_machine_families_row_image';
 import * as migration_20260827_033814_machine_family_carousel_block from './20260827_033814_machine_family_carousel_block';
+import * as migration_20260917_172529_machine_families_sales_class from './20260917_172529_machine_families_sales_class';
+import * as migration_20260917_172530_backfill_family_sales_class from './20260917_172530_backfill_family_sales_class';
 
 export const migrations = [
   {
@@ -508,6 +510,16 @@ export const migrations = [
   {
     up: migration_20260827_033814_machine_family_carousel_block.up,
     down: migration_20260827_033814_machine_family_carousel_block.down,
-    name: '20260827_033814_machine_family_carousel_block'
+    name: '20260827_033814_machine_family_carousel_block',
+  },
+  {
+    up: migration_20260917_172529_machine_families_sales_class.up,
+    down: migration_20260917_172529_machine_families_sales_class.down,
+    name: '20260917_172529_machine_families_sales_class'
+  },
+  {
+    up: migration_20260917_172530_backfill_family_sales_class.up,
+    down: migration_20260917_172530_backfill_family_sales_class.down,
+    name: '20260917_172530_backfill_family_sales_class'
   },
 ];

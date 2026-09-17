@@ -2,6 +2,7 @@ import config from '@payload-config'
 import { getLocale } from 'next-intl/server'
 import { getPayload } from 'payload'
 import type React from 'react'
+import { getSalesClassLabels } from '@/components/SalesClassChip/labels'
 import type {
   Machine,
   MachineFamily,
@@ -71,6 +72,8 @@ export const MachineFamilyRowsServer: React.FC<MachineFamilyRowsBlockProps> = as
         ctaLabel: true,
         thumbnail: true,
         rowImage: true,
+        salesClass: true,
+        colorStep: true,
         // Text only. `highlights: true` would pull each item's image as well —
         // media documents this row never renders.
         highlights: { items: { title: true, description: true, featured: true } },
@@ -107,6 +110,8 @@ export const MachineFamilyRowsServer: React.FC<MachineFamilyRowsBlockProps> = as
         mediaUrl(family.rowImage, ROW_IMAGE_WIDTH) ?? mediaUrl(family.thumbnail, ROW_IMAGE_WIDTH),
       leansOut: Boolean(mediaUrl(family.rowImage, ROW_IMAGE_WIDTH)),
       ctaLabel: family.ctaLabel ?? null,
+      salesClass: family.salesClass,
+      colorStep: family.colorStep ?? null,
       modelCount: countById.get(String(family.id)) ?? 0,
     }))
     // A family with no slug has nowhere to link; one with no thumbnail would
@@ -126,6 +131,7 @@ export const MachineFamilyRowsServer: React.FC<MachineFamilyRowsBlockProps> = as
       soonLabel={props.soonLabel ?? null}
       soonCtaLabel={props.soonCtaLabel ?? null}
       families={families}
+      salesClassLabels={await getSalesClassLabels()}
       locale={locale as 'en' | 'es'}
     />
   )

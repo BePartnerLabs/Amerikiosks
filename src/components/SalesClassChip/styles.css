@@ -1,0 +1,45 @@
+/* ═══════════════════════════════════════════════════════════════
+   Sales class chip
+   ═══════════════════════════════════════════════════════════════ */
+
+/*
+ * Los tres colores salen de la derivación de FamilyAccent, que este componente
+ * ya trae puesta: `base` para el punto y las mezclas, `ink` para el texto sobre
+ * claro, `glow` sobre navy. Ninguno se escribe a mano.
+ */
+
+.ak-class-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4375rem;
+  border-radius: var(--bp-radius-full, 999px);
+  padding: 0.3125rem 0.6875rem;
+  /* Misma mono en versalitas que el eyebrow del carrusel de modelos: el chip es
+     un rótulo de sistema, no una frase. */
+  font-family: var(--bp-font-family-mono, ui-monospace, monospace);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.3;
+  background: color-mix(in srgb, var(--_family-base) 12%, var(--ak-color-surface));
+  color: var(--_family-ink);
+  border: var(--md-semantic-border-width-default, 1px) solid
+    color-mix(in srgb, var(--_family-base) 32%, transparent);
+}
+
+/* El punto lleva el tono a plena fuerza, que como texto no se podría leer. Es
+   decorativo: el nombre de la clase ya está escrito al lado. */
+.ak-class-chip::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-radius: 50%;
+  background: var(--_family-base);
+}
+
+.ak-class-chip--on-dark {
+  background: color-mix(in srgb, var(--_family-base) 18%, var(--ak-surface-inverse));
+  color: var(--_family-glow);
+}

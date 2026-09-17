@@ -99,9 +99,12 @@
   position: absolute;
   inset: 0;
   z-index: -1;
+  /* El halo toma la semilla a plena fuerza mezclada al 16%; el texto de abajo
+     toma `ink`, que es la variante que llega a AA. Ver
+     components/FamilyAccent/accent.css. */
   background: radial-gradient(
     120% 90% at 50% 0%,
-    color-mix(in srgb, var(--_accent) 16%, transparent),
+    color-mix(in srgb, var(--_family-base) 16%, transparent),
     transparent 65%
   );
 }
@@ -192,7 +195,7 @@
   font-weight: var(--bp-font-weight-semibold, 600);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--_accent);
+  color: var(--_family-ink);
 }
 
 .ak-model-lines__panel-tagline {
@@ -211,7 +214,7 @@
   gap: var(--bp-space-1, 0.4rem);
   font-size: var(--bp-font-size-sm, 0.875rem);
   font-weight: var(--bp-font-weight-semibold, 600);
-  color: var(--_accent);
+  color: var(--_family-ink);
 }
 
 .ak-model-lines__panel-cta svg {

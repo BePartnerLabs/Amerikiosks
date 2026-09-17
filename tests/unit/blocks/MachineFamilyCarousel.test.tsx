@@ -7,7 +7,12 @@ vi.mock('@payload-config', () => ({ default: {} }))
 
 const { find } = vi.hoisted(() => ({ find: vi.fn() }))
 vi.mock('payload', () => ({ getPayload: vi.fn().mockResolvedValue({ find }) }))
-vi.mock('next-intl/server', () => ({ getLocale: vi.fn().mockResolvedValue('en') }))
+vi.mock('next-intl/server', () => ({
+  getLocale: vi.fn().mockResolvedValue('en'),
+  // El chip resuelve sus cinco rótulos en el servidor; acá devuelve la clave,
+  // que es todo lo que estas pruebas necesitan distinguir.
+  getTranslations: vi.fn().mockResolvedValue((key: string) => key),
+}))
 
 vi.mock('@/i18n/navigation', () => ({
   Link: ({
@@ -39,6 +44,8 @@ const familyDoc = (id: string, slug: string, over: Record<string, unknown> = {})
     slug,
     name: `${slug} Series`,
     thumbnail: media(`/${slug}.png`),
+    salesClass: 'refrigerated',
+    colorStep: 0,
     ...over,
   }) as unknown as MachineFamilyDoc
 
@@ -47,8 +54,18 @@ const card = (over: Partial<CarouselFamily> = {}): CarouselFamily => ({
   name: 'Alpha Series',
   slug: 'alpha',
   imageUrl: '/alpha.png',
+  salesClass: 'refrigerated',
+  colorStep: null,
   ...over,
 })
+
+const salesClassLabels = {
+  frozen: 'Frozen',
+  'hot-food': 'Hot food',
+  refrigerated: 'Refrigerated',
+  'ambient-high-volume': 'Ambient · high volume',
+  'tight-space': 'Tight space',
+}
 
 afterEach(() => {
   cleanup()
@@ -98,9 +115,15 @@ describe('MachineFamilyCarouselServer', () => {
 })
 
 describe('MachineFamilyCarouselBlock', () => {
-  const props = { eyebrow: null, heading: 'Our lines', intro: null, locale: 'en' as const }
+  const props = {
+    eyebrow: null,
+    heading: 'Our lines',
+    intro: null,
+    locale: 'en' as const,
+    salesClassLabels,
+  }
 
-  it('shows the family name and nothing else — the detail belongs to the rows below', () => {
+  it('shows the family name and its class, and nothing else — the detail belongs to the rows below', () => {
     const { container } = render(
       <MachineFamilyCarouselBlock
         {...props}
@@ -109,6 +132,9 @@ describe('MachineFamilyCarouselBlock', () => {
     )
 
     expect(screen.getAllByText('Alpha Series').length).toBeGreaterThan(0)
+    // El chip de clase es lo único que acompaña al nombre: sin él el color de
+    // la tarjeta nunca enseña qué significa.
+    expect(screen.getAllByText('Refrigerated').length).toBeGreaterThan(0)
     // No badge, no characteristic, no CTA: this block is the index.
     expect(container.textContent).not.toMatch(/model|Coming soon|View the line/)
   })

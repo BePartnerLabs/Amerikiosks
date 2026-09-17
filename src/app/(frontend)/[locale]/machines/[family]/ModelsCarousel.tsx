@@ -1,14 +1,19 @@
 import Image from 'next/image'
 import { ModelLinesCarousel } from '@/blocks/ModelLines/CarouselNav'
 import '@/blocks/ModelLines/styles.css'
+import '@/components/FamilyAccent/accent.css'
 import { Link } from '@/i18n/navigation'
-import type { Machine, Media } from '@/payload-types'
+import type { Machine, MachineFamily, Media } from '@/payload-types'
 import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 import { vtName } from '@/utilities/viewTransitionName'
 
 type Props = {
   familySlug: string
   models: Machine[]
+  // Todas las tarjetas de este carrusel son de la misma familia, así que el
+  // acento se declara una vez en la sección y lo heredan los paneles.
+  salesClass: MachineFamily['salesClass']
+  colorStep?: number | null
   // Required so the server-rendered Link below never falls back to next-intl's
   // own getLocale() — that reads headers and breaks static generation for this
   // page (see the machines pages' DYNAMIC_SERVER_USAGE fix).
@@ -17,21 +22,28 @@ type Props = {
 
 // Reuses the exact ak-model-lines panel styling from the home page's
 // "explore our systems" carousel, scoped to models within a family.
-const ACCENTS = ['#ff6b3d', '#3fb0ff', '#7cd992', '#c58cff', '#ffd166', '#ff8fb1']
-
-export const ModelsCarousel: React.FC<Props> = ({ familySlug, models, locale }) => {
+export const ModelsCarousel: React.FC<Props> = ({
+  familySlug,
+  models,
+  locale,
+  salesClass,
+  colorStep,
+}) => {
   if (models.length === 0) return null
 
   return (
-    <section className="ak-model-lines ak-family-detail__models-carousel">
+    <section
+      className="ak-model-lines ak-family-detail__models-carousel ak-family-accent"
+      data-sales-class={salesClass}
+      style={colorStep ? ({ '--_family-step': colorStep } as React.CSSProperties) : undefined}
+    >
       <div className="bp-content-grid">
         <div className="breakout ak-model-lines__inner">
           <ModelLinesCarousel>
-            {models.map((machine, i) => {
+            {models.map((machine) => {
               const image = typeof machine.image === 'object' ? (machine.image as Media) : null
               const hoverImage =
                 typeof machine.hoverImage === 'object' ? (machine.hoverImage as Media) : null
-              const accent = ACCENTS[i % ACCENTS.length]
 
               return (
                 <Link
@@ -42,7 +54,6 @@ export const ModelsCarousel: React.FC<Props> = ({ familySlug, models, locale }) 
                   }}
                   locale={locale}
                   className="ak-model-lines__panel"
-                  style={{ '--_accent': accent } as React.CSSProperties}
                   data-ga-event="machine_model_click"
                   data-ga-label={machine.name}
                 >

@@ -2,6 +2,7 @@ import config from '@payload-config'
 import { getLocale } from 'next-intl/server'
 import { getPayload } from 'payload'
 import type React from 'react'
+import { getSalesClassLabels } from '@/components/SalesClassChip/labels'
 import type {
   MachineFamily,
   MachineFamilyCarouselBlock as MachineFamilyCarouselBlockProps,
@@ -45,7 +46,14 @@ export const MachineFamilyCarouselServer: React.FC<MachineFamilyCarouselBlockPro
     // A card shows a machine and a name. Without this, depth 1 also hydrates
     // hoverThumbnail, heroLineupImage and an image per highlight — media
     // documents nothing here reads.
-    select: { name: true, slug: true, thumbnail: true, rowImage: true },
+    select: {
+      name: true,
+      slug: true,
+      thumbnail: true,
+      rowImage: true,
+      salesClass: true,
+      colorStep: true,
+    },
   })
 
   const families: CarouselFamily[] = (result.docs as MachineFamily[])
@@ -53,6 +61,8 @@ export const MachineFamilyCarouselServer: React.FC<MachineFamilyCarouselBlockPro
       id: String(family.id),
       name: family.name,
       slug: family.slug ?? '',
+      salesClass: family.salesClass,
+      colorStep: family.colorStep ?? null,
       // `rowImage` is the render cropped tight to the machine; `thumbnail` is
       // the square canvas every other consumer already uses. Per family, so a
       // line whose artwork has not arrived still gets a card.
@@ -71,6 +81,7 @@ export const MachineFamilyCarouselServer: React.FC<MachineFamilyCarouselBlockPro
       heading={props.heading}
       intro={props.intro ?? null}
       families={families}
+      salesClassLabels={await getSalesClassLabels()}
       locale={locale as 'en' | 'es'}
     />
   )

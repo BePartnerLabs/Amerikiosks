@@ -30,6 +30,14 @@ características y conteo salen de la colección `machine-families`.
 **El número de modelos se cuenta, no se tipea.** Sale de la colección `machines`,
 así que no puede quedar desactualizado.
 
+**El color de cada fila tampoco se elige acá.** El chip de clase y el contador
+toman el acento de la familia, y ese acento sale de su `salesClass` en
+`machine-families` — no de su posición en la lista, que es reordenable sin aviso.
+El eyebrow de sección y el outline de foco se quedan en coral a propósito: el
+primero encabeza el bloque entero y el segundo tiene que ser siempre el mismo
+indicador. Ver `docs/business/visado.md`, "El color de las familias dice qué
+vendés".
+
 ## Variants
 
 No tiene variantes configurables. Cada fila toma uno de dos estados, **derivado**

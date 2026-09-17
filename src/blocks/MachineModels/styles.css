@@ -41,6 +41,20 @@
   background: var(--_models-background);
 }
 
+/* Carrusel filtrado a una familia: el eyebrow de sección y el «ver la máquina»
+   toman el acento de la clase. Sin filtrar el bloque no lleva `data-sales-class`
+   y las dos se quedan en coral — ver el comentario en Component.tsx. */
+.ak-model-cards[data-sales-class] {
+  --_models-accent: var(--_family-ink);
+}
+
+/* La tarjeta es un flex column: sin esto el chip se estira a todo el ancho y
+   deja de leerse como etiqueta. */
+.ak-model-card__class {
+  align-self: start;
+  margin: 0.625rem 0 0;
+}
+
 .ak-model-cards__eyebrow {
   font-family: var(--bp-font-family-mono, ui-monospace, monospace);
   font-size: 0.6875rem;

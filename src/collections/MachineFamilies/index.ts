@@ -53,6 +53,49 @@ export const MachineFamilies: CollectionConfig = {
     },
     slugField({ useAsSlug: 'name' }),
     {
+      name: 'salesClass',
+      type: 'select',
+      required: true,
+      // A propósito NO localizado y a propósito cerrado.
+      //
+      // No localizado porque lo que se guarda es la clave (`frozen`) y lo que
+      // se traduce son las etiquetas de abajo. Localizarlo permitiría una
+      // familia congelada en inglés y refrigerada en español, que no es un caso
+      // de uso sino una forma de que el color cambie al cambiar de idioma.
+      //
+      // Cerrado —y no un selector de color libre— porque un campo que acepta
+      // cualquier color acepta también los que no se leen. Así se llegó al
+      // estado actual: seis hex en línea, fuera de la paleta, y los seis fallan
+      // AA como color de texto (el amarillo #ffd166 da 1.44 contra un piso de
+      // 4.5). El tono se deriva de la clase; el editor elige qué vende, no qué
+      // color usa. Ver docs/business/visado.md, "El color de las familias dice
+      // qué vendés, no en qué orden están cargadas".
+      options: [
+        { value: 'frozen', label: { en: 'Frozen', es: 'Congelado' } },
+        { value: 'hot-food', label: { en: 'Hot food', es: 'Comida caliente' } },
+        { value: 'refrigerated', label: { en: 'Refrigerated', es: 'Refrigerado' } },
+        {
+          value: 'ambient-high-volume',
+          label: { en: 'Ambient · high volume', es: 'Ambiente · alto volumen' },
+        },
+        { value: 'tight-space', label: { en: 'Tight space', es: 'Espacio chico' } },
+      ],
+      admin: {
+        description:
+          'La fila de la hoja comparativa del cliente a la que pertenece esta familia. De acá sale el color de acento de la familia en todo el sitio — no de su posición en la lista, que el cliente puede reordenar sin aviso.',
+      },
+    },
+    {
+      name: 'colorStep',
+      type: 'number',
+      defaultValue: 0,
+      min: 0,
+      admin: {
+        description:
+          'Solo si dos familias comparten clase. Un paso de rampa las separa dentro del mismo tono: 0 es el tono base y 1 el siguiente. Hoy la única que lo usa es Delta, para no ser idéntica a Zeta dentro de "espacio chico". Dejalo en 0 si esta familia es la única de su clase.',
+      },
+    },
+    {
       name: 'tagline',
       type: 'text',
       localized: true,

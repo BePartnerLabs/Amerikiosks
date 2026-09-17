@@ -176,6 +176,8 @@ export default async function FamilyDetailPage({ params }: Props) {
             familySlug={family.slug ?? ''}
             models={models}
             locale={locale}
+            salesClass={family.salesClass}
+            colorStep={family.colorStep}
           />
         </section>
       )}
