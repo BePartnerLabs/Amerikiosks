@@ -23,7 +23,8 @@ it would give a guess the authority of a decision.
 |---|---|
 | [Audiences](./audiences.md) | Deciding who a page or block is for, or why a section is not landing. |
 | [Definition of Done](./definition-of-done.md) | Starting a block, and again before calling one finished. |
-| [Voice and tone](./voice-and-tone.md) | Writing any copy that ships — block defaults, labels, error messages, meta descriptions. |
+| [El visado, y por qué se decidió cada cosa](./visado.md) | Se prepara la sesión de visado con el cliente, o se toma una decisión sobre /machines que habrá que defender ahí. |
+| [Voice and tone](./voice-and-tone.md) | Writing any copy that ships — block defaults, labels, error messages, meta descriptions, or translating a page into Spanish. |
 <!-- index:end -->
 
 ## Related

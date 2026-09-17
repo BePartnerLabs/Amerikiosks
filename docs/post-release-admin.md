@@ -23,6 +23,256 @@ lifespan: temporal — borrar este archivo cuando todo esté hecho
 
 Escrito el 2026-08-09 al cerrar la sesión de los PR #238 y #239, **actualizado el 2026-08-13** al cerrar la del #241 al #252. **Nada de lo de abajo pasa solo.** El código está en `main`, pero un bloque que nadie añade a una página no se renderiza en ninguna parte, y esa es la brecha entre "mergeado" y "por qué no se ve".
 
+## Verificado contra un restore de producción — 2026-09-14
+
+**Casi todo lo que este documento pedía ya está hecho.** Se bajó un dump de
+producción, se restauró en local y se consultó la base. Lo que sigue es el
+resultado, y reemplaza a lo que dicen las secciones de abajo donde se
+contradigan.
+
+| Lo que el documento pedía | Estado real |
+|---|---|
+| Renombrar `machines2` → `machines` / `maquinas` | **Hecho**, los dos locales. No hace falta redirect |
+| Colocar `machineFamilyRows` y sacar los cinco `machineFamily` | **Hecho**. El layout es `[machineFamilyRows, machineModels]`; `machineLineup` también salió |
+| Marcar el `featured` de Kappa (§2, §6.5) | **Hecho**. Las cinco familias tienen exactamente una de cuatro marcada |
+| Cargar los `rowImage` (§6.4) | **Hecho**, las cinco |
+| Ficha de dimensiones de la Gamma 13 (§3.b) | **Hecha**: 77" × 72" × 39" |
+| Subir `gamma-13/v0.04` (§3) | **Superado**: producción está en `gamma-13/v0.06`, 90 fotogramas |
+
+### Lo que sí seguía pendiente
+
+- **La página estaba en borrador**, y por eso daba 404. La última versión
+  publicada era del 2026-08-10, anterior a que `machineFamilyRows` existiera:
+  todo el trabajo del bloque estaba cargado y sin publicar. No es solo esa
+  página — **diez de veinticuatro** estaban en borrador, incluido el cluster de
+  audiencias entero (`solutions`, `who-its-for`, `where-it-works`, las cuatro de
+  tipo de local, `case-studies`, `why-amerikiosks`).
+- **El locale `es` de los bloques no existía.** Peor que lo que advertía §6.2:
+  no es que los textos se quedaran en inglés, es que la fila del segundo idioma
+  nunca se creó, así que Payload caía al fallback y `/es/maquinas` publicaba
+  «3 models in line», «Coming soon» y «See machine».
+- **El carrusel de familias nunca se colocó**, y ya no se coloca — ver abajo.
+
+### Decisión cerrada: el carrusel de familias no entra
+
+Queda descartado para `/machines`. Con las filas y sus características
+principales la página ya funciona, y un índice arriba del detalle no agrega
+nada. **Sigue siendo una idea viable para el home**, donde no compite con las
+filas; si algún día se retoma, el bloque `machineFamilyCarousel` ya existe y
+está listo. Corolario práctico: el `eyebrow` de las filas **se queda cargado**
+(«Our lines» / «Nuestras líneas») — la instrucción de §6.4.b de vaciarlo aplicaba
+solo si el carrusel entraba.
+
+### Lo que se hizo en local, y hay que repetir en producción
+
+Ninguna de estas escrituras toca producción. Se hicieron contra el dump
+restaurado para ensayarlas, que es para lo que se baja un dump.
+
+| Qué | Cómo | Repetir en prod |
+|---|---|---|
+| Textos en español de los dos bloques | `pnpm payload run scripts/fill-machines-es-locale.ts -- --apply` | **Sí** — es el arreglo real |
+| Publicar los once borradores | `pnpm payload run scripts/publish-all-local.ts -- --apply` | **No automáticamente** — qué se publica y cuándo es decisión de lanzamiento, y se toma en `/admin` |
+
+Los dos scripts se niegan a correr si `DATABASE_URI` no apunta a localhost. El
+de textos manda cada bloque con su `id`, que es lo que evita que una escritura
+por locale borre el otro idioma
+([`payload-localized-arrays.md`](./patterns/payload-localized-arrays.md)).
+
+Detalle que cuesta media hora si no está escrito: publicar desde un script
+dispara el hook `revalidatePage`, que llama a `revalidatePath` de Next y revienta
+con `Invariant: static generation store missing` fuera de un request. Se pasa
+`context: { disableRevalidate: true }` en el `update` — el hook ya trae esa
+salida.
+
+### Verificación
+
+Las seis rutas del árbol de máquinas responden 200 en los dos idiomas
+(`/machines`, `/machines/gamma`, `/machines/gamma/gamma-13` y sus equivalentes
+en `/es/maquinas/...`), y el barrido de la página en español no deja ni una
+cadena en inglés de los bloques. El singular funciona: Zeta, que tiene un solo
+modelo, dice «1 modelo en la línea».
+
+## HECHO EN PRODUCCIÓN — 2026-09-16
+
+Lo de esta sección ya está aplicado y verificado contra producción. Se deja
+escrito porque el dump local todavía no lo tiene.
+
+- **Sigma existe**: familia `sigma` **id 6** y máquina `sigma-frozen` **id 28**,
+  las dos publicadas, con los dos idiomas completos. Las seis rutas del árbol de
+  máquinas responden 200, y la fila de Sigma dice «1 modelo en la línea» en
+  singular. La imagen es `media 114` (`sigma-frozen.webp`, 932×1294, con alfa),
+  extraída del brochure — el PDF traía el canal alfa incluido.
+- **Los diez brochures están cargados** en el campo `brochure` de cada máquina.
+  Nueve PDF en `media`, ids 105 a 113.
+- **Tres renombres**, solo el `name`, los `slug` intactos: `Gamma 13 Double` →
+  **Gamma Double**, `Kappa 13 Double` → **Kappa Double**, `Kappa Showcase
+  Blanco` → **Kappa Showcase**.
+
+**Lo que queda mal y hay que arreglar:**
+
+- **`alpha-10` y `alpha-13` apuntan al mismo PDF** (105, «Brochure Alpha new»).
+  El visitante que descarga desde la Alpha 10 recibe specs que no son las de esa
+  máquina — 21.5" contra 49" reales, 4.500 W contra 5.200 W. Se resuelve solo si
+  el cliente confirma que la Alpha 10 salió de catálogo.
+- **El botón «Download brochure» ahora se ve, y está en inglés duro** en los dos
+  heroes (`ZoomFadeHero.tsx`, `RotationScrubHero.tsx`), sin `useTranslations`.
+  Antes estaba oculto porque ninguna máquina tenía PDF. El namespace `machines`
+  ya existe en `src/messages/{en,es}.json`.
+- **Sigma no tiene brochure** — su PDF no está en `media` — ni
+  `heroLineupImage`, ni galería. Y su `rowImage` es la misma imagen que el
+  thumbnail, con el lado largo en 1294 px contra los ≥1600 de la especificación.
+  La imagen además dice «LOGO HERE» en el topper.
+- **El contenido de las diez máquinas está en inglés en el locale español** —
+  ~150 cadenas. Delegado a la sesión de contenido.
+
+## Crear Sigma: cómo se hizo
+
+*(Ya está hecho — ver arriba. Se conserva como receta para la próxima familia.)*
+
+Ninguna de las dos existía. La familia primero, porque la máquina la pide como
+campo requerido.
+
+**Lo que no estaba en el plan y hace falta**: `machines` exige un `cta` con
+etiqueta. Las diez usan el mismo — `{ type: 'modal', url: '/contact', modalForm:
+6, label: 'Contact Sales' / 'Contactar a ventas' }` — y Sigma lo copió tal cual.
+
+### Lo que bloquea, y no se resuelve escribiendo
+
+**No hay ni un render de Sigma.** En el Shared Folder solo están el PDF del
+brochure y su transcripción. Y las dos colecciones piden imagen obligatoria:
+
+| Dónde | Campo | |
+|---|---|---|
+| `machine-families` | `thumbnail` | **requerido** |
+| `machine-families` | `rowImage` | opcional, pero sin él la fila cae al thumbnail y se dibuja plana |
+| `machine-families` | `heroLineupImage` | opcional |
+| `machines` | `image` | **requerido** |
+
+La única imagen de Sigma que existe está adentro del brochure: una foto de
+producto **con fondo**, no un recorte sobre transparencia. Las otras cinco
+familias usan recortes a ras con alfa. Sacar la del PDF y usarla se va a notar
+al lado de las demás.
+
+Y la subida va **en producción**: R2 es de solo lectura en local.
+
+Entonces: o se le piden los renders al cliente, o se arranca con la imagen del
+brochure sabiendo que es provisional.
+
+### La familia — `machine-families`
+
+Los dos locales **en la misma sesión**, y en los arrays devolviendo el `id` de
+cada ítem: escribir un locale sin ellos borra el otro idioma y responde
+`200 OK`.
+
+| Campo | EN | ES |
+|---|---|---|
+| `slug` | `sigma` | `sigma` |
+| `name` *(requerido)* | `Sigma` | `Sigma` |
+| `tagline` | `The only cabinet that holds −25 °C` | `El único gabinete que sostiene −25 °C` |
+| `heroEyebrow` | `Sigma Series` | `Serie Sigma` |
+| `heroHeading` | `Frozen, anywhere you have an outlet` | `Congelado, donde haya un enchufe` |
+| `description` | A true freezer, not a chiller: ice cream, frozen meals, proteins, fruit and ice. Conveyor and coil lanes mix on the same shelf, and an elevator platform carries every item to the delivery zone instead of dropping it. | Un congelador de verdad, no un enfriador: helado, comida preparada congelada, proteínas, fruta y hielo. Las cintas y las espirales se mezclan en la misma repisa, y una plataforma elevadora lleva cada artículo hasta la zona de entrega en vez de soltarlo. |
+| `ctaLabel` | `Explore our Sigma Models` | `Explora nuestros modelos Sigma` |
+| `highlights.eyebrow` | `Why Sigma` | `Por qué Sigma` |
+| `highlights.heading` | `Built to stay below zero` | `Hecho para no salir del frío` |
+
+**Las cuatro características** (`highlights.items`). Marcá **una** como
+`featured` — es la que muestran las filas; sugerida la primera:
+
+| # | title EN / ES | description EN / ES |
+|---|---|---|
+| 1 ★ | `Frozen to −25 °C` / `Congelado a −25 °C` | `A true freezer, not a chiller.` / `Un congelador de verdad, no un enfriador.` |
+| 2 | `Dual motor lanes` / `Carriles de doble motor` | `Conveyor belt and coil on the same shelf.` / `Cinta y espiral en la misma repisa.` |
+| 3 | `Zero drop delivery` / `Entrega sin caída` | `An elevator platform carries every item down.` / `Una plataforma elevadora baja cada artículo.` |
+| 4 | `Anti ant isolation` / `Aislamiento anti-hormigas` | `A sealed, insulated food bay.` / `Una bahía sellada y aislada.` |
+
+Cuando exista el campo `salesClass` del sistema de color, Sigma es
+**congelado** — es la única de esa clase.
+
+### La máquina — `machines`
+
+| Campo | EN | ES |
+|---|---|---|
+| `slug` | `sigma-frozen` | `sigma-frozen` |
+| `name` *(requerido)* | `Sigma Frozen` | `Sigma Frozen` |
+| `family` *(requerido)* | Sigma | Sigma |
+| `tagline` | `Twenty five below, anywhere you have an outlet.` | `Veinticinco bajo cero, donde haya un enchufe.` |
+| `dimensions` | `78"` / `56"` / `37.5"` | igual |
+
+**Las seis specs**, mismo formato que las otras nueve máquinas:
+
+| label EN | label ES | value EN | value ES |
+|---|---|---|---|
+| `Dimensions (H×W×D)` | `Dimensiones (Alto×Ancho×Profundidad)` | `78" × 56" × 37.5"` | igual |
+| `Storage capacity` | `Capacidad de almacenamiento` | `400–700 units` | `400–700 unidades` |
+| `Selections` | `Selecciones` | `54` | `54` |
+| `Touchscreen` | `Pantalla táctil` | `21.5"` | `21.5"` |
+| `Temperature` | `Temperatura` | `Down to −25 °C, standard` | `Hasta −25 °C, de serie` |
+| `Power` | `Alimentación` | `Dedicated 110V outlet / 15 amps` | `Toma dedicada 110V / 15 amps` |
+
+Datos de la ficha que **no** entran en las seis specs y conviene tener a mano:
+peso 926 lbs / 420 kg, 7 repisas ajustables, hasta 8 facings por repisa, 93" de
+alto con topper, 60 Hz, Nayax integrado, opcionales topper iluminado / módulo de
+efectivo / paquete ADA, y ventilación trasera obligatoria.
+
+Todo sale de
+[`BROCHURE-2026-09-SIGMA-FROZEN.md`](../../Shared%20Folder/Fichas%20Extraidas/BROCHURE-2026-09-SIGMA-FROZEN.md).
+**No abras el PDF** — está transcrito entero.
+
+### Antes de darla por hecha
+
+- `useRotationHero` queda **apagado**: no hay secuencia de fotogramas de Sigma.
+- El `brochure` es `Brochure Sigma new.pdf`, y se carga con los demás.
+- Verificá `/machines/sigma` y `/machines/sigma/sigma-frozen` en los **dos**
+  idiomas, y que la fila de Sigma aparezca en `/machines` diciendo **«1 modelo
+  en la línea»**, en singular.
+
+## Los brochures, en producción: qué PDF va en qué máquina
+
+**Sólo en producción.** R2 es de solo lectura en local: una subida desde el
+`/admin` local falla con `AccessDenied` y parece un bug del panel.
+
+El campo es `brochure` en cada máquina — un `upload` a `media`. Cuando está
+vacío, el hero **esconde** el botón «Download brochure»; con un PDF cargado,
+aparece. Hoy las diez lo tienen vacío y `media` no tiene ni un solo PDF.
+
+Los archivos están en `~/Downloads/brochuresupdate/`. Ojo: también están subidos
+a `cdn.amerikiosks.com/brochures/`, pero **eso no sirve para este campo** — ese
+es el espacio de assets crudos, fuera del prefijo de media de Payload, así que
+no existe un documento de `media` que apuntarle. Subirlos por `/admin` crea una
+segunda copia; es intencional y son ~10 MB.
+
+| PDF | Máquina (`slug`) |
+|---|---|
+| `Brochure Zeta.pdf` | `zeta-2` |
+| `Brochure Delta 7 new.pdf` | `delta-7` |
+| `Brochure Gamma 10 new.pdf` | `gamma-10` |
+| `Brochure Gamma 13 new.pdf` | `gamma-13` |
+| `Brochure Gamma Double new.pdf` | `gamma-13-double` |
+| `Brochure Kappa new.pdf` | `kappa-13` |
+| `Brochure Kappa double new.pdf` | `kappa-13-double` |
+| `Brochure Kappa showcase.pdf` | `kappa-showcase-blanco` |
+
+**Tres que no tienen destino todavía:**
+
+- **`Brochure Alpha new.pdf`** — el brochure es un solo producto, «Alpha Hot
+  Food», y en la base hay **dos** máquinas, `alpha-10` y `alpha-13`. Sus cifras
+  son las de la Alpha 13 salvo el ancho. Hasta resolver qué pasa con las dos, no
+  se carga en ninguna: ponerlo en las dos publicaría la misma ficha para dos
+  equipos distintos.
+- **`Brochure Sigma new.pdf`** — Sigma Frozen no existe como familia ni como
+  máquina. Primero hay que crearla.
+- **`Model Comparition.pdf`** — no es de un modelo, es la comparativa de los
+  diez. No hay campo para esto hoy. Es buen candidato a una descarga en la
+  página `/machines`, pero eso es un campo nuevo, no una carga.
+
+**Después de cargar cada uno**, mirá la ficha de esa máquina: el botón tiene que
+aparecer en el hero. Y en la página en español va a decir **«Download
+brochure»** — el rótulo está en inglés duro en los dos heroes
+(`ZoomFadeHero.tsx` y `RotationScrubHero.tsx`), sin `useTranslations`. Hoy no se
+nota porque el botón está oculto en las diez; el primer brochure cargado lo
+destapa. El namespace `machines` ya existe en `src/messages/{en,es}.json`.
+
 ## Estado al cerrar la sesión
 
 - `main` está en `af71049`, con los PR **#241** al **#252** dentro. Lo relevante para `/admin`: `/machines` dejó de ser ruta de código (#245), las cotas del hero ya se dibujan en el sitio (#251), y el footer ya no tumba las páginas cuyo formulario enlaza la política de privacidad (#252).
@@ -337,6 +587,46 @@ esa línea. Diez segundos, ver la sección 2 de este documento.
 y buenas («Explore our Alpha Models»), y sirven al carousel del home y a las
 secciones de familia. El `ctaLabel` del bloque es el respaldo para una familia
 futura, no el que manda.
+
+## 7. Confirmar la clase de venta de cada familia — al desplegar el color
+
+**Cuándo**: después del deploy que trae `salesClass` y `colorStep` en
+`machine-families`. **No antes**: hasta ese release los campos no existen.
+
+La migración siembra las familias que existían cuando se escribió. Lo que no
+puede sembrar es lo que se creó después, y ya hay un caso: **Sigma no estaba en
+el dump contra el que se probó la migración** — el dump corta el 2026-09-16 a la
+01:06 UTC y Sigma se creó en producción más tarde ese mismo día. La siembra va
+por `slug`, así que si el slug es exactamente `sigma` la agarra igual; el punto
+es que nadie lo verificó contra la base real, solo contra una que no la tenía.
+
+**Qué hacer**, y son dos minutos:
+
+1. Abrir `/admin/collections/machine-families` y mirar la columna de cada una.
+   Las seis tienen que tener clase de venta:
+
+   | Familia | `salesClass` | `colorStep` |
+   |---|---|---|
+   | Sigma | Frozen / Congelado | 0 |
+   | Alpha | Hot food / Comida caliente | 0 |
+   | Kappa | Refrigerated / Refrigerado | 0 |
+   | Gamma | Ambient · high volume / Ambiente · alto volumen | 0 |
+   | Zeta | Tight space / Espacio chico | 0 |
+   | Delta | Tight space / Espacio chico | **1** |
+
+2. Cualquier familia creada después del dump —Sigma incluida— hay que revisarla a
+   mano. Si quedó vacía, elegir la clase y **guardar y publicar**: el front lee
+   la versión publicada, no el borrador.
+3. **Delta tiene que quedar en `colorStep` 1.** Es lo único que la separa de Zeta,
+   que comparte su clase. Si las dos quedan en 0 se ven idénticas en la grilla
+   donde se elige, que es el bug que el campo existe para evitar.
+
+**Si una familia aparece con el campo vacío, el síntoma no es una página rota**:
+es que al abrirla en `/admin` no se puede guardar **nada** hasta elegir una clase,
+porque el campo es requerido. Si alguien reporta «no me deja guardar la familia»,
+esto es. Ver [`docs/patterns/payload-seeding.md`](./patterns/payload-seeding.md).
+
+Esta sección se borra cuando las seis estén confirmadas.
 
 ## Lo que sigue en código, no en `/admin`
 
