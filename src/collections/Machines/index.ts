@@ -80,7 +80,9 @@ export const Machines: CollectionConfig = {
               name: 'tagline',
               type: 'text',
               localized: true,
-              admin: { description: 'Short label shown on cards, e.g. "Full-size branded machine"' },
+              admin: {
+                description: 'Short label shown on cards, e.g. "Full-size branded machine"',
+              },
             },
             {
               name: 'heroEyebrow',
