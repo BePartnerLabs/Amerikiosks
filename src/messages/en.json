@@ -35,6 +35,14 @@
     "heading": "Discover our model lines",
     "knowMore": "Know more",
     "eyebrow": "Model lines",
+    "downloadBrochure": "Download brochure",
+    "salesClass": {
+      "frozen": "Frozen",
+      "hot-food": "Hot food",
+      "refrigerated": "Refrigerated",
+      "ambient-high-volume": "Ambient · high volume",
+      "tight-space": "Tight space"
+    },
     "trustEyebrow": "Trusted by",
     "trustHeading": "The brands already running these machines.",
     "theLine": "The line",

@@ -35,3 +35,6 @@ coverage/
 
 # Salida del MCP de generacion de imagenes: artefactos locales, no fuente.
 generated_imgs/
+
+# Canvas de diseño local — la versión publicada vive como artifact
+.design-family/

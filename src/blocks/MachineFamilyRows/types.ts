@@ -1,3 +1,4 @@
+import type { MachineFamily } from '@/payload-types'
 import type { FeaturedHighlight } from '@/utilities/featuredHighlight'
 
 /**
@@ -20,6 +21,10 @@ export type FamilyRow = {
    */
   leansOut: boolean
   ctaLabel: string | null
+  /** La fila de la comparativa a la que pertenece: de acá sale el color. */
+  salesClass: MachineFamily['salesClass']
+  /** Solo si dos familias comparten clase. Hoy únicamente Delta. */
+  colorStep: number | null
   /** Counted from the machines collection, never authored. 0 drives the soon state. */
   modelCount: number
 }

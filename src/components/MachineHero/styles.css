@@ -3,15 +3,18 @@
   flex-direction: column;
 
   /* Level 2 → private slots channeling brand tokens; the DS validator forbids
-     literals and raw --ak-* in surface properties. Same navy as the /machines
-     scene: the renders are white machines on transparency, so they vanish on a
-     white background and cut out cleanly on navy. */
-  --_hero-dark: var(--brand-color-palette-navy-950);
-  --_hero-mid: color-mix(
-    in srgb,
-    var(--brand-color-palette-navy-900) 70%,
-    var(--brand-color-palette-navy-950)
-  );
+     literals and raw --ak-* in surface properties.
+
+     El escenario va CLARO. Lo que había acá antes era navy, justificado con que
+     los renders son máquinas blancas sobre transparencia que se borrarían sobre
+     claro: esa premisa era falsa, y este comentario era su única fuente. Ver
+     docs/business/visado.md, "Enmienda — el escenario del hero se aclara".
+
+     El tope no es blanco puro sino `steel-50`: sobre blanco el flanco izquierdo
+     de la Kappa 13 —que es casi blanco— se disuelve y la silueta se pierde en la
+     esquina. A simple vista los dos son «blanco»; la diferencia es tener silueta
+     o no tenerla. */
+  --_hero-top: var(--brand-color-palette-steel-50);
   /* Zoom through the turntable. Past ~0.18 the render crops against the
      viewport on short screens. */
   --_hero-zoom: 0.14;
@@ -100,11 +103,30 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  /* El color de la clase se acumula en el PISO del cuadro, no en la parada del
+     medio: probado sobre los renders reales, en el medio queda exactamente
+     donde está la máquina, que lo tapa, y el color sólo asoma como un ribete a
+     los costados. En el piso se ve, y además hace de apoyo — la máquina queda
+     parada en un entorno en vez de flotar.
+     
+     La intensidad la escribe el componente por scroll en `--ak-hero-bloom`: 8%
+     en reposo, 55% en el pico. No llega al 100% a propósito — pasado el 40% el
+     color ya no compra legibilidad, y un escenario saturado de 100vh le saca
+     protagonismo al coral, que es lo único que significa «hacé clic».
+     
+     Va en el background de ESTE elemento, que es el padre del canvas. Por
+     construcción no puede repetir el halo que se quitó en agosto: aquél era un
+     hermano posterior en el DOM y por eso teñía la máquina. */
+  --_hero-floor: color-mix(
+    in srgb,
+    var(--_family-base, var(--ak-accent)) calc(var(--ak-hero-bloom, 0.08) * 100%),
+    var(--_hero-top)
+  );
   background: linear-gradient(
     180deg,
-    var(--_hero-dark) 0%,
-    var(--_hero-mid) 52%,
-    var(--_hero-dark) 100%
+    var(--_hero-top) 0%,
+    var(--_hero-top) 40%,
+    var(--_hero-floor) 100%
   );
 }
 
@@ -139,9 +161,10 @@
 .ak-machine-hero__skeleton {
   position: absolute;
   inset: 0;
-  /* Navy, not the light border token: on the dark scrub stage a pale skeleton
-     flashes as a white panel exactly where the render belongs. */
-  background: var(--_hero-mid);
+  /* Era navy, porque sobre el escenario oscuro un esqueleto pálido destellaba
+     como panel blanco justo donde va el render. Invertido el escenario, el que
+     destella es el navy: ahora es un gris apenas más denso que el fondo. */
+  background: color-mix(in srgb, var(--brand-color-palette-steel-100) 40%, var(--_hero-top));
   animation: ak-machine-hero-pulse 1.4s ease-in-out infinite;
 }
 
@@ -169,14 +192,17 @@
   pointer-events: none;
   overflow: visible;
 
-  /* Level 2 → slots privados canalizando los tokens de marca. El acento sobre
-     el navy del escenario; las lineas de referencia mas tenues para que
-     acompañen en vez de competir con la cota. */
-  --_cota-line: var(--ak-accent);
-  --_cota-ext: color-mix(in srgb, var(--ak-accent) 55%, transparent);
-  --_cota-halo: color-mix(in srgb, var(--ak-accent) 45%, transparent);
-  --_cota-ink: var(--brand-color-palette-white);
-  --_cota-ground: var(--brand-color-palette-navy-950);
+  /* Level 2 → slots privados canalizando los tokens de marca. Las lineas de
+     referencia mas tenues para que acompañen en vez de competir con la cota.
+
+     Invertidas junto con el escenario, y no es cosmética: sobre el escenario
+     claro el número blanco daba 1.09 a 2.10 de contraste y el coral de la
+     geometría 2.50, por debajo del 3:1 mínimo para un gráfico. En navy la cota
+     da 8.38 a 16.17 en las tres zonas. El halo del número pasa a blanco. */
+  --_cota-line: var(--brand-color-palette-navy-900);
+  --_cota-ext: color-mix(in srgb, var(--brand-color-palette-navy-900) 55%, transparent);
+  --_cota-ink: var(--brand-color-palette-navy-950);
+  --_cota-ground: var(--brand-color-palette-white);
 }
 
 .ak-hero-cotas line {
@@ -198,10 +224,10 @@
   vector-effect: non-scaling-stroke;
 }
 
-/* Despega la linea del render sin meter una caja opaca detras. */
-.ak-hero-cotas__cota {
-  filter: drop-shadow(0 0 6px var(--_cota-halo));
-}
+/* El resplandor de acento que despegaba la linea del render salió con la
+   inversión: un halo difuso se lee sobre oscuro, sobre claro se lee como
+   suciedad. Lo que despega la cota ahora es el contraste propio del navy contra
+   un escenario que nunca llega al blanco puro. */
 
 .ak-hero-cotas text {
   fill: var(--_cota-ink);

@@ -1,7 +1,10 @@
 import Image from 'next/image'
 import { Carousel } from '@/components/Carousel'
+import { SalesClassChip } from '@/components/SalesClassChip'
+import type { SalesClassLabels } from '@/components/SalesClassChip/labels'
 import { Link } from '@/i18n/navigation'
 import type { ModelCard } from './types'
+import '@/components/FamilyAccent/accent.css'
 import './styles.css'
 
 type Props = {
@@ -14,6 +17,7 @@ type Props = {
   id?: string | null
   /** Resolved on the server so this stays a plain, synchronous component. */
   labels: { previous: string; next: string; go: string }
+  salesClassLabels: SalesClassLabels
   jsonLd?: Record<string, unknown>
 }
 
@@ -32,14 +36,37 @@ export const MachineModelsBlock: React.FC<Props> = ({
   ctaLabel,
   models,
   labels,
+  salesClassLabels,
   id,
   jsonLd,
 }) => {
   const headingId = `ak-model-cards-heading${id ? `-${id}` : ''}`
 
+  // Dos usos, dos reglas. Filtrado a una familia (la ficha de línea), todas las
+  // tarjetas comparten clase y el acento de sección puede teñirse. Sin filtrar
+  // —el carrusel de /machines, con las seis familias juntas— el eyebrow se
+  // queda coral: seis nombres de seis colores distintos se leen como ensalada,
+  // no como sistema. El chip de cada tarjeta sigue llevando su propio color en
+  // los dos casos, que es donde el color enseña la regla.
+  const first = models[0]
+  const shared =
+    first?.salesClass != null &&
+    models.every(
+      (model) =>
+        model.salesClass === first.salesClass && (model.colorStep ?? 0) === (first.colorStep ?? 0),
+    )
+      ? first
+      : null
+
   return (
     <section
-      className="ak-model-cards"
+      className={`ak-model-cards${shared ? ' ak-family-accent' : ''}`}
+      data-sales-class={shared?.salesClass ?? undefined}
+      style={
+        shared?.colorStep
+          ? ({ '--_family-step': shared.colorStep } as React.CSSProperties)
+          : undefined
+      }
       data-ga-block="machineModels"
       aria-labelledby={headingId}
     >
@@ -110,6 +137,14 @@ export const MachineModelsBlock: React.FC<Props> = ({
                   )}
                   {model.familyName && <p className="ak-model-card__family">{model.familyName}</p>}
                   <h3 className="ak-model-card__name">{model.name}</h3>
+                  {model.salesClass && (
+                    <SalesClassChip
+                      salesClass={model.salesClass}
+                      colorStep={model.colorStep}
+                      label={salesClassLabels[model.salesClass]}
+                      className="ak-model-card__class"
+                    />
+                  )}
                   {model.specs.length > 0 && (
                     <dl className="ak-model-card__specs">
                       {model.specs.map((spec) => (

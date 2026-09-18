@@ -25,7 +25,7 @@ when the *why* still needs explaining alongside it.
 |---|---|
 | [Monday.com en local](./monday-local.md) | Tocando Monday o cualquier formulario, y siempre después de restaurar un dump de producción. |
 | [Payload localized arrays](./payload-localized-arrays.md) | Writing to an array field with localized subfields, especially via REST. |
-| [Seeding Payload data](./payload-seeding.md) | Writing a one-off script that creates or updates Payload documents. |
+| [Seeding Payload data](./payload-seeding.md) | Writing a one-off script that creates or updates Payload documents, or deciding whether a data write belongs in a migration. |
 | [React Compiler](./react-compiler.md) | Touching a client component, or the compiler silently stops memoising one. |
 <!-- index:end -->
 

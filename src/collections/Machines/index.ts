@@ -43,6 +43,16 @@ export const Machines: CollectionConfig = {
     drafts: true,
     maxPerDoc: 50,
   },
+  // Las pestañas son puro agrupamiento de la interfaz de /admin: mismo patrón
+  // que `Pages`. Ningún campo cambia de nombre ni de nivel, así que la base no
+  // se mueve — las pestañas de Hero y Machine details van SIN `name` a
+  // propósito (una pestaña con nombre anida en la base igual que un grupo, y
+  // renombraría cada columna), y `meta` conserva el suyo porque ya era un grupo
+  // llamado así. Ver openspec/changes/machine-page-blocks/design.md.
+  //
+  // Identidad fuera de las pestañas: `name`, el slug y `family` son requeridos
+  // y deciden la URL (/machines/[family]/[slug]). Un campo requerido escondido
+  // detrás de una pestaña es un guardado que falla donde el editor no mira.
   fields: [
     {
       name: 'name',
@@ -51,43 +61,6 @@ export const Machines: CollectionConfig = {
       localized: true,
     },
     slugField({ useAsSlug: 'name' }),
-    {
-      name: 'tagline',
-      type: 'text',
-      localized: true,
-      admin: { description: 'Short label shown on cards, e.g. "Full-size branded machine"' },
-    },
-    {
-      name: 'heroEyebrow',
-      type: 'text',
-      localized: true,
-      admin: { description: 'Small kicker above the hero title, e.g. "NEXT GENERATION"' },
-    },
-    {
-      name: 'image',
-      type: 'upload',
-      relationTo: 'media',
-      required: true,
-      admin: { description: 'Front view — shown in the model carousel cards.' },
-    },
-    {
-      name: 'hoverImage',
-      type: 'upload',
-      relationTo: 'media',
-      admin: {
-        description:
-          'Optional side view — swaps in on hover/focus/active over the card. Leave empty to keep showing the front view only.',
-      },
-    },
-    {
-      name: 'tags',
-      type: 'relationship',
-      relationTo: 'machine-tags',
-      hasMany: true,
-      admin: {
-        description: 'e.g. full-size, compact, campaign, premium — used for block-level filtering',
-      },
-    },
     {
       name: 'family',
       type: 'relationship',
@@ -98,203 +71,268 @@ export const Machines: CollectionConfig = {
       },
     },
     {
-      name: 'gallery',
-      type: 'array',
-      fields: [{ name: 'image', type: 'upload', relationTo: 'media', required: true }],
-    },
-    link({
-      overrides: {
-        name: 'cta',
-        admin: {
-          description:
-            'Hero call-to-action. Supports linking to a page, a custom URL, or opening a form in a modal (e.g. "Contact Sales" opening a lead form instead of navigating away).',
-        },
-      },
-    }),
-    {
-      name: 'brochure',
-      type: 'upload',
-      relationTo: 'media',
-      admin: {
-        description:
-          'Optional downloadable brochure (PDF). Hides the "Download brochure" hero button when empty.',
-      },
-    },
-    {
-      name: 'highlights',
-      type: 'group',
-      fields: [
+      type: 'tabs',
+      tabs: [
         {
-          name: 'eyebrow',
-          type: 'text',
-          localized: true,
-          admin: { description: 'e.g. "WHY GAMMA 13"' },
-        },
-        {
-          name: 'heading',
-          type: 'text',
-          localized: true,
-          admin: { description: 'e.g. "Engineered for performance. Designed for any location."' },
-        },
-        {
-          name: 'items',
-          type: 'array',
+          label: { en: 'Hero', es: 'Hero' },
           fields: [
             {
-              name: 'icon',
-              type: 'text',
-              admin: {
-                description:
-                  'Pick from the list. A name typed by hand that is not in the set renders nothing at all, with no error — see src/components/Icon/icons.ts.',
-                components: {
-                  Field: '@/components/MaterialIconPicker#MaterialIconPicker',
-                },
-              },
-            },
-            { name: 'title', type: 'text', required: true, localized: true },
-            { name: 'description', type: 'text', localized: true },
-          ],
-        },
-      ],
-    },
-    {
-      name: 'capabilities',
-      type: 'group',
-      fields: [
-        {
-          name: 'heading',
-          type: 'text',
-          localized: true,
-          admin: { description: 'e.g. "Built for scale. Designed for ease."' },
-        },
-        {
-          name: 'items',
-          type: 'array',
-          admin: {
-            description:
-              'Each item can render as a full-bleed alternating story band (image + heading + text) or, if left without an image, as a plain bullet.',
-          },
-          fields: [
-            {
-              name: 'heading',
+              name: 'tagline',
               type: 'text',
               localized: true,
-              admin: { description: 'Optional short claim, e.g. "Cold, all day."' },
+              admin: {
+                description: 'Short label shown on cards, e.g. "Full-size branded machine"',
+              },
             },
-            { name: 'text', type: 'text', required: true, localized: true },
+            {
+              name: 'heroEyebrow',
+              type: 'text',
+              localized: true,
+              admin: { description: 'Small kicker above the hero title, e.g. "NEXT GENERATION"' },
+            },
             {
               name: 'image',
               type: 'upload',
               relationTo: 'media',
+              required: true,
+              admin: { description: 'Front view — shown in the model carousel cards.' },
+            },
+            {
+              name: 'hoverImage',
+              type: 'upload',
+              relationTo: 'media',
               admin: {
-                description: 'Optional. When set, this item renders as a full-bleed story band.',
+                description:
+                  'Optional side view — swaps in on hover/focus/active over the card. Leave empty to keep showing the front view only.',
+              },
+            },
+            link({
+              overrides: {
+                name: 'cta',
+                admin: {
+                  description:
+                    'Hero call-to-action. Supports linking to a page, a custom URL, or opening a form in a modal (e.g. "Contact Sales" opening a lead form instead of navigating away).',
+                },
+              },
+            }),
+            {
+              name: 'brochure',
+              type: 'upload',
+              relationTo: 'media',
+              admin: {
+                description:
+                  'Optional downloadable brochure (PDF). Hides the "Download brochure" hero button when empty.',
+              },
+            },
+            // Los tres van juntos a propósito: `validateFrameSequence` rechaza
+            // cambiar `frameCount` dejando `sequencePath` igual, así que
+            // corregir una secuencia es una sola edición. Separarlos en
+            // pestañas distintas convierte esa corrección en un guardado que
+            // no se puede completar.
+            {
+              name: 'useRotationHero',
+              type: 'checkbox',
+              defaultValue: false,
+              admin: {
+                description:
+                  'Show the full rotation-scrub hero instead of the default zoom+fade hero.',
+              },
+            },
+            {
+              name: 'sequencePath',
+              type: 'text',
+              admin: {
+                description:
+                  'Carpeta de la secuencia en R2, con su versión: "gamma-12/v0.1". Sube una carpeta NUEVA para cada versión — sobrescribir deja al CDN sirviendo media animación vieja y media nueva. Los fotogramas se llaman frame-001.webp… y se generan con scripts/build-frame-sequence.mjs.',
+                condition: (_, siblingData) => Boolean(siblingData?.useRotationHero),
+              },
+            },
+            {
+              name: 'frameCount',
+              type: 'number',
+              min: 2,
+              admin: {
+                description:
+                  'Cuántos fotogramas tiene la carpeta. Declararlo evita listar el bucket en cada render, y hace que un fotograma que falte se vea como un hueco en el giro en vez de terminar la animación antes de tiempo.',
+                condition: (_, siblingData) => Boolean(siblingData?.useRotationHero),
+              },
+            },
+            {
+              name: 'rotationFrames',
+              type: 'array',
+              admin: {
+                description:
+                  'Legacy: fotogramas subidos uno a uno. Para secuencias nuevas usa "sequencePath" — 60 filas ordenadas a mano es donde un fotograma acaba en el sitio equivocado sin que nada avise.',
+                condition: (_, siblingData) => Boolean(siblingData?.useRotationHero),
+              },
+              fields: [{ name: 'image', type: 'upload', relationTo: 'media', required: true }],
+            },
+          ],
+        },
+        {
+          label: { en: 'Machine details', es: 'Detalles de la máquina' },
+          fields: [
+            {
+              name: 'highlights',
+              type: 'group',
+              fields: [
+                {
+                  name: 'eyebrow',
+                  type: 'text',
+                  localized: true,
+                  admin: { description: 'e.g. "WHY GAMMA 13"' },
+                },
+                {
+                  name: 'heading',
+                  type: 'text',
+                  localized: true,
+                  admin: {
+                    description: 'e.g. "Engineered for performance. Designed for any location."',
+                  },
+                },
+                {
+                  name: 'items',
+                  type: 'array',
+                  fields: [
+                    {
+                      name: 'icon',
+                      type: 'text',
+                      admin: {
+                        description:
+                          'Pick from the list. A name typed by hand that is not in the set renders nothing at all, with no error — see src/components/Icon/icons.ts.',
+                        components: {
+                          Field: '@/components/MaterialIconPicker#MaterialIconPicker',
+                        },
+                      },
+                    },
+                    { name: 'title', type: 'text', required: true, localized: true },
+                    { name: 'description', type: 'text', localized: true },
+                  ],
+                },
+              ],
+            },
+            {
+              name: 'capabilities',
+              type: 'group',
+              fields: [
+                {
+                  name: 'heading',
+                  type: 'text',
+                  localized: true,
+                  admin: { description: 'e.g. "Built for scale. Designed for ease."' },
+                },
+                {
+                  name: 'items',
+                  type: 'array',
+                  admin: {
+                    description:
+                      'Each item can render as a full-bleed alternating story band (image + heading + text) or, if left without an image, as a plain bullet.',
+                  },
+                  fields: [
+                    {
+                      name: 'heading',
+                      type: 'text',
+                      localized: true,
+                      admin: { description: 'Optional short claim, e.g. "Cold, all day."' },
+                    },
+                    { name: 'text', type: 'text', required: true, localized: true },
+                    {
+                      name: 'image',
+                      type: 'upload',
+                      relationTo: 'media',
+                      admin: {
+                        description:
+                          'Optional. When set, this item renders as a full-bleed story band.',
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              name: 'specs',
+              type: 'array',
+              admin: {
+                description:
+                  'Structured spec rows (capacity, power, screen, refrigeration, etc.) sourced from the vendor spec sheet. Drives the family-page comparison table and the model-page spec list. Order here is the display order; use the same "label" text across models in a family so rows line up in the comparison table.',
+              },
+              fields: [
+                {
+                  name: 'label',
+                  type: 'text',
+                  required: true,
+                  localized: true,
+                  admin: { description: 'e.g. "Storage capacity"' },
+                },
+                {
+                  name: 'value',
+                  type: 'text',
+                  required: true,
+                  localized: true,
+                  admin: { description: 'e.g. "420–560 units"' },
+                },
+              ],
+            },
+            {
+              name: 'dimensions',
+              type: 'group',
+              fields: [
+                { name: 'height', type: 'text', admin: { description: 'e.g. 92"' } },
+                { name: 'width', type: 'text', admin: { description: 'e.g. 74"' } },
+                { name: 'depth', type: 'text', admin: { description: 'e.g. 40"' } },
+              ],
+            },
+            {
+              name: 'dimensionDiagrams',
+              type: 'array',
+              admin: {
+                description: 'Labeled technical line-drawings (e.g. front, side, isometric views)',
+              },
+              fields: [
+                { name: 'image', type: 'upload', relationTo: 'media', required: true },
+                { name: 'label', type: 'text', localized: true },
+              ],
+            },
+            {
+              name: 'gallery',
+              type: 'array',
+              fields: [{ name: 'image', type: 'upload', relationTo: 'media', required: true }],
+            },
+            {
+              name: 'tags',
+              type: 'relationship',
+              relationTo: 'machine-tags',
+              hasMany: true,
+              admin: {
+                description:
+                  'e.g. full-size, compact, campaign, premium — used for block-level filtering',
               },
             },
           ],
         },
-      ],
-    },
-    {
-      name: 'dimensions',
-      type: 'group',
-      fields: [
-        { name: 'height', type: 'text', admin: { description: 'e.g. 92"' } },
-        { name: 'width', type: 'text', admin: { description: 'e.g. 74"' } },
-        { name: 'depth', type: 'text', admin: { description: 'e.g. 40"' } },
-      ],
-    },
-    {
-      name: 'specs',
-      type: 'array',
-      admin: {
-        description:
-          'Structured spec rows (capacity, power, screen, refrigeration, etc.) sourced from the vendor spec sheet. Drives the family-page comparison table and the model-page spec list. Order here is the display order; use the same "label" text across models in a family so rows line up in the comparison table.',
-      },
-      fields: [
         {
-          name: 'label',
-          type: 'text',
-          required: true,
-          localized: true,
-          admin: { description: 'e.g. "Storage capacity"' },
+          name: 'meta',
+          label: { en: 'SEO', es: 'SEO' },
+          fields: [
+            OverviewField({
+              titlePath: 'meta.title',
+              descriptionPath: 'meta.description',
+              imagePath: 'meta.image',
+            }),
+            MetaTitleField({
+              hasGenerateFn: true,
+            }),
+            MetaImageField({
+              relationTo: 'media',
+            }),
+            MetaDescriptionField({}),
+            PreviewField({
+              hasGenerateFn: true,
+              titlePath: 'meta.title',
+              descriptionPath: 'meta.description',
+            }),
+          ],
         },
-        {
-          name: 'value',
-          type: 'text',
-          required: true,
-          localized: true,
-          admin: { description: 'e.g. "420–560 units"' },
-        },
-      ],
-    },
-    {
-      name: 'dimensionDiagrams',
-      type: 'array',
-      admin: { description: 'Labeled technical line-drawings (e.g. front, side, isometric views)' },
-      fields: [
-        { name: 'image', type: 'upload', relationTo: 'media', required: true },
-        { name: 'label', type: 'text', localized: true },
-      ],
-    },
-    {
-      name: 'useRotationHero',
-      type: 'checkbox',
-      defaultValue: false,
-      admin: {
-        description: 'Show the full rotation-scrub hero instead of the default zoom+fade hero.',
-      },
-    },
-    {
-      name: 'sequencePath',
-      type: 'text',
-      admin: {
-        description:
-          'Carpeta de la secuencia en R2, con su versión: "gamma-12/v0.1". Sube una carpeta NUEVA para cada versión — sobrescribir deja al CDN sirviendo media animación vieja y media nueva. Los fotogramas se llaman frame-001.webp… y se generan con scripts/build-frame-sequence.mjs.',
-        condition: (_, siblingData) => Boolean(siblingData?.useRotationHero),
-      },
-    },
-    {
-      name: 'frameCount',
-      type: 'number',
-      min: 2,
-      admin: {
-        description:
-          'Cuántos fotogramas tiene la carpeta. Declararlo evita listar el bucket en cada render, y hace que un fotograma que falte se vea como un hueco en el giro en vez de terminar la animación antes de tiempo.',
-        condition: (_, siblingData) => Boolean(siblingData?.useRotationHero),
-      },
-    },
-    {
-      name: 'rotationFrames',
-      type: 'array',
-      admin: {
-        description:
-          'Legacy: fotogramas subidos uno a uno. Para secuencias nuevas usa "sequencePath" — 60 filas ordenadas a mano es donde un fotograma acaba en el sitio equivocado sin que nada avise.',
-        condition: (_, siblingData) => Boolean(siblingData?.useRotationHero),
-      },
-      fields: [{ name: 'image', type: 'upload', relationTo: 'media', required: true }],
-    },
-    {
-      name: 'meta',
-      label: 'SEO',
-      type: 'group',
-      fields: [
-        OverviewField({
-          titlePath: 'meta.title',
-          descriptionPath: 'meta.description',
-          imagePath: 'meta.image',
-        }),
-        MetaTitleField({
-          hasGenerateFn: true,
-        }),
-        MetaImageField({
-          relationTo: 'media',
-        }),
-        MetaDescriptionField({}),
-        PreviewField({
-          hasGenerateFn: true,
-          titlePath: 'meta.title',
-          descriptionPath: 'meta.description',
-        }),
       ],
     },
   ],

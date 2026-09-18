@@ -1,0 +1,69 @@
+/* ═══════════════════════════════════════════════════════════════
+   Family accent — el acento de una familia sale de su clase de venta
+   ═══════════════════════════════════════════════════════════════ */
+
+/*
+ * Un solo lugar donde la semilla de la clase se convierte en los tres colores
+ * que los componentes usan. Está acá y no en cada bloque porque cuatro
+ * pantallas la necesitan (filas de familia, los dos carruseles y la ficha) y
+ * tres copias de la misma rampa se desincronizan en cuanto alguien toca una.
+ *
+ * Cómo se usa: la clase `ak-family-accent` sobre el elemento que tiene que
+ * teñirse —o sobre un ancestro—, más `data-sales-class` con el valor que guarda
+ * Payload y, si dos familias comparten clase, `--_family-step`.
+ *
+ *   <article class="ak-family-accent" data-sales-class="tight-space"
+ *            style="--_family-step: 1">
+ *
+ * Y adentro, `--_family-base` para fondos y halos, `--_family-ink` para texto
+ * sobre claro, `--_family-glow` para texto sobre navy. La semilla NUNCA va como
+ * color de texto: da 3.3–3.7 sobre blanco y no llega al 4.5 de AA.
+ *
+ * El foco de teclado no se tiñe con ninguna de las tres. Un indicador de foco
+ * que cambia de color según dónde estás parado es peor indicador; se queda con
+ * el de siempre.
+ */
+
+.ak-family-accent {
+  /* Coral de respaldo, no ausencia de color: una familia dada de alta sin clase
+     —o con una clase que este front todavía no conoce— tiene que renderizar
+     igual. Sin esto la derivación quedaría inválida y el acento desaparecería
+     en vez de degradarse. */
+  --_family-seed: var(--ak-accent);
+
+  /* El paso baja luminosidad, nunca la sube. Una variante más clara pierde
+     fuerza sobre blanco, que es exactamente cómo fallaban los seis pastel que
+     este sistema reemplaza; una más oscura nunca empeora el contraste. */
+  --_family-l: calc(0.63 - 0.09 * var(--_family-step, 0));
+
+  --_family-base: oklch(from var(--_family-seed) var(--_family-l) c h);
+  --_family-ink: oklch(from var(--_family-seed) calc(var(--_family-l) - 0.11) c h);
+  /* Sobre navy la lógica se invierte: misma familia, resuelta para el otro
+     fondo. Sube luminosidad y baja un 20% de croma. */
+  --_family-glow: oklch(from var(--_family-seed) calc(var(--_family-l) + 0.17) calc(c * 0.8) h);
+}
+
+/* Los cinco valores son los del select cerrado de `machine-families`, y el
+   sufijo de cada token es idéntico al valor a propósito: el mapeo entero vive
+   acá, en CSS, sin tabla de traducción en TS. Si el backend agrega una fila,
+   acá va su semilla; mientras no esté, esa familia cae en el coral de respaldo
+   de arriba en vez de romperse. */
+.ak-family-accent[data-sales-class="frozen"] {
+  --_family-seed: var(--ak-family-frozen);
+}
+
+.ak-family-accent[data-sales-class="hot-food"] {
+  --_family-seed: var(--ak-family-hot-food);
+}
+
+.ak-family-accent[data-sales-class="refrigerated"] {
+  --_family-seed: var(--ak-family-refrigerated);
+}
+
+.ak-family-accent[data-sales-class="ambient-high-volume"] {
+  --_family-seed: var(--ak-family-ambient-high-volume);
+}
+
+.ak-family-accent[data-sales-class="tight-space"] {
+  --_family-seed: var(--ak-family-tight-space);
+}

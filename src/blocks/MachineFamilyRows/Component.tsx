@@ -1,7 +1,10 @@
 import Image from 'next/image'
 import type React from 'react'
+import { SalesClassChip } from '@/components/SalesClassChip'
+import type { SalesClassLabels } from '@/components/SalesClassChip/labels'
 import { Link } from '@/i18n/navigation'
 import type { FamilyRow } from './types'
+import '@/components/FamilyAccent/accent.css'
 import './styles.css'
 
 type Props = {
@@ -14,6 +17,7 @@ type Props = {
   soonLabel: string | null
   soonCtaLabel: string | null
   families: FamilyRow[]
+  salesClassLabels: SalesClassLabels
   // Passed down rather than read here, so this stays a plain synchronous
   // component and the server-rendered Link never falls back to next-intl's
   // getLocale() — that reads headers and breaks these routes (see the
@@ -31,6 +35,7 @@ export const MachineFamilyRowsBlock: React.FC<Props> = ({
   soonLabel,
   soonCtaLabel,
   families,
+  salesClassLabels,
   locale,
 }) => (
   <section
@@ -63,8 +68,19 @@ export const MachineFamilyRowsBlock: React.FC<Props> = ({
                 key={family.id}
                 className="ak-family-rows__item"
               >
+                {/* El acento de la fila sale de la clase de venta de la
+                    familia. Lo llevan el chip y el contador; el outline de foco
+                    y el botón de CTA se quedan en coral a propósito — el foco
+                    tiene que ser siempre el mismo indicador, y el coral es lo
+                    único que significa «hacé clic». */}
                 <div
-                  className={`ak-family-rows__row${family.leansOut ? ' ak-family-rows__row--leans' : ''}`}
+                  className={`ak-family-rows__row ak-family-accent${family.leansOut ? ' ak-family-rows__row--leans' : ''}`}
+                  data-sales-class={family.salesClass}
+                  style={
+                    family.colorStep
+                      ? ({ '--_family-step': family.colorStep } as React.CSSProperties)
+                      : undefined
+                  }
                 >
                   <div className="ak-family-rows__well">
                     {family.imageUrl && (
@@ -80,17 +96,24 @@ export const MachineFamilyRowsBlock: React.FC<Props> = ({
                   </div>
 
                   <div className="ak-family-rows__body">
-                    <p
-                      className={`ak-family-rows__badge${soon ? ' ak-family-rows__badge--soon' : ''}`}
-                    >
-                      {/* Not filter(Boolean): that drops a zero. It cannot reach
-                          here today because `soon` intercepts it, but the day the
-                          soon state keys off anything else the count would
-                          vanish and leave the label bare. */}
-                      {soon
-                        ? soonLabel
-                        : `${family.modelCount}${countLabel ? ` ${countLabel}` : ''}`}
-                    </p>
+                    <div className="ak-family-rows__meta">
+                      <SalesClassChip
+                        salesClass={family.salesClass}
+                        colorStep={family.colorStep}
+                        label={salesClassLabels[family.salesClass]}
+                      />
+                      <p
+                        className={`ak-family-rows__badge${soon ? ' ak-family-rows__badge--soon' : ''}`}
+                      >
+                        {/* Not filter(Boolean): that drops a zero. It cannot reach
+                            here today because `soon` intercepts it, but the day the
+                            soon state keys off anything else the count would
+                            vanish and leave the label bare. */}
+                        {soon
+                          ? soonLabel
+                          : `${family.modelCount}${countLabel ? ` ${countLabel}` : ''}`}
+                      </p>
+                    </div>
                     {/* A heading, not a paragraph: five families and none of
                         them appeared in the page's heading outline, so a screen
                         reader user could not navigate between them and a

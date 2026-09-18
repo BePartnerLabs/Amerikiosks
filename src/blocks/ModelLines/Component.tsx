@@ -13,6 +13,7 @@ import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
 import { toSnakeCase } from '@/utilities/toSnakeCase'
 import { vtName } from '@/utilities/viewTransitionName'
 import { ModelLinesCarousel } from './CarouselNav'
+import '@/components/FamilyAccent/accent.css'
 import './styles.css'
 
 type Props = Omit<ModelLinesBlockProps, 'form'> & {
@@ -25,9 +26,6 @@ type Props = Omit<ModelLinesBlockProps, 'form'> & {
   // page using this block (see the machines pages' DYNAMIC_SERVER_USAGE fix).
   locale: 'en' | 'es'
 }
-
-// Cycled by index, not tied to a specific family — new families just pick up the next hue.
-const ACCENTS = ['#ff6b3d', '#3fb0ff', '#7cd992', '#c58cff', '#ffd166', '#ff8fb1']
 
 export const ModelLinesBlock: React.FC<Props> = ({
   eyebrow,
@@ -58,12 +56,11 @@ export const ModelLinesBlock: React.FC<Props> = ({
           />
 
           <ModelLinesCarousel label={heading}>
-            {families.map((family, i) => {
+            {families.map((family) => {
               const thumbnail =
                 typeof family.thumbnail === 'object' ? (family.thumbnail as Media) : null
               const hoverThumbnail =
                 typeof family.hoverThumbnail === 'object' ? (family.hoverThumbnail as Media) : null
-              const accent = ACCENTS[i % ACCENTS.length]
 
               const inner = (
                 <>
@@ -123,9 +120,17 @@ export const ModelLinesBlock: React.FC<Props> = ({
                 </>
               )
 
+              // El acento sale de la clase de venta de la familia, no de su
+              // posición en esta lista. Reordenar familias en /admin es una
+              // acción legítima y sin advertencia: antes les cambiaba el color
+              // a todas. `colorStep` solo separa a dos familias que comparten
+              // clase — hoy Delta, para no ser idéntica a Zeta.
               const panelProps = {
-                className: 'ak-model-lines__panel',
-                style: { '--_accent': accent } as React.CSSProperties,
+                className: 'ak-model-lines__panel ak-family-accent',
+                'data-sales-class': family.salesClass,
+                style: family.colorStep
+                  ? ({ '--_family-step': family.colorStep } as React.CSSProperties)
+                  : undefined,
                 'data-ga-event': 'machine_family_click',
                 'data-ga-label': family.name,
               }

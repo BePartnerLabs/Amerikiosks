@@ -7,7 +7,11 @@ vi.mock('@payload-config', () => ({ default: {} }))
 
 const { find } = vi.hoisted(() => ({ find: vi.fn() }))
 vi.mock('payload', () => ({ getPayload: vi.fn().mockResolvedValue({ find }) }))
-vi.mock('next-intl/server', () => ({ getLocale: vi.fn().mockResolvedValue('en') }))
+vi.mock('next-intl/server', () => ({
+  getLocale: vi.fn().mockResolvedValue('en'),
+  // El chip resuelve sus cinco rótulos en el servidor; acá devuelve la clave.
+  getTranslations: vi.fn().mockResolvedValue((key: string) => key),
+}))
 
 vi.mock('@/i18n/navigation', () => ({
   Link: ({
@@ -56,6 +60,14 @@ const mockCollections = (families: unknown[], machines: unknown[]) => {
   )
 }
 
+const salesClassLabels = {
+  frozen: 'Frozen',
+  'hot-food': 'Hot food',
+  refrigerated: 'Refrigerated',
+  'ambient-high-volume': 'Ambient · high volume',
+  'tight-space': 'Tight space',
+}
+
 const blockProps = {
   eyebrow: null,
   heading: 'Our lines',
@@ -66,6 +78,7 @@ const blockProps = {
   soonLabel: 'Coming soon',
   soonCtaLabel: 'Explore the line',
   locale: 'en' as const,
+  salesClassLabels,
 }
 
 const row = (over: Partial<FamilyRow> = {}): FamilyRow => ({
@@ -75,6 +88,8 @@ const row = (over: Partial<FamilyRow> = {}): FamilyRow => ({
   featured: { title: '360° rapid heating', description: null },
   imageUrl: '/alpha.png',
   ctaLabel: null,
+  salesClass: 'hot-food',
+  colorStep: null,
   modelCount: 2,
   leansOut: false,
   ...over,

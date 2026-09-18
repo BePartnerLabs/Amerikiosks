@@ -5,7 +5,15 @@
 .ak-family-rows {
   /* Level 2 → private slots. Every colour below channels a brand token: the DS
      validator forbids literals and raw --ak-* in surface properties. */
+  /* Cromo de página, no de familia: el eyebrow de sección encabeza el bloque
+     entero, así que se queda coral igual que en el carrusel de familias. El
+     acento por familia entra por fila, desde su clase de venta. */
   --_rows-accent: var(--ak-accent);
+  /* Separado del anterior a propósito, y NO se tiñe nunca: un indicador de foco
+     que cambia de color según sobre qué fila estás parado es peor indicador.
+     Vale aunque hoy los dos valgan lo mismo — la variable es la que impide que
+     el próximo que tiña el acento se lleve el foco puesto. */
+  --_rows-focus: var(--ak-accent);
   --_rows-heading: var(--ak-color-heading);
   --_rows-muted: var(--ak-color-muted);
   --_rows-text-muted: var(--bp-color-text-muted);
@@ -142,13 +150,25 @@
   filter: drop-shadow(0 12px 18px var(--_rows-drop-light));
 }
 
+/* El chip y el contador son una sola línea de metadatos: primero qué vende esta
+   familia, después cuántos modelos tiene. */
+.ak-family-rows__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--bp-space-2, 0.5rem) var(--bp-space-3, 0.75rem);
+  margin-bottom: var(--bp-space-2, 0.5rem);
+}
+
 .ak-family-rows__badge {
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--_rows-accent);
-  margin: 0 0 0.25rem;
+  /* Era coral, y el coral es lo único que significa «hacé clic». El contador es
+     información, no una acción: toma el acento de la familia. */
+  color: var(--_family-ink);
+  margin: 0;
 }
 
 /* A family with nothing published yet is not an alert — it reads as quiet
@@ -187,7 +207,7 @@
 /* The focus ring belongs to the row, because the row is what the stretched link
    covers — a ring around the name alone would look like a mistake. */
 .ak-family-rows__row:focus-within {
-  outline: var(--md-semantic-border-width-default, 1px) solid var(--_rows-accent);
+  outline: var(--md-semantic-border-width-default, 1px) solid var(--_rows-focus);
   outline-offset: 3px;
 }
 

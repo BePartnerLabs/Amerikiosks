@@ -1,4 +1,4 @@
-import type { Machine, Media } from '@/payload-types'
+import type { Machine, MachineFamily, Media } from '@/payload-types'
 import { buildAnchorsURL } from '@/utilities/buildAnchorsURL'
 import { buildFrameSequenceURL } from '@/utilities/buildFrameSequenceURL'
 import { getBestMediaUrl } from '@/utilities/getMediaSizeUrl'
@@ -49,6 +49,10 @@ export const MachineHero: React.FC<Props> = ({ machine }) => {
 
   const frameUrls = sequenceUrls ?? legacyUrls
 
+  // La familia viaja poblada (la ficha consulta con depth 2). De su clase de
+  // venta sale el color del piso del escenario.
+  const family = typeof machine.family === 'object' ? (machine.family as MachineFamily) : null
+
   const heroText = {
     eyebrow: machine.heroEyebrow,
     heading: machine.name,
@@ -74,6 +78,8 @@ export const MachineHero: React.FC<Props> = ({ machine }) => {
             ? buildAnchorsURL(machine.sequencePath)
             : null
         }
+        salesClass={family?.salesClass ?? null}
+        colorStep={family?.colorStep ?? null}
         dimensionLabels={{
           height: machine.dimensions?.height ?? undefined,
           width: machine.dimensions?.width ?? undefined,

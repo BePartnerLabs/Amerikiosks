@@ -26,6 +26,7 @@ Decisiones ya validadas con el usuario durante el brainstorming:
 **Non-Goals:**
 - No convertir `/machines` ni `/machines/[family]` en páginas de layout-builder editables por bloques — el cliente edita contenido (familia, modelo, installations), no el layout de estas rutas.
 - No construir un sistema de reclasificación adicional por "categoría de uso" (comida caliente / retail / bebidas) mencionado en el brainstorming inicial — quedó fuera del alcance aprobado; se puede agregar como `machine-families.category` en un change futuro si se pide.
+  - **RESUELTO (2026-09-17): se pidió, y entró.** No como `category` sino como **`salesClass`**, un `select` cerrado de cinco clases de venta (congelado, comida caliente, refrigerado, ambiente de alto volumen, espacio chico), más `colorStep` para separar dos familias que comparten clase. El disparador no fue la reclasificación en sí: fue el color. El acento de cada familia salía de su posición en un array —que el cliente puede reordenar sin aviso— y los seis pastel fallaban AA como color de texto. Atarlo a la clase de venta resuelve las dos cosas a la vez. El argumento completo está en [`docs/business/visado.md`](../../../docs/business/visado.md), entrada «El color de las familias dice qué vendés, no en qué orden están cargadas». **No volver a plantearlo como idea futura.**
 - No tocar `MachinesListing` en código (no se borra el bloque) — solo se audita/reemplaza su *uso* actual en el admin donde compita con las páginas nuevas.
 - No se construye un flujo de traducción nuevo — se reutiliza el mecanismo existente de Payload `localization` (selector EN/ES por documento) ya usado en `Machines`.
 
@@ -78,5 +79,5 @@ Un hook a nivel de collection permite comparar contra una lista centralizada (`m
 
 ## Open Questions
 
-- ¿Se quiere en algún momento la reclasificación por "categoría de uso" (comida caliente / retail / bebidas) mencionada en el brainstorming inicial? Quedó fuera de este change; si se pide, sería un campo `category` adicional en `machine-families` + una sección extra en `/machines`.
+- ~~¿Se quiere en algún momento la reclasificación por "categoría de uso"?~~ **Cerrado el 2026-09-17**: entró como `salesClass` + `colorStep` en `machine-families`, y no como una sección extra en `/machines` sino como el origen del color de acento de cada familia. Ver los Non-Goals de arriba y [`docs/business/visado.md`](../../../docs/business/visado.md).
 - ¿El hook de slugs reservados en `Pages` debe ser configurable desde `/admin` (lista editable) o hardcodeado en código? Se asume hardcodeado por ahora, dado que las rutas fijas solo cambian con deploys de código de todos modos.

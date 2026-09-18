@@ -1,8 +1,10 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { CMSLink } from '@/components/Link'
-import type { Machine } from '@/payload-types'
+import type { Machine, MachineFamily } from '@/payload-types'
+import '@/components/FamilyAccent/accent.css'
 import { vtName } from '@/utilities/viewTransitionName'
 import { DimensionOverlay } from './DimensionOverlay'
 import { usePrefersReducedMotion } from './usePrefersReducedMotion'
@@ -21,6 +23,9 @@ type Props = {
   anchorsUrl?: string | null
   /** Los textos publicados, tal cual los guarda /admin: `77"`, `72"`, `39"`. */
   dimensionLabels?: Partial<Record<'height' | 'width' | 'depth', string>> | null
+  /** La clase de venta de la familia: tiñe el piso del escenario. */
+  salesClass?: MachineFamily['salesClass'] | null
+  colorStep?: number | null
 }
 
 export const RotationScrubHero: React.FC<Props> = ({
@@ -34,7 +39,10 @@ export const RotationScrubHero: React.FC<Props> = ({
   slug,
   anchorsUrl,
   dimensionLabels,
+  salesClass,
+  colorStep,
 }) => {
+  const t = useTranslations('machines')
   const wrapperRef = useRef<HTMLDivElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const framesRef = useRef<HTMLImageElement[]>([])
@@ -135,8 +143,18 @@ export const RotationScrubHero: React.FC<Props> = ({
     drawFrame(frameIndex)
   }, [frameIndex, drawFrame])
 
+  // El bloom entra mientras la máquina gira y se retira al salir, en vez de
+  // crecer hasta el final: el pico coincide con el medio del recorrido, que es
+  // donde la máquina está más grande y el escenario más se mira. Reposo 8%,
+  // pico 55% — el techo es deliberado, ver el comentario del degradado.
+  const bloom = reducedMotion ? 0.08 : 0.08 + 0.47 * Math.sin(Math.PI * progress)
+
   return (
-    <div className="ak-machine-hero">
+    <div
+      className="ak-machine-hero ak-family-accent"
+      data-sales-class={salesClass ?? undefined}
+      style={colorStep ? ({ '--_family-step': colorStep } as React.CSSProperties) : undefined}
+    >
       <div className="ak-machine-hero__text">
         {eyebrow && <p className="ak-machine-hero__eyebrow">{eyebrow}</p>}
         <h1
@@ -153,7 +171,7 @@ export const RotationScrubHero: React.FC<Props> = ({
               className="bp-btn bp-btn--dark"
               download
             >
-              Download brochure
+              {t('downloadBrochure')}
             </a>
           )}
           <CMSLink
@@ -170,7 +188,12 @@ export const RotationScrubHero: React.FC<Props> = ({
       >
         <div
           className="ak-machine-hero__sticky"
-          style={{ '--ak-hero-progress': progress.toFixed(3) } as React.CSSProperties}
+          style={
+            {
+              '--ak-hero-progress': progress.toFixed(3),
+              '--ak-hero-bloom': bloom.toFixed(3),
+            } as React.CSSProperties
+          }
         >
           {!firstFrameReady && (
             <div

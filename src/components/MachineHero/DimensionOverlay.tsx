@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { buildAnchorsURL, type FrameAnchors } from '@/utilities/buildAnchorsURL'
+import type { FrameAnchors } from '@/utilities/buildAnchorsURL'
 
 type Props = {
   /**

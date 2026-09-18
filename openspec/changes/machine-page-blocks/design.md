@@ -36,8 +36,8 @@ Mismo patrón que `Pages`. Los campos **no cambian de nombre ni de sitio en la b
 
 | Pestaña | Contenido |
 |---|---|
-| **Hero** | El hero y su rotación. Aquí muere `useRotationHero`. |
-| **Machine details** | `specs`, `dimensions`, `capabilities`, `dimensionDiagrams`, `gallery`, `highlights`, `tags`, `brochure`. |
+| **Hero** | El hero y su rotación. Aquí muere `useRotationHero`. También `brochure`: parece un adjunto, pero lo que hace es mostrar u ocultar un botón del hero, y el editor que quiere sacar ese botón lo busca acá. Y `useRotationHero`, `sequencePath` y `frameCount` no se separan en pestañas distintas: un hook rechaza cambiar el conteo dejando la misma carpeta, así que tienen que poder guardarse en una sola edición. |
+| **Machine details** | `specs`, `dimensions`, `capabilities`, `dimensionDiagrams`, `gallery`, `highlights`, `tags`. |
 | **Content** | El `layout` nuevo, ordenable. |
 | **SEO** | El `meta` que ya existe. |
 
